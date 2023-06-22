@@ -1,0 +1,86 @@
+<?php
+
+return [
+
+    /*
+    |--------------------------------------------------------------------------
+    | Authentication Language Lines
+    |--------------------------------------------------------------------------
+    |
+    | The following language lines are used during authentication for various
+    | messages that we need to display to the user. You are free to modify
+    | these language lines according to your application's requirements.
+    |
+    */
+
+      "all" => "All",
+      "customer"=> "Customer",
+      "suplier"=> "Suplier",
+      "bank_account" =>"Bank Account",
+      "employee" => "Employee",
+      "material_goods" => "Material goods",
+      "store" => "Store",
+      "username" => "Username",
+      "password" => "Password",
+      "npassword" => "New Password",
+      "rpassword" => "Renew Password",
+      "login" => "Login Page",
+      "signin" => "Sign In",
+      "signout" => "Sign Out",
+      "new" => "New",
+      "old" => "Old",
+      "from" => "From",
+      "to" => "To",
+      "message" => "Message",
+      "open_condition" => "Open condition",
+      "report" =>"Report",
+      "get_data" => "Get data",
+      "hidden_condition" => "Hide condition",
+      "expand" => "Expand",
+      "code" => "Code",
+      "name" => "Name",
+      "name_en" => "Name english",
+      "column_name" => "Column name",
+      "description" => "Description",
+      "accountant" => "Accountant",
+      "today" => "Today",
+      "this_week" => "This week",
+      "this_month" => "This month",
+      "this_quarter" => "This quarter",
+      "this_year" => "This year",
+      "january" => "January",
+      "february" => "February",
+      "march" => "March",
+      "april" => "April",
+      "may" => "May",
+      "june" => "June",
+      "july" => "July",
+      "august" => "August",
+      "september" => "September",
+      "october" => "October",
+      "november" => "November",
+      "december" => "December",
+      "the_1st_quarter" => "The 1st quarter",
+      "the_2nd_quarter" => "The 2nd quarter",
+      "the_3rd_quarter" => "The 3rd quarter",
+      "the_4th_quarter" => "The 4th quarter",
+      "start_date" => "Start date",
+      "end_date" => "End date",
+      "not_recorded" => "Not recorded",
+      "recorded" => "Recorded",
+      "total_count" => "Total count",
+      "prefix" => "Prefix",
+      "suffixed" => "Suffixed",
+      "action" => "Action",
+      "type" => "Type",
+      "start_time" => "Start time",
+      "end_time" => "End time",
+      "refesh" => "Refesh",
+      "sync" => "Sync",
+      "select" => "Select",
+      "row_number" => "Number",
+      "reply"=>"Reply",
+      "zoom"=>"Zoom",
+      "refesh"=>"Refesh",
+      "select"=>"--Select--",
+];
