@@ -7,7 +7,7 @@
     <!-- metrics graphics (charts) -->
     <link rel="stylesheet" href="{{ asset('library/metrics-graphics/dist/metricsgraphics.css')}}">
     <!-- chartist -->
-    <link rel="stylesheet" href="{{ asset('library/chartist/dist/chartist.min.css')}}">   
+    <link rel="stylesheet" href="{{ asset('library/chartist/dist/chartist.min.css')}}">
 @endpush
 
 @push('css_down')
@@ -62,6 +62,7 @@
            </div>
        </div>
    </div>
+
 @endsection
 @push('js_up')
 

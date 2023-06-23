@@ -12,6 +12,11 @@ class Counter extends Component
     {
         $this->count++;
     }
+
+    public function decrease()
+    {
+        $this->count--;
+    }
  
     public function render()
     {

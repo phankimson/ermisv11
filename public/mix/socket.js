@@ -6581,7 +6581,7 @@ module.exports = Array.isArray || function (arr) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Channel": () => (/* binding */ Channel),
+/* harmony export */   Channel: () => (/* binding */ Channel),
 /* harmony export */   "default": () => (/* binding */ Echo)
 /* harmony export */ });
 function _typeof(obj) {
@@ -6968,7 +6968,7 @@ var PusherPrivateChannel = /*#__PURE__*/function (_PusherChannel) {
     key: "whisper",
     value:
     /**
-     * Trigger client event on the channel.
+     * Send a whisper event to other clients in the channel.
      */
     function whisper(eventName, data) {
       this.pusher.channels.channels[this.name].trigger("client-".concat(eventName), data);
@@ -6998,7 +6998,7 @@ var PusherEncryptedPrivateChannel = /*#__PURE__*/function (_PusherChannel) {
     key: "whisper",
     value:
     /**
-     * Trigger client event on the channel.
+     * Send a whisper event to other clients in the channel.
      */
     function whisper(eventName, data) {
       this.pusher.channels.channels[this.name].trigger("client-".concat(eventName), data);
@@ -7051,6 +7051,16 @@ var PusherPresenceChannel = /*#__PURE__*/function (_PusherChannel) {
       return this;
     }
     /**
+     * Send a whisper event to other clients in the channel.
+     */
+
+  }, {
+    key: "whisper",
+    value: function whisper(eventName, data) {
+      this.pusher.channels.channels[this.name].trigger("client-".concat(eventName), data);
+      return this;
+    }
+    /**
      * Listen for someone leaving the channel.
      */
 
@@ -7060,16 +7070,6 @@ var PusherPresenceChannel = /*#__PURE__*/function (_PusherChannel) {
       this.on('pusher:member_removed', function (member) {
         callback(member.info);
       });
-      return this;
-    }
-    /**
-     * Trigger client event on the channel.
-     */
-
-  }, {
-    key: "whisper",
-    value: function whisper(eventName, data) {
-      this.pusher.channels.channels[this.name].trigger("client-".concat(eventName), data);
       return this;
     }
   }]);
@@ -7268,7 +7268,7 @@ var SocketIoPrivateChannel = /*#__PURE__*/function (_SocketIoChannel) {
     key: "whisper",
     value:
     /**
-     * Trigger client event on the channel.
+     * Send a whisper event to other clients in the channel.
      */
     function whisper(eventName, data) {
       this.socket.emit('client event', {
@@ -7321,6 +7321,20 @@ var SocketIoPresenceChannel = /*#__PURE__*/function (_SocketIoPrivateChann) {
     value: function joining(callback) {
       this.on('presence:joining', function (member) {
         return callback(member.user_info);
+      });
+      return this;
+    }
+    /**
+     * Send a whisper event to other clients in the channel.
+     */
+
+  }, {
+    key: "whisper",
+    value: function whisper(eventName, data) {
+      this.socket.emit('client event', {
+        channel: this.name,
+        event: "client-".concat(eventName),
+        data: data
       });
       return this;
     }
@@ -7450,7 +7464,7 @@ var NullPrivateChannel = /*#__PURE__*/function (_NullChannel) {
     key: "whisper",
     value:
     /**
-     * Trigger client event on the channel.
+     * Send a whisper event to other clients in the channel.
      */
     function whisper(eventName, data) {
       return this;
@@ -7494,21 +7508,21 @@ var NullPresenceChannel = /*#__PURE__*/function (_NullChannel) {
       return this;
     }
     /**
+     * Send a whisper event to other clients in the channel.
+     */
+
+  }, {
+    key: "whisper",
+    value: function whisper(eventName, data) {
+      return this;
+    }
+    /**
      * Listen for someone leaving the channel.
      */
 
   }, {
     key: "leaving",
     value: function leaving(callback) {
-      return this;
-    }
-    /**
-     * Trigger client event on the channel.
-     */
-
-  }, {
-    key: "whisper",
-    value: function whisper(eventName, data) {
       return this;
     }
   }]);
@@ -28991,7 +29005,7 @@ module.exports = yeast;
 
 "use strict";
 /* provided dependency */ var Buffer = __webpack_require__(/*! buffer */ "./node_modules/buffer/index.js")["Buffer"];
-// Axios v1.3.4 Copyright (c) 2023 Matt Zabriskie and contributors
+// Axios v1.4.0 Copyright (c) 2023 Matt Zabriskie and contributors
 
 
 function bind(fn, thisArg) {
@@ -29186,12 +29200,16 @@ const isStream = (val) => isObject(val) && isFunction(val.pipe);
  * @returns {boolean} True if value is an FormData, otherwise false
  */
 const isFormData = (thing) => {
-  const pattern = '[object FormData]';
+  let kind;
   return thing && (
-    (typeof FormData === 'function' && thing instanceof FormData) ||
-    toString.call(thing) === pattern ||
-    (isFunction(thing.toString) && thing.toString() === pattern)
-  );
+    (typeof FormData === 'function' && thing instanceof FormData) || (
+      isFunction(thing.append) && (
+        (kind = kindOf(thing)) === 'formdata' ||
+        // detect form-data instance
+        (kind === 'object' && isFunction(thing.toString) && thing.toString() === '[object FormData]')
+      )
+    )
+  )
 };
 
 /**
@@ -29656,6 +29674,11 @@ const toJSONObject = (obj) => {
   return visit(obj, 0);
 };
 
+const isAsyncFn = kindOfTest('AsyncFunction');
+
+const isThenable = (thing) =>
+  thing && (isObject(thing) || isFunction(thing)) && isFunction(thing.then) && isFunction(thing.catch);
+
 var utils = {
   isArray,
   isArrayBuffer,
@@ -29705,7 +29728,9 @@ var utils = {
   ALPHABET,
   generateString,
   isSpecCompliantForm,
-  toJSONObject
+  toJSONObject,
+  isAsyncFn,
+  isThenable
 };
 
 /**
@@ -30605,9 +30630,7 @@ function parseTokens(str) {
   return tokens;
 }
 
-function isValidHeaderName(str) {
-  return /^[-_a-zA-Z]+$/.test(str.trim());
-}
+const isValidHeaderName = (str) => /^[-_a-zA-Z0-9^`|~,!#$%&'*+.]+$/.test(str.trim());
 
 function matchHeaderValue(context, value, header, filter, isHeaderNameFilter) {
   if (utils.isFunction(filter)) {
@@ -31195,8 +31218,12 @@ var xhrAdapter = isXHRAdapterSupported && function (config) {
       }
     }
 
-    if (utils.isFormData(requestData) && (platform.isStandardBrowserEnv || platform.isStandardBrowserWebWorkerEnv)) {
-      requestHeaders.setContentType(false); // Let the browser set it
+    if (utils.isFormData(requestData)) {
+      if (platform.isStandardBrowserEnv || platform.isStandardBrowserWebWorkerEnv) {
+        requestHeaders.setContentType(false); // Let the browser set it
+      } else {
+        requestHeaders.setContentType('multipart/form-data;', false); // mobile/desktop app frameworks
+      }
     }
 
     let request = new XMLHttpRequest();
@@ -31602,7 +31629,7 @@ function mergeConfig(config1, config2) {
     headers: (a, b) => mergeDeepProperties(headersToObject(a), headersToObject(b), true)
   };
 
-  utils.forEach(Object.keys(config1).concat(Object.keys(config2)), function computeConfigValue(prop) {
+  utils.forEach(Object.keys(Object.assign({}, config1, config2)), function computeConfigValue(prop) {
     const merge = mergeMap[prop] || mergeDeepProperties;
     const configValue = merge(config1[prop], config2[prop], prop);
     (utils.isUndefined(configValue) && merge !== mergeDirectKeys) || (config[prop] = configValue);
@@ -31611,7 +31638,7 @@ function mergeConfig(config1, config2) {
   return config;
 }
 
-const VERSION = "1.3.4";
+const VERSION = "1.4.0";
 
 const validators$1 = {};
 
@@ -31748,11 +31775,17 @@ class Axios {
       }, false);
     }
 
-    if (paramsSerializer !== undefined) {
-      validator.assertOptions(paramsSerializer, {
-        encode: validators.function,
-        serialize: validators.function
-      }, true);
+    if (paramsSerializer != null) {
+      if (utils.isFunction(paramsSerializer)) {
+        config.paramsSerializer = {
+          serialize: paramsSerializer
+        };
+      } else {
+        validator.assertOptions(paramsSerializer, {
+          encode: validators.function,
+          serialize: validators.function
+        }, true);
+      }
     }
 
     // Set config.method
