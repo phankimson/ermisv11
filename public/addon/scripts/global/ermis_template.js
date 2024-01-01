@@ -1583,3 +1583,11 @@ var ErmisTooltipMaxlenght = function(elem) {
         });
     });
 };
+
+var ErmisChangeInputArr = function(){
+    jQuery(".change_item").change(function() {
+      $bind_id = jQuery(this).attr("change-item");
+      $val = jQuery(this).val();
+      jQuery('input[change-item-bind='+$bind_id+']').val($val);
+    });
+  };

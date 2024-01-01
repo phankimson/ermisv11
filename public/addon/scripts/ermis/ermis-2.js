@@ -217,6 +217,7 @@ var Ermis = function () {
           initStatus(1);
           onChange();
           initClientReceive();
+          initLoadChatUserScroll();
         }
 
     };

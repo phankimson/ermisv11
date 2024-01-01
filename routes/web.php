@@ -409,16 +409,16 @@ Route::prefix('acc')->group(function () {
     // Number Voucher Format
     Route::group([
       'as' => 'number-voucher-format',
-      'controller' => AccNumberVoucherFormatController::class
+      'controller' => AccNumberFormatController::class
     ],function () {
-    Route::get('/number-voucher-format', 'show')->name('');
-    Route::post('/number-voucher-format-get', 'get')->name('-get');
-    Route::post('/number-voucher-format-save', 'save')->name('-save');
-    Route::post('/number-voucher-format-delete', 'delete')->name('-delete');
-    Route::any('/number-voucher-format-import', 'import')->name('-import');
-    Route::get('/number-voucher-format-export', 'export')->name('-export');
-    Route::get('/number-voucher-format-DownloadExcel', 'DownloadExcel')->name('-DownloadExcel');
-    Route::post('/number-voucher-format-change-database', 'ChangeDatabase')->name('-change-database');
+    Route::get('/number-format', 'show')->name('');
+    Route::post('/number-format-get', 'get')->name('-get');
+    Route::post('/number-format-save', 'save')->name('-save');
+    Route::post('/number-format-delete', 'delete')->name('-delete');
+    Route::any('/number-format-import', 'import')->name('-import');
+    Route::get('/number-format-export', 'export')->name('-export');
+    Route::get('/number-format-DownloadExcel', 'DownloadExcel')->name('-DownloadExcel');
+    Route::post('/number-format-change-database', 'ChangeDatabase')->name('-change-database');
     });
 
   // Number Code

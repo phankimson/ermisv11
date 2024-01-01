@@ -17,5 +17,8 @@ return [
     "suffixes_type" => "Loại tiền tố trước",
     "number" => "Số",
     "type" => "Loại",
+    "day" => "Ngày",
+    "month" => "Tháng",
+    "year" => "Năm",
     "length_number" => "Độ dài số",
 ];

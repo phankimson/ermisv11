@@ -6,24 +6,26 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Resources\DropDownListResource;
 use App\Http\Model\AccHistoryAction;
 use App\Http\Model\Menu;
-use App\Http\Model\AccNumberVoucherFormat;
+use App\Http\Model\AccNumberFormat;
+use App\Http\Model\AccNumberVoucher;
 use App\Http\Model\CompanySoftware;
 use App\Http\Model\Company;
 use App\Http\Model\Software;
 use App\Http\Model\Error;
 use Illuminate\Support\Facades\Storage;
-use App\Http\Model\Imports\AccNumberVoucherFormatImport;
-use App\Http\Model\Exports\AccNumberVoucherFormatExport;
+use App\Http\Model\Imports\AccNumberFormatImport;
+use App\Http\Model\Exports\AccNumberFormatExport;
 use Excel;
 
-class AccNumberVoucherFormatController extends Controller
+class AccNumberFormatController extends Controller
 {
   public function __construct(Request $request)
   {
      $this->url =  $request->segment(3);
-     $this->key = "number-voucher-format";
+     $this->key = "number-format";
      $this->menu = Menu::where('code', '=', $this->key)->first();
      $this->type = "acc";
  }
@@ -32,9 +34,10 @@ class AccNumberVoucherFormatController extends Controller
     $mysql2 = $request->session()->get('mysql2');
     config(['database.connections.mysql2' => $mysql2]);
     $type = Software::get_url($this->type);
-    $data = AccNumberVoucherFormat::get_raw();
+    $data = AccNumberFormat::get_raw();
     $menu = Menu::get_raw_type($type->id);
-    return view('acc.number_voucher_format',['data' => $data, 'key' => $this->key ,'menu' => $menu ]);
+    $number_voucher = collect(DropDownListResource::collection(AccNumberVoucher::active()->get()));
+    return view('acc.number_format',['data' => $data, 'key' => $this->key ,'menu' => $menu ,'number_voucher' => $number_voucher]);
   }
 
   public function ChangeDatabase(Request $request){
@@ -56,7 +59,7 @@ class AccNumberVoucherFormatController extends Controller
         );
       $request->session()->put('mysql2',$params);
       config(['database.connections.mysql2' => $params]);
-      $data = AccNumberVoucherFormat::get_raw();
+      $data = AccNumberFormat::get_raw();
       return response()->json(['status'=>true,'data'=> $data,'com_name'=> $com->name ]);
     }catch(Exception $e){
       // Lưu lỗi
@@ -80,28 +83,22 @@ class AccNumberVoucherFormatController extends Controller
   $permission = $request->session()->get('per');
   $arr = json_decode($request->data);
   $validator = Validator::make(collect($arr)->toArray(),[
-            'code' => ['required','max:50'],
-            'name' => 'required',
-            'number' => 'required',
+            'number_voucher' => ['required','max:50'],
+            'day'  => ['max:31'],
+            'month'  => ['max:12'],
+            'number' => ['required']
         ]);
-     if($validator->passes()){
-      $code_check = AccNumberVoucherFormat::WhereCheck('code',$arr->code,'id',$arr->id)->first();
-      if($code_check == null){
+     if($validator->passes()){   
      if($permission['a'] == true && !$arr->id ){
        $type = 2;
-       $data = new AccNumberVoucherFormat();
-       $data->menu_id = $arr->menu_id;
-       $data->code = $arr->code;
-       $data->name = $arr->name;
-       $data->name_en = $arr->name_en;
-       $data->prefix = $arr->prefix;
-       $data->middle = $arr->middle;
-       $data->middle_type = $arr->middle_type;
-       $data->suffixes_type = $arr->suffixes_type;
-       $data->suffixes = $arr->suffixes;
+       $data = new AccNumberFormat();
+       $data->number_voucher = $arr->number_voucher;
+       $data->format = $arr->format;
+       $data->day = $arr->day;
+       $data->month = $arr->month;
+       $data->year = $arr->year;
        $data->number = $arr->number;
        $data->length_number = $arr->length_number;
-       $data->change_voucher = $arr->change_voucher;
        $data->active = $arr->active;
        $data->save();
 
@@ -121,7 +118,7 @@ class AccNumberVoucherFormatController extends Controller
        return response()->json(['status'=>true,'message'=> trans('messages.update_success')]);
      }else if($permission['e'] == true && $arr->id){
        $type = 3;
-       $data = AccNumberVoucherFormat::find($arr->id);
+       $data = AccNumberFormat::find($arr->id);
        // Lưu lịch sử
        $h = new AccHistoryAction();
        $h ->create([
@@ -131,18 +128,13 @@ class AccNumberVoucherFormatController extends Controller
          'dataz' => \json_encode($data)]);
       //
 
-      $data->menu_id = $arr->menu_id;
-      $data->code = $arr->code;
-      $data->name = $arr->name;
-      $data->name_en = $arr->name_en;
-      $data->prefix = $arr->prefix;
-      $data->middle = $arr->middle;
-      $data->middle_type = $arr->middle_type;
-      $data->suffixes_type = $arr->suffixes_type;
-      $data->suffixes = $arr->suffixes;
+      $data->number_voucher = $arr->number_voucher;
+      $data->format = $arr->format;
+      $data->day = $arr->day;
+      $data->month = $arr->month;
+      $data->year = $arr->year;
       $data->number = $arr->number;
       $data->length_number = $arr->length_number;
-      $data->change_voucher = $arr->change_voucher;
       $data->active = $arr->active;
       $data->save();
        // Phân loại Sửa
@@ -152,9 +144,6 @@ class AccNumberVoucherFormatController extends Controller
        }else{
         return response()->json(['status'=>false,'message'=> trans('messages.you_are_not_permission')]);
        }
-      }else{
-        return response()->json(['status'=>false,'message'=> trans('messages.code_is_already')]);
-   }
      }else{
        return response()->json(['status'=>false,'error'=>$validator->getMessageBag()->toArray() ,'message'=>trans('messages.error')]);
      }
@@ -181,7 +170,7 @@ class AccNumberVoucherFormatController extends Controller
         $arr = json_decode($request->data);
         if($arr){
           if($permission['d'] == true){
-            $data = AccNumberVoucherFormat::find($arr->id);
+            $data = AccNumberFormat::find($arr->id);
             // Lưu lịch sử
             $h = new AccHistoryAction();
             $h ->create([
@@ -215,7 +204,7 @@ class AccNumberVoucherFormatController extends Controller
  }
 
  public function DownloadExcel(Request $request){
-   return Storage::download('public/downloadFile/AccNumberVoucherFormat.xlsx');
+   return Storage::download('public/downloadFile/AccNumberFormat.xlsx');
  }
 
  public function import(Request $request) {
@@ -236,9 +225,9 @@ class AccNumberVoucherFormatController extends Controller
 
        $file = $request->file;
        // Import dữ liệu
-       Excel::import(new AccNumberVoucherFormatImport, $file);
+       Excel::import(new AccNumberFormatImport, $file);
        // Lấy lại dữ liệu
-       $array = AccNumberVoucherFormat::get_raw();
+       $array = AccNumberFormat::get_raw();
 
        // Import dữ liệu bằng collection
        //$results = Excel::toCollection(new HistoryActionImport, $file);
@@ -291,10 +280,10 @@ class AccNumberVoucherFormatController extends Controller
        $arr = $request->data;
        //return (new HistoryActionExport($arr))->download('HistoryActionExportErmis.xlsx');
        //$myFile = Excel::download(new HistoryActionExport($arr), 'HistoryActionExportErmis.xlsx');
-       $myFile = Excel::raw(new AccNumberVoucherFormatExport($arr), \Maatwebsite\Excel\Excel::XLSX);
+       $myFile = Excel::raw(new AccNumberFormatExport($arr), \Maatwebsite\Excel\Excel::XLSX);
        $response =  array(
          'status' =>true,
-         'name' => "AccNumberVoucherFormatExportErmis", //no extention needed
+         'name' => "AccNumberFormatExportErmis", //no extention needed
          'file' => "data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,".base64_encode($myFile) //mime type of used format
       );
       return response()->json($response);

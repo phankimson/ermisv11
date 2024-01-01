@@ -21,10 +21,44 @@ var Ermis = function () {
         return data;
     };
 
-    var initKendoStartEndDatePicker = function () {
+    var initGlobalRegister = function(){
+      // KendoStartPickerTemplate
       ErmisKendoStartPickerTemplate("#start","dd/MM/yyyy");
       ErmisKendoEndPickerTemplate("#end","dd/MM/yyyy");
-    };
+      // KendoDatePickerTemplate
+      ErmisKendoDatePickerTemplate(".date", "dd/MM/yyyy");
+      // KendoContextMenuTemplate
+      ErmisKendoContextMenuTemplate("#context-menu", ".md-card-content");
+      ErmisKendoContextMenuTemplate("#context-menu", "#form-action");
+      // KendoUploadTemplate
+      ErmisKendoUploadTemplate("#files", false);
+      // KendoDroplistTemplat
+      ErmisKendoDroplistTemplate(".droplist", "contains");
+      ErmisKendoDroplistTemplate1(".database", "contains",initKendoUiChangeDB);
+      // KendoTimePickerTemplate
+      ErmisKendoTimePickerTemplate("#start_time","#end_time");
+      // KendoMultiSelectTemplate
+      ErmisKendoMultiSelectTemplate(".multiselect", false, '<span>#: FormatMultiSelectValueRow(data.text,'+Ermis.row_multiselect+') #</span>');
+      // KendoNumbericTemplate
+      ErmisKendoNumbericTemplate(".number", "n"+Ermis.decimal, null, null, null, 1);
+      ErmisKendoNumbericTemplate(".number-price", "n"+Ermis.decimal, null, null, null, 1000);
+      // KendoColorPickerTemplate
+      ErmisKendoColorPickerTemplate(".color",false,"#FFFFFF");
+      // TooltipMaxlenght
+      ErmisTooltipMaxlenght('[maxlength]');
+      ErmisKendoEditorFullTemplate(".editor");
+      // ChangeInputArr
+      ErmisChangeInputArr();
+      //Window Extra
+      $kWindow = ErmisKendoWindowTemplate(myWindow_extra, "600px", "");
+      $kWindow.title("Extra");    
+      // KendoGridTemplateDefault
+      ErmisKendoGridTemplateDefaultTooltip0($kGrid, Ermis.page_size, Ermis.data, onChange, "row", jQuery(window).height() * 0.75, {
+        refresh: true,
+        pageSizes: true,
+        buttonCount: 5
+    }, data.fields, data.columns,".k-grid-content",".tooltipImg",toolTip);
+    }    
 
     var initStatus = function (flag) {
         shortcut.remove(key + "A");
@@ -148,15 +182,7 @@ var Ermis = function () {
             shortcut.add(key + "Q", function (e) { initExport(e); });
             shortcut.add(key + "L", function (e) { altair_main_header.search_show();});
         }
-    };
-
-    var initKendoUiDatePicker = function () {
-         ErmisKendoDatePickerTemplate(".date", "dd/MM/yyyy");
-     };
-
-    var initKendoUiEditor = function () {
-      ErmisKendoEditorFullTemplate(".editor");
-    };
+    }; 
 
     var initKendoUiChangeDB = function (e) {
       ErmisTemplateAjaxPost1(e,"#form_select",Ermis.link+'-change-database',
@@ -194,15 +220,6 @@ var Ermis = function () {
             kendo.alert(result.message);
           }
       )
-    };
-
-    var initKendoUiContextMenu = function () {
-        ErmisKendoContextMenuTemplate("#context-menu", ".md-card-content");
-        ErmisKendoContextMenuTemplate("#context-menu", "#form-action");
-    };
-
-    var initKendoUiUpload = function () {
-        ErmisKendoUploadTemplate("#files", false);
     };
 
     var initKendoUiDialog = function (type) {
@@ -574,11 +591,6 @@ var Ermis = function () {
           $kWindow_extra.open();
     };
 
-    var initKendoUiDialogExtra = function(){
-        $kWindow_extra = ErmisKendoWindowTemplate(myWindow_extra, "600px", "");
-        $kWindow_extra.title("Extra");
-    };
-
     var initKendoGridExtra = function () {
           function onChange(arg) {
               extra_data = this.selectedKeyNames().join(", ");
@@ -651,28 +663,6 @@ var Ermis = function () {
        initFilterMultiSelectLoad(dataItem);
    };
 
-   var initKendoUiDropList = function () {
-       ErmisKendoDroplistTemplate(".droplist", "contains");
-       ErmisKendoDroplistTemplate1(".database", "contains",initKendoUiChangeDB);
-   };
-
-   var initKendoUiTimepicker = function () {
-     ErmisKendoTimePickerTemplate("#start_time","#end_time");
-   };
-
-   var initKendoUiMultiSelect = function () {        
-    ErmisKendoMultiSelectTemplate(".multiselect", false, '<span>#: FormatMultiSelectValueRow(data.text,'+Ermis.row_multiselect+') #</span>');
-  };
-
-   var initKendoUiNumber = function () {
-     ErmisKendoNumbericTemplate(".number", "n"+Ermis.decimal, null, null, null, 1);
-     ErmisKendoNumbericTemplate(".number-price", "n"+Ermis.decimal, null, null, null, 1000);
-   };
-
-   var initKendoColor = function(){
-     ErmisKendoColorPickerTemplate(".color",false,"#FFFFFF");
-   };
-
     var initKendoUiWindow = function () {
         function onClose() {
             initStatus(4);
@@ -680,24 +670,13 @@ var Ermis = function () {
         $kWindow = ErmisKendoWindowTemplate1(myWindow, jQuery(window).width() * 0.75, "",onClose);
     };
 
-    var initKendoUiGridView = function () {
-      function toolTip(e) {
-         var target = $(e.target);
-         var img = target.attr('data-img');
-         return kendo.template(jQuery("#template_img").html())({
-            value: UrlString(img)
-         });
-      }
-      ErmisKendoGridTemplateDefaultTooltip0($kGrid, Ermis.page_size, Ermis.data, onChange, "row", jQuery(window).height() * 0.75, {
-          refresh: true,
-          pageSizes: true,
-          buttonCount: 5
-      }, data.fields, data.columns,".k-grid-content",".tooltipImg",toolTip);
-    };
-
-    var initTooltipMaxLenght = function(){
-      ErmisTooltipMaxlenght('[maxlength]');
-    };
+    var toolTip = function(e){
+      var target = $(e.target);
+      var img = target.attr('data-img');
+      return kendo.template(jQuery("#template_img").html())({
+         value: UrlString(img)
+      });    
+    }
 
     var initImagePreview = function(){
       jQuery(Ermis.image_upload).on("change",function(){
@@ -737,26 +716,16 @@ var Ermis = function () {
 
         init: function () {
             initGetShortKey();
-            initStatus(Ermis.flag);
-            initKendoUiDatePicker();
+            initStatus(Ermis.flag);            
             initGetColunm();
-            initKendoUiDropList();
-            initKendoUiContextMenu();
-            initKendoUiGridView();
             initKendoUiSearchbox();
             initKendoUiWindow();
-            initKendoUiNumber();
-            initKendoColor();
-            initKendoUiMultiSelect();
-            initKendoUiEditor();
             initClientReceive();
             initKendoGridExtra();
-            initKendoUiDialogExtra();
-            initTooltipMaxLenght();
             initImagePreview();
-            initKendoStartEndDatePicker();
             initFilterMultiSelect();
-            initLoadInputCrit();
+            initGlobalRegister();
+            initLoadInputCrit();            
         }
 
     };

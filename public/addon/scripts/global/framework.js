@@ -150,8 +150,9 @@ function UIkitshowNotify (message, status ,timeout,group , pos) {
 var initErmisBarcodeMasker = function (data) {
     var char = '0'; var voucher = "";
     var number = data.length_number;
+    var middle = data.middle ? data.middle : '';
     if (data.number) {
-        voucher = data.prefix+char.repeat(number - (data.number+"").length) + data.number+data.suffixes;
+        voucher = data.prefix+middle+char.repeat(number - (data.number+"").length) + data.number+data.suffixes;
     } else {
         voucher = char.repeat(number);
     }

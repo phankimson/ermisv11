@@ -1,13 +1,13 @@
 <?php
 namespace App\Http\Model\Exports;
 
-use App\Http\Model\AccNumberVoucherFormat;
+use App\Http\Model\AccNumberFormat;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Events\AfterSheet;
 
-class AccNumberVoucherFormatExport implements FromCollection, ShouldAutoSize, WithEvents
+class AccNumberFormatExport implements FromCollection, ShouldAutoSize, WithEvents
 {
     public function __construct($select)
    {
@@ -16,7 +16,7 @@ class AccNumberVoucherFormatExport implements FromCollection, ShouldAutoSize, Wi
 
     public function collection()
     {
-        $a = AccNumberVoucherFormat::get_raw_export($this->select);
+        $a = AccNumberFormat::get_raw_export($this->select);
         $b = collect($a);
         if($b->count()>0){
         $key = collect($a[0])->keys();

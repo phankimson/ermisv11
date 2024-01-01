@@ -17,5 +17,8 @@ return [
     "suffixes_type" => "Suffixes type",
     "number" => "Number",
     "type" => "Type",
+    "day" => "Day",
+    "month" => "Month",
+    "year" => "Year",
     "length_number" => "Length number",
 ];

@@ -53,7 +53,7 @@ class Convert
     $voucher = "";
     $number = $data->length_number;
      if ($data->number) {
-       return $voucher = $data->prefix . str_repeat($char,$number - strlen($data->number."")) . $data->number . $data->suffixed;
+       return $voucher = $data->prefix .$data->middle. str_repeat($char,$number - strlen($data->number."")) . $data->number . $data->suffixed;
      }else {
        return $voucher = str_repeat($char,$number);
     }
