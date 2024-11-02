@@ -283,7 +283,7 @@ var Ermis = function () {
             $export = ErmisKendoDialogTemplate("#export","400px","Export",null,"Export Excel","Export PDF","Close",onExcel,onPDF);
           } else {
             $import = ErmisKendoDialogTemplate("#import","400px","Import",'<form id="import-form" enctype="multipart/form-data" role="form" method="post"><input name="files" id="files" type="file" /></form>','Import File','Download File',"Close",onImportFile,onDownloadFile);
-              initKendoUiUpload();
+            ErmisKendoUploadTemplate("#files", false);
           }
         function onImportFile(e) {
           var arr = {};

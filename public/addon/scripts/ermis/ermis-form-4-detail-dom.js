@@ -29,6 +29,44 @@ var Ermis = function () {
     };
 
 
+    var initGlobalRegister = function(){
+        // MonthPickerTemplate
+        ErmisKendoMonthPickerTemplate(".month-picker","year","year","MM/yyyy");
+        //StartEndDroplistTemplate
+        ErmisKendoStartEndDroplistTemplate("#start","#end","dd/MM/yyyy","#fast_date","contains");
+        ErmisKendoStartEndDroplistTemplate("#start_a","#end_a","dd/MM/yyyy","#fast_date_a","contains");
+        //DroplistTemplate
+        ErmisKendoDroplistTemplate(".droplist", "contains");
+        //DatePickerTemplate
+        ErmisKendoDatePickerTemplate(".date-picker","dd/MM/yyyy");
+        //ContextMenu
+        ErmisKendoContextMenuTemplate("#context-menu", "#form-action");
+        // NumbericTemplate
+        ErmisKendoNumbericTemplate(".number", "n" + Ermis.decimal, null, null, null, 1);
+        ErmisKendoNumbericTemplate(".number-price", "n" + Ermis.decimal, null, null, null, 1000);
+        // KendoWindowTemplate
+        $kWindow = ErmisKendoWindowTemplate(myWindow, "600px", "");
+        $kWindow1 = ErmisKendoWindowTemplate(myWindow1, "800px", "");
+        $kWindow2 = ErmisKendoWindowTemplate(myWindow2, "1000px", "");
+        $kWindow3 = ErmisKendoWindowTemplate(myWindow3, "1000px", "");
+        $kWindow4 = ErmisKendoWindowTemplate(myWindow4, "400px", "");
+        $kWindow5 = ErmisKendoWindowTemplate(myWindow5, "800px", "");
+        $kWindow.title(Lang.get('acc_voucher.search_for_object'));
+        $kWindow1.title(Lang.get('acc_voucher.search_for_goods'));
+        $kWindow2.title(Lang.get('acc_voucher.reference'));
+        $kWindow3.title(Lang.get('acc_voucher.search_for_voucher'));
+        $kWindow4.title(Lang.get('acc_voucher.attach'));
+        $kWindow5.title(Lang.get('acc_voucher.change_voucher'));
+        // Grid Vat
+        ErmisKendoGridTemplate3($kGridVat, Ermis.data, Ermis.aggregate, Ermis.field_tax, Ermis.page_size , true, jQuery(window).height() * 0.5, Ermis.column_grid);
+        initKendoGridVatChange();
+        // Grid
+        ErmisKendoGridTemplate3($kGrid, Ermis.data, Ermis.aggregate, Ermis.field, Ermis.page_size , {
+            confirmation: false
+        }, jQuery(window).height() * 0.5, Ermis.columns);
+        initKendoGridChange();
+    }
+
     var initLoadData = function (dataId) {
         var postdata = { data: JSON.stringify(dataId) };
         ErmisTemplateAjaxPost0(e,postdata,Ermis.link+'-bind',
@@ -68,8 +106,15 @@ var Ermis = function () {
         return data;
     };
 
+    var btnBack = function (e) {
+        jQuery(".back").on("click", function () {
+            jQuery(".md-card").hide();
+            jQuery("#all").fadeIn(1000);
+        })
+    };
+
     var initVoucherMasker = function () {
-      return voucher = initErmisBarcodeMaskerHide(Ermis.voucher);
+      return voucher = initErmisVoucher(Ermis.voucher);
     };
 
     var initCheckSession = function () {
@@ -142,10 +187,6 @@ var Ermis = function () {
 
     };
 
-    var initMonthDate = function () {
-      ErmisKendoMonthPickerTemplate(".month-picker","year","year","MM/yyyy");
-    };
-
     var initTabsTrip = function () {
         var ts = jQuery("#tabstrip");
         ts.kendoTabStrip();
@@ -181,10 +222,6 @@ var Ermis = function () {
 
       }
     }
-
-    var initKendoGridVat = function () {
-      ErmisKendoGridTemplate3($kGridVat,Ermis.data,Ermis.aggregate,"",50,true,jQuery(window).height() * 0.5,Ermis.column_grid);
-   };
 
     var initKendoGridBarcode = function () {
        var grid = $kGridBarcode.kendoGrid({
@@ -277,11 +314,6 @@ var Ermis = function () {
           });
     };
 
-
-    var initKendoGrid = function () {
-       ErmisKendoGridTemplate3($kGrid, Ermis.data, Ermis.aggregate, Ermis.field, 50, { confirmation: false }, jQuery(window).height() * 0.5, Ermis.columns);
-    };
-
     var initKendoUiContextMenuGrid = function () {
         jQuery("#context-menu-grid").kendoContextMenu({
             target: "#grid",
@@ -315,11 +347,6 @@ var Ermis = function () {
         });
     };
 
-    var initKendoUiContextMenu = function () {
-        jQuery("#context-menu").kendoContextMenu({
-            target: "#form-action"
-        });
-    };
 
     var initStatus = function (flag) {
         shortcut.remove(key + "A");
@@ -998,7 +1025,6 @@ var Ermis = function () {
             initVoucherMasker();
             initCheckSession();
             initTabsTrip();
-            initKendoGrid();
             initKendoDatePicker();
             initKendoUiDropList();
             initStatus(status);
@@ -1006,10 +1032,8 @@ var Ermis = function () {
             initKeyCode();
             initChangeAuto();
             initKendoUiDialog();
-            initKendoGridVat();
             initKendoGridSubject();
             initSearchGridSubject();
-            initKendoUiContextMenu();
             initKendoUiContextMenuGrid();
             initKendoGridReference();
             initKendoGridBarcode();
@@ -1020,7 +1044,6 @@ var Ermis = function () {
             initKendoStartEndDatePicker();
             initBindData();
             initGetStoredArrId();
-            initMonthDate();
         }
 
     };

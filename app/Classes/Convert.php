@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Classes;
-
+use Carbon\Carbon;
 
 class Convert
 {
@@ -58,5 +58,23 @@ class Convert
        return $voucher = str_repeat($char,$number);
     }
   }
+  
+  static public function VoucherMasker1($data,$prefix){
+    $char = "0";
+    $voucher = "";  
+    $number = $data->length_number;
+    $replace_crt = array("DD", "MM", "YYYY","X");
+    $replace_str = array($data->day, $data->month, $data->year,str_repeat($char,$number - strlen($data->number."")) . $data->number);
+    $voucher = $prefix.str_replace($replace_crt,$replace_str,$data->format);
+    return $voucher;
+  }
 
+  static public function dateformatArr($format,$date)
+  {
+    $obj = array();
+    $obj['day_format'] = strpos($format, "DD")!== false ? Carbon::parse($date)->format('d') : '';            
+    $obj['month_format']  = strpos($format, "MM")!== false ? Carbon::parse($date)->format('m') : '';            
+    $obj['year_format'] = (strpos($format, "YYYY")!== false ? Carbon::parse($date)->format('Y') : (strpos($format, "YY")!== false ? Carbon::parse($date)->format('y') : ''));  
+    return $obj;
+  }
 }

@@ -83,4 +83,5 @@ return [
        "zoom"=>"Phóng to",
        "refesh"=>"Làm mới",
        "select"=>"--Chọn--",
+       "re_voucher"=>"Đánh số chứng từ",
 ];

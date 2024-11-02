@@ -171,6 +171,18 @@ var initErmisBarcodeMaskerHide = function(d){
   return voucher
 }
 
+var initErmisVoucher = function(d){
+  var data = d;
+  var char = 'x';
+  var number = parseInt(data.length_number);
+  if (data.format) {
+      voucher = data.prefix + data.format.replace("X",char.repeat(number));
+  } else {
+      voucher = data.prefix + char.repeat(number);
+  }
+  return voucher
+}
+
 var initErmisCheckSession = function(){
   if (!sessionStorage.status) {
       status = 1;
@@ -1138,7 +1150,7 @@ function calculateAmount(quantity, price, decimal) {
 function calculateAmountRate(amount, rate, decimal ) {
       var amount_rate = 0;
       if(rate > 0){
-        amount_rate = amount / rate;
+        amount_rate = amount * rate;
       };
     return kendo.toString(amount_rate, 'n'+decimal);
 };

@@ -1,16 +1,28 @@
 var Ermis = function () {
     var $kGrid = jQuery('#grid');
     var $kDetailGrid = jQuery('#grid-detail');
+    var $kGridVoucher = jQuery('#grid_voucher');
     var key = '';
     var dataId = '';
     var data = [];
     var dataSource = '';
     var dataSourceGeneral = '';
+    var myWindow = jQuery("#form-window-voucher");
+    var $kWindow = '';
 
     var initGetColunm = function () {
         data = GetAllDataForm('#form-search');
         return data;
     };
+    var initGlobalRegister = function(){
+      $kWindow = ErmisKendoWindowTemplate(myWindow, "1000px", "");
+      $kWindow.title(Lang.get('acc_voucher.search_for_voucher'));
+
+      ErmisKendoContextMenuTemplate("#context-menu",".md-card-content");
+      ErmisKendoStartEndDroplistTemplate("#start","#end","dd/MM/yyyy","#fast_date","contains");
+      ErmisKendoStartEndDroplistTemplate("#start_a","#end_a","dd/MM/yyyy","#fast_date_a","contains");
+      ErmisKendoDroplistTemplate(".droplist", "contains");
+    }
 
     var initGetShortKey = function(){
         return key = Ermis.short_key;
@@ -24,6 +36,30 @@ var Ermis = function () {
         ErmisKendoGridTemplate2($kGrid, dataSourceGeneral, onChange, "row", jQuery(window).height() * 0.5, true, Ermis.column_grid);
         initKendoGridColorActive();
     };
+
+    var initKendoGridVoucher = function() {
+        ErmisKendoGridTemplate3($kGridVoucher, [], Ermis.aggregate, Ermis.field_voucher, "row" , true, jQuery(window).height() * 0.5, Ermis.columns_voucher);      
+    };
+
+  var initSearchGridVoucher = function() {
+    jQuery('#search_voucher').on('click', function(e) {
+        var filter = GetAllDataForm('#form-window-voucher', 2);
+        var c = GetDataAjax(filter.columns);
+        var postdata = {
+            data: JSON.stringify(c.obj)
+        };
+        ErmisTemplateAjaxPost0(e, postdata, Ermis.link + '-find', function(result) {
+            var grid = $kGridVoucher.data("kendoGrid");
+            var ds = new kendo.data.DataSource({
+                data: result.data
+            });
+            grid.setDataSource(ds);
+            grid.dataSource.page(1);
+        }, function(result) {
+            kendo.alert(result.message);
+        });
+    });
+};
 
     var initKendoGridColorActive = function(){
       var grid = $kGrid.data("kendoGrid");
@@ -41,19 +77,16 @@ var Ermis = function () {
     }
 
 
-    var initKendoUiContextMenu = function () {
-      ErmisKendoContextMenuTemplate("#context-menu",".md-card-content");
-    };
-
     var initStatus = function (flag) {
         shortcut.remove(key + "A");
         shortcut.remove(key + "V");
         shortcut.remove(key + "D");
         shortcut.remove(key + "R");
-        jQuery('.view_item,.delete_item,.print,.unwrite_item,.write_item').off('click');
+        jQuery('.view_item,.delete_item,.print,.unwrite_item,.write_item').not('.back').off('click');
         if (flag === 1) {//DEFAULT
             jQuery('.new_item').on('click', initNew);
             jQuery('#get_data').on('click', initSearchData);
+            jQuery('#re_voucher').on('click', initVoucherForm);
             //jQuery('.view_item').on('click', initView);
             //jQuery('.delete_item').on('click', initDelete);
             //jQuery('.write_item').on('click', initWrite);
@@ -315,25 +348,27 @@ var Ermis = function () {
         ErmisKendoGridTemplate5($kDetailGrid,jQuery(window).height() * 0.4,dataSource,false,true,false,Ermis.columns);
     };
 
-    var initStartEndDroplistTemplate = function () {
-      ErmisKendoStartEndDroplistTemplate("#start","#end","dd/MM/yyyy","#fast_date","contains");
-    };
+    var initBack = function (e) {
+      jQuery(".back").on("click", function () {
+          window.history.go(-1);
+      })
+  };
 
-    var initKendoUiDropList = function () {
-      ErmisKendoDroplistTemplate(".droplist", "contains");
+      var initVoucherForm = function() {
+        $kWindow.open();
     };
-
 
     return {
         init: function () {
             initGetShortKey();
             initKendoGrid();
-            initKendoUiContextMenu();
             initKendoDetailGrid();
-            initKendoUiDropList();
-            initStartEndDroplistTemplate();
+            initKendoGridVoucher();
+            initGlobalRegister();
             initStatus(Ermis.flag);
             initGetColunm();
+            initBack();       
+            initSearchGridVoucher();   
         }
 
     };

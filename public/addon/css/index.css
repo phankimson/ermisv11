@@ -25,6 +25,9 @@
                     overflow: hidden;
                     display: table;
                 }
+                dd p{
+                  text-align: center;
+                }
                 .content-svg{
                   z-index: 1;
                   position: relative;
@@ -63,8 +66,9 @@
                 bottom : -20px;
                 }
 
-                    dd a {
-                        text-align: center;
+                    dd img {
+                      display: block;
+                      margin: 0 auto;
                     }
 
                     @media only screen and (min-width: 1300px) and (max-width: 1400px) {

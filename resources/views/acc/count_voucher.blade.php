@@ -20,20 +20,20 @@
     <div id="notification"></div>
     <table>
       <tr>
-      <td class="row-label"><label>@lang('acc_number_voucher_format.number_voucher')</label></td>
+      <td class="row-label"><label>@lang('acc_count_voucher.number_voucher')</label></td>
       <td>
-      <select class="droplist large" data-position="1" data-title="@lang('acc_number_voucher_format.number_voucher')" data-template="#= FormatDropList(number_voucher,'number_voucher') #" data-type="number" data-width="200px" name="number_voucher">
+      <select class="droplist large" data-position="1" data-title="@lang('acc_count_voucher.number_voucher')" data-template="#= FormatDropList(number_voucher,'number_voucher') #" data-type="number" data-width="200px" name="number_voucher">
               <option readonly selected value="0">--Select--</option>
-                @foreach($menu as $m)
+                @foreach($number_voucher as $m)
                    <option value="{{ $m->id }}">{{ $m->code }} - {{ $lang == 'vi'? $m->name : $m->name_en }}</option>
                 @endforeach
       </select>
       </td>
       </tr>
       <tr>
-      <td class="row-label"><label>@lang('acc_number_voucher_format.format')</label></td>
+      <td class="row-label"><label>@lang('acc_count_voucher.format')</label></td>
       <td>
-      <select class="droplist large" data-position="1" data-title="@lang('acc_number_voucher_format.format')" data-template="#= FormatDropList(format,'format') #" data-type="number" data-width="200px" name="format">
+      <select class="droplist large" data-position="1" data-title="@lang('acc_count_voucher.format')" data-template="#= FormatDropList(format,'format') #" data-type="number" data-width="200px" name="format">
               <option readonly selected value="0">--Select--</option>
                 @foreach($number_voucher_format as $k=>$m)
                    <option value="{{ $k }}"> {{ $m }}</option>
@@ -89,12 +89,12 @@
       Ermis.decimal = "{{$decimal}}";
       Ermis.short_key = "{{ config('app.short_key')}}";
       Ermis.columns_expend = [{ selectable: true, width: "50px" }, {"field" : "column","title" : "@lang('global.column_name')"}];
-      Ermis.data_expend = [{field : "t.number_voucher", column:  "@lang('acc_number_voucher_format.number_voucher')" },                       
-                           {field : "t.day", column:  "@lang('acc_number_voucher_format.day')" },
-                           {field : "t.month", column:  "@lang('acc_number_voucher_format.month')" },
-                           {field : "t.year", column:  "@lang('acc_number_voucher_format.year')" },
-                           {field : "t.number", column:  "@lang('acc_number_voucher_format.number')" },
-                           {field : "t.length_number", column:  "@lang('acc_number_voucher_format.length_number')" },                       
+      Ermis.data_expend = [{field : "t.number_voucher", column:  "@lang('acc_count_voucher.number_voucher')" },                       
+                           {field : "t.day", column:  "@lang('acc_count_voucher.day')" },
+                           {field : "t.month", column:  "@lang('acc_count_voucher.month')" },
+                           {field : "t.year", column:  "@lang('acc_count_voucher.year')" },
+                           {field : "t.number", column:  "@lang('acc_count_voucher.number')" },
+                           {field : "t.length_number", column:  "@lang('acc_count_voucher.length_number')" },                       
                            {field : "t.active", column:  "@lang('action.active')" }];
   });
   </script>

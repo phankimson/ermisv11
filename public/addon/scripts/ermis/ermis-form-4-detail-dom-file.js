@@ -17,20 +17,30 @@ var Ermis = function() {
         ErmisKendoDatePickerTemplate(".date-picker","dd/MM/yyyy");
         //ContextMenu
         ErmisKendoContextMenuTemplate("#context-menu", "#form-action");
+        // NumbericTemplate
+        ErmisKendoNumbericTemplate(".number", "n" + Ermis.decimal, null, null, null, 1);
+        ErmisKendoNumbericTemplate(".number-price", "n" + Ermis.decimal, null, null, null, 1000);
         // KendoWindowTemplate
         $kWindow = ErmisKendoWindowTemplate(myWindow, "600px", "");
         $kWindow1 = ErmisKendoWindowTemplate(myWindow1, "800px", "");
         $kWindow2 = ErmisKendoWindowTemplate(myWindow2, "1000px", "");
         $kWindow3 = ErmisKendoWindowTemplate(myWindow3, "1000px", "");
+        $kWindow4 = ErmisKendoWindowTemplate(myWindow4, "400px", "");
+        $kWindow5 = ErmisKendoWindowTemplate(myWindow5, "800px", "");
         $kWindow.title(Lang.get('acc_voucher.search_for_object'));
         $kWindow1.title(Lang.get('acc_voucher.search_for_goods'));
         $kWindow2.title(Lang.get('acc_voucher.reference'));
         $kWindow3.title(Lang.get('acc_voucher.search_for_voucher'));
         $kWindow4.title(Lang.get('acc_voucher.attach'));
+        $kWindow5.title(Lang.get('acc_voucher.change_voucher'));
         // Grid Vat
-        ErmisKendoGridTemplate3($kGridVat,Ermis.data,Ermis.aggregate,"",50,true,jQuery(window).height() * 0.5,Ermis.column_grid);
+        ErmisKendoGridTemplate3($kGridVat, Ermis.data, Ermis.aggregate, Ermis.field_tax, Ermis.page_size , true, jQuery(window).height() * 0.5, Ermis.column_grid);
+        initKendoGridVatChange();
         // Grid
-        ErmisKendoGridTemplate3($kGrid, Ermis.data, Ermis.aggregate, Ermis.field, 50, { confirmation: false }, jQuery(window).height() * 0.5, Ermis.columns);
+        ErmisKendoGridTemplate3($kGrid, Ermis.data, Ermis.aggregate, Ermis.field, Ermis.page_size , {
+            confirmation: false
+        }, jQuery(window).height() * 0.5, Ermis.columns);
+        initKendoGridChange();
     }
 
     var initLoadData = function(dataId) {
@@ -101,7 +111,12 @@ var Ermis = function() {
     };
 
     var initVoucherMasker = function() {
-        return voucher = initErmisBarcodeMaskerHide(Ermis.voucher);
+        if(Ermis.voucher.change_voucher == 1){
+            return voucher = initErmisVoucher(Ermis.voucher);
+        }else{
+            return voucher = initErmisBarcodeMaskerHide(Ermis.voucher);
+        }
+        
     };
 
     var initCheckSession = function() {
@@ -157,11 +172,12 @@ var Ermis = function() {
         jQuery('#voucher-change').on('click', function(e) {
             var filter = GetAllDataForm('#form-window-voucher-change', 2);
             var c = GetDataAjax(filter.columns);
+            c.obj.accounting_date =formatDateDefault(jQuery("input[name='accounting_date']").val());
             var postdata = {
                 data: JSON.stringify(c.obj)
             };
             ErmisTemplateAjaxPost0(e, postdata, Ermis.link + '-voucher-change', function(result) {
-                var voucher = initErmisBarcodeMaskerHide(c.obj);
+                var voucher = initVoucherMasker();
                 jQuery(".voucher").val(voucher);
                 $kWindow5.close();
             }, function(result) {
@@ -201,10 +217,6 @@ var Ermis = function() {
             });
         });
 
-    };
-
-    var initMonthDate = function() {
-        ErmisKendoMonthPickerTemplate(".month-picker", "year", "year", "MM/yyyy");
     };
 
     var initTabsTrip = function() {
@@ -258,11 +270,6 @@ var Ermis = function() {
 
         }
     }
-
-    var initKendoGridVat = function() {
-        ErmisKendoGridTemplate3($kGridVat, Ermis.data, Ermis.aggregate, Ermis.field_tax, Ermis.page_size , true, jQuery(window).height() * 0.5, Ermis.column_grid);
-        initKendoGridVatChange();
-    };
 
     var initKendoGridVatChange = function() {
         var gridVat = $kGridVat.data("kendoGrid");
@@ -379,13 +386,6 @@ var Ermis = function() {
     };
 
 
-    var initKendoGrid = function() {
-        ErmisKendoGridTemplate3($kGrid, Ermis.data, Ermis.aggregate, Ermis.field, Ermis.page_size , {
-            confirmation: false
-        }, jQuery(window).height() * 0.5, Ermis.columns);
-        initKendoGridChange();
-    };
-
     var initKendoGridChange = function() {
         var grid = $kGrid.data("kendoGrid");
         grid.dataSource.bind("change", function(e) {
@@ -393,10 +393,10 @@ var Ermis = function() {
             var item = e.items[0];
             if (e.action === "itemchange" && (e.field === "amount" || e.field === "rate")) {
                 // here you can access model items using e.items[0].modelName;
-                item.rate == 0 ? (item.amount_rate = 0) : (item.amount_rate = item.amount / item.rate);
+                item.rate == 0 ? (item.amount_rate = 0) : (item.amount_rate = item.amount * item.rate);
             }else if(e.action === "itemchange" && e.field === "amount_rate" ){
                 // here you can access model items using e.items[0].modelName;
-                item.amount = item.amount_rate * item.rate;
+                item.amount_rate = item.amount * item.rate;
             }
             // finally, refresh the grid to show the changes
             grid.refresh();
@@ -459,9 +459,6 @@ var Ermis = function() {
         });
     };
 
-    var initKendoUiContextMenu = function() {
-        ErmisKendoContextMenuTemplate("#context-menu", "#form-action");
-    };
 
     var initStatus = function(flag) {
         shortcut.remove(key + "A");
@@ -473,8 +470,8 @@ var Ermis = function() {
         shortcut.remove(key + ".");
         shortcut.remove(key + ",");
         shortcut.remove(key + "T");
-        jQuery('.add,.copy,.edit,.delete,.back,.forward,.print,.cancel,.save,.choose,.filter,.pageview,.reference,.write_item,.unwrite_item,.advance_teacher,.advance_employee').addClass('disabled');
-        jQuery('.add,.copy,.edit,.delete,.back,.forward,.print-item,.cancel,.save,.choose,.pageview,.filter,.reference,.write_item,.unwrite_item,.advance_teacher,.advance_employee').off('click');
+        jQuery('.add,.copy,.edit,.delete,.back,.forward,.print,.cancel,.save,.choose,.filter,.pageview,.reference,.write_item,.unwrite_item,.advance_teacher,.advance_employee').not('.back').addClass('disabled');
+        jQuery('.add,.copy,.edit,.delete,.back,.forward,.print-item,.cancel,.save,.choose,.pageview,.filter,.reference,.write_item,.unwrite_item,.advance_teacher,.advance_employee').not('.back').off('click');
         jQuery('input,textarea').not(".start,.end").not('.header_main_search_input').not('#files').not('.k-filter-menu input').addClass('disabled');
         jQuery(".droplist").not('.not_disabled').addClass('disabled');
         jQuery('input:checkbox').parent().addClass('disabled');
@@ -751,21 +748,6 @@ var Ermis = function() {
         }
     }
 
-    var initKendoStartEndDatePicker = function() {
-        ErmisKendoStartEndDroplistTemplate("#start", "#end", "dd/MM/yyyy", "#fast_date", "contains");
-        ErmisKendoStartEndDroplistTemplate("#start_a", "#end_a", "dd/MM/yyyy", "#fast_date_a", "contains");
-    };
-
-
-
-    var initKendoDatePicker = function() {
-        ErmisKendoDatePickerTemplate(".date-picker", "dd/MM/yyyy");
-    };
-
-    var initKendoUiDropList = function() {
-        ErmisKendoDroplistTemplate(".droplist", "contains");
-    };
-
     var initChangeAuto = function() {
         function OnChangeAuto(e) {
             var value = this.value;
@@ -812,33 +794,15 @@ var Ermis = function() {
             var value = this.value;
             var dataItem = $kGrid.data("kendoGrid").dataSource.data();
             jQuery.each(dataItem, function(i, v) {
-                v.set("rate", value);
+                v["rate"] = value;
+                v["amount_rate"] = v.amount * value;               
             })
+            $kGrid.data('kendoGrid').refresh(); 
         }
         $currency.bind("change", OnChangeCurrency);
         $rate.on("change", OnChangeRate);
-    }
+    }   
 
-    var initKendoUiNumber = function() {
-        ErmisKendoNumbericTemplate(".number", "n" + Ermis.decimal, null, null, null, 1);
-        ErmisKendoNumbericTemplate(".number-price", "n" + Ermis.decimal, null, null, null, 1000);
-    };
-
-
-    var initKendoUiDialog = function() {
-        $kWindow = ErmisKendoWindowTemplate(myWindow, "600px", "");
-        $kWindow1 = ErmisKendoWindowTemplate(myWindow1, "800px", "");
-        $kWindow2 = ErmisKendoWindowTemplate(myWindow2, "1000px", "");
-        $kWindow3 = ErmisKendoWindowTemplate(myWindow3, "1000px", "");
-        $kWindow4 = ErmisKendoWindowTemplate(myWindow4, "400px", "");
-        $kWindow5 = ErmisKendoWindowTemplate(myWindow5, "800px", "");
-        $kWindow.title(Lang.get('acc_voucher.search_for_object'));
-        $kWindow1.title(Lang.get('acc_voucher.search_for_goods'));
-        $kWindow2.title(Lang.get('acc_voucher.reference'));
-        $kWindow3.title(Lang.get('acc_voucher.search_for_voucher'));
-        $kWindow4.title(Lang.get('acc_voucher.attach'));
-        $kWindow5.title(Lang.get('acc_voucher.change_voucher'));
-    };
     var initFilterForm = function() {
         $kWindow.open();
     };
@@ -855,6 +819,9 @@ var Ermis = function() {
         $kWindow4.open();
     };
     var initVoucherChangeForm = function() {
+        if(Ermis.voucher.change_voucher == 1){
+            initLoadVoucherChange();
+        }
         $kWindow5.open();
     };
 
@@ -889,6 +856,23 @@ var Ermis = function() {
             });
         });
     };
+
+    var initLoadVoucherChange = function(e){    
+        var obj = {};
+        obj.id = Ermis.voucher.id;
+        obj.accounting_date = formatDateDefault(jQuery("input[name='accounting_date']").val());
+            var postdata = {
+                data: JSON.stringify(obj)
+            };
+            ErmisTemplateAjaxPost0(e, postdata, Ermis.link + '-load-voucher-change', function(result) {
+               jQuery("input[name='length_number']").val(result.data.length_number);
+               jQuery("input[name='number']").val(result.data.number);
+            }, function(result) {
+               jQuery("input[name='length_number']").val(0);
+               jQuery("input[name='number']").val(0);
+                kendo.alert(result.message);
+            });       
+    }
 
     var initLoadCheckboxGrid = function (data,key,column_check){
       jQuery.each(data, function(k, m) {
@@ -1290,7 +1274,13 @@ var Ermis = function() {
          if (select == undefined) {
          $kGridTab.data("kendoGrid").refresh();
        };
-    }
+    };
+
+    var initBack = function (e) {
+        jQuery(".back").on("click", function () {
+            window.history.go(-1);
+        })
+    };
 
     OnchangeGroup = function(e) {
         var dataItem = this.dataItem(e.item);
@@ -1315,18 +1305,14 @@ var Ermis = function() {
             initVoucherMasker();
             initCheckSession();
             initTabsTrip();
-            initKendoGrid();
-            initKendoDatePicker();
-            initKendoUiDropList();
+            initGlobalRegister();
             initStatus(status);
             initClick();
+            initBack();
             initKeyCode();
             initChangeAuto();
-            initKendoUiDialog();
-            initKendoGridVat();
             initKendoGridSubject();
             initSearchGridSubject();
-            initKendoUiContextMenu();
             initKendoUiContextMenuGrid();
             initKendoGridReference();
             initKendoGridBarcode();
@@ -1334,11 +1320,8 @@ var Ermis = function() {
             initSearchGridVoucher();
             initGetDataBarcode();
             initGetDataReference();
-            initKendoStartEndDatePicker();
-            initKendoUiNumber();
             initBindData();
             initGetStoredArrId();
-            initMonthDate();
             initChangeCurrency();
             initVoucherChange();
         }

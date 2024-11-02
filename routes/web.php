@@ -408,17 +408,17 @@ Route::prefix('acc')->group(function () {
 
     // Number Voucher Format
     Route::group([
-      'as' => 'number-voucher-format',
-      'controller' => AccNumberFormatController::class
+      'as' => 'count-voucher',
+      'controller' => AccCountVoucherController::class
     ],function () {
-    Route::get('/number-format', 'show')->name('');
-    Route::post('/number-format-get', 'get')->name('-get');
-    Route::post('/number-format-save', 'save')->name('-save');
-    Route::post('/number-format-delete', 'delete')->name('-delete');
-    Route::any('/number-format-import', 'import')->name('-import');
-    Route::get('/number-format-export', 'export')->name('-export');
-    Route::get('/number-format-DownloadExcel', 'DownloadExcel')->name('-DownloadExcel');
-    Route::post('/number-format-change-database', 'ChangeDatabase')->name('-change-database');
+    Route::get('/count-voucher', 'show')->name('');
+    Route::post('/count-voucher-get', 'get')->name('-get');
+    Route::post('/count-voucher-save', 'save')->name('-save');
+    Route::post('/count-voucher-delete', 'delete')->name('-delete');
+    Route::any('/count-voucher-import', 'import')->name('-import');
+    Route::get('/count-voucher-export', 'export')->name('-export');
+    Route::get('/count-voucher-DownloadExcel', 'DownloadExcel')->name('-DownloadExcel');
+    Route::post('/count-voucher-change-database', 'ChangeDatabase')->name('-change-database');
     });
 
   // Number Code
@@ -957,7 +957,7 @@ Route::prefix('acc')->group(function () {
   // Receipt Cash General
   Route::controller(AccGeneralController::class)->group(function () {
   Route::post('/cash-receipts-general-detail','detail');
-  Route::post('/cash-receipts-voucher-delete', 'delete' )->name('-delete');
+  Route::post('/cash-receipts-voucher-delete', 'delete' )->name('-delete'); 
   });
 
   // Receipt Cash General
@@ -969,6 +969,7 @@ Route::prefix('acc')->group(function () {
   Route::post('/cash-receipts-general-get','find' )->name('-find');
   Route::post('/cash-receipts-general-unwrite','unwrite' )->name('-unwrite');
   Route::post('/cash-receipts-general-write','write' )->name('-write');
+  Route::post('/cash-receipts-general-find', 'find' )->name('-find');
   Route::post('/cash-receipts-voucher-unwrite','unwrite' )->name('-unwrite');
   Route::post('/cash-receipts-voucher-write','write' )->name('-write');
   Route::post('/cash-receipts-voucher-find', 'find' )->name('-find');
@@ -986,6 +987,7 @@ Route::prefix('acc')->group(function () {
   Route::post('/cash-receipts-voucher-currency', 'currency' )->name('-currency');
   Route::post('/cash-receipts-voucher-reference', 'reference' )->name('-reference');
   Route::post('/cash-receipts-voucher-voucher-change', 'voucher_change' )->name('-voucher-change');
+  Route::post('/cash-receipts-voucher-load-voucher-change', 'load_voucher_change' )->name('-load-voucher-change');
   });
 
   // Receipt Cash Detail

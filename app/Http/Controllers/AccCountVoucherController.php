@@ -9,23 +9,23 @@ use Illuminate\Support\Facades\Validator;
 use App\Http\Resources\DropDownListResource;
 use App\Http\Model\AccHistoryAction;
 use App\Http\Model\Menu;
-use App\Http\Model\AccNumberFormat;
+use App\Http\Model\AccCountVoucher;
 use App\Http\Model\AccNumberVoucher;
 use App\Http\Model\CompanySoftware;
 use App\Http\Model\Company;
 use App\Http\Model\Software;
 use App\Http\Model\Error;
 use Illuminate\Support\Facades\Storage;
-use App\Http\Model\Imports\AccNumberFormatImport;
-use App\Http\Model\Exports\AccNumberFormatExport;
+use App\Http\Model\Imports\AccCountVoucherImport;
+use App\Http\Model\Exports\AccCountVoucherExport;
 use Excel;
 
-class AccNumberFormatController extends Controller
+class AccCountVoucherController extends Controller
 {
   public function __construct(Request $request)
   {
      $this->url =  $request->segment(3);
-     $this->key = "number-format";
+     $this->key = "count-voucher";
      $this->menu = Menu::where('code', '=', $this->key)->first();
      $this->type = "acc";
  }
@@ -34,10 +34,10 @@ class AccNumberFormatController extends Controller
     $mysql2 = $request->session()->get('mysql2');
     config(['database.connections.mysql2' => $mysql2]);
     $type = Software::get_url($this->type);
-    $data = AccNumberFormat::get_raw();
+    $data = AccCountVoucher::get_raw();
     $menu = Menu::get_raw_type($type->id);
     $number_voucher = collect(DropDownListResource::collection(AccNumberVoucher::active()->get()));
-    return view('acc.number_format',['data' => $data, 'key' => $this->key ,'menu' => $menu ,'number_voucher' => $number_voucher]);
+    return view('acc.count_voucher',['data' => $data, 'key' => $this->key ,'menu' => $menu ,'number_voucher' => $number_voucher]);
   }
 
   public function ChangeDatabase(Request $request){
@@ -59,7 +59,7 @@ class AccNumberFormatController extends Controller
         );
       $request->session()->put('mysql2',$params);
       config(['database.connections.mysql2' => $params]);
-      $data = AccNumberFormat::get_raw();
+      $data = AccCountVoucher::get_raw();
       return response()->json(['status'=>true,'data'=> $data,'com_name'=> $com->name ]);
     }catch(Exception $e){
       // Lưu lỗi
@@ -91,7 +91,7 @@ class AccNumberFormatController extends Controller
      if($validator->passes()){   
      if($permission['a'] == true && !$arr->id ){
        $type = 2;
-       $data = new AccNumberFormat();
+       $data = new AccCountVoucher();
        $data->number_voucher = $arr->number_voucher;
        $data->format = $arr->format;
        $data->day = $arr->day;
@@ -118,7 +118,7 @@ class AccNumberFormatController extends Controller
        return response()->json(['status'=>true,'message'=> trans('messages.update_success')]);
      }else if($permission['e'] == true && $arr->id){
        $type = 3;
-       $data = AccNumberFormat::find($arr->id);
+       $data = AccCountVoucher::find($arr->id);
        // Lưu lịch sử
        $h = new AccHistoryAction();
        $h ->create([
@@ -170,7 +170,7 @@ class AccNumberFormatController extends Controller
         $arr = json_decode($request->data);
         if($arr){
           if($permission['d'] == true){
-            $data = AccNumberFormat::find($arr->id);
+            $data = AccCountVoucher::find($arr->id);
             // Lưu lịch sử
             $h = new AccHistoryAction();
             $h ->create([
@@ -204,7 +204,7 @@ class AccNumberFormatController extends Controller
  }
 
  public function DownloadExcel(Request $request){
-   return Storage::download('public/downloadFile/AccNumberFormat.xlsx');
+   return Storage::download('public/downloadFile/AccCountVoucher.xlsx');
  }
 
  public function import(Request $request) {
@@ -225,9 +225,9 @@ class AccNumberFormatController extends Controller
 
        $file = $request->file;
        // Import dữ liệu
-       Excel::import(new AccNumberFormatImport, $file);
+       Excel::import(new AccCountVoucherImport, $file);
        // Lấy lại dữ liệu
-       $array = AccNumberFormat::get_raw();
+       $array = AccCountVoucher::get_raw();
 
        // Import dữ liệu bằng collection
        //$results = Excel::toCollection(new HistoryActionImport, $file);
@@ -280,10 +280,10 @@ class AccNumberFormatController extends Controller
        $arr = $request->data;
        //return (new HistoryActionExport($arr))->download('HistoryActionExportErmis.xlsx');
        //$myFile = Excel::download(new HistoryActionExport($arr), 'HistoryActionExportErmis.xlsx');
-       $myFile = Excel::raw(new AccNumberFormatExport($arr), \Maatwebsite\Excel\Excel::XLSX);
+       $myFile = Excel::raw(new AccCountVoucherExport($arr), \Maatwebsite\Excel\Excel::XLSX);
        $response =  array(
          'status' =>true,
-         'name' => "AccNumberFormatExportErmis", //no extention needed
+         'name' => "AccCountVoucherExportErmis", //no extention needed
          'file' => "data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,".base64_encode($myFile) //mime type of used format
       );
       return response()->json($response);

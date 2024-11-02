@@ -15,11 +15,12 @@ use App\Http\Resources\ObjectDropDownListResource;
 use App\Http\Resources\DropDownListResource;
 use App\Http\Resources\CashReceiptGeneralResource;
 use App\Http\Resources\AccountedAutoListResource;
-use App\Http\Resources\AccountedFastListResource;
+use App\Http\Resources\AccountedFastDropDownListResource;
 use App\Http\Model\AccObject;
 use App\Http\Model\KeyAi;
 use App\Http\Model\Error;
 use App\Classes\Convert;
+use App\Http\Model\AccCountVoucher;
 use App\Http\Model\AccNumberVoucher;
 use Illuminate\Support\Facades\Validator;
 
@@ -159,8 +160,12 @@ class AccVoucherController extends Controller
         ]);
       if($validator->passes()){
       $data = AccNumberVoucher::find($req->id);
-      $data->prefix = $req->prefix;
-      $data->suffixes = $req->suffixes;
+      if($data->change_voucher == 1){
+        $val = Convert::dateformatArr($data->format,$req->accounting_date); 
+        $data = AccCountVoucher::get_count_voucher($data->id,$data->format,$val['day_format'],$val['month_format'],$val['year_format']);        
+      }else{
+        $data->prefix = $req->prefix;
+      }     
       $data->number = $req->number;
       $data->length_number = $req->length_number;
       $data->save();
@@ -181,6 +186,36 @@ class AccVoucherController extends Controller
         return response()->json(['status'=>false,'message'=> trans('messages.error').' '.$e->getMessage()]);
       }
   }
+
+
+  public function load_voucher_change(Request $request){
+    $type = 10;
+        try{
+          $mysql2 = $request->session()->get('mysql2');
+          config(['database.connections.mysql2' => $mysql2]);
+          $req = json_decode($request->data);        
+          $data = AccNumberVoucher::find($req->id);
+          $val = Convert::dateformatArr($data->format,$req->accounting_date);          
+          $voucher = AccCountVoucher::get_count_voucher($data->id,$data->format,$val['day_format'],$val['month_format'],$val['year_format']);    
+          if($req->accounting_date && $voucher != null ){
+            return response()->json(['status'=>true,'data'=> $voucher]);
+          }else{
+            return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
+          }
+        }catch(Exception $e){
+            // Lưu lỗi
+            $err = new Error();
+            $err ->create([
+              'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
+              'user_id' => Auth::id(),
+              'menu_id' => $this->menu->id,
+              'error' => $e->getMessage(),
+              'url'  => $this->url,
+              'check' => 0 ]);
+            return response()->json(['status'=>false,'message'=> trans('messages.error').' '.$e->getMessage()]);
+          }
+   }
+  
 
 
   public function ai(Request $request){
@@ -247,7 +282,7 @@ class AccVoucherController extends Controller
         }else if($rs->content == 'accounted_fast'){
           $mysql2 = $request->session()->get('mysql2');
           config(['database.connections.mysql2' => $mysql2]);
-          $data = new AccountedFastListResource(AccAccountedFast::where($rs->field,$end_key)->first());
+          $data = new AccountedFastDropDownListResource(AccAccountedFast::where($rs->field,$end_key)->first());
           if($data){
             return response()->json(['status'=>true,'data'=> $data,'field'=>$rs->content]);
           }else{

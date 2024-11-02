@@ -16,7 +16,7 @@ use App\Http\Model\AccSystems;
 use App\Http\Model\AccCurrencyCheck;
 use App\Http\Model\AccSettingVoucher;
 use App\Http\Model\AccNumberVoucher;
-use App\Http\Model\AccNumberFormat;
+use App\Http\Model\AccCountVoucher;
 use App\Http\Model\AccPrintTemplate;
 use App\Http\Model\AccWorkCode;
 use App\Http\Model\AccAccountSystems;
@@ -125,24 +125,26 @@ class AccCashReceiptsVoucherController extends Controller
             // Thay đổi số nhảy theo yêu cầu DD MM YY
             $voucher_id = $voucher->id;
             $voucher_length_number = $voucher->length_number;
-            $format = $voucher->middle.'-'.$voucher->suffixes;
-            $day_format = strpos($format, "DD")!== false ? Carbon::parse($arr->accounting_date)->format('DD') : '';            
-            $month_format = strpos($format, "MM")!== false ? Carbon::parse($arr->accounting_date)->format('MM') : '';
-            $year_format = (strpos($format, "YYYY")!== false ? Carbon::parse($arr->accounting_date)->format('YY') : strpos($format, "YY")!== false ) ? Carbon::parse($arr->accounting_date)->format('YY') : '';
+            $format = $voucher->format;
+            $prefix = $voucher->prefix;
             if($voucher->change_voucher == 1){
-              $voucher = AccNumberFormat::get_number_voucher_format($voucher_id,$format,$day_format,$month_format,$year_format);
+              $val = Convert::dateformatArr($format,$arr->accounting_date);
+              dd($arr->accounting_date);
+              $voucher = AccCountVoucher::get_count_voucher($voucher_id,$format,$val['day_format'],$val['month_format'],$val['year_format']);              
               if(!$voucher){
-                $voucher = new AccNumberFormat();
+                $voucher = new AccCountVoucher();
                 $voucher->number_voucher = $voucher_id;
                 $voucher->format = $format;
-                $voucher->day = $day_format;
-                $voucher->month = $month_format;
-                $voucher->year = $year_format;
+                $voucher->day = $val['day_format'];
+                $voucher->month = $val['month_format'];
+                $voucher->year = $val['year_format'];
                 $voucher->length_number = $voucher_length_number;
+                $voucher->active = 1;
               }
-            }          
+            }                
             // Load Phiếu tự động / Load AutoNumber
-              $v = Convert::VoucherMasker($voucher);
+              $v = Convert::VoucherMasker1($voucher,$prefix);
+                 
               $number = $voucher->number + 1;
               $length_number = $voucher->length_number;
               if(strlen($number."") > $voucher->length_number){

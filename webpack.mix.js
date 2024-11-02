@@ -1,5 +1,4 @@
 const mix = require('laravel-mix');
-
 /*
  |--------------------------------------------------------------------------
  | Mix Asset Management
@@ -11,7 +10,7 @@ const mix = require('laravel-mix');
  |
  */
 
-mix.js('resources/js/socket.js', 'public/mix');
+mix.js('resources/js/socket.js', 'public/mix')
    //.js('resources/js/app.js', 'public/js')
    //.sass('resources/sass/app.scss', 'public/css');
    const WebpackShellPluginNext = require('webpack-shell-plugin-next');

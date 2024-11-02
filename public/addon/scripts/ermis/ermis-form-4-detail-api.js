@@ -136,7 +136,7 @@ var Ermis = function () {
     };
 
     var initVoucherMasker = function () {
-      return voucher = initErmisBarcodeMaskerHide(Ermis.voucher);
+      return voucher = initErmisVoucher(Ermis.voucher);
     };
 
     var initCheckSession = function () {

@@ -216,10 +216,10 @@
                             <dl>
                                 <dd><a class="text-center lazyload" data-uk-tooltip title="@lang('acc_index.receipt_cash_voucher')" href="{{url('')}}"><img src="{{url('addon/img/icon/atm.png')}}" /></a><p>@lang('acc_index.receipt_cash_voucher')</p></dd>
                                 <dd><a class="text-center lazyload" data-uk-tooltip title="@lang('acc_index.payment_cash_voucher')" href="{{url('')}}"><img src="{{url('addon/img/icon/cash.png')}}" /></a><p>@lang('acc_index.payment_cash_voucher')</p></dd>
-                                <dd><a class="text-center lazyload" data-uk-tooltip title="@lang('acc_index.report_cash')" href="{{url('')}}"><img src="{{url('addon/img/icon/report.png')}}" /></a><p>@lang('acc_index.report_cash')</p></dd>
-                                <dd><a class="text-center lazyload" data-uk-tooltip title="@lang('acc_index.report_cash_general')" href="{{url('')}}"><img src="{{url('addon/img/icon/notebook.png')}}" /></a><p>@lang('acc_index.report_cash_general')</p></dd>
-                                <dd><a class="text-center lazyload" data-uk-tooltip title="@lang('acc_index.department')" href="{{url('')}}"><img src="{{url('addon/img/icon/checklist.png')}}" /></a><p>@lang('acc_index.department')</p></dd>
-                                <dd><a class="text-center lazyload" data-uk-tooltip title="@lang('acc_index.employee')" href="{{url('')}}"><img src="{{url('addon/img/icon/list.png')}}" /></a><p>@lang('acc_index.employee')</p></dd>
+                                <dd><a class="text-center lazyload" data-uk-tooltip title="@lang('acc_index.report_cash')" href="{{url('')}}"><img src="{{url('addon/img/icon/financial-statement.png')}}" /></a><p>@lang('acc_index.report_cash')</p></dd>
+                                <dd><a class="text-center lazyload" data-uk-tooltip title="@lang('acc_index.report_cash_general')" href="{{url('')}}"><img src="{{url('addon/img/icon/paycheck.png')}}" /></a><p>@lang('acc_index.report_cash_general')</p></dd>
+                                <dd><a class="text-center lazyload" data-uk-tooltip title="@lang('acc_index.department')" href="{{url('')}}"><img src="{{url('addon/img/icon/teammate.png')}}" /></a><p>@lang('acc_index.department')</p></dd>
+                                <dd><a class="text-center lazyload" data-uk-tooltip title="@lang('acc_index.employee')" href="{{url('')}}"><img src="{{url('addon/img/icon/woman.png')}}" /></a><p>@lang('acc_index.employee')</p></dd>
                             </dl>
 
                         </div>

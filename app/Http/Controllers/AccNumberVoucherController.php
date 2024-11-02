@@ -95,10 +95,7 @@ class AccNumberVoucherController extends Controller
        $data->name = $arr->name;
        $data->name_en = $arr->name_en;
        $data->prefix = $arr->prefix;
-       $data->middle = $arr->middle;
-       $data->middle_type = $arr->middle_type;
-       $data->suffixes_type = $arr->suffixes_type;
-       $data->suffixes = $arr->suffixes;
+       $data->format = $arr->format;       
        $data->number = $arr->number;
        $data->length_number = $arr->length_number;
        $data->change_voucher = $arr->change_voucher;
@@ -136,10 +133,7 @@ class AccNumberVoucherController extends Controller
       $data->name = $arr->name;
       $data->name_en = $arr->name_en;
       $data->prefix = $arr->prefix;
-      $data->middle = $arr->middle;
-      $data->middle_type = $arr->middle_type;
-      $data->suffixes_type = $arr->suffixes_type;
-      $data->suffixes = $arr->suffixes;
+      $data->format = $arr->format;    
       $data->number = $arr->number;
       $data->length_number = $arr->length_number;
       $data->change_voucher = $arr->change_voucher;

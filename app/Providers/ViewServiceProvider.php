@@ -45,7 +45,7 @@ class ViewServiceProvider extends ServiceProvider
         View::composer('action.content_*', 'App\Http\View\Composers\AccCurrencyComposer');
         View::composer('action.content_*', 'App\Http\View\Composers\AccCurrencyComposer');
         View::composer('acc.number_voucher', 'App\Http\View\Composers\NumberVoucherFormatComposer');
-        View::composer('acc.number_format', 'App\Http\View\Composers\NumberVoucherFormatComposer');
+        View::composer('acc.count_voucher', 'App\Http\View\Composers\NumberVoucherFormatComposer');
         // Using Closure based composers...
         //View::composer('dashboard', function ($view) {
             //

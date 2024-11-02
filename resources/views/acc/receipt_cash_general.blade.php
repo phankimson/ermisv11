@@ -12,8 +12,11 @@
 @push('toolbar_action')
 @include('action.toolbar_4')
 @endpush
+
+
 @section('content_add')
-@include('form.form_search_1')
+@include('window.window_7')
+@include('form.form_search_2')
 <div class="uk-grid">
         <div class="uk-width-medium-4-4">
             <div id="grid"></div>
@@ -62,6 +65,15 @@
 
             Ermis.aggregate = [ { field: "description", aggregate: "count" },
                                 { field: "amount", aggregate: "sum" }];
+            Ermis.columns_voucher = [{"field" : "voucher_date","title" : "@lang('acc_voucher.voucher_date')" ,template : "#=FormatDate(voucher_date)#" },
+                                    {"field" : "voucher","title" : "@lang('acc_voucher.voucher')" },
+                                    {"field" : "revoucher","title" : "@lang('global.re_voucher')" },
+                                    {"field" : "description","title" : "@lang('acc_voucher.description')" },
+                                    {"field" : "total_amount","title" :  "@lang('acc_voucher.total_amount')" ,template: '#= FormatNumberDecimal(total_amount, {{$decimal}} )#' } ];
+            Ermis.field = {
+                revoucher :   {field : "revoucher"},
+            };
+                                    
       Ermis.action = <?= json_encode($action);?>;
   });
   </script>

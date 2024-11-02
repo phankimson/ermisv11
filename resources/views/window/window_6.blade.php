@@ -20,12 +20,6 @@
         </td>        
     </tr>
     <tr>
-        <td class="row-label-responsive"><label>@lang('acc_number_voucher.suffixes')</label></td>
-        <td>
-            <input type="text" class="k-textbox large no_clear" name ="suffixes" value="{{$voucher->suffixes}}" />
-        </td>        
-    </tr>
-    <tr>
         <td class="row-label-responsive"><label>@lang('acc_number_voucher.length_number')</label></td>
         <td>
             <input type="text" class="k-textbox large no_clear" name ="length_number" value="{{$voucher->length_number}}" />

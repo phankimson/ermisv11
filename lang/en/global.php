@@ -83,4 +83,5 @@ return [
       "zoom"=>"Zoom",
       "refesh"=>"Refesh",
       "select"=>"--Select--",
+      "re_voucher"=>"Re-voucher",
 ];
