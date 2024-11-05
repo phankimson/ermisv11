@@ -50,4 +50,5 @@ return [
     "query" => "Truy vấn",
     "show" => "Hiển thị",
     "change" => "Thay đổi",
+    "start" => "Bắt đầu",
 ];

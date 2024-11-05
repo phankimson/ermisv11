@@ -13,6 +13,7 @@ return [
     |
     */
     "menu" => "Menu",
+    "menu_general" => "Menu General",
     "name" => "Name",
     "name_en" => "Name English",
     "code" => "Code",

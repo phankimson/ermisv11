@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Classes\Convert;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -12,6 +13,7 @@ use App\Http\Model\AccGeneral;
 use App\Http\Model\AccDetail;
 use App\Http\Model\AccSystems;
 use App\Http\Model\AccPeriod;
+use App\Http\Model\AccNumberVoucher;
 use App\Http\Model\AccCurrencyCheck;
 use App\Http\Model\CompanySoftware;
 use App\Http\Model\Company;
@@ -181,6 +183,35 @@ class AccCashReceiptsGeneralController extends Controller
       if($req->active != ""){
         $data = $data->where('active',$req->active)->values();
       }
+      if($data->count()>0){
+        return response()->json(['status'=>true,'data'=> $data]);
+      }else{
+        return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
+      }
+     }catch(Exception $e){
+        // Lưu lỗi
+        $err = new Error();
+        $err ->create([
+          'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
+          'user_id' => Auth::id(),
+          'menu_id' => $this->menu->id,
+          'error' => $e->getMessage(),
+          'url'  => $this->url,
+          'check' => 0 ]);
+        return response()->json(['status'=>false,'message'=> trans('messages.error').' '.$e->getMessage()]);
+      }
+  }
+
+  public function revoucher(Request $request){
+    $type = 10;
+    try{
+      $mysql2 = $request->session()->get('mysql2');
+      config(['database.connections.mysql2' => $mysql2]);
+      $req = json_decode($request->data);
+      // Tìm voucher
+      $v = AccNumberVoucher::get_menu($this->menu->id); 
+      $date_obj = Convert::dateformatRange($v->format,$req);
+      $data = collect(CashReceiptGeneralResource::collection(AccGeneral::get_data_load_between($this->type,$date_obj['start_date'],$date_obj['end_date'])));
       if($data->count()>0){
         return response()->json(['status'=>true,'data'=> $data]);
       }else{

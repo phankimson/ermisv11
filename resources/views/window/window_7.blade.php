@@ -1,41 +1,17 @@
 <div id="form-window-voucher" style="display:none">
   <div class="uk-width-medium-4-4">
-  <select class="droplist not_disabled medium" id="fast_date_a">
-    <option value="">@lang('action.choose')</option>
-    <option value="today">@lang('global.today')</option>
-    <option value="this_week">@lang('global.this_week')</option>
-    <option value="this_month">@lang('global.this_month')</option>
-    <option value="this_quarter">@lang('global.this_quarter')</option>
-    <option value="this_year">@lang('global.this_year')</option>
-    <option value="january">@lang('global.january')</option>
-    <option value="february">@lang('global.february')</option>
-    <option value="march">@lang('global.march')</option>
-    <option value="april">@lang('global.april')</option>
-    <option value="may">@lang('global.may')</option>
-    <option value="june">@lang('global.june')</option>
-    <option value="july">@lang('global.july')</option>
-    <option value="august">@lang('global.august')</option>
-    <option value="september">@lang('global.september')</option>
-    <option value="october">@lang('global.october')</option>
-    <option value="november">@lang('global.november')</option>
-    <option value="december">@lang('global.december')</option>
-  </select>
+  <span>@lang('acc_count_voucher.day') :</span>
+  <input type="text" id="day" class="day" name="day" value="{{date('d')}}" />
+
+  <span>@lang('acc_count_voucher.month') :</span>
+  <input type="text" id="month" class="month" name="month" value="{{date('m')}}" />
+
+  <span>@lang('acc_count_voucher.year') :</span>
+  <input type="text" id="year" class="year" name="year" value="{{date('Y')}}" />
+
+  <a href="javascript:;" class="uk-margin-left-30 k-button k-primary" id="search_voucher" data-uk-tooltip=""><i class="md-18 material-icons md-color-white">search</i>@lang('action.search')</a>
   </div>
-  <div class="uk-margin-medium-top"></div>
-
-  <span>@lang('global.start_date') :</span>
-  <input type="text" data-type="date" id="start_a" class="start" name="start_date_a" value="{{date('d/m/Y')}}" />
-
-  <span>@lang('global.end_date') :</span>
-  <input type="text" data-type="date" id="end_a" class="end" name="end_date_a" value="{{date('d/m/Y')}}" />
-
-  <select class="droplist not_disabled medium-responsive" name="active">
-      <option value="">@lang('global.all') </option>
-      <option value="0">@lang('global.not_recorded') </option>
-      <option value="1">@lang('global.recorded') </option>
-  </select>
-
-    <a href="javascript:;" class="uk-margin-left-30 k-button k-primary" id="search_voucher" data-uk-tooltip=""><i class="md-18 material-icons md-color-white">search</i>@lang('action.search')</a>
+   
   <div class="uk-margin-medium-top"></div>
 
   <div id="grid_voucher"></div>

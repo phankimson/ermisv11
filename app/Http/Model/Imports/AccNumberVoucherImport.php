@@ -29,10 +29,12 @@ class AccNumberVoucherImport implements ToModel, WithHeadingRow, WithBatchInsert
         //dump($row);
         $code_check = AccNumberVoucher::WhereCheck('code',$row['code'],'id',null)->first();
         $menu = Menu::WhereDefault('code',$row['menu'])->first();
+        $menu_general = Menu::WhereDefault('code',$row['menu_general'])->first();
         if($code_check == null){
         return new AccNumberVoucher([
            'id'     => Str::uuid()->toString(),
            'menu_id'    => $menu == null ? 0 : $menu->id,
+           'menu_general_id'    => $menu == null ? 0 : $menu_general->id,
            'code'    => $row['code'],
            'name'    => $row['name'],
            'middle'    => $row['middle'],

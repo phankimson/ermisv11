@@ -29,12 +29,13 @@ class AccNumberVoucher extends Model
         $env = env("DB_DATABASE");
         $result = AccNumberVoucher::WithRowNumberDb('mysql2')->orderBy('row_number','asc')
         ->leftJoin($env.'.menu as m', 't.menu_id', '=', 'm.id')
+        ->leftJoin($env.'.menu as n', 't.menu_general_id', '=', 'm.id')
         ->get(['row_number',DB::raw($select)]);
         return $result;
       }
 
       static public function get_menu($menu) {
-        $result = AccNumberVoucher::where('menu_id',$menu)->first();
+        $result = AccNumberVoucher::where('menu_id',$menu)->orWhere('menu_general_id',$menu)->first();
         return $result;
       }
 }

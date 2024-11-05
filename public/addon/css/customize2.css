@@ -450,7 +450,7 @@ height:auto!important;
   .htContextMenu:not(.htGhostTable){
     z-index: 10060!important;
   }
-  .k-numeric-wrap .k-select{
+  .number .k-select{
     width: 1.1em!important;
   }
 

@@ -77,4 +77,21 @@ class Convert
     $obj['year_format'] = (strpos($format, "YYYY")!== false ? Carbon::parse($date)->format('Y') : (strpos($format, "YY")!== false ? Carbon::parse($date)->format('y') : ''));  
     return $obj;
   }
+
+  static public function dateformatRange($format,$obj_date)
+  {  
+    $obj = array();
+    $date_val = $obj_date->year.'-'.$obj_date->month.'-'.$obj_date->day;
+    if(strpos($format, "DD")!== false){
+      $obj['start_date'] = $date_val;
+      $obj['end_date'] = $date_val;
+    }else if(strpos($format, "MM")!== false){
+      $obj['start_date'] = Carbon::parse($date_val)->format('Y-m-01');
+      $obj['end_date'] = Carbon::parse($date_val)->format('Y-m-t');
+    }else if(strpos($format, "YYYY")!== false || strpos($format, "YY")!== false){
+      $obj['start_date'] = Carbon::parse($date_val)->format('Y-01-01');
+      $obj['end_date'] = Carbon::parse($date_val)->format('Y-12-t');
+    }
+    return $obj;    
+  }
 }

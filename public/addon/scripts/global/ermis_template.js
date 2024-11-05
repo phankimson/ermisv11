@@ -1532,6 +1532,14 @@ var ErmisKendoNumbericTemplate = function(elem, format, decimals, min, max, step
     });
 };
 
+var ErmisKendoNumbericTemplateDate = function(elem, format, min, max) {
+    jQuery(elem).kendoNumericTextBox({
+        format: format,
+        min: min,
+        max: max
+    });
+};
+
 var ErmisKendoColorPickerTemplate = function(elem, buttons, value) {
     jQuery(elem).kendoColorPicker({
         buttons: buttons,

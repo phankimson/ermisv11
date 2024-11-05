@@ -91,6 +91,7 @@ class AccNumberVoucherController extends Controller
        $type = 2;
        $data = new AccNumberVoucher();
        $data->menu_id = $arr->menu_id;
+       $data->menu_general_id = $arr->menu_general_id;
        $data->code = $arr->code;
        $data->name = $arr->name;
        $data->name_en = $arr->name_en;
@@ -129,6 +130,7 @@ class AccNumberVoucherController extends Controller
       //
 
       $data->menu_id = $arr->menu_id;
+      $data->menu_general_id = $arr->menu_general_id;
       $data->code = $arr->code;
       $data->name = $arr->name;
       $data->name_en = $arr->name_en;

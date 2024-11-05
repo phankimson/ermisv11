@@ -193,6 +193,11 @@ var initErmisCheckSession = function(){
 }
 
 
+var initReadOnlyGrid = function(container, options){
+  container.text(options.model[options.field]);
+  container.removeClass("k-edit-cell");
+}
+
 var initFixScrollGrid = function(){
     var spe = "fast";
     var el = $kGridTab.find("div.k-grid-content");

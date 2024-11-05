@@ -50,4 +50,5 @@ return [
     "query" => "Query",
     "show" => "Show",
     "change" => "Change",
+    "start" => "Start",
 ];

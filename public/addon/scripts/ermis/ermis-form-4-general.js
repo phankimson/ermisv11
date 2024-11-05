@@ -20,7 +20,9 @@ var Ermis = function () {
 
       ErmisKendoContextMenuTemplate("#context-menu",".md-card-content");
       ErmisKendoStartEndDroplistTemplate("#start","#end","dd/MM/yyyy","#fast_date","contains");
-      ErmisKendoStartEndDroplistTemplate("#start_a","#end_a","dd/MM/yyyy","#fast_date_a","contains");
+      ErmisKendoNumbericTemplateDate("#day","n0",1,31);
+      ErmisKendoNumbericTemplateDate("#month","n0",1,12);
+      ErmisKendoNumbericTemplateDate("#year","float",null,null);
       ErmisKendoDroplistTemplate(".droplist", "contains");
     }
 
@@ -48,7 +50,7 @@ var Ermis = function () {
         var postdata = {
             data: JSON.stringify(c.obj)
         };
-        ErmisTemplateAjaxPost0(e, postdata, Ermis.link + '-find', function(result) {
+        ErmisTemplateAjaxPost0(e, postdata, Ermis.link + '-revoucher', function(result) {
             var grid = $kGridVoucher.data("kendoGrid");
             var ds = new kendo.data.DataSource({
                 data: result.data
@@ -94,6 +96,7 @@ var Ermis = function () {
             jQuery('.refesh_item').on('click', initRefesh);
             jQuery('.view_item,.delete_item,.print,.unwrite_item,.write_item').addClass('disabled');
             jQuery('.view_item,.delete_item,.print-item,.unwrite_item,.write_item').off('click');
+            jQuery('.cancel-window').on('click', initClose);
             shortcut.add(key + "A", function (e) { initNew(e); });
             //shortcut.add(key + "V", function (e) { initView(e); });
             //shortcut.add(key + "W", function (e) { initWrite(e); });
@@ -305,6 +308,14 @@ var Ermis = function () {
              kendo.alert(Lang.get('messages.you_not_permission_view'));
          });
     };
+
+    var initClose = function(e) {
+      ErmisTemplateEvent1(e, function() {
+          if ($kWindow.element.is(":hidden") === false) {
+              $kWindow.close();
+          }
+      });
+  };
 
     var initSearchData = function (e) {
         var obj = GetDataAjax(data.columns, data.elem);

@@ -63,12 +63,12 @@ class AccGeneral extends Model
       }
 
       static public function get_data_load_between($type,$startDate,$endDate){
-        $result = AccGeneral::where('type',$type)->whereBetween('voucher_date',[$startDate,$endDate])->get();
+        $result = AccGeneral::where('type',$type)->whereBetween('accounting_date',[$startDate,$endDate])->get();
         return $result;
       }
 
       static public function get_data_load_between_reference($type,$startDate,$endDate,$reference_array){
-        $result = AccGeneral::where('type',$type)->whereBetween('voucher_date',[$startDate,$endDate])->whereIn('reference_by',$reference_array)->get();
+        $result = AccGeneral::where('type',$type)->whereBetween('accounting_date',[$startDate,$endDate])->whereIn('reference_by',$reference_array)->get();
         return $result;
       }
 

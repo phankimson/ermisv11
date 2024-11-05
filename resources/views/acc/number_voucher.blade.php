@@ -31,6 +31,17 @@
       </td>
       </tr>
       <tr>
+      <td class="row-label"><label>@lang('acc_number_voucher.menu_general')</label></td>
+      <td>
+      <select class="droplist large" data-position="1" data-title="@lang('acc_number_voucher.menu_general')" data-template="#= FormatDropList(menu_general_id,'menu_general_id') #" data-type="number" data-width="200px" name="menu_general_id">
+              <option readonly selected value="0">--Select--</option>
+                @foreach($menu as $m)
+                   <option value="{{ $m->id }}">{{ $m->code }} - {{ $lang == 'vi'? $m->name : $m->name_en }}</option>
+                @endforeach
+      </select>
+      </td>
+      </tr>
+      <tr>
           <td class="row-label"><label>@lang('acc_number_voucher.code') *</label></td>
           <td><input type="text" class="k-textbox medium" data-position="2" data-title="@lang('acc_number_voucher.code')" data-width="200px" maxlength="50" data-type="string" name="code" /></td>
       </tr>
@@ -99,6 +110,7 @@
       Ermis.short_key = "{{ config('app.short_key')}}";
       Ermis.columns_expend = [{ selectable: true, width: "50px" }, {"field" : "column","title" : "@lang('global.column_name')"}];
       Ermis.data_expend = [{field : "m.name as menu", column:  "@lang('acc_number_voucher.menu')" },
+                           {field : "n.name as menu", column:  "@lang('acc_number_voucher.menu_general')" },
                            {field : "t.code", column:  "@lang('acc_number_voucher.code')" },
                            {field : "t.name", column:  "@lang('acc_number_voucher.name')" },
                            {field : "t.prefix", column:  "@lang('acc_number_voucher.prefix')" },

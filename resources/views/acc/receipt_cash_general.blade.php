@@ -65,13 +65,17 @@
 
             Ermis.aggregate = [ { field: "description", aggregate: "count" },
                                 { field: "amount", aggregate: "sum" }];
-            Ermis.columns_voucher = [{"field" : "voucher_date","title" : "@lang('acc_voucher.voucher_date')" ,template : "#=FormatDate(voucher_date)#" },
-                                    {"field" : "voucher","title" : "@lang('acc_voucher.voucher')" },
+            Ermis.columns_voucher = [{"field" : "voucher_date","title" : "@lang('acc_voucher.voucher_date')" ,template : "#=FormatDate(voucher_date)#" ,editor: initReadOnlyGrid},
+                                    {"field" : "voucher","title" : "@lang('acc_voucher.voucher')",editor: initReadOnlyGrid },
                                     {"field" : "revoucher","title" : "@lang('global.re_voucher')" },
-                                    {"field" : "description","title" : "@lang('acc_voucher.description')" },
-                                    {"field" : "total_amount","title" :  "@lang('acc_voucher.total_amount')" ,template: '#= FormatNumberDecimal(total_amount, {{$decimal}} )#' } ];
+                                    {"field" : "description","title" : "@lang('acc_voucher.description')",editor: initReadOnlyGrid },
+                                    {"field" : "total_amount","title" :  "@lang('acc_voucher.total_amount')" ,template: '#= FormatNumberDecimal(total_amount, {{$decimal}} )#' ,editor: initReadOnlyGrid} ];
             Ermis.field = {
                 revoucher :   {field : "revoucher"},
+                voucher_date : {field : "voucher_date"},
+                voucher : {field : "voucher"},
+                description : {field : "description"},
+                total_amount : {field : "total_amount"}
             };
                                     
       Ermis.action = <?= json_encode($action);?>;

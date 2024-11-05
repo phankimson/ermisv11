@@ -26,10 +26,10 @@
            </select>
 
            <span>@lang('global.start_date') :</span>
-           <input type="text" data-type="date" id="start" name="start_date" value="{{ $start_date }}" />
+           <input type="text" data-type="date" id="start" name="start_date_a" value="{{ $start_date }}" />
 
            <span>@lang('global.end_date') :</span>
-           <input type="text" data-type="date" id="end" name="end_date" value="{{ $end_date }}" />
+           <input type="text" data-type="date" id="end" name="end_date_a" value="{{ $end_date }}" />
 
            <select class="droplist medium-responsive" name="active">
                <option value="">@lang('global.all') </option>

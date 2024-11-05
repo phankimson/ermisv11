@@ -129,7 +129,6 @@ class AccCashReceiptsVoucherController extends Controller
             $prefix = $voucher->prefix;
             if($voucher->change_voucher == 1){
               $val = Convert::dateformatArr($format,$arr->accounting_date);
-              dd($arr->accounting_date);
               $voucher = AccCountVoucher::get_count_voucher($voucher_id,$format,$val['day_format'],$val['month_format'],$val['year_format']);              
               if(!$voucher){
                 $voucher = new AccCountVoucher();

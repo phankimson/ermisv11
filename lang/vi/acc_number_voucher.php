@@ -13,6 +13,7 @@ return [
     |
     */
     "menu" => "Danh mục",
+    "menu_general" => "Danh mục tổng",
     "name" => "Tên",
     "name_en" => "Tên tiếng anh",
     "code" => "Mã",
