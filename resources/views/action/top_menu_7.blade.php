@@ -6,6 +6,7 @@
 <a class="cancel top_menu"><i class="md-24 material-icons" data-uk-tooltip title="@lang('action.cancel') ({{ config('app.short_key')}}C)">cancel</i></a>
 <a class="delete top_menu"><i class="md-24 material-icons" data-uk-tooltip title="@lang('action.delete') ({{ config('app.short_key')}}D)">delete</i></a>
 <a class="write_item top_menu"><i class="md-24 material-icons" data-uk-tooltip title="@lang('action.write') ({{ config('app.short_key')}}W)">flash_on</i></a>
+<a class="import top_menu"><i class="md-24 material-icons" data-uk-tooltip title="@lang('action.import') ({{ config('app.short_key')}}I)">archive</i></a>
 <a class="unwrite_item top_menu" style="display:none"><i class="md-24 material-icons" data-uk-tooltip title="@lang('action.unwrite') ({{ config('app.short_key')}}U)">flash_off</i></a>
 <a class="back top_menu"><i class="md-24 material-icons" data-uk-tooltip title="@lang('action.back') ({{ config('app.short_key')}}<)">arrow_back</i></a>
 <a class="forward top_menu"><i class="md-24 material-icons" data-uk-tooltip title="@lang('action.forward') ({{ config('app.short_key')}}>)">arrow_forward</i></a>

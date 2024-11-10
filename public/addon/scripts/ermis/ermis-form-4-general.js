@@ -4,6 +4,9 @@ var Ermis = function () {
     var $kGridVoucher = jQuery('#grid_voucher');
     var key = '';
     var dataId = '';
+    var voucherId = '';
+    var count_number = 0;
+    var $import = '';
     var data = [];
     var dataSource = '';
     var dataSourceGeneral = '';
@@ -17,8 +20,9 @@ var Ermis = function () {
     var initGlobalRegister = function(){
       $kWindow = ErmisKendoWindowTemplate(myWindow, "1000px", "");
       $kWindow.title(Lang.get('acc_voucher.search_for_voucher'));
-
+      ErmisKendoUploadTemplate("#files", false);
       ErmisKendoContextMenuTemplate("#context-menu",".md-card-content");
+      //StartEndDroplistTemplate
       ErmisKendoStartEndDroplistTemplate("#start","#end","dd/MM/yyyy","#fast_date","contains");
       ErmisKendoNumbericTemplateDate("#day","n0",1,31);
       ErmisKendoNumbericTemplateDate("#month","n0",1,12);
@@ -43,25 +47,66 @@ var Ermis = function () {
         ErmisKendoGridTemplate3($kGridVoucher, [], Ermis.aggregate, Ermis.field_voucher, "row" , true, jQuery(window).height() * 0.5, Ermis.columns_voucher);      
     };
 
-  var initSearchGridVoucher = function() {
-    jQuery('#search_voucher').on('click', function(e) {
-        var filter = GetAllDataForm('#form-window-voucher', 2);
-        var c = GetDataAjax(filter.columns);
-        var postdata = {
-            data: JSON.stringify(c.obj)
-        };
-        ErmisTemplateAjaxPost0(e, postdata, Ermis.link + '-revoucher', function(result) {
-            var grid = $kGridVoucher.data("kendoGrid");
-            var ds = new kendo.data.DataSource({
-                data: result.data
+      var initSearchGridVoucher = function(e) {
+            var filter = GetAllDataForm('#form-window-voucher', 2);
+            var c = GetDataAjax(filter.columns);
+            var postdata = {
+                data: JSON.stringify(c.obj)
+            };
+            ErmisTemplateAjaxPost0(e, postdata, Ermis.link + '-revoucher', function(result) {
+                var grid = $kGridVoucher.data("kendoGrid");
+                var ds = new kendo.data.DataSource({
+                    data: result.data
+                });
+                grid.setDataSource(ds);
+                grid.dataSource.page(1);
+            }, function(result) {
+                kendo.alert(result.message);
             });
-            grid.setDataSource(ds);
-            grid.dataSource.page(1);
-        }, function(result) {
-            kendo.alert(result.message);
-        });
-    });
-};
+    };
+
+    var initStartVoucher = function(e) {
+      var filter = GetAllDataForm('#form-window-voucher', 2);
+      var c = GetDataAjax(filter.columns);
+      var postdata = {
+          data: JSON.stringify(c.obj)
+      };
+      ErmisTemplateAjaxPost0(e, postdata, Ermis.link + '-start-voucher', function(result) {
+          var grid = $kGridVoucher.data("kendoGrid");          
+          var items = grid.dataSource.data();
+          voucherId = result.data.id;
+          for (var i = 0; i < items.length; i++) {
+              count_number = i+1;
+              var voucher = initErmisCountVoucher(result.data,count_number);
+              items[i]["revoucher"] = voucher;
+          };
+          grid.refresh();
+      }, function(result) {
+          kendo.alert(result.message);
+      });
+    };
+
+    var initChangeVoucher = function(e) {
+      var obj = {};
+      var grid = $kGridVoucher.data("kendoGrid");          
+      obj['items'] = grid.dataSource.data();
+      obj['voucherId'] = voucherId;
+      obj['number'] = count_number;
+      var postdata = {
+          data: JSON.stringify(obj)
+      };
+      ErmisTemplateAjaxPost0(e, postdata, Ermis.link + '-change-voucher', function(result) {
+          var grid = $kGridVoucher.data("kendoGrid");          
+          var items = grid.dataSource.data();
+          for (var i = 0; i < items.length; i++) {
+              items[i]["voucher"] = items[i]["revoucher"];
+          };
+          grid.refresh();
+          kendo.alert(result.message);
+      }, function(result) {
+          kendo.alert(result.message);
+      });
+    };
 
     var initKendoGridColorActive = function(){
       var grid = $kGrid.data("kendoGrid");
@@ -89,6 +134,10 @@ var Ermis = function () {
             jQuery('.new_item').on('click', initNew);
             jQuery('#get_data').on('click', initSearchData);
             jQuery('#re_voucher').on('click', initVoucherForm);
+            jQuery('#search_voucher').on('click',initSearchGridVoucher);
+            jQuery('.start_voucher').on('click',initStartVoucher);
+            jQuery('.change_voucher').on('click',initChangeVoucher);
+            jQuery('.import_item').on('click', initImport);
             //jQuery('.view_item').on('click', initView);
             //jQuery('.delete_item').on('click', initDelete);
             //jQuery('.write_item').on('click', initWrite);
@@ -98,6 +147,7 @@ var Ermis = function () {
             jQuery('.view_item,.delete_item,.print-item,.unwrite_item,.write_item').off('click');
             jQuery('.cancel-window').on('click', initClose);
             shortcut.add(key + "A", function (e) { initNew(e); });
+            shortcut.add(key + "I", function (e) { initImport(e); });
             //shortcut.add(key + "V", function (e) { initView(e); });
             //shortcut.add(key + "W", function (e) { initWrite(e); });
             //shortcut.add(key + "D", function (e) { initDelete(e); });
@@ -317,6 +367,39 @@ var Ermis = function () {
       });
   };
 
+  var initImport = function (e) {
+    ErmisTemplateEvent0(e, $import,
+    function () {
+        $import.data("kendoDialog").open();
+    },
+    function () {
+          initKendoUiImportDialog();
+    });
+};
+
+  var initKendoUiImportDialog = function () {      
+    $import = ErmisKendoDialogTemplate("#import","400px","Import",'<form id="import-form" enctype="multipart/form-data" role="form" method="post"><input name="files" id="files" type="file" /></form>','Import File','Download File',"Close",onImportFile,onDownloadFile);
+    ErmisKendoUploadTemplate("#files", false);
+    function onImportFile(e) {
+      var arr = {};
+      arr.action = 'import';
+      arr.com = Chat.com;
+      arr.key = Ermis.link;
+      ErmisTemplateAjaxPostAdd3(e,'#import-form',Ermis.link+'-import',arr,
+    function(results){
+       kendo.alert(results.message);
+      },
+     function(){},
+     function(results){
+       kendo.alert(results.message);
+     });
+    }
+    function onDownloadFile(e) {
+        var url = Ermis.link+'-DownloadExcel';
+        window.open(url);
+    }  
+};
+
     var initSearchData = function (e) {
         var obj = GetDataAjax(data.columns, data.elem);
         var postdata = { data: JSON.stringify(obj.obj) };
@@ -378,8 +461,7 @@ var Ermis = function () {
             initGlobalRegister();
             initStatus(Ermis.flag);
             initGetColunm();
-            initBack();       
-            initSearchGridVoucher();   
+            initBack();
         }
 
     };

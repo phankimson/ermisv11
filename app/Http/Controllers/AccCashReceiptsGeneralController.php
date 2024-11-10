@@ -7,21 +7,21 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Model\AccHistoryAction;
-use App\Http\Model\User;
 use App\Http\Model\Menu;
 use App\Http\Model\AccGeneral;
 use App\Http\Model\AccDetail;
 use App\Http\Model\AccSystems;
 use App\Http\Model\AccPeriod;
 use App\Http\Model\AccNumberVoucher;
+use App\Http\Model\AccCountVoucher;
 use App\Http\Model\AccCurrencyCheck;
-use App\Http\Model\CompanySoftware;
-use App\Http\Model\Company;
 use App\Http\Model\AccPrintTemplate;
 use App\Http\Model\Error;
 use App\Http\Resources\CashReceiptGeneralResource;
-use Illuminate\Support\Str;
+use App\Http\Model\Imports\AccCashReceiptImport;
+use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
+use Excel;
 
 class AccCashReceiptsGeneralController extends Controller
 {
@@ -230,5 +230,137 @@ class AccCashReceiptsGeneralController extends Controller
         return response()->json(['status'=>false,'message'=> trans('messages.error').' '.$e->getMessage()]);
       }
   }
+
+  public function start_voucher(Request $request){
+    $type = 10;
+    try{
+      $mysql2 = $request->session()->get('mysql2');
+      config(['database.connections.mysql2' => $mysql2]);
+      $req = json_decode($request->data);
+      // Tìm voucher
+      $v = AccNumberVoucher::get_menu($this->menu->id); 
+      $val = Convert::dateformatArr($v->format,$req->year.'-'.$req->month.'-'.$req->day);
+      $voucher = AccCountVoucher::get_count_voucher($v->id,$v->format,$val['day_format'],$val['month_format'],$val['year_format']);  
+      $data = collect($voucher);
+      $data->put('change_voucher',$v->change_voucher);
+      $data->put('prefix', $v->prefix);
+      if($voucher->count()>0){
+        return response()->json(['status'=>true,'data'=> $data]);
+      }else{
+        return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
+      }
+     }catch(Exception $e){
+        // Lưu lỗi
+        $err = new Error();
+        $err ->create([
+          'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
+          'user_id' => Auth::id(),
+          'menu_id' => $this->menu->id,
+          'error' => $e->getMessage(),
+          'url'  => $this->url,
+          'check' => 0 ]);
+        return response()->json(['status'=>false,'message'=> trans('messages.error').' '.$e->getMessage()]);
+      }
+  }
+
+  public function change_voucher(Request $request){
+    $type = 3;
+    try{
+      $mysql2 = $request->session()->get('mysql2');
+      config(['database.connections.mysql2' => $mysql2]);
+      $req = json_decode($request->data);
+      // Tìm voucher & lưu voucher
+      $voucher = AccCountVoucher::find($req->voucherId);  
+      $voucher->number = $req->number;
+      $voucher->save();
+      foreach($req->items as $item){
+        $general = AccGeneral::find($item->id);
+        $general->voucher = $item->revoucher;
+        $general->save();
+      };   
+     return response()->json(['status'=>true , 'message'=> trans('messages.update_success')]);
+     }catch(Exception $e){
+        // Lưu lỗi
+        $err = new Error();
+        $err ->create([
+          'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
+          'user_id' => Auth::id(),
+          'menu_id' => $this->menu->id,
+          'error' => $e->getMessage(),
+          'url'  => $this->url,
+          'check' => 0 ]);
+        return response()->json(['status'=>false,'message'=> trans('messages.error').' '.$e->getMessage()]);
+      }
+  }
+
+    public function DownloadExcel(Request $request){
+      return Storage::download('public/downloadFile/AccCashReceipts.xlsx');
+    }
+
+    
+ public function import(Request $request) {
+  ini_set('max_execution_time', 600);
+  $mysql2 = $request->session()->get('mysql2');
+  config(['database.connections.mysql2' => $mysql2]);
+ $type = 5;
+  try{
+  $permission = $request->session()->get('per');
+  if($permission['a'] && $request->hasFile('file')){
+    //Check
+    $request->validate([
+        'file' => 'required|mimeTypes:'.
+              'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,'.
+              'application/vnd.ms-excel',
+    ]);
+      $rs = json_decode($request->data);
+
+      $file = $request->file;
+      // Import dữ liệu
+      Excel::import(new AccCashReceiptImport, $file);
+      // Lấy lại dữ liệu
+      //$array = AccGeneral::with('detail')->get();
+
+      // Import dữ liệu bằng collection
+      //$results = Excel::toCollection(new HistoryActionImport, $file);
+      //dump($results);
+      //foreach($results[0] as $item){
+      //  $data = new HistoryAction();
+      //  $data->type = $item->get('type');
+      //  $data->user = $item->get('user');
+      //  $data->menu = $item->get('menu');
+      //  $data->dataz = $item->get('dataz');
+      //  $data->save();
+      //  $arr->push($data);
+      //}
+      //$merged = collect($rs)->push($array);
+      //dump($merged);
+    // Lưu lịch sử
+    $h = new AccHistoryAction();
+    $h ->create([
+      'type' => $type, // Add : 2 , Edit : 3 , Delete : 4, Import : 5
+      'user' => Auth::id(),
+      'menu' => $this->menu->id,
+      'url'  => $this->url,
+      'dataz' => \json_encode($merged)]);
+    //
+    //Storage::delete($savePath.$filename);
+    //broadcast(new \App\Events\DataSendCollection($merged));
+    return response()->json(['status'=>true,'message'=> trans('messages.success_import')]);
+    }else{
+      return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
+    }
+  }catch(Exception $e){
+    // Lưu lỗi
+    $err = new Error();
+    $err ->create([
+      'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
+      'user_id' => Auth::id(),
+      'menu_id' => $this->menu->id,
+      'error' => $e->getMessage(),
+      'url'  => $this->url,
+      'check' => 0 ]);
+    return response()->json(['status'=>false,'message'=> trans('messages.failed_import').' '.$e->getMessage()]);
+  }
+}
 
 }

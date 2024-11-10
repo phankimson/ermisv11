@@ -126,7 +126,11 @@ class AccVoucherController extends Controller
       $mysql2 = $request->session()->get('mysql2');
       config(['database.connections.mysql2' => $mysql2]);
       $req = json_decode($request->data);
-      $reference_array = [0 , $req->general_id ] ;
+      if($req->general_id = 0){
+        $reference_array = [0 ] ;   
+      }else{
+        $reference_array = [0 , $req->general_id ] ;   
+      }
       $data = CashReceiptGeneralResource::collection(AccGeneral::get_data_load_between_reference($req->filter_voucher,$req->start_date,$req->end_date,$reference_array));
       if($req && $data->count()>0 ){
         return response()->json(['status'=>true,'data'=> $data]);

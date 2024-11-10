@@ -8,7 +8,7 @@
 
     <div class="uk-margin-medium-top"></div>
 
-    <select class="droplist medium" id="fast_date">
+    <select class="medium" id="fast_date">
         <option value="">@lang('action.choose')</option>
         <option value="today">@lang('global.today')</option>
         <option value="this_week">@lang('global.this_week')</option>

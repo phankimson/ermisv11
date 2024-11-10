@@ -470,15 +470,15 @@ var Ermis = function() {
         shortcut.remove(key + ".");
         shortcut.remove(key + ",");
         shortcut.remove(key + "T");
-        jQuery('.add,.copy,.edit,.delete,.back,.forward,.print,.cancel,.save,.choose,.filter,.pageview,.reference,.write_item,.unwrite_item,.advance_teacher,.advance_employee').not('.back').addClass('disabled');
-        jQuery('.add,.copy,.edit,.delete,.back,.forward,.print-item,.cancel,.save,.choose,.pageview,.filter,.reference,.write_item,.unwrite_item,.advance_teacher,.advance_employee').not('.back').off('click');
+        jQuery('.add,.copy,.edit,.delete,.back,.forward,.print,.import,.cancel,.save,.choose,.filter,.pageview,.reference,.write_item,.unwrite_item,.advance_teacher,.advance_employee').not('.back_to').addClass('disabled');
+        jQuery('.add,.copy,.edit,.delete,.back,.forward,.print-item,.cancel,.save,.choose,.pageview,.filter,.reference,.write_item,.unwrite_item,.advance_teacher,.advance_employee').not('.back_to').off('click');
         jQuery('input,textarea').not(".start,.end").not('.header_main_search_input').not('#files').not('.k-filter-menu input').addClass('disabled');
         jQuery(".droplist").not('.not_disabled').addClass('disabled');
         jQuery('input:checkbox').parent().addClass('disabled');
         jQuery('.date-picker').not(".start,.end").addClass('disabled');
         jQuery(".k-input").not(".start,.end").addClass('disabled');
         jQuery('.choose_voucher').on('click', initChooseVoucher);
-        jQuery('.cancel-window').on('click', initClose);
+        jQuery('.cancel-window').on('click', initClose);  
         shortcut.add(key + "I", function(e) {
             initChooseVoucher(e);
         });
@@ -488,7 +488,7 @@ var Ermis = function() {
         dataDefaultGrid.vat = initGetDefaultKeyArray(Ermis.field_tax);
         if (flag === 1) { //ADD
             sessionStorage.removeItem("dataId");
-            jQuery('.cancel,.save,.choose,.cancel-window,.filter,.reference,.advance_teacher,.advance_employee').removeClass('disabled');
+            jQuery('.cancel,.save,.choose,.cancel-window,.filter,.reference,.import,.advance_teacher,.advance_employee').removeClass('disabled');
             jQuery('.cancel').on('click', initCancel);
             jQuery('.save').on('click', initSave);
             jQuery('.choose').on('click', initChoose);
@@ -498,11 +498,15 @@ var Ermis = function() {
             jQuery('.reference').on('click', initReferenceForm);
             jQuery('.attach').on('click', initAttachForm);
             jQuery('.voucher-change').on('click', initVoucherChangeForm);
+            jQuery('.import').on('click', initImport);
             shortcut.add(key + "S", function(e) {
                 initSave(e);
             });
             shortcut.add(key + "C", function(e) {
                 initCancel(e);
+            });
+            shortcut.add(key + "I", function(e) {
+                initImport(e);
             });
             jQuery('input,textarea').removeClass('disabled');
             jQuery('.k-button').removeClass('disabled');
@@ -774,6 +778,39 @@ var Ermis = function() {
         $auto.bind("change", OnChangeAuto);
     }
 
+    var initImport = function (e) {
+        ErmisTemplateEvent0(e, $import,
+        function () {
+            $import.data("kendoDialog").open();
+        },
+        function () {
+              initKendoUiImportDialog();
+        });
+    };
+    
+      var initKendoUiImportDialog = function () {      
+        $import = ErmisKendoDialogTemplate("#import","400px","Import",'<form id="import-form" enctype="multipart/form-data" role="form" method="post"><input name="files" id="files" type="file" /></form>','Import File','Download File',"Close",onImportFile,onDownloadFile);
+        ErmisKendoUploadTemplate("#files", false);
+        function onImportFile(e) {
+          var arr = {};
+          arr.action = 'import';
+          arr.com = Chat.com;
+          arr.key = Ermis.link;
+          ErmisTemplateAjaxPostAdd3(e,'#import-form',Ermis.link+'-import',arr,
+        function(results){
+           kendo.alert(results.message);
+          },
+         function(){},
+         function(results){
+           kendo.alert(results.message);
+         });
+        }
+        function onDownloadFile(e) {
+            var url = Ermis.link+'-DownloadExcel';
+            window.open(url);
+        }  
+    };
+
     var initChangeCurrency = function() {
         function OnChangeCurrency(e) {
             var value = this.value;
@@ -844,7 +881,7 @@ var Ermis = function() {
         jQuery('#get_data').on('click', function(e) {
             var filter = GetAllDataForm('#form-window-reference', 2);
             var c = GetDataAjax(filter.columns, filter.elem);
-              c.obj.general_id = sessionStorage.dataId;
+                c.obj.general_id = sessionStorage.dataId?sessionStorage.dataId:0;
             var postdata = {
                 data: JSON.stringify(c.obj)
             };
@@ -1276,8 +1313,8 @@ var Ermis = function() {
        };
     };
 
-    var initBack = function (e) {
-        jQuery(".back").on("click", function () {
+    var initBackTo = function (e) {
+        jQuery(".back_to").on("click", function () {
             window.history.go(-1);
         })
     };
@@ -1308,7 +1345,7 @@ var Ermis = function() {
             initGlobalRegister();
             initStatus(status);
             initClick();
-            initBack();
+            initBackTo();
             initKeyCode();
             initChangeAuto();
             initKendoGridSubject();

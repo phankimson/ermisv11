@@ -1,6 +1,6 @@
 <div class="uk-grid" id="form-search">
        <div class="uk-width-medium-4-4 mobile_full_width">
-           <select class="droplist medium" id="fast_date">
+           <select class="medium" id="fast_date">
                <option value="">@lang('action.choose')</option>
                <option value="today">@lang('global.today')</option>
                <option value="this_week">@lang('global.this_week')</option>

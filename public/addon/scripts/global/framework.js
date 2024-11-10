@@ -183,6 +183,21 @@ var initErmisVoucher = function(d){
   return voucher
 }
 
+var initErmisCountVoucher = function(d , i){
+  var data = d;
+  var char = '0';
+  var number_length = i.toString().length;
+  var number = parseInt(data.length_number);
+  const chars = {'DD': data.day,'MM': data.month,'YYYY': data.year,'X': char.repeat(number-number_length)+i ,'YY': data.year.slice(2)};
+  if(d.change_voucher == 1){
+    voucher = data.prefix + data.format.replaceAll(chars);
+}else{
+    voucher = data.prefix + char.repeat(number);
+}
+return voucher
+}
+
+
 var initErmisCheckSession = function(){
   if (!sessionStorage.status) {
       status = 1;
@@ -1577,3 +1592,14 @@ function calculatePriceAggregateDiscount(decimal) {
       }
     }
   }
+
+  String.prototype.replaceAll = function(obj) {
+    let finalString = ''; 
+    let words = this.toString();   
+    for (const o in obj){          
+            const value = obj[o];
+            words = words.replace(o,value);
+      }
+    
+    return words;
+};

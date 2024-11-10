@@ -17,9 +17,8 @@
   <div id="grid_voucher"></div>
 
   <div class="uk-margin" style="float : right">
-      <a href="javascript:;" class="k-button k-primary choose_voucher" data-uk-tooltip title="@lang('action.choose') "><i class="md-18 material-icons md-color-white">done</i>@lang('action.change')</a>
-      <a href="javascript:;" class="k-button k-primary choose_voucher" data-uk-tooltip title="@lang('action.choose') "><i class="md-18 material-icons md-color-white">check_circle</i>@lang('action.start')</a>
-      <a href="javascript:;" class="k-button k-primary cancel-window" data-uk-tooltip title="@lang('action.close') "><i class="md-18 material-icons md-color-white">not_interested</i>@lang('action.close')</a>
-  </div>  
-
-    </div>
+      <a href="javascript:;" class="k-button k-primary start_voucher" data-uk-tooltip title="@lang('action.start') "><i class="md-18 material-icons md-color-white">check_circle</i>@lang('action.start')</a>
+      <a href="javascript:;" class="k-button k-primary change_voucher" data-uk-tooltip title="@lang('action.choose') "><i class="md-18 material-icons md-color-white">done</i>@lang('action.change')</a>      
+      <a href="javascript:;" class="k-button k-primary cancel-window" data-uk-tooltip title="@lang('action.close') "><i class="md-18 material-icons md-color-white">not_interested</i>@lang('action.close')</a>  
+    </div>  
+   </div>

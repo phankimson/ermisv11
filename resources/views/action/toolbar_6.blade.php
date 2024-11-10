@@ -1,5 +1,5 @@
 <div class="md-card-toolbar-actions">
-<i class="md-icon material-icons back" data-uk-tooltip title="@lang('global.reply')">reply</i>
+<i class="md-icon material-icons back_to" data-uk-tooltip title="@lang('global.reply')">reply</i>
 <i class="md-icon material-icons md-card-fullscreen-activate toolbar_fixed" data-uk-tooltip title=" @lang('index.zoom')"></i>
 <i class="md-icon material-icons refesh" data-uk-tooltip title="@lang('global.refesh')"></i>
     <div class="md-card-dropdown" data-uk-dropdown="{pos:'bottom-right'}" aria-haspopup="true" aria-expanded="false">
@@ -14,6 +14,7 @@
               <li><a class="delete" href="javascript:;">@lang('action.delete')</a></li>
               <li><a class="back" href="javascript:;">@lang('action.back')</a></li>
               <li><a class="forward" href="javascript:;">@lang('action.forward')</a></li>
+              <li><a class="import" href="javascript:;">@lang('action.import')</a></li>
               <li><a class="print" href="javascript:;">@lang('action.print')</a></li>
             </ul>
         </div>

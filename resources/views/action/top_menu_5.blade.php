@@ -2,6 +2,7 @@
              <a class="new_item top_menu"><i class="md-24 material-icons" data-uk-tooltip title="@lang('action.new_page')  ({{ config('app.short_key')}}A)">note_add</i></a>
              <a class="view_item top_menu"><i class="md-24 material-icons" data-uk-tooltip title="@lang('action.view') ({{ config('app.short_key')}}V)">remove_red_eye</i></a>
              <a class="delete_item top_menu"><i class="md-24 material-icons" data-uk-tooltip title="@lang('action.delete') ({{ config('app.short_key')}}D)">delete_forever</i></a>
+             <a class="import_item top_menu"><i class="md-24 material-icons" data-uk-tooltip title="@lang('action.import') ({{ config('app.short_key')}}W)">archive</i></a>
              <a class="write_item top_menu"><i class="md-24 material-icons" data-uk-tooltip title="@lang('action.write') ({{ config('app.short_key')}}W)">flash_on</i></a>
              <a class="unwrite_item top_menu" style="display:none"><i class="md-24 material-icons" data-uk-tooltip title="@lang('action.unwrite')  ({{ config('app.short_key')}}U)">flash_off</i></a>
              <a class="refesh_item top_menu"><i class="md-24 material-icons" data-uk-tooltip title="@lang('action.refesh')  ({{ config('app.short_key')}}R)">restore_page</i></a>

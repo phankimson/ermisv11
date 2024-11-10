@@ -9,6 +9,9 @@
         <a class="delete_item"><i class="md-icon material-icons" data-uk-tooltip title="@lang('action.delete') ({{ config('app.short_key')}}D)">delete_forever</i>@lang('action.delete')</a>
     </li>
     <li>
+        <a class="import_item"><i class="md-icon material-icons" data-uk-tooltip title="@lang('action.import') ({{ config('app.short_key')}}I)">archive</i>@lang('action.import')</a>
+    </li>
+    <li>
         <a class="write_item"><i class="md-icon material-icons" data-uk-tooltip title="@lang('action.write') ({{ config('app.short_key')}}W)">flash_on</i>@lang('action.write')</a>
     </li>
     <li>
