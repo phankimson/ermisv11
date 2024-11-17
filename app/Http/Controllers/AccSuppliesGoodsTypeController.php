@@ -249,9 +249,10 @@ class AccSuppliesGoodsTypeController extends Controller
 
        $file = $request->file;
        // Import dữ liệu
-       Excel::import(new AccSuppliesGoodsTypeImport, $file);
+       $import = new AccSuppliesGoodsTypeImport;
+       Excel::import($import, $file);
        // Lấy lại dữ liệu
-       $array = AccSuppliesGoodsType::get_raw();
+       //$array = AccSuppliesGoodsType::get_raw();
 
        // Import dữ liệu bằng collection
        //$results = Excel::toCollection(new HistoryActionImport, $file);
@@ -265,7 +266,7 @@ class AccSuppliesGoodsTypeController extends Controller
        //  $data->save();
        //  $arr->push($data);
        //}
-       $merged = collect($rs)->push($array);
+       $merged = collect($rs)->push($import->getData());
        //dump($merged);
      // Lưu lịch sử
      $h = new AccHistoryAction();

@@ -12,12 +12,23 @@ use Maatwebsite\Excel\Concerns\WithChunkReading;
 
 class AccRevenueExpenditureImport implements ToModel, WithHeadingRow, WithBatchInserts, WithChunkReading
 {
+  private static $result = array();
   public function sheets(): array
     {
         return [
             new FirstSheetImport()
         ];
     }
+    
+    public function setData($arr)
+    {
+        array_push(self::$result,$arr);
+    } 
+
+    public function getData()
+    {
+        return self::$result;
+    }   
 
   /**
     * @param array $row
@@ -27,18 +38,21 @@ class AccRevenueExpenditureImport implements ToModel, WithHeadingRow, WithBatchI
     public function model(array $row)
     {
         //dump($row);
-        $type = AccRevenueExpenditureType::WhereDefault('code',$row['parent'])->first();
+        $type = AccRevenueExpenditureType::WhereDefault('code',$row['type'])->first();
         $code_check = AccRevenueExpenditure::WhereCheck('code',$row['code'],'id',null)->first();
         if($code_check == null){
-        return new AccRevenueExpenditure([
-           'id'     => Str::uuid()->toString(),
-           'type'    => $type == null ? $type : $type->id,
-           'code'    => $row['code'],
-           'name'    => $row['name'],
-           'name_en'    => $row['name_en'],
-           'description'    => $row['description'],
-           'active'    => $row['active'] == null ? 1 : $row['active'],
-       ]);
+          $arr = [
+            'id'     => Str::uuid()->toString(),
+            'type'    => $type == null ? $type : $type->id,
+            'code'    => $row['code'],
+            'name'    => $row['name'],
+            'name_en'    => $row['name_en'],
+            'description'    => $row['description'],
+            'active'    => $row['active'] == null ? 1 : $row['active'],
+          ];
+          $data = new AccRevenueExpenditureImport();
+          $data->setData($arr);
+        return new AccRevenueExpenditure($arr);
       }
     }
 

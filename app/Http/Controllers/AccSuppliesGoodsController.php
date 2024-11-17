@@ -31,8 +31,6 @@ use App\Http\Resources\DropDownListResource;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Model\Imports\AccSuppliesGoodsImport;
 use App\Http\Model\Exports\AccSuppliesGoodsExport;
-use App\Classes\Convert;
-use Illuminate\Support\Str;
 use Excel;
 use File;
 
@@ -493,9 +491,10 @@ class AccSuppliesGoodsController extends Controller
 
        $file = $request->file;
        // Import dữ liệu
-       Excel::import(new AccSuppliesGoodsImport, $file);
+       $import = new AccSuppliesGoodsImport;
+       Excel::import($import, $file);
        // Lấy lại dữ liệu
-       $array = AccSuppliesGoods::with('discount')->get();
+       //$array = AccSuppliesGoods::with('discount')->get();
 
        // Import dữ liệu bằng collection
        //$results = Excel::toCollection(new HistoryActionImport, $file);
@@ -509,7 +508,7 @@ class AccSuppliesGoodsController extends Controller
        //  $data->save();
        //  $arr->push($data);
        //}
-       $merged = collect($rs)->push($array);
+       $merged = collect($rs)->push($import->getData());
        //dump($merged);
      // Lưu lịch sử
      $h = new AccHistoryAction();

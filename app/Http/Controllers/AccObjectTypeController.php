@@ -250,7 +250,8 @@ class AccObjectTypeController extends Controller
 
        $file = $request->file;
        // Import dữ liệu
-       Excel::import(new AccObjectTypeImport, $file);
+       $import = new AccObjectTypeImport;
+       Excel::import($import, $file);
        // Lấy lại dữ liệu
        $array = AccObjectType::get_raw();
 
@@ -266,7 +267,7 @@ class AccObjectTypeController extends Controller
        //  $data->save();
        //  $arr->push($data);
        //}
-       $merged = collect($rs)->push($array);
+       $merged = collect($rs)->push($import->getData());
        //dump($merged);
      // Lưu lịch sử
      $h = new AccHistoryAction();

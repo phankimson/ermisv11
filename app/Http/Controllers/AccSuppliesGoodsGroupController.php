@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Model\AccHistoryAction;
-use App\Http\Model\User;
 use App\Http\Model\Menu;
 use App\Http\Model\AccSuppliesGoodsGroup;
 use App\Http\Model\CompanySoftware;
@@ -17,8 +16,6 @@ use App\Http\Model\Error;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Model\Imports\AccSuppliesGoodsGroupImport;
 use App\Http\Model\Exports\AccSuppliesGoodsGroupExport;
-use App\Classes\Convert;
-use Illuminate\Support\Str;
 use Excel;
 
 class AccSuppliesGoodsGroupController extends Controller
@@ -249,9 +246,10 @@ class AccSuppliesGoodsGroupController extends Controller
 
        $file = $request->file;
        // Import dữ liệu
-       Excel::import(new AccSuppliesGoodsGroupImport, $file);
+       $import = new AccSuppliesGoodsGroupImport;
+       Excel::import($import, $file);
        // Lấy lại dữ liệu
-       $array = AccSuppliesGoodsGroup::get_raw();
+       //$array = AccSuppliesGoodsGroup::get_raw();
 
        // Import dữ liệu bằng collection
        //$results = Excel::toCollection(new HistoryActionImport, $file);
@@ -265,7 +263,7 @@ class AccSuppliesGoodsGroupController extends Controller
        //  $data->save();
        //  $arr->push($data);
        //}
-       $merged = collect($rs)->push($array);
+       $merged = collect($rs)->push($import->getData());
        //dump($merged);
      // Lưu lịch sử
      $h = new AccHistoryAction();

@@ -972,7 +972,7 @@ Route::prefix('acc')->group(function () {
   Route::post('/cash-receipts-general-revoucher', 'revoucher' )->name('-revoucher');
   Route::post('/cash-receipts-general-start-voucher', 'start_voucher' )->name('-start-voucher');
   Route::post('/cash-receipts-general-change-voucher', 'change_voucher' )->name('-change-voucher');
-  Route::post('/cash-receipts-general-DownloadExcel', 'DownloadExcel' )->name('-DownloadExcel');
+  Route::get('/cash-receipts-general-DownloadExcel', 'DownloadExcel' )->name('-DownloadExcel');
   Route::any('/cash-receipts-general-import', 'import')->name('-import');
 
   Route::post('/cash-receipts-voucher-unwrite','unwrite' )->name('-unwrite');

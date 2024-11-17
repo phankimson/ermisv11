@@ -12,12 +12,25 @@ use Maatwebsite\Excel\Concerns\WithChunkReading;
 
 class AccNaturalResourcesImport implements ToModel, WithHeadingRow, WithBatchInserts, WithChunkReading
 {
+  private static $result = array();
   public function sheets(): array
     {
         return [
             new FirstSheetImport()
         ];
     }
+
+    
+    public function setData($arr)
+    {
+        array_push(self::$result,$arr);
+    } 
+
+    public function getData()
+    {
+        return self::$result;
+    }   
+
 
   /**
     * @param array $row
@@ -31,16 +44,19 @@ class AccNaturalResourcesImport implements ToModel, WithHeadingRow, WithBatchIns
         $parent = AccNaturalResources::WhereDefault('code',$row['parent'])->first();
         $code_check = AccNaturalResources::WhereCheck('code',$row['code'],'id',null)->first();
         if($code_check == null){
-        return new AccNaturalResources([
-           'id'     => Str::uuid()->toString(),
-           'parent_id'    => $parent == null ? $parent : $parent->id,
-           'code'    => $row['code'],
-           'name'    => $row['name'],
-           'name_en'    => $row['name_en'],
-           'unit_id'    => $unit == null ? 0 : $unit->id,
-           'natural_tax'    => $row['natural_tax'],
-           'active'    => $row['active'] == null ? 1 : $row['active'],
-       ]);
+          $arr = [
+            'id'     => Str::uuid()->toString(),
+            'parent_id'    => $parent == null ? $parent : $parent->id,
+            'code'    => $row['code'],
+            'name'    => $row['name'],
+            'name_en'    => $row['name_en'],
+            'unit_id'    => $unit == null ? 0 : $unit->id,
+            'natural_tax'    => $row['natural_tax'],
+            'active'    => $row['active'] == null ? 1 : $row['active'],
+          ];
+          $data = new AccNaturalResourcesImport();
+          $data->setData($arr);
+        return new AccNaturalResources($arr);
       }
     }
 

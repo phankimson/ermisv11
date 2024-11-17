@@ -252,9 +252,10 @@ class AccRevenueExpenditureController extends Controller
 
        $file = $request->file;
        // Import dữ liệu
-       Excel::import(new AccRevenueExpenditureImport, $file);
+       $import = new AccRevenueExpenditureImport;
+       Excel::import($import, $file);
        // Lấy lại dữ liệu
-       $array = AccRevenueExpenditure::get_raw();
+       //$array = AccRevenueExpenditure::get_raw();
 
        // Import dữ liệu bằng collection
        //$results = Excel::toCollection(new HistoryActionImport, $file);
@@ -268,7 +269,7 @@ class AccRevenueExpenditureController extends Controller
        //  $data->save();
        //  $arr->push($data);
        //}
-       $merged = collect($rs)->push($array);
+       $merged = collect($rs)->push($import->getData());
        //dump($merged);
      // Lưu lịch sử
      $h = new AccHistoryAction();

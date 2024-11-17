@@ -229,9 +229,7 @@ var Ermis = function () {
           arr.com = Chat.com;
           arr.key = Ermis.link;
           ErmisTemplateAjaxPostAdd3(e,'#import-form',Ermis.link+'-import',arr,
-        function(results){
-           kendo.alert(results.message);
-          },
+         function(){},
          function(){},
          function(results){
            //fix
@@ -391,7 +389,7 @@ var Ermis = function () {
           //}else{
           //  rd['row_number'] = 1;
           //}
-          grid.dataSource.insert(0, rd);
+          initAddGrid(rd,grid);
           jQuery.each(data.columns, function (k, v) {
               if (v.addoption === "true") {
                   jQuery('select[name="' + v.field + '"]').data("kendoDropDownList").dataSource.add({ "text": rd.code + ' - ' + rd.name, "value": rd.id });
@@ -628,10 +626,13 @@ var Ermis = function () {
           });
         Echo.private('data-import-'+Ermis.link+'-'+Chat.com)
            .listen('DataSendCollection', (rs) => {
-            var dataSource = new kendo.data.DataSource({ data: rs.data[0] , pageSize: Ermis.page_size });
             var grid = $kGrid.data("kendoGrid");
-            dataSource.read();
-            grid.setDataSource(dataSource);
+            //var dataSource = new kendo.data.DataSource({ data: rs.data[0] , pageSize: Ermis.page_size });            
+            // dataSource.read();
+            //grid.setDataSource(dataSource);
+            jQuery.each(rs.data[0], function (k, v) {
+              initAddGrid(v,grid);
+            });        
             jQuery.each(data.columns, function (k, v) {
               if (v.addoption === "true") {
                 jQuery.each(rs.data[0], function (l,m) {

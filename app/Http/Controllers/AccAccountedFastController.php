@@ -251,9 +251,10 @@ class AccAccountedFastController extends Controller
 
        $file = $request->file;
        // Import dữ liệu
-       Excel::import(new AccAccountedFastImport, $file);
+       $import = new AccAccountedFastImport;
+       Excel::import($import, $file);
        // Lấy lại dữ liệu
-       $array = AccAccountedFast::get_raw();
+       //$array = AccAccountedFast::get_raw();
 
        // Import dữ liệu bằng collection
        //$results = Excel::toCollection(new HistoryActionImport, $file);
@@ -267,7 +268,7 @@ class AccAccountedFastController extends Controller
        //  $data->save();
        //  $arr->push($data);
        //}
-       $merged = collect($rs)->push($array);
+       $merged = collect($rs)->push($import->getData());
        //dump($merged);
      // Lưu lịch sử
      $h = new AccHistoryAction();

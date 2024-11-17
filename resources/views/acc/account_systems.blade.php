@@ -6,7 +6,7 @@
 @endpush
 
 @push('action')
-@include('action.top_menu_4')
+@include('action.top_menu_2')
 @endpush
 
 @push('export_extra')

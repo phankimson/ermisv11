@@ -248,9 +248,10 @@ class AccCostCodeController extends Controller
 
        $file = $request->file;
        // Import dữ liệu
-       Excel::import(new AccCostCodeImport, $file);
+       $import = new AccCostCodeImport;
+       Excel::import($import , $file);
        // Lấy lại dữ liệu
-       $array = AccCostCode::get_raw();
+       //$array = AccCostCode::get_raw();
 
        // Import dữ liệu bằng collection
        //$results = Excel::toCollection(new HistoryActionImport, $file);
@@ -264,7 +265,7 @@ class AccCostCodeController extends Controller
        //  $data->save();
        //  $arr->push($data);
        //}
-       $merged = collect($rs)->push($array);
+       $merged = collect($rs)->push($import->getData());
        //dump($merged);
      // Lưu lịch sử
      $h = new AccHistoryAction();

@@ -239,9 +239,7 @@ var Ermis = function () {
           arr.com = Chat.com;
           arr.key = Ermis.link;
           ErmisTemplateAjaxPostAdd3(e,'#import-form',Ermis.link+'-import',arr,
-        function(results){
-           kendo.alert(results.message);
-          },
+         function(){},
          function(){},
          function(results){
            kendo.alert(results.message);
@@ -660,16 +658,22 @@ var Ermis = function () {
           });
         Echo.private('data-import-'+Ermis.link+'-'+Chat.com)
            .listen('DataSendCollection', (rs) => {
-            var dataSource = new kendo.data.TreeListDataSource({ data: rs.data[0] , schema: {
-                model: {
-                    id: "id",
-                    parentId:  "parent_id",
-                    fields: data.fields,
-                    expanded: true
-                },
-            }});
             var grid = $kGrid.data("kendoTreeList");
-            grid.setDataSource(dataSource);
+           //var dataSource = new kendo.data.TreeListDataSource({ data: rs.data[0] , schema: {
+           //   model: {
+           //        id: "id",
+           //        parentId:  "parent_id",
+           //       fields: data.fields,
+           //       expanded: true
+           //    },
+           // }});
+           //grid.setDataSource(dataSource);
+            jQuery.each(rs.data[0], function (k, v) {
+              grid.dataSource.pushCreate(v);
+            }); 
+            
+           
+         
                 jQuery.each(data.columns, function (k, v) {
                   if (v.addoption === "true") {
                     jQuery.each(rs.data[0], function (l,m) {

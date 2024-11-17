@@ -248,9 +248,10 @@ class AccStatisticalCodeController extends Controller
 
        $file = $request->file;
        // Import dữ liệu
-       Excel::import(new AccStatisticalCodeImport, $file);
+       $import = new AccStatisticalCodeImport;
+       Excel::import($import, $file);
        // Lấy lại dữ liệu
-       $array = AccStatisticalCode::get_raw();
+       //$array = AccStatisticalCode::get_raw();
 
        // Import dữ liệu bằng collection
        //$results = Excel::toCollection(new HistoryActionImport, $file);
@@ -264,7 +265,7 @@ class AccStatisticalCodeController extends Controller
        //  $data->save();
        //  $arr->push($data);
        //}
-       $merged = collect($rs)->push($array);
+       $merged = collect($rs)->push($import->getData());
        //dump($merged);
      // Lưu lịch sử
      $h = new AccHistoryAction();

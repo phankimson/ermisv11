@@ -246,9 +246,10 @@ class AccWarrantyPeriodController extends Controller
 
        $file = $request->file;
        // Import dữ liệu
-       Excel::import(new AccWarrantyPeriodImport, $file);
+       $import = new AccWarrantyPeriodImport;
+       Excel::import($import, $file);
        // Lấy lại dữ liệu
-       $array = AccWarrantyPeriod::get_raw();
+       //$array = AccWarrantyPeriod::get_raw();
 
        // Import dữ liệu bằng collection
        //$results = Excel::toCollection(new HistoryActionImport, $file);
@@ -262,7 +263,7 @@ class AccWarrantyPeriodController extends Controller
        //  $data->save();
        //  $arr->push($data);
        //}
-       $merged = collect($rs)->push($array);
+       $merged = collect($rs)->push($import->getData());
        //dump($merged);
      // Lưu lịch sử
      $h = new AccHistoryAction();

@@ -316,9 +316,10 @@ class AccCashReceiptsGeneralController extends Controller
 
       $file = $request->file;
       // Import dữ liệu
-      Excel::import(new AccCashReceiptImport, $file);
+      $import = new AccCashReceiptImport;
+      Excel::import($import, $file);
       // Lấy lại dữ liệu
-      //$array = AccGeneral::with('detail')->get();
+      //$array = AccGeneral::with('detail','tax')->get();
 
       // Import dữ liệu bằng collection
       //$results = Excel::toCollection(new HistoryActionImport, $file);
@@ -332,7 +333,7 @@ class AccCashReceiptsGeneralController extends Controller
       //  $data->save();
       //  $arr->push($data);
       //}
-      //$merged = collect($rs)->push($array);
+      $merged = collect($rs)->push($import->getData());
       //dump($merged);
     // Lưu lịch sử
     $h = new AccHistoryAction();
@@ -345,7 +346,7 @@ class AccCashReceiptsGeneralController extends Controller
     //
     //Storage::delete($savePath.$filename);
     //broadcast(new \App\Events\DataSendCollection($merged));
-    return response()->json(['status'=>true,'message'=> trans('messages.success_import')]);
+    return response()->json(['status'=>true,'message'=> trans('messages.success_import'),'data' => $merged]);
     }else{
       return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
     }

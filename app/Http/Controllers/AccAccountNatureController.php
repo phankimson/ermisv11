@@ -16,7 +16,6 @@ use App\Http\Model\Error;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Model\Imports\AccAccountNatureImport;
 use App\Http\Model\Exports\AccAccountNatureExport;
-use App\Classes\Convert;
 use Excel;
 
 class AccAccountNatureController extends Controller
@@ -246,9 +245,10 @@ class AccAccountNatureController extends Controller
 
        $file = $request->file;
        // Import dữ liệu
-       Excel::import(new AccAccountNatureImport, $file);
+       $import = new AccAccountNatureImport;
+       Excel::import($import, $file);
        // Lấy lại dữ liệu
-       $array = AccAccountNature::get_raw();
+       //$array = AccAccountNature::get_raw();
 
        // Import dữ liệu bằng collection
        //$results = Excel::toCollection(new HistoryActionImport, $file);
@@ -262,7 +262,7 @@ class AccAccountNatureController extends Controller
        //  $data->save();
        //  $arr->push($data);
        //}
-       $merged = collect($rs)->push($array);
+       $merged = collect($rs)->push($import->getData());
        //dump($merged);
      // Lưu lịch sử
      $h = new AccHistoryAction();

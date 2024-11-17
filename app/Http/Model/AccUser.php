@@ -7,12 +7,20 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use App\Http\Model\Message;
 use App\Http\Model\Timeline;
+use App\Http\Traits\ScopesTraits;
+use App\Http\Traits\BootedTraits;
 use Illuminate\Support\Facades\Cache;
 use DB;
 
 class AccUser extends Authenticatable
 {
     use Notifiable;
+    use ScopesTraits,BootedTraits;
+    
+    protected static function booted()
+    {
+        static::BootedBaseTrait();
+    }
      protected $table = 'users';
     /**
      * The attributes that are mass assignable.
@@ -22,7 +30,8 @@ class AccUser extends Authenticatable
     //protected $fillable = [
       //  'fullname', 'email', 'password',
     //];
-    protected $guarded = ['id'];
+    public $incrementing = false; // and it doesn't even have to be auto-incrementing!
+    protected $guarded = [];
     /**
      * The attributes that should be hidden for arrays.
      *
@@ -34,7 +43,7 @@ class AccUser extends Authenticatable
 
     protected $dates = ['birthday'];
 
-    /**
+      /**
      * The attributes that should be cast to native types.
      *
      * @var array

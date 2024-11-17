@@ -10,15 +10,27 @@ use Maatwebsite\Excel\Concerns\WithBatchInserts;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Row;
 use Maatwebsite\Excel\Concerns\OnEachRow;
+use Illuminate\Support\Arr;
 
 class AccSettingAccountGroupImport implements OnEachRow, WithHeadingRow, WithBatchInserts, WithChunkReading
 {
+  private static $result = array();
   public function sheets(): array
     {
         return [
             new FirstSheetImport(),
           ];
     }
+
+    public function setData($arr)
+    {
+        array_push(self::$result,$arr);
+    } 
+
+    public function getData()
+    {
+        return self::$result;
+    }   
 
   /**
     * @param array $row
@@ -30,25 +42,42 @@ class AccSettingAccountGroupImport implements OnEachRow, WithHeadingRow, WithBat
         //dump($row);
         $code_check = AccSettingAccountGroup::WhereCheck('code',$row['code'],'id',null)->first();
         if($code_check == null){
-        $id = Str::uuid()->toString();
-        $group = AccSettingAccountGroup::firstOrCreate([
-           'id'     => $id ,
-           'code'    => $row['code'],
-           'name'    => $row['name'],
-           'account_group'    => $row['account_group'],      
-           'active'    => $row['active'] == null ? 1 : $row['active'],
-       ]);
-       $filter = explode(",",$row['account_filter']);
-       foreach ($filter as $f){
-           $account_systems = AccAccountSystems::WhereDefault('code',$f)->first();
-           if($account_systems){
-            $group->account_filter()->create([
-                'id' => Str::uuid()->toString(),
-                'account_systems' => $account_systems->id,
-            ]);
-           }           
-       }
-         
+        $arr = 
+        [
+            'code'    => $row['code'],
+            'name'    => $row['name'],
+            'account_group'    => $row['account_group'], 
+            'active'    => $row['active'] == null ? 1 : $row['active'],
+        ];
+        $data = new AccSettingAccountGroupImport();
+        // Xài firstOrCreate tự chạy id trong BootedTraits
+        $group = AccSettingAccountGroup::firstOrCreate($arr);
+        // refresh khi tạo xong
+        if ($group->wasRecentlyCreated) {
+            $group->refresh();
+        };
+        // Lấy lại id đã tạo
+        $arr['id'] = $group->id;
+        // Tách tài khoản filter
+        if($row['account_filter']){
+            $filter = explode(",",$row['account_filter']);
+            $account_filter = array();
+            foreach ($filter as $f){
+                $account_systems = AccAccountSystems::WhereDefault('code',$f)->first();
+                if($account_systems){
+                $item = [
+                    'id' => Str::uuid()->toString(),
+                    'account_systems' => $account_systems->id,
+                ];            
+                array_push($account_filter,$item);
+                $group->account_filter()->create($item);
+                }           
+            }
+            // Lấy pluck tài khoản
+            $a = Arr::pluck($account_filter, 'account_systems');
+            $arr['account_filter'] = $a;    
+        }          
+       $data->setData($arr);
         }
     }
 

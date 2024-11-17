@@ -19,12 +19,24 @@ use Maatwebsite\Excel\Concerns\WithChunkReading;
 
 class AccSuppliesGoodsImport implements ToModel, WithHeadingRow, WithBatchInserts, WithChunkReading
 {
+  private static $result = array();
   public function sheets(): array
     {
         return [
             new FirstSheetImport()
         ];
     }
+
+    public function setData($arr)
+    {
+        $arr['discount'] = array();
+        array_push(self::$result,$arr);
+    } 
+
+    public function getData()
+    {
+        return self::$result;
+    }   
 
   /**
     * @param array $row
@@ -46,36 +58,40 @@ class AccSuppliesGoodsImport implements ToModel, WithHeadingRow, WithBatchInsert
         $excise_tax = AccExcise::WhereDefault('code',$row['excise_tax'])->first();
         $code_check = AccSuppliesGoods::WhereCheck('code',$row['code'],'id',null)->first();
         if($code_check == null){
-        return new AccSuppliesGoods([
-           'id'     => Str::uuid()->toString(),
-           'code'    => $row['code'],
-           'name'    => $row['name'],
-           'name_en'    => $row['name_en'],
-           'description'    => $row['description'],
-           'unit_id'    => $unit == null ? 0 : $unit->id,
-           'type'    => $type == null ? 0 : $type->id,
-           'group'    => $group == null ? 0 : $group->id,
-           'interpretations_buy'    => $row['interpretations_buy'],
-           'interpretations_sell'    => $row['interpretations_sell'],
-           'warranty_period'    => $warranty_period == null ? 0 : $warranty_period->id,
-           'minimum_stock_quantity'    => $row['minimum_stock_quantity'],
-           'maximum_stock_quantity'    => $row['maximum_stock_quantity'],
-           'origin'    => $row['origin'],
-           'stock_default'    =>  $stock == null ? 0 : $stock->id,
-           'stock_account'    => $stock_account == null ? 0 : $stock_account->id,
-           'revenue_account'    => $revenue_account == null ? 0 : $revenue_account->id,
-           'cost_account'    => $cost_account == null ? 0 : $cost_account->id,
-           'percent_purchase_discount'    => $row['percent_purchase_discount'],
-           'purchase_discount'    => $row['purchase_discount'],
-           'price_purchase'    => $row['price_purchase'],
-           'price'    => $row['price'],
-           'vat_tax'    => $vat_tax == null ? 0 : $vat_tax->id,
-           'import_tax'    => $row['import_tax'],
-           'export_tax'    => $row['export_tax'],
-           'excise_tax'    => $excise_tax == null ? 0 : $excise_tax->id,
-           'identity'    => $row['identity'],
-           'active'    => $row['active'] == null ? 1 : $row['active'],
-       ]);
+          $arr =[
+            'id'     => Str::uuid()->toString(),
+            'code'    => $row['code'],
+            'name'    => $row['name'],
+            'name_en'    => $row['name_en'],
+            'description'    => $row['description'],
+            'unit_id'    => $unit == null ? 0 : $unit->id,
+            'type'    => $type == null ? 0 : $type->id,
+            'group'    => $group == null ? 0 : $group->id,
+            'interpretations_buy'    => $row['interpretations_buy'],
+            'interpretations_sell'    => $row['interpretations_sell'],
+            'warranty_period'    => $warranty_period == null ? 0 : $warranty_period->id,
+            'minimum_stock_quantity'    => $row['minimum_stock_quantity'],
+            'maximum_stock_quantity'    => $row['maximum_stock_quantity'],
+            'origin'    => $row['origin'],
+            'stock_default'    =>  $stock == null ? 0 : $stock->id,
+            'stock_account'    => $stock_account == null ? 0 : $stock_account->id,
+            'revenue_account'    => $revenue_account == null ? 0 : $revenue_account->id,
+            'cost_account'    => $cost_account == null ? 0 : $cost_account->id,
+            'percent_purchase_discount'    => $row['percent_purchase_discount'],
+            'purchase_discount'    => $row['purchase_discount'],
+            'price_purchase'    => $row['price_purchase'],
+            'price'    => $row['price'],
+            'vat_tax'    => $vat_tax == null ? 0 : $vat_tax->id,
+            'import_tax'    => $row['import_tax'],
+            'export_tax'    => $row['export_tax'],
+            'excise_tax'    => $excise_tax == null ? 0 : $excise_tax->id,
+            'identity'    => $row['identity'],
+            'image' => 'addon/img/placehold/100.png',
+            'active'    => $row['active'] == null ? 1 : $row['active'],
+          ];
+          $data = new AccSuppliesGoodsImport();
+          $data->setData($arr);
+        return new AccSuppliesGoods($arr);
       }
     }
 

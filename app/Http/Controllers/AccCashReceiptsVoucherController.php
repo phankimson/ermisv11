@@ -37,8 +37,11 @@ use App\Http\Model\AccObject;
 use App\Http\Model\Error;
 use App\Classes\Convert;
 use App\Http\Model\AccObjectType;
+use App\Http\Model\Imports\AccCashReceiptGeneralImport;
+use App\Http\Model\Imports\AccCashReceiptVoucherImport;
 use App\Http\Model\Document;
 use Carbon\Carbon;
+use Excel;
 
 class AccCashReceiptsVoucherController extends Controller
 {
@@ -359,6 +362,53 @@ class AccCashReceiptsVoucherController extends Controller
          'check' => 0 ]);
        return response()->json(['status'=>false,'message'=> trans('messages.error').' '.$e->getMessage()]);
      }
+  }
+
+  public function import(Request $request) {
+    ini_set('max_execution_time', 600);
+    $mysql2 = $request->session()->get('mysql2');
+    config(['database.connections.mysql2' => $mysql2]);
+   $type = 5;
+    try{
+    $permission = $request->session()->get('per');
+    if($permission['a'] && $request->hasFile('file')){
+      //Check
+      $request->validate([
+          'file' => 'required|mimeTypes:'.
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,'.
+                'application/vnd.ms-excel',
+      ]);
+        $rs = json_decode($request->data);
+  
+        $file = $request->file;
+        // Đổi dữ liệu Excel sang collect
+        $data = Excel::toCollection(new AccCashReceiptGeneralImport, $file); 
+        $detail = Excel::toCollection(new AccCashReceiptVoucherImport($data->id), $file); 
+       
+      // Lưu lịch sử
+      $h = new AccHistoryAction();
+      $h ->create([
+        'type' => $type, // Add : 2 , Edit : 3 , Delete : 4, Import : 5
+        'user' => Auth::id(),
+        'menu' => $this->menu->id,
+        'url'  => $this->url,
+        'dataz' => \json_encode($merged)]);
+      return response()->json(['status'=>true,'message'=> trans('messages.success_import'),'data'=>$data]);
+      }else{
+        return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
+      }
+    }catch(Exception $e){
+      // Lưu lỗi
+      $err = new Error();
+      $err ->create([
+        'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
+        'user_id' => Auth::id(),
+        'menu_id' => $this->menu->id,
+        'error' => $e->getMessage(),
+        'url'  => $this->url,
+        'check' => 0 ]);
+      return response()->json(['status'=>false,'message'=> trans('messages.failed_import').' '.$e->getMessage()]);
+    }
   }
 
 

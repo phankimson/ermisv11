@@ -11,12 +11,24 @@ use Maatwebsite\Excel\Concerns\WithChunkReading;
 
 class AccCaseCodeImport implements ToModel, WithHeadingRow, WithBatchInserts, WithChunkReading
 {
+  private static $result = array();
   public function sheets(): array
     {
         return [
             new FirstSheetImport()
         ];
     }
+    
+    public function setData($arr)
+    {
+        array_push(self::$result,$arr);
+    } 
+
+    public function getData()
+    {
+        return self::$result;
+    }   
+
 
   /**
     * @param array $row
@@ -28,14 +40,17 @@ class AccCaseCodeImport implements ToModel, WithHeadingRow, WithBatchInserts, Wi
         //dump($row);
         $code_check = AccCaseCode::WhereCheck('code',$row['code'],'id',null)->first();
         if($code_check == null){
-        return new AccCaseCode([
-           'id'     => Str::uuid()->toString(),
-           'code'    => $row['code'],
-           'name'    => $row['name'],
-           'name_en'    => $row['name_en'],
-           'description'    => $row['description'],
-           'active'    => $row['active'] == null ? 1 : $row['active'],
-       ]);
+          $arr = [
+            'id'     => Str::uuid()->toString(),
+            'code'    => $row['code'],
+            'name'    => $row['name'],
+            'name_en'    => $row['name_en'],
+            'description'    => $row['description'],
+            'active'    => $row['active'] == null ? 1 : $row['active'],
+          ];
+          $data = new AccCaseCodeImport();
+          $data->setData($arr);
+        return new AccCaseCode($arr);
       }
     }
 

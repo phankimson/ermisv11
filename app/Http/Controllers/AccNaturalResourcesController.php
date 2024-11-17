@@ -268,9 +268,10 @@ class AccNaturalResourcesController extends Controller
 
        $file = $request->file;
        // Import dữ liệu
-       Excel::import(new AccNaturalResourcesImport, $file);
+       $import = new AccNaturalResourcesImport;
+       Excel::import($import, $file);
        // Lấy lại dữ liệu
-       $array = AccNaturalResources::get_raw();
+       //$array = AccNaturalResources::get_raw();
 
        // Import dữ liệu bằng collection
        //$results = Excel::toCollection(new HistoryActionImport, $file);
@@ -284,7 +285,7 @@ class AccNaturalResourcesController extends Controller
        //  $data->save();
        //  $arr->push($data);
        //}
-       $merged = collect($rs)->push($array);
+       $merged = collect($rs)->push($import->getData());
        //dump($merged);
      // Lưu lịch sử
      $h = new AccHistoryAction();

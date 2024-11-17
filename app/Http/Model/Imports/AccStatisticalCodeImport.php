@@ -11,12 +11,22 @@ use Maatwebsite\Excel\Concerns\WithChunkReading;
 
 class AccStatisticalCodeImport implements ToModel, WithHeadingRow, WithBatchInserts, WithChunkReading
 {
+  private static $result = array();
   public function sheets(): array
     {
         return [
             new FirstSheetImport()
         ];
     }
+    public function setData($arr)
+    {
+        array_push(self::$result,$arr);
+    } 
+
+    public function getData()
+    {
+        return self::$result;
+    }   
 
   /**
     * @param array $row
@@ -28,14 +38,17 @@ class AccStatisticalCodeImport implements ToModel, WithHeadingRow, WithBatchInse
         //dump($row);
         $code_check = AccStatisticalCode::WhereCheck('code',$row['code'],'id',null)->first();
         if($code_check == null){
-        return new AccStatisticalCode([
-           'id'     => Str::uuid()->toString(),
-           'code'    => $row['code'],
-           'name'    => $row['name'],
-           'name_en'    => $row['name_en'],
-           'description'    => $row['description'],         
-           'active'    => $row['active'] == null ? 1 : $row['active'],
-       ]);
+          $arr = [
+            'id'     => Str::uuid()->toString(),
+            'code'    => $row['code'],
+            'name'    => $row['name'],
+            'name_en'    => $row['name_en'],
+            'description'    => $row['description'],         
+            'active'    => $row['active'] == null ? 1 : $row['active'],
+          ];
+          $data = new AccStatisticalCodeImport();
+          $data->setData($arr);
+        return new AccStatisticalCode($arr);
       }
     }
 

@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Model\AccHistoryAction;
 use App\Http\Model\AccUser;
 use App\Http\Model\Menu;
-use App\Http\Model\Company;
 use App\Http\Model\Country;
 use App\Http\Model\AccGroupUsers;
 use App\Http\Model\Systems;
@@ -19,6 +18,7 @@ use App\Http\Model\Exports\AccUserExport;
 use App\Classes\Convert;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Arr;
 use Excel;
 use File;
 
@@ -220,7 +220,7 @@ class AccUserManagerController extends Controller
         $arr = json_decode($request->data);
         if($arr){
           if($permission['d'] == true){
-            $data = User::find($arr->id);
+            $data = AccUser::find($arr->id);
             // Lưu lịch sử
             $h = new AccHistoryAction();
             $h ->create([
@@ -230,7 +230,6 @@ class AccUserManagerController extends Controller
             'url'  => $this->url,
             'dataz' => \json_encode($data)]);
             //
-
             //Xóa ảnh cũ
             if(File::exists(public_path($data->avatar)) && $data->avatar != 'addon/img/avatar.png'){
                File::delete(public_path($data->avatar));
@@ -281,10 +280,10 @@ class AccUserManagerController extends Controller
 
        $file = $request->file;
        // Import dữ liệu
-       Excel::import(new AccUserImport, $file);
+       $import = new AccUserImport;
+       Excel::import($import, $file);
        // Lấy lại dữ liệu
-       $array = AccUser::company($com->id)->get()->makeVisible(['active_code','password']);
-
+       //$array = AccUser::company($com->id)->get()->makeVisible(['active_code','password']);       
        // Import dữ liệu bằng collection
        //$results = Excel::toCollection(new HistoryActionImport, $file);
        //dump($results);
@@ -297,7 +296,7 @@ class AccUserManagerController extends Controller
        //  $data->save();
        //  $arr->push($data);
        //}
-       $merged = collect($rs)->push($array);
+       $merged = collect($rs)->push($import->getData());
        //dump($merged);
      // Lưu lịch sử
      $h = new AccHistoryAction();

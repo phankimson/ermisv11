@@ -250,9 +250,10 @@ class AccStockController extends Controller
 
        $file = $request->file;
        // Import dữ liệu
-       Excel::import(new AccStockImport, $file);
+       $import = new AccStockImport;
+       Excel::import($import, $file);
        // Lấy lại dữ liệu
-       $array = AccStock::get_raw();
+       //$array = AccStock::get_raw();
 
        // Import dữ liệu bằng collection
        //$results = Excel::toCollection(new HistoryActionImport, $file);
@@ -266,7 +267,7 @@ class AccStockController extends Controller
        //  $data->save();
        //  $arr->push($data);
        //}
-       $merged = collect($rs)->push($array);
+       $merged = collect($rs)->push($import->getData());
        //dump($merged);
      // Lưu lịch sử
      $h = new AccHistoryAction();

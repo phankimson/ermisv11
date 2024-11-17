@@ -207,6 +207,16 @@ var initErmisCheckSession = function(){
   return status;
 }
 
+var initAddGrid = function(rd,grid){
+  var dataItem = grid.dataItem("tbody tr:eq(0)");
+  if(dataItem != undefined){
+    rd['row_number'] = dataItem['row_number']+1;
+  }else{
+    rd['row_number'] = 1;
+  }
+  grid.dataSource.insert(0, rd);
+}
+
 
 var initReadOnlyGrid = function(container, options){
   container.text(options.model[options.field]);

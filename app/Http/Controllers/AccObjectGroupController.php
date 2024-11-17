@@ -248,9 +248,10 @@ class AccObjectGroupController extends Controller
 
        $file = $request->file;
        // Import dữ liệu
-       Excel::import(new AccObjectGroupImport, $file);
+       $import = new AccObjectGroupImport;
+       Excel::import($import, $file);
        // Lấy lại dữ liệu
-       $array = AccObjectGroup::get_raw();
+       //$array = AccObjectGroup::get_raw();
 
        // Import dữ liệu bằng collection
        //$results = Excel::toCollection(new HistoryActionImport, $file);
@@ -264,7 +265,7 @@ class AccObjectGroupController extends Controller
        //  $data->save();
        //  $arr->push($data);
        //}
-       $merged = collect($rs)->push($array);
+       $merged = collect($rs)->push($import->getData());
        //dump($merged);
      // Lưu lịch sử
      $h = new AccHistoryAction();

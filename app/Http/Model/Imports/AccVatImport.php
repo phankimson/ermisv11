@@ -11,12 +11,24 @@ use Maatwebsite\Excel\Concerns\WithChunkReading;
 
 class AccVatImport implements ToModel, WithHeadingRow, WithBatchInserts, WithChunkReading
 {
+  private static $result = array();
   public function sheets(): array
     {
         return [
             new FirstSheetImport()
         ];
     }
+
+    public function setData($arr)
+    {
+        array_push(self::$result,$arr);
+    } 
+
+    public function getData()
+    {
+        return self::$result;
+    }   
+
 
   /**
     * @param array $row
@@ -28,14 +40,17 @@ class AccVatImport implements ToModel, WithHeadingRow, WithBatchInserts, WithChu
         //dump($row);
         $code_check = AccVat::WhereCheck('code',$row['code'],'id',null)->first();
         if($code_check == null){
-        return new AccVat([
-           'id'     => Str::uuid()->toString(),
-           'code'    => $row['code'],
-           'name'    => $row['name'],
-           'name_en'    => $row['name_en'],
-           'vat_tax'    => $row['vat_tax'],
-           'active'    => $row['active'] == null ? 1 : $row['active'],
-       ]);
+            $arr = [
+                'id'     => Str::uuid()->toString(),
+                'code'    => $row['code'],
+                'name'    => $row['name'],
+                'name_en'    => $row['name_en'],
+                'vat_tax'    => $row['vat_tax'],
+                'active'    => $row['active'] == null ? 1 : $row['active'],
+            ];
+            $data = new AccVatImport();
+            $data->setData($arr);
+        return new AccVat($arr);
        }
     }
 

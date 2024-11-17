@@ -76,7 +76,7 @@
                <tr>
                    <td class="row-label"><label>@lang('user.country')</label></td>
                    <td>
-                     <select class="droplist large" data-position="8" data-title="@lang('user.country')" add-option="true" data-template="#= FormatDropList(country,'country') #" data-type="string" data-width="200px" name="country">
+                     <select class="droplist large" data-position="8" data-title="@lang('user.country')" data-template="#= FormatDropList(country,'country') #" data-type="string" data-width="200px" name="country">
                              <option readonly selected value="0">--Select--</option>
                              @foreach($country as $c)
                                <option value="{{ $c->id }}">{{ $c->code }} - {{ $c->name }}</option>

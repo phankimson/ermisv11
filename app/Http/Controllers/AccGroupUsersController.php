@@ -181,9 +181,10 @@ class AccGroupUsersController extends Controller
 
        $file = $request->file;
        // Import dữ liệu
-       Excel::import(new AccGroupUsersImport, $file);
+       $import = new AccGroupUsersImport;
+       Excel::import($import, $file);
        // Lấy lại dữ liệu
-       $array = AccGroupUsers::get_raw($com->id);
+       //$array = AccGroupUsers::get_raw($com->id);
 
        // Import dữ liệu bằng collection
        //$results = Excel::toCollection(new HistoryActionImport, $file);
@@ -197,7 +198,7 @@ class AccGroupUsersController extends Controller
        //  $data->save();
        //  $arr->push($data);
        //}
-       $merged = collect($rs)->push($array);
+       $merged = collect($rs)->push($import->getData());
        //dump($merged);
      // Lưu lịch sử
      $h = new AccHistoryAction();

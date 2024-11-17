@@ -248,7 +248,8 @@ class AccWorkCodeController extends Controller
 
        $file = $request->file;
        // Import dữ liệu
-       Excel::import(new AccWorkCodeImport, $file);
+       $import = new AccWorkCodeImport;
+       Excel::import($import, $file);
        // Lấy lại dữ liệu
        $array = AccWorkCode::get_raw();
 
@@ -264,7 +265,7 @@ class AccWorkCodeController extends Controller
        //  $data->save();
        //  $arr->push($data);
        //}
-       $merged = collect($rs)->push($array);
+       $merged = collect($rs)->push($import->getData());
        //dump($merged);
      // Lưu lịch sử
      $h = new AccHistoryAction();
