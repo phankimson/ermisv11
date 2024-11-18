@@ -181,9 +181,10 @@ class SystemsController extends Controller
 
        $file = $request->file;
        // Import dữ liệu
-       Excel::import(new SystemsImport, $file);
+       $import = new SystemsImport;
+       Excel::import($import, $file);
        // Lấy lại dữ liệu
-       $array = Systems::get_raw();
+       //$array = Systems::get_raw();
 
        // Import dữ liệu bằng collection
        //$results = Excel::toCollection(new HistoryActionImport, $file);
@@ -197,7 +198,7 @@ class SystemsController extends Controller
        //  $data->save();
        //  $arr->push($data);
        //}
-       $merged = collect($rs)->push($array);
+       $merged = collect($rs)->push($import->getData());
        //dump($merged);
      // Lưu lịch sử
      $h = new HistoryAction();

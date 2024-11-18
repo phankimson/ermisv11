@@ -14,12 +14,24 @@ use Maatwebsite\Excel\Concerns\WithChunkReading;
 
 class HistoryActionImport implements ToModel, WithHeadingRow, WithBatchInserts, WithChunkReading
 {
+  private static $result = array();
   public function sheets(): array
     {
         return [
             new FirstSheetImport()
         ];
     }
+
+    public function setData($arr)
+    {
+        array_push(self::$result,$arr);
+    } 
+
+    public function getData()
+    {
+        return self::$result;
+    }   
+
 
   /**
     * @param array $row
@@ -31,14 +43,17 @@ class HistoryActionImport implements ToModel, WithHeadingRow, WithBatchInserts, 
       $user = User::WhereDefault('username',$row['user'])->first();
       $menu = Menu::WhereDefault('code',$row['menu'])->first();
         //dump($row);
-        return new HistoryAction([
-           'id'     => Str::uuid()->toString(),
-           'url'    => $row['url'],
-           'type'    => $row['type'],
-           'user'    =>  $user == null ? 0 : $user->id,
-           'menu'    =>  $menu == null ? 0 : $menu->id,
-           'dataz'    => $row['dataz'],
-       ]);
+        $arr = [
+          'id'     => Str::uuid()->toString(),
+          'url'    => $row['url'],
+          'type'    => $row['type'],
+          'user'    =>  $user == null ? 0 : $user->id,
+          'menu'    =>  $menu == null ? 0 : $menu->id,
+          'dataz'    => $row['dataz'],
+        ];
+        $data = new HistoryActionImport();
+        $data->setData($arr);
+        return new HistoryAction($arr);
     }
     public function batchSize(): int
    {

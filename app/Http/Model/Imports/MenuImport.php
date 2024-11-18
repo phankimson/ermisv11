@@ -13,12 +13,23 @@ use Maatwebsite\Excel\Concerns\WithChunkReading;
 
 class MenuImport implements ToModel, WithHeadingRow, WithBatchInserts, WithChunkReading
 {
+  private static $result = array();
   public function sheets(): array
     {
         return [
             new FirstSheetImport()
         ];
     }
+    public function setData($arr)
+    {
+        array_push(self::$result,$arr);
+    } 
+
+    public function getData()
+    {
+        return self::$result;
+    }   
+
 
   /**
     * @param array $row
@@ -31,18 +42,21 @@ class MenuImport implements ToModel, WithHeadingRow, WithBatchInserts, WithChunk
         $type = Software::WhereDefault('url',$row['type'])->first();
         $code_check = Menu::WhereCheck1('code',$row['code'],'link',$row['link'],'id',null)->first();
         if($code_check == null){
-        return new Menu([
-           'id'     => Str::uuid()->toString(),
-           'type'    => $type == null ? 0 : $type->id,
-           'parent_id'  => $menu == null ? 0 : $menu->id,
-           'code'    => $row['code'],
-           'name'    => $row['name'],
-           'name_en'    => $row['name_en'],
-           'icon'    => $row['icon'],
-           'link'    => $row['link'],
-           'position'    => Convert::IntDefaultformat($row['position']),
-           'active'    => $row['active'] == null ? 1 : $row['active'],
-       ]);
+          $arr = [
+            'id'     => Str::uuid()->toString(),
+            'type'    => $type == null ? 0 : $type->id,
+            'parent_id'  => $menu == null ? 0 : $menu->id,
+            'code'    => $row['code'],
+            'name'    => $row['name'],
+            'name_en'    => $row['name_en'],
+            'icon'    => $row['icon'],
+            'link'    => $row['link'],
+            'position'    => Convert::IntDefaultformat($row['position']),
+            'active'    => $row['active'] == null ? 1 : $row['active'],
+          ];
+          $data = new MenuImport();
+          $data->setData($arr);
+        return new Menu($arr);
      }
     }
     public function batchSize(): int

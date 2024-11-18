@@ -210,12 +210,13 @@ class MenuController extends Controller
 
         $file = $request->file;
         // Import dữ liệu
-        Excel::import(new MenuImport, $file);
+        $import = new MenuImport;
+        Excel::import($import, $file);
         // Lấy lại dữ liệu
-        $array = Menu::get_raw_type($rs->ts);
+        //$array = Menu::get_raw_type($rs->ts);
 
         // Import dữ liệu bằng collection
-        $results = Excel::toCollection(new MenuImport, $file);
+        //$results = Excel::toCollection(new MenuImport, $file);
         //dump($results);
         //foreach($results[0] as $item){
         //  $data = new HistoryAction();
@@ -226,7 +227,7 @@ class MenuController extends Controller
         //  $data->save();
         //  $arr->push($data);
         //}
-        $merged = collect($rs)->push($array);
+        $merged = collect($rs)->push($import->getData());
         //dump($merged);
       // Lưu lịch sử
       $h = new HistoryAction();
@@ -235,7 +236,7 @@ class MenuController extends Controller
         'user' => Auth::id(),
         'menu' => $this->menu->id,
         'url' => $this->url,
-        'dataz' => \json_encode($results)]);
+        'dataz' => \json_encode($merged)]);
       //
       //Storage::delete($savePath.$filename);
       broadcast(new \App\Events\DataSendCollection($merged));

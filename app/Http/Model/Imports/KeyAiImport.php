@@ -12,12 +12,24 @@ use Maatwebsite\Excel\Concerns\WithChunkReading;
 
 class KeyAiImport implements ToModel, WithHeadingRow, WithBatchInserts, WithChunkReading
 {
+  private static $result = array();
   public function sheets(): array
     {
         return [
             new FirstSheetImport()
         ];
     }
+
+    public function setData($arr)
+    {
+        array_push(self::$result,$arr);
+    } 
+
+    public function getData()
+    {
+        return self::$result;
+    }   
+
 
   /**
     * @param array $row
@@ -28,18 +40,21 @@ class KeyAiImport implements ToModel, WithHeadingRow, WithBatchInserts, WithChun
     {
       $code_check = KeyAi::WhereCheck('code',$row['code'],'id',null)->first();
       if($code_check == null){
-        return new KeyAi([
-           'id'     => Str::uuid()->toString(),
-           'content'    => Convert::StringDefaultformat($row['content']),
-           'count'    => Convert::IntDefaultformat($row['count']),
-           'code'    => Convert::StringDefaultformat($row['code']),
-           'name'    => Convert::StringDefaultformat($row['name']),
-           'name_en'    => Convert::StringDefaultformat($row['name_en']),
-           'field'    => Convert::StringDefaultformat($row['field']),
-           'crit'    => Convert::StringDefaultformat($row['crit']),
-           'crit_en'    => Convert::StringDefaultformat($row['crit_en'] == null),
-           'active'    => $row['active'] == null ? 1 : $row['active'],
-       ]);
+        $arr = [
+          'id'     => Str::uuid()->toString(),
+          'content'    => Convert::StringDefaultformat($row['content']),
+          'count'    => Convert::IntDefaultformat($row['count']),
+          'code'    => Convert::StringDefaultformat($row['code']),
+          'name'    => Convert::StringDefaultformat($row['name']),
+          'name_en'    => Convert::StringDefaultformat($row['name_en']),
+          'field'    => Convert::StringDefaultformat($row['field']),
+          'crit'    => Convert::StringDefaultformat($row['crit']),
+          'crit_en'    => Convert::StringDefaultformat($row['crit_en'] == null),
+          'active'    => $row['active'] == null ? 1 : $row['active'],
+        ];
+        $data = new KeyAiImport();
+        $data->setData($arr);
+        return new KeyAi($arr);
      }
     }
 

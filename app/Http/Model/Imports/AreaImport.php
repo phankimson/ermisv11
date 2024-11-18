@@ -13,12 +13,23 @@ use Maatwebsite\Excel\Concerns\WithChunkReading;
 
 class AreaImport implements ToModel, WithHeadingRow, WithBatchInserts, WithChunkReading
 {
+  private static $result = array();
   public function sheets(): array
     {
         return [
             new FirstSheetImport()
         ];
     }
+
+    public function setData($arr)
+    {
+        array_push(self::$result,$arr);
+    } 
+
+    public function getData()
+    {
+        return self::$result;
+    }   
 
   /**
     * @param array $row
@@ -31,14 +42,17 @@ class AreaImport implements ToModel, WithHeadingRow, WithBatchInserts, WithChunk
       $code_check = Area::WhereCheck('code',$row['code'],'id',null)->first();
       if($code_check == null){
         //dump($row);
-        return new Area([
-           'id'     => Str::uuid()->toString(),
-           'regions'    =>  $regions == null ? 0 : $regions->id,
-           'code'    => Convert::StringDefaultformat($row['code']),
-           'name'    => Convert::StringDefaultformat($row['name']),
-           'name_en'    => Convert::StringDefaultformat($row['name_en']),
-           'active'    => $row['active'] == null ? 1 : $row['active'],
-       ]);
+        $arr = [
+          'id'     => Str::uuid()->toString(),
+          'regions'    =>  $regions == null ? 0 : $regions->id,
+          'code'    => Convert::StringDefaultformat($row['code']),
+          'name'    => Convert::StringDefaultformat($row['name']),
+          'name_en'    => Convert::StringDefaultformat($row['name_en']),
+          'active'    => $row['active'] == null ? 1 : $row['active'],
+        ];
+        $data = new AreaImport();
+        $data->setData($arr);
+        return new Area($arr);
      }
     }
 

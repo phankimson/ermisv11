@@ -12,12 +12,24 @@ use Maatwebsite\Excel\Concerns\WithChunkReading;
 
 class SystemsImport implements ToModel, WithHeadingRow, WithBatchInserts, WithChunkReading
 {
+    private static $result = array();
   public function sheets(): array
     {
         return [
             new FirstSheetImport()
         ];
     }
+
+    public function setData($arr)
+    {
+        array_push(self::$result,$arr);
+    } 
+
+    public function getData()
+    {
+        return self::$result;
+    }   
+
 
   /**
     * @param array $row
@@ -29,18 +41,21 @@ class SystemsImport implements ToModel, WithHeadingRow, WithBatchInserts, WithCh
         //dump($row);
         $code_check = Systems::WhereCheck('code',$row['code'],'id',null)->first();
         if($code_check == null){
-        return new Systems([
-           'id'     => Str::uuid()->toString(),
-           'code'    => $row['code'],
-           'name'    => $row['name'],
-           'value'    => $row['value'],
-           'value1'    => $row['value1'],
-           'value2'    => $row['value2'],
-           'value3'    => $row['value3'],
-           'value4'    => $row['value4'],
-           'value5'    => $row['value5'],
-           'active'    => $row['active'] == null ? 1 : $row['active'],
-            ]);
+            $arr = [
+                'id'     => Str::uuid()->toString(),
+                'code'    => $row['code'],
+                'name'    => $row['name'],
+                'value'    => $row['value'],
+                'value1'    => $row['value1'],
+                'value2'    => $row['value2'],
+                'value3'    => $row['value3'],
+                'value4'    => $row['value4'],
+                'value5'    => $row['value5'],
+                'active'    => $row['active'] == null ? 1 : $row['active'],
+            ];
+          $data = new SystemsImport();
+          $data->setData($arr);
+        return new Systems($arr);
          }
     }
     public function batchSize(): int

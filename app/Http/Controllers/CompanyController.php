@@ -210,9 +210,10 @@ class CompanyController extends Controller
 
        $file = $request->file;
        // Import dữ liệu
-       Excel::import(new CompanyImport, $file);
+       $import = new CompanyImport;
+       Excel::import($import, $file);
        // Lấy lại dữ liệu
-       $array = Company::get_raw();
+       //$array = Company::get_raw();
 
        // Import dữ liệu bằng collection
        //$results = Excel::toCollection(new HistoryActionImport, $file);
@@ -226,7 +227,7 @@ class CompanyController extends Controller
        //  $data->save();
        //  $arr->push($data);
        //}
-       $merged = collect($rs)->push($array);
+       $merged = collect($rs)->push($import->getData());
        //dump($merged);
      // Lưu lịch sử
      $h = new HistoryAction();

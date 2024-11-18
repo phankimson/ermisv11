@@ -12,12 +12,23 @@ use Illuminate\Support\Str;
 
 class GroupUsersImport implements ToModel, WithHeadingRow, WithBatchInserts, WithChunkReading
 {
+  private static $result = array();
   public function sheets(): array
     {
         return [
             new FirstSheetImport()
         ];
     }
+
+    public function setData($arr)
+    {
+        array_push(self::$result,$arr);
+    } 
+
+    public function getData()
+    {
+        return self::$result;
+    }   
 
   /**
     * @param array $row
@@ -29,13 +40,16 @@ class GroupUsersImport implements ToModel, WithHeadingRow, WithBatchInserts, Wit
       $company = Company::WhereDefault('code',$row['company'])->first();
       $code_check = GroupUsers::WhereCheck('code',$row['code'],'id',null)->first();
         if($code_check == null){
-        return new GroupUsers([
-           'id'     => Str::uuid()->toString(),
-           'company_id' => $company == null ? 0 : $company->id,
-           'name'    => $row['code'],
-           'code'    => $row['name'],
-           'active'    => $row['active'] == null ? 1 : $row['active'],
-       ]);
+          $arr = [
+            'id'     => Str::uuid()->toString(),
+            'company_id' => $company == null ? 0 : $company->id,
+            'name'    => $row['code'],
+            'code'    => $row['name'],
+            'active'    => $row['active'] == null ? 1 : $row['active'],
+          ];
+          $data = new GroupUsersImport();
+          $data->setData($arr);
+        return new GroupUsers($arr);
      }
     }
     public function batchSize(): int

@@ -176,9 +176,10 @@ class DistricController extends Controller
 
        $file = $request->file;
        // Import dữ liệu
-       Excel::import(new DistricImport, $file);
+       $import = new DistricImport;
+       Excel::import($import, $file);
        // Lấy lại dữ liệu
-       $array = Distric::get_raw();
+       //$array = Distric::get_raw();
 
        // Import dữ liệu bằng collection
        //$results = Excel::toCollection(new HistoryActionImport, $file);
@@ -192,7 +193,7 @@ class DistricController extends Controller
        //  $data->save();
        //  $arr->push($data);
        //}
-       $merged = collect($rs)->push($array);
+       $merged = collect($rs)->push($import->getData());
        //dump($merged);
      // Lưu lịch sử
      $h = new HistoryAction();

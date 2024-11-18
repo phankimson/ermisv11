@@ -190,9 +190,10 @@ class ErrorController extends Controller
 
         $file = $request->file;
         // Import dữ liệu
-        Excel::import(new ErrorImport, $file);
+        $import = new ErrorImport;
+        Excel::import($import, $file);
         // Lấy lại dữ liệu
-        $array = Error::get_raw_type($rs->ts);
+        //$array = Error::get_raw_type($rs->ts);
 
         // Import dữ liệu bằng collection
         //$results = Excel::toCollection(new HistoryActionImport, $file);
@@ -206,7 +207,7 @@ class ErrorController extends Controller
         //  $data->save();
         //  $arr->push($data);
         //}
-        $merged = collect($rs)->push($array);
+        $merged = collect($rs)->push($import->getData());
         //dump($merged);
       // Lưu lịch sử
       $type = 5;

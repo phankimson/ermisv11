@@ -184,9 +184,10 @@ class DocumentController extends Controller
 
        $file = $request->file;
        // Import dữ liệu
-       Excel::import(new DocumentImport, $file);
+       $import = new DocumentImport;
+       Excel::import($import, $file);
        // Lấy lại dữ liệu
-       $array = Document::all();
+       //$array = Document::all();
 
        // Import dữ liệu bằng collection
        //$results = Excel::toCollection(new HistoryActionImport, $file);
@@ -200,7 +201,7 @@ class DocumentController extends Controller
        //  $data->save();
        //  $arr->push($data);
        //}
-       $merged = collect($rs)->push($array);
+       $merged = collect($rs)->push($import->getData());
        //dump($merged);
      // Lưu lịch sử
      $h = new HistoryAction();

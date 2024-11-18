@@ -244,9 +244,10 @@ class SoftwareController extends Controller
 
        $file = $request->file;
        // Import dữ liệu
-       Excel::import(new SoftwareImport, $file);
+       $import = new SoftwareImport;
+       Excel::import($import, $file);
        // Lấy lại dữ liệu
-       $array = Software::get_raw();
+       //$array = Software::get_raw();
 
        // Import dữ liệu bằng collection
        //$results = Excel::toCollection(new HistoryActionImport, $file);
@@ -260,7 +261,7 @@ class SoftwareController extends Controller
        //  $data->save();
        //  $arr->push($data);
        //}
-       $merged = collect($rs)->push($array);
+       $merged = collect($rs)->push($import->getData());
        //dump($merged);
      // Lưu lịch sử
      $h = new HistoryAction();

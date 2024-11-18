@@ -266,9 +266,10 @@ class UserManagerController extends Controller
 
        $file = $request->file;
        // Import dữ liệu
-       Excel::import(new UserImport, $file);
+       $import = new UserImport;
+       Excel::import($import, $file);
        // Lấy lại dữ liệu
-       $array = User::all()->makeVisible(['active_code','password']);
+       //$array = User::all()->makeVisible(['active_code','password']);
 
        // Import dữ liệu bằng collection
        //$results = Excel::toCollection(new HistoryActionImport, $file);
@@ -282,7 +283,7 @@ class UserManagerController extends Controller
        //  $data->save();
        //  $arr->push($data);
        //}
-       $merged = collect($rs)->push($array);
+       $merged = collect($rs)->push($import->getData());
        //dump($merged);
      // Lưu lịch sử
      $h = new HistoryAction();

@@ -187,9 +187,10 @@ class HistoryActionController extends Controller
 
         $file = $request->file;
         // Import dữ liệu
-        Excel::import(new HistoryActionImport, $file);
+        $import = new HistoryActionImport;
+        Excel::import($import, $file);
         // Lấy lại dữ liệu
-        $array = HistoryAction::get_raw_type($rs->ts);
+        //$array = HistoryAction::get_raw_type($rs->ts);
 
         // Import dữ liệu bằng collection
         //$results = Excel::toCollection(new HistoryActionImport, $file);
@@ -203,7 +204,7 @@ class HistoryActionController extends Controller
         //  $data->save();
         //  $arr->push($data);
         //}
-        $merged = collect($rs)->push($array);
+        $merged = collect($rs)->push($import->getData());
         //dump($merged);
       // Lưu lịch sử
       //  $type = 5;

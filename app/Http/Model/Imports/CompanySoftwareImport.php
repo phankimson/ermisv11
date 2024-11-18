@@ -16,12 +16,22 @@ use Maatwebsite\Excel\Concerns\WithChunkReading;
 
 class CompanySoftwareImport implements ToModel, WithHeadingRow, WithBatchInserts, WithChunkReading
 {
+  private static $result = array();
   public function sheets(): array
     {
         return [
             new FirstSheetImport()
         ];
     }
+    public function setData($arr)
+    {
+        array_push(self::$result,$arr);
+    } 
+
+    public function getData()
+    {
+        return self::$result;
+    }   
 
   /**
     * @param array $row
@@ -39,17 +49,20 @@ class CompanySoftwareImport implements ToModel, WithHeadingRow, WithBatchInserts
       $db = CompanySoftware::WhereCheck('database',$row['database'],'id',null)->first();
       $hashids = new Hashids('',50);
       if($soft == 0 && $db == null){
-        return new CompanySoftware([
-           'id'     => Str::uuid()->toString(),
-           'company_id'    => $c ,
-           'software_id'    => $s,
-           'license_id'    => $license == null ? 0 : $license->id,
-           'free'    => Convert::IntDefaultformat($row['free']),
-           'database'    => $row['database'],
-           'username'    => $row['username'],
-           'password'    => $hashids->encode($row['password']),
-           'active'    => $row['active'] == null ? 1 : $row['active'],
-       ]);
+        $arr = [
+          'id'     => Str::uuid()->toString(),
+          'company_id'    => $c ,
+          'software_id'    => $s,
+          'license_id'    => $license == null ? 0 : $license->id,
+          'free'    => Convert::IntDefaultformat($row['free']),
+          'database'    => $row['database'],
+          'username'    => $row['username'],
+          'password'    => $hashids->encode($row['password']),
+          'active'    => $row['active'] == null ? 1 : $row['active'],
+        ];
+        $data = new CompanySoftwareImport();
+        $data->setData($arr);
+        return new CompanySoftware();
      }
     }
 

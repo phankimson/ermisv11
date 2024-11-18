@@ -15,6 +15,7 @@ use Maatwebsite\Excel\Concerns\WithChunkReading;
 
 class LicenseImport implements ToModel, WithHeadingRow, WithBatchInserts, WithChunkReading
 {
+  private static $result = array();
   public function sheets(): array
     {
         return [
@@ -22,6 +23,15 @@ class LicenseImport implements ToModel, WithHeadingRow, WithBatchInserts, WithCh
         ];
     }
 
+    public function setData($arr)
+    {
+        array_push(self::$result,$arr);
+    } 
+
+    public function getData()
+    {
+        return self::$result;
+    }   
 
   /**
     * @param array $row
@@ -36,15 +46,18 @@ class LicenseImport implements ToModel, WithHeadingRow, WithBatchInserts, WithCh
       $code_check = License::WhereCheck('keygen',$row['keygen'],'id',null)->first();
       if($code_check == null){
         //dump($row);
-        return new License([
-           'id'     => Str::uuid()->toString(),
-           'date_start'    =>  Convert::dateDefaultformat($row['date_start'],'Y-m-d'),
-           'date_end'    => Convert::dateDefaultformat($row['date_end'],'Y-m-d'),
-           'keygen'    => $row['keygen'] == '' ? Str::random($sys->value) : $row['keygen'],
-           'company_use'    => $company == null ? 0 : $company->id,
-           'software_use'    => $software == null ? 0 : $software->id,
-           'active'    => $row['active'] == null ? 1 : $row['active'],
-       ]);
+        $arr = [
+          'id'     => Str::uuid()->toString(),
+          'date_start'    =>  Convert::dateDefaultformat($row['date_start'],'Y-m-d'),
+          'date_end'    => Convert::dateDefaultformat($row['date_end'],'Y-m-d'),
+          'keygen'    => $row['keygen'] == '' ? Str::random($sys->value) : $row['keygen'],
+          'company_use'    => $company == null ? 0 : $company->id,
+          'software_use'    => $software == null ? 0 : $software->id,
+          'active'    => $row['active'] == null ? 1 : $row['active'],
+        ];
+        $data = new LicenseImport();
+        $data->setData($arr);
+        return new License($arr);
      }
     }
     public function batchSize(): int
