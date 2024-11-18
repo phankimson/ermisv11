@@ -12,12 +12,22 @@ use Maatwebsite\Excel\Concerns\WithChunkReading;
 
 class AccNumberCodeImport implements ToModel, WithHeadingRow, WithBatchInserts, WithChunkReading
 {
+  private static $result = array();
   public function sheets(): array
     {
         return [
             new FirstSheetImport()
         ];
     }
+    public function setData($arr)
+    {
+        array_push(self::$result,$arr);
+    } 
+
+    public function getData()
+    {
+        return self::$result;
+    }   
 
   /**
     * @param array $row
@@ -30,17 +40,20 @@ class AccNumberCodeImport implements ToModel, WithHeadingRow, WithBatchInserts, 
           $code_check = AccNumberCode::WhereCheck('code',$row['code'],'id',null)->first();
           $menu = Menu::WhereDefault('code',$row['menu'])->first();
           if($code_check == null){
-          return new AccNumberCode([
-            'id'     => Str::uuid()->toString(),
-            'menu_id'    => $menu == null ? 0 : $menu->id,
-            'code'    => $row['code'],
-            'name'    => $row['name'],
-            'suffixes'    => $row['suffixes'],
-            'prefix'    => $row['prefix'],
-            'number'    => $row['number'],
-            'length_number'    => $row['length_number'],
-            'active'    => $row['active'] == null ? 1 : $row['active'],
-        ]);
+            $arr = [
+              'id'     => Str::uuid()->toString(),
+              'menu_id'    => $menu == null ? 0 : $menu->id,
+              'code'    => $row['code'],
+              'name'    => $row['name'],
+              'suffixes'    => $row['suffixes'],
+              'prefix'    => $row['prefix'],
+              'number'    => $row['number'],
+              'length_number'    => $row['length_number'],
+              'active'    => $row['active'] == null ? 1 : $row['active'],
+            ];
+            $data = new AccNumberCodeImport();
+            $data->setData($arr);
+          return new AccNumberCode($arr);
         }
     }
 

@@ -216,9 +216,10 @@ class AccSystemsController extends Controller
 
        $file = $request->file;
        // Import dữ liệu
-       Excel::import(new AccSystemsImport, $file);
+       $import = new AccSystemsImport;
+       Excel::import($import, $file);
        // Lấy lại dữ liệu
-       $array = AccSystems::get_raw();
+       //$array = AccSystems::get_raw();
 
        // Import dữ liệu bằng collection
        //$results = Excel::toCollection(new HistoryActionImport, $file);
@@ -232,7 +233,7 @@ class AccSystemsController extends Controller
        //  $data->save();
        //  $arr->push($data);
        //}
-       $merged = collect($rs)->push($array);
+       $merged = collect($rs)->push($import->getData());
        //dump($merged);
      // Lưu lịch sử
      $h = new AccHistoryAction();

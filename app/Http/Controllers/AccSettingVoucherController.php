@@ -321,9 +321,10 @@ class AccSettingVoucherController extends Controller
 
        $file = $request->file;
        // Import dữ liệu
-       Excel::import(new AccSettingVoucherImport, $file);
+       $import = new AccSettingVoucherImport;
+       Excel::import($import, $file);
        // Lấy lại dữ liệu
-       $array = AccSettingVoucher::get_raw();
+       //$array = AccSettingVoucher::get_raw();
 
        // Import dữ liệu bằng collection
        //$results = Excel::toCollection(new HistoryActionImport, $file);
@@ -337,7 +338,7 @@ class AccSettingVoucherController extends Controller
        //  $data->save();
        //  $arr->push($data);
        //}
-       $merged = collect($rs)->push($array);
+       $merged = collect($rs)->push($import->getData());
        //dump($merged);
      // Lưu lịch sử
      $h = new AccHistoryAction();

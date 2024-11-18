@@ -28,4 +28,5 @@ return [
     "year_full" => "năm đầy đủ",
     "format" => "Định dạng",
     "change_voucher" => "Thay đổi phiếu",
+    "format_type"=>"Loại định dạng",
 ];

@@ -225,9 +225,10 @@ class AccCountVoucherController extends Controller
 
        $file = $request->file;
        // Import dữ liệu
-       Excel::import(new AccCountVoucherImport, $file);
+       $import = new AccCountVoucherImport;
+       Excel::import($import, $file);
        // Lấy lại dữ liệu
-       $array = AccCountVoucher::get_raw();
+       //$array = AccCountVoucher::get_raw();
 
        // Import dữ liệu bằng collection
        //$results = Excel::toCollection(new HistoryActionImport, $file);
@@ -241,7 +242,7 @@ class AccCountVoucherController extends Controller
        //  $data->save();
        //  $arr->push($data);
        //}
-       $merged = collect($rs)->push($array);
+       $merged = collect($rs)->push($import->getData());
        //dump($merged);
      // Lưu lịch sử
      $h = new AccHistoryAction();

@@ -11,12 +11,24 @@ use Maatwebsite\Excel\Concerns\WithChunkReading;
 
 class AccSystemsImport implements ToModel, WithHeadingRow, WithBatchInserts, WithChunkReading
 {
+  private static $result = array();
   public function sheets(): array
     {
         return [
             new FirstSheetImport()
         ];
     }
+
+    public function setData($arr)
+    {
+        array_push(self::$result,$arr);
+    } 
+
+    public function getData()
+    {
+        return self::$result;
+    }   
+
 
   /**
     * @param array $row
@@ -25,16 +37,20 @@ class AccSystemsImport implements ToModel, WithHeadingRow, WithBatchInserts, Wit
 
     public function model(array $row)
     {
+      
         //dump($row);
         $code_check = AccSystems::WhereCheck('code',$row['code'],'id',null)->first();
         if($code_check == null){
-        return new AccSystems([
-           'id'     => Str::uuid()->toString(),
-           'code'    => $row['code'],
-           'name'    => $row['name'],
-           'value'    => $row['value'],
-           'active'    => $row['active'] == null ? 1 : $row['active'],
-            ]);
+            $arr = [
+                'id'     => Str::uuid()->toString(),
+                'code'    => $row['code'],
+                'name'    => $row['name'],
+                'value'    => $row['value'],
+                'active'    => $row['active'] == null ? 1 : $row['active'],
+            ];
+        $data = new AccSystemsImport();
+        $data->setData($arr);
+        return new AccSystems($arr);
         }
     }
 

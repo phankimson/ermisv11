@@ -12,12 +12,23 @@ use Maatwebsite\Excel\Concerns\WithChunkReading;
 
 class AccNumberVoucherImport implements ToModel, WithHeadingRow, WithBatchInserts, WithChunkReading
 {
+  private static $result = array();
   public function sheets(): array
     {
         return [
             new FirstSheetImport()
         ];
     }
+
+    public function setData($arr)
+    {
+        array_push(self::$result,$arr);
+    } 
+
+    public function getData()
+    {
+        return self::$result;
+    }   
 
   /**
     * @param array $row
@@ -31,22 +42,22 @@ class AccNumberVoucherImport implements ToModel, WithHeadingRow, WithBatchInsert
         $menu = Menu::WhereDefault('code',$row['menu'])->first();
         $menu_general = Menu::WhereDefault('code',$row['menu_general'])->first();
         if($code_check == null){
-        return new AccNumberVoucher([
-           'id'     => Str::uuid()->toString(),
-           'menu_id'    => $menu == null ? 0 : $menu->id,
-           'menu_general_id'    => $menu == null ? 0 : $menu_general->id,
-           'code'    => $row['code'],
-           'name'    => $row['name'],
-           'middle'    => $row['middle'],
-           'middle_type'    => $row['middle_type'],
-           'suffixes'    => $row['suffixes'],
-           'suffixes_type'    => $row['suffixes_type'],
-           'prefix'    => $row['prefix'],
-           'number'    => $row['number'],
-           'length_number'    => $row['length_number'],   
-           'change_voucher'    => $row['change_voucher'] == null ? 1 : $row['change_voucher'],  
-           'active'    => $row['active'] == null ? 1 : $row['active'],
-            ]);
+            $arr = [
+                'id'     => Str::uuid()->toString(),
+                'menu_id'    => $menu == null ? 0 : $menu->id,
+                'menu_general_id'    => $menu == null ? 0 : $menu_general->id,
+                'code'    => $row['code'],
+                'name'    => $row['name'],              
+                'prefix'    => $row['prefix'],
+                'format'    => $row['format'],
+                'number'    => $row['number'],
+                'length_number'    => $row['length_number'],   
+                'change_voucher'    => $row['change_voucher'] == null ? 1 : $row['change_voucher'],  
+                'active'    => $row['active'] == null ? 1 : $row['active'],
+            ];
+            $data = new AccNumberVoucherImport();
+            $data->setData($arr);
+            return new AccNumberVoucher($arr);
         }
     }
 

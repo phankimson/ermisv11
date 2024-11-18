@@ -28,4 +28,5 @@ return [
     "month" => "month",
     "date" => "date",
     "change_voucher" => "Change Voucher",
+    "format_type"=>"Format type",
 ];

@@ -560,7 +560,7 @@ var Ermis = function () {
                                         var ddl = jQuery('select[name="' + v.field + '"]').data("kendoDropDownList");
                                         var index = parseInt(jQuery('select[name="' + v.field + '"]').find('option[value=' + arr.id + ']').index());
                                         var oldData = ddl.dataSource.data();
-                                        ddl.dataSource.remove(oldData[index]);
+                                        ddl.dataSource.remove(oldData[index-1]);
                                     }
                                 }); 
                                 },

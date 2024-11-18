@@ -591,7 +591,7 @@ var Ermis = function () {
                                           var ddl = jQuery('select[name="' + v.field + '"]').data("kendoDropDownList");
                                           var index = parseInt(jQuery('select[name="' + v.field + '"]').find('option[value=' + arr.id + ']').index());
                                           var oldData = ddl.dataSource.data();
-                                          ddl.dataSource.remove(oldData[index]);
+                                          ddl.dataSource.remove(oldData[index-1]);
                                       }
                                   }); 
                                 },
@@ -715,8 +715,10 @@ var Ermis = function () {
               });    
             jQuery.each(data.columns, function (k, v) {
               if (v.addoption === "true") {
+                var ddl = jQuery('select[name="' + v.field + '"]').data("kendoDropDownList");
+                var oldData = ddl.dataSource.data();
                 jQuery.each(rs.data[0], function (l,m) {
-                  jQuery('select[name="' + v.field + '"]').data("kendoDropDownList").dataSource.add({ "text": m.code + ' - ' + m.name, "value": m.id });
+                  jQuery('select[name="' + v.field + '"]').append('<option value='+" m.id"+'>"+m.code + ' - ' + m.name+"</option>');
                 });
               }
           });

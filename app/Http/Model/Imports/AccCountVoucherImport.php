@@ -12,12 +12,24 @@ use Maatwebsite\Excel\Concerns\WithChunkReading;
 
 class AccCountVoucherImport implements ToModel, WithHeadingRow, WithBatchInserts, WithChunkReading
 {
+  private static $result = array();
   public function sheets(): array
     {
         return [
             new FirstSheetImport()
         ];
     }
+
+    public function setData($arr)
+    {
+        array_push(self::$result,$arr);
+    } 
+
+    public function getData()
+    {
+        return self::$result;
+    }   
+
 
   /**
     * @param array $row
@@ -28,17 +40,20 @@ class AccCountVoucherImport implements ToModel, WithHeadingRow, WithBatchInserts
     {
         //dump($row);
         $number_voucher = AccNumberVoucher::WhereDefault('code',$row['number_voucher'])->first();
-        return new AccCountVoucher([
-           'id'     => Str::uuid()->toString(),
-           'number_voucher'    => $number_voucher == null ? 0 : $number_voucher->id,
-           'format'    => $row['format'],
-           'day'    => $row['day'],
-           'month'    => $row['month'],
-           'year'    => $row['year'],
-           'number'    => $row['number'],
-           'length_number'    => $row['length_number'],
-           'active'    => $row['active'] == null ? 1 : $row['active'],
-            ]);        
+        $arr = [
+            'id'     => Str::uuid()->toString(),
+            'number_voucher'    => $number_voucher == null ? 0 : $number_voucher->id,
+            'format'    => $row['format'],
+            'day'    => $row['day'],
+            'month'    => $row['month'],
+            'year'    => $row['year'],
+            'number'    => $row['number'],
+            'length_number'    => $row['length_number'],
+            'active'    => $row['active'] == null ? 1 : $row['active'],
+        ];
+        $data = new AccCountVoucherImport();
+        $data->setData($arr);
+        return new AccCountVoucher($arr);        
     }
 
     public function batchSize(): int
