@@ -74,9 +74,9 @@ class AccPeriodController extends Controller
     config(['database.connections.mysql2' => $mysql2]);
     $type = 0;
     try{
-  $permission = $request->session()->get('per');
-  $arr = json_decode($request->data);
-  $validator = Validator::make(collect($arr)->toArray(),[
+      $permission = $request->session()->get('per');
+      $arr = json_decode($request->data);
+      $validator = Validator::make(collect($arr)->toArray(),[
             'date' => ['required']
         ]);
      if($validator->passes()){
@@ -109,11 +109,8 @@ class AccPeriodController extends Controller
            $data->date = $formatMonth;
            $data->active = 1;
            $data->save();
-         };
-         $n1 = 0; // Số lượng tồn dk
-         $v1 = 0; // Giá trị tồn đk         
-         $n2 = 0; // Số lượng cuối kỳ
-         $v2 = 0; // Giá trị cuối kỳ
+         }; 
+
          // Lấy kỳ gần nhất
          $period_last = AccPeriod::get_last(1);
          // Lấy giá trị phát sinh trong kỳ
@@ -123,15 +120,23 @@ class AccPeriodController extends Controller
          $credit_sum = AccGeneral::get_sum_range_date(null,null,$startDate,$endDate,'credit'); // Tổng phát sinh có
          $credit_account = $credit_sum->pluck('credit');
          $merged_account = $debit_account->merge($credit_account);
-         $merged_account->each(function ($item, int $key) {
-          $debit_sum_fi = $debit_sum->firstWhere('debit',$item);
-          $credit_sum_fi = $credit_sum->firstWhere('credit',$item);
+         foreach ($merged_account as $item ){
+          $do = 0; // Nợ đầu kỳ  
+          $co = 0; // Có đầu kỳ    
+          $de = 0; // Nợ cuối kỳ
+          $ce = 0; // Có cuối kỳ
+          $debit_sum_fi = $debit_sum->firstWhere('debit',$item);// Tìm tài khoản nợ
+          $credit_sum_fi = $credit_sum->firstWhere('credit',$item);// Tìm tài khoản có
           if($period_last){
-            // Lấy bảng chi tiết đã lưu của kỳ trước
+            // Lấy bảng chi tiết đã lưu của kỳ trước (số đầu kỳ)
             $pediod_balane = AccPeriodBalance::get_type_first(1,$item,$period_last->id);
-          }     
-         });
-         
+            $do = $pediod_balane->debit_end;
+            $co = $pediod_balane->credit_end;
+          };
+          $de = max($do - $co + $debit_sum_fi - $credit_sum_fi,0) ;
+          $ce = max($co - $do - $debit_sum_fi + $credit_sum_fi,0 );
+         };
+        
          // Lưu tồn kho type = 2
         
          // Lưu chi tiết NCC,KH type = 3
