@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Http\Model\AccHistoryAction;
 use App\Http\Model\Menu;
 use App\Http\Model\AccPeriod;
+use App\Http\Model\AccPeriodBalance;
 use App\Http\Model\AccGeneral;
 use App\Http\Model\CompanySoftware;
 use App\Http\Model\Company;
@@ -108,7 +109,33 @@ class AccPeriodController extends Controller
            $data->date = $formatMonth;
            $data->active = 1;
            $data->save();
-         }
+         };
+         $n1 = 0; // Số lượng tồn dk
+         $v1 = 0; // Giá trị tồn đk         
+         $n2 = 0; // Số lượng cuối kỳ
+         $v2 = 0; // Giá trị cuối kỳ
+         // Lấy kỳ gần nhất
+         $period_last = AccPeriod::get_last(1);
+         // Lấy giá trị phát sinh trong kỳ
+          // Lưu bảng chi tiết stk type = 1
+         $debit_sum = AccGeneral::get_sum_range_date(null,null,$startDate,$endDate,'debit'); // Tổng phát sinh nợ
+         $debit_account = $debit_sum->pluck('debit');
+         $credit_sum = AccGeneral::get_sum_range_date(null,null,$startDate,$endDate,'credit'); // Tổng phát sinh có
+         $credit_account = $credit_sum->pluck('credit');
+         $merged_account = $debit_account->merge($credit_account);
+         $merged_account->each(function ($item, int $key) {
+          $debit_sum_fi = $debit_sum->firstWhere('debit',$item);
+          $credit_sum_fi = $credit_sum->firstWhere('credit',$item);
+          if($period_last){
+            // Lấy bảng chi tiết đã lưu của kỳ trước
+            $pediod_balane = AccPeriodBalance::get_type_first(1,$item,$period_last->id);
+          }     
+         });
+         
+         // Lưu tồn kho type = 2
+        
+         // Lưu chi tiết NCC,KH type = 3
+
 
          // Lưu lịch sử
          $h = new AccHistoryAction();
