@@ -206,7 +206,7 @@ var initErmisCheckSession = function(){
   }
   return status;
 }
-
+// Grid Action Kendo
 var initAddGrid = function(rd,grid){
   var dataItem = grid.dataItem("tbody tr:eq(0)");
   if(dataItem != undefined){
@@ -217,6 +217,81 @@ var initAddGrid = function(rd,grid){
   grid.dataSource.insert(0, rd);
 }
 
+var initDeleteGrid = function(id,$kGrid){
+  var grid = $kGrid.data("kendoGrid");
+  var dataItem  = grid.dataSource.get(id);
+  var row = grid.tbody.find("tr[data-uid='" + dataItem.uid + "']");
+  grid.removeRow(row);
+}
+var initDeleteTree = function(id,$kGrid){
+  var grid = $kGrid.data("kendoTreeList");
+  var dataItem  = grid.dataSource.get(id);
+  if (dataItem.hasChildren) {
+   var children = grid.dataSource.childNodes(dataItem);
+       jQuery.each(children, function (k, v) {
+          v.parentId = null;
+     });
+ };
+  var row = grid.tbody.find("tr[data-uid='" + dataItem.uid + "']");
+  grid.removeRow(row);
+}
+//
+
+// Select Action Kendo
+
+var initAddSelect = function(rd,field){
+  var ddl = jQuery('select[name="' + field + '"]').data("kendoDropDownList");
+  var item = { "text": rd.code + ' - ' + rd.name, "value": rd.id };      
+  ddl.dataSource.fetch(function(){
+    ddl.dataSource.insert(1, item);
+  });   
+}
+
+var initEditDefault = function(rd,grid,columns){
+  var dataItem  = grid.dataSource.get(rd.id);
+  jQuery.each(columns, function (k, col) {
+    // CL
+    if(col.key == 'select' && col.type != 'arr'){
+      jQuery('select[name="' + col.field + '"]').data("kendoDropDownList").value(0);
+    }else if(col.type == 'arr'){
+      jQuery('select[name="' + col.field + '"]').data("kendoMultiSelect").value([]);
+    };
+      if (col.field != 'row_number' && col.field && dataItem[col.field] !== rd[col.field]) {
+        dataItem.set(col.field, rd[col.field]);
+      };
+});
+}
+
+var initEditHotDefault = function(rd,grid,columns){
+  var dataItem  = grid.dataSource.get(rd.id);
+  dataItem[Ermis.hot_field] = rd[Ermis.hot_field];
+  jQuery.each(columns, function (k, col) {
+    // CL
+    if(col.key == 'select' && col.type != 'arr'){
+      jQuery('select[name="' + col.field + '"]').data("kendoDropDownList").value(0);
+    }else if(col.type == 'arr'){
+      jQuery('select[name="' + col.field + '"]').data("kendoMultiSelect").value([]);
+    };
+      if (col.field != 'row_number' && col.field && dataItem[col.field] !== rd[col.field]) {
+        dataItem.set(col.field, rd[col.field]);
+      };
+});
+}
+
+var initEditSelect = function(rd,field){
+  var ddl = jQuery('select[name="' + field + '"]');
+  var index = parseInt(ddl.find('option[value=' + rd.id + ']').index());
+  ddl.data("kendoDropDownList").dataItem(index).set( "text" , rd.code + ' - ' + rd.name );
+}
+
+var initRemoveSelect = function(id,field){
+  var ddl = jQuery('select[name="' + field + '"]').data("kendoDropDownList");
+  var index = parseInt(jQuery('select[name="' + field + '"]').find('option[value=' + id + ']').index());
+  var dataItem = ddl.dataSource.at(index);                                         
+  ddl.dataSource.remove(dataItem);
+}
+
+///
 
 var initReadOnlyGrid = function(container, options){
   container.text(options.model[options.field]);

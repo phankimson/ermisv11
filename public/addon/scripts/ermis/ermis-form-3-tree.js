@@ -388,15 +388,14 @@ var Ermis = function () {
           grid.dataSource.pushCreate(rd);
           jQuery.each(data.columns, function (k, v) {
               if (v.addoption === "true") {
-                  jQuery('select[name="' + v.field + '"]').data("kendoDropDownList").dataSource.add({ "text": rd.code + ' - ' + rd.name, "value": rd.id });
+                initAddSelect(rd,v.field);
               }
           });
       } else {
           grid.dataSource.pushUpdate(rd);
           jQuery.each(data.columns, function (k, v) {
               if (v.addoption === "true" ) {
-                  var index = parseInt(jQuery('select[name="' + v.field + '"]').find('option[value=' + rd.id + ']').index());
-                  jQuery('select[name="' + v.field + '"]').data("kendoDropDownList").dataItem(index).set( "text" , rd.code + ' - ' + rd.name );
+                initEditSelect(rd,v.field);
               }
           });
       }
@@ -500,10 +499,7 @@ var Ermis = function () {
                                   initStatus(4);
                                     jQuery.each(data.columns, function (k, v) {
                                       if (v.addoption === "true" ) {
-                                          var ddl = jQuery('select[name="' + v.field + '"]').data("kendoDropDownList");
-                                          var index = parseInt(jQuery('select[name="' + v.field + '"]').find('option[value=' + arr.id + ']').index());
-                                          var oldData = ddl.dataSource.data();
-                                          ddl.dataSource.remove(oldData[index-1]);
+                                        initRemoveSelect(arr.id,v.field);  
                                       }
                                   }); 
                                 },
@@ -641,16 +637,7 @@ var Ermis = function () {
     var initClientReceive = function(){
       Echo.private('data-delete-'+Ermis.link+'-'+Chat.com)
          .listen('DataSend', (rs) => {
-             var grid = $kGrid.data("kendoTreeList");
-             var dataItem  = grid.dataSource.get(rs.data.id);
-             if (dataItem.hasChildren) {
-              var children = grid.dataSource.childNodes(dataItem);
-                  jQuery.each(children, function (k, v) {
-                     v.parentId = null;
-                });
-            };
-             var row = grid.tbody.find("tr[data-uid='" + dataItem.uid + "']");
-             grid.removeRow(row);
+          initDeleteTree(rs.data.id,$kGrid);
          });
        Echo.private('data-save-'+Ermis.link+'-'+Chat.com)
           .listen('DataSend', (rs) => {
@@ -658,26 +645,14 @@ var Ermis = function () {
           });
         Echo.private('data-import-'+Ermis.link+'-'+Chat.com)
            .listen('DataSendCollection', (rs) => {
-            var grid = $kGrid.data("kendoTreeList");
-           //var dataSource = new kendo.data.TreeListDataSource({ data: rs.data[0] , schema: {
-           //   model: {
-           //        id: "id",
-           //        parentId:  "parent_id",
-           //       fields: data.fields,
-           //       expanded: true
-           //    },
-           // }});
-           //grid.setDataSource(dataSource);
+            var grid = $kGrid.data("kendoTreeList");         
             jQuery.each(rs.data[0], function (k, v) {
               grid.dataSource.pushCreate(v);
-            }); 
-            
-           
-         
+            });           
                 jQuery.each(data.columns, function (k, v) {
                   if (v.addoption === "true") {
                     jQuery.each(rs.data[0], function (l,m) {
-                      jQuery('select[name="' + v.field + '"]').data("kendoDropDownList").dataSource.add({ "text": m.code + ' - ' + m.name, "value": m.id });
+                      initAddSelect(m,v.field);                                  
                     });
                   }
               });

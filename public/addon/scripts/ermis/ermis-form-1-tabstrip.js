@@ -436,60 +436,18 @@ var Ermis = function () {
 
     var initSaveComplete = function(rd){
       var grid = $kGrid.data("kendoGrid");
-      if (rd.t === 2) {
-          //jQuery.each(data.columns, function (k, col) {
-          //    if (col.field) {
-          //        var field = col.field;
-          //        grid.dataSource.add({ field: result.data[col.field] });
-          //    }
-          //});
-          //grid.dataSource.add(result.data);
-          //var grid = $kGrid.data("kendoGrid");
+      if (rd.t === 2) {         
           initAddGrid(rd,grid); 
           jQuery.each(data.columns, function (k, v) {
               if (v.addoption === "true") {
-                  //if(tss == 0){
-                    jQuery('select[name="' + v.field + '"]').data("kendoDropDownList").dataSource.add({ "text": rd.code + ' - ' + rd.name, "value": rd.id });
-                  //}else{
-                  //  jQuery('select[name="' + v.field + '"]').data("kendoDropDownList").dataSource.add({ "name" : rd.code + ' - ' + rd.name, "value": rd.id });
-                  //  var widget = jQuery('#'+ v.field).data("kendoDropDownList");
-                  //  var dataSource = jQuery('#'+ v.field).data('kendoDropDownList').dataSource;
-                  //  dataSource.add(rd);
-                  //  var a = dataSource;
-                  //  jQuery('#'+ v.field).data('kendoDropDownList').destroy();
-                  //  jQuery('#remove_dropdown').empty();
-                  //  jQuery('#remove_dropdown').append('<select id="#'+ v.field+'" class="droplist load_droplist large" name="'+v.field+'">');
-                  //  $("#dropdownlist1").kendoDropDownList({
-                  //    dataSource: {
-                  //      data: a
-                      }
-                  //});
-                //}
-            //}
+                initAddSelect(rd,v.field);     
+              }                
           });
       } else {
-          //if(rd.a == 1){
-            var dataItem  = grid.dataSource.get(rd.id);
-            //    var row = grid.tbody.find("tr[data-uid='" + dataItem.uid + "']");
-            //    selectedItem = grid.dataItem(row);
-            //}else{
-            //    selectedItem = grid.dataItem(grid.select());
-            //}
-            jQuery.each(data.columns, function (k, col) {
-              // CL
-              if(col.key == 'select' && col.type != 'arr'){
-                jQuery('select[name="' + col.field + '"]').data("kendoDropDownList").value(0);
-              }else if(col.type == 'arr'){
-                jQuery('select[name="' + col.field + '"]').data("kendoMultiSelect").value([]);
-              };
-                if (col.field != 'row_number' && col.field && dataItem[col.field] !== rd[col.field]) {
-                  dataItem.set(col.field, rd[col.field]);
-                };
-          });
+             initEditDefault(rd,grid,data.columns);
           jQuery.each(data.columns, function (k, v) {
               if (v.addoption === "true" ) {
-                  var index = parseInt(jQuery('select[name="' + v.field + '"]').find('option[value=' + rd.id + ']').index());
-                  jQuery('select[name="' + v.field + '"]').data("kendoDropDownList").dataItem(index).set("text", rd.code + ' - ' + rd.name);
+                  initEditSelect(rd,v.field)
                 }
           });
       }
@@ -588,10 +546,7 @@ var Ermis = function () {
                                     initStatus(4);
                                     jQuery.each(data.columns, function (k, v) {
                                       if (v.addoption === "true" ) {
-                                          var ddl = jQuery('select[name="' + v.field + '"]').data("kendoDropDownList");
-                                          var index = parseInt(jQuery('select[name="' + v.field + '"]').find('option[value=' + arr.id + ']').index());
-                                          var oldData = ddl.dataSource.data();
-                                          ddl.dataSource.remove(oldData[index-1]);
+                                         initRemoveSelect(arr.id,v.field);                                         
                                       }
                                   }); 
                                 },
@@ -691,10 +646,7 @@ var Ermis = function () {
       Echo.private('data-delete-'+Ermis.link+'-'+Chat.com)
          .listen('DataSend', (rs) => {
              if(rs.data.ts == tss){
-             var grid = $kGrid.data("kendoGrid");
-             var dataItem  = grid.dataSource.get(rs.data.id);
-             var row = grid.tbody.find("tr[data-uid='" + dataItem.uid + "']");
-             grid.removeRow(row);
+              initDeleteGrid(rs.data.id,$kGrid);
              }
          });
        Echo.private('data-save-'+Ermis.link+'-'+Chat.com)
@@ -707,21 +659,16 @@ var Ermis = function () {
            .listen('DataSendCollection', (rs) => {
             if(rs.data.ts == tss){
               var grid = $kGrid.data("kendoGrid");
-              //var dataSource = new kendo.data.DataSource({ data: rs.data[0] , pageSize: Ermis.page_size });            
-              // dataSource.read();
-              //grid.setDataSource(dataSource);
               jQuery.each(rs.data[0], function (k, v) {
                 initAddGrid(v,grid);
               });    
-            jQuery.each(data.columns, function (k, v) {
-              if (v.addoption === "true") {
-                var ddl = jQuery('select[name="' + v.field + '"]').data("kendoDropDownList");
-                var oldData = ddl.dataSource.data();
-                jQuery.each(rs.data[0], function (l,m) {
-                  jQuery('select[name="' + v.field + '"]').append('<option value='+" m.id"+'>"+m.code + ' - ' + m.name+"</option>');
-                });
-              }
-          });
+              jQuery.each(data.columns, function (k, v) {
+                if (v.addoption === "true") {
+                  jQuery.each(rs.data[0], function (l,m) {
+                     initAddSelect(m,v.field);                                                   
+                  });
+                }
+            }); 
             }
            });
     }

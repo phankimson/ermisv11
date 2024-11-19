@@ -83,7 +83,7 @@ trait ScopesTraits
 
       public function scopeWhereCheck1($query, $column = 'code', $value ,$column1 = 'link', $value1,$column2 = 'id', $value2)
       {
-        return $query->where($column,$value)->orWhere(function($query) use ($column1,$value1) {$query->where($column1,$value1)->where($column1,"!=","");})->WhereNot($column2,$value2);
+        return $query->where($column,$value)->where(function($query) use ($column1,$value1) {$query->where($column1,$value1)->where($column1,"!=","");})->WhereNot($column2,$value2);
       }
     
 }
