@@ -9,14 +9,13 @@ use Illuminate\Support\Facades\Validator;
 use App\Http\Model\AccHistoryAction;
 use App\Http\Model\Menu;
 use App\Http\Model\AccPeriod;
-use App\Http\Model\AccPeriodBalance;
 use App\Http\Model\AccGeneral;
+use App\Http\Model\AccAccountBalance;
 use App\Http\Model\CompanySoftware;
 use App\Http\Model\Company;
 use App\Http\Model\Error;
-use Illuminate\Support\Str;
-use Excel;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 
 class AccPeriodController extends Controller
 {
@@ -113,33 +112,90 @@ class AccPeriodController extends Controller
 
          // Lấy kỳ gần nhất
          $period_last = AccPeriod::get_last(1);
-         // Lấy giá trị phát sinh trong kỳ
-          // Lưu bảng chi tiết stk type = 1
-         $debit_sum = AccGeneral::get_sum_range_date(null,null,$startDate,$endDate,'debit'); // Tổng phát sinh nợ
-         $debit_account = $debit_sum->pluck('debit');
-         $credit_sum = AccGeneral::get_sum_range_date(null,null,$startDate,$endDate,'credit'); // Tổng phát sinh có
-         $credit_account = $credit_sum->pluck('credit');
+
+          // Lưu bảng chi tiết stk chốt kỳ theo tháng
+          // Lấy giá trị phát sinh trong kỳ
+         $debit_sum = $general->withSum(['detail', 'amount_rate' => function (Builder $query) { $query->orderBy('debit'); }]); // Tổng phát sinh nợ
+         $debit_account = $debit_sum->detail()->pluck('debit');
+         $credit_sum = $general->withSum(['detail', 'amount_rate' => function (Builder $query) { $query->orderBy('credit'); }]); // Tổng phát sinh có
+         $credit_account = $credit_sum->detail()->pluck('credit');
          $merged_account = $debit_account->merge($credit_account);
          foreach ($merged_account as $item ){
           $do = 0; // Nợ đầu kỳ  
           $co = 0; // Có đầu kỳ    
           $de = 0; // Nợ cuối kỳ
           $ce = 0; // Có cuối kỳ
-          $debit_sum_fi = $debit_sum->firstWhere('debit',$item);// Tìm tài khoản nợ
-          $credit_sum_fi = $credit_sum->firstWhere('credit',$item);// Tìm tài khoản có
+          $debit_sum_fi = $debit_sum->detail()->firstWhere('debit',$item);// Tìm số tiền tài khoản nợ
+          $credit_sum_fi = $credit_sum->detail()->firstWhere('credit',$item);// Tìm số tiền tài khoản có
           if($period_last){
             // Lấy bảng chi tiết đã lưu của kỳ trước (số đầu kỳ)
-            $pediod_balane = AccPeriodBalance::get_type_first(1,$item,$period_last->id);
-            $do = $pediod_balane->debit_end;
-            $co = $pediod_balane->credit_end;
+            $account_systems_balance = $period_last->account_balance()->where('account_systems',$item);
+            $do = $account_systems_balance->debit_close;
+            $co = $account_systems_balance->credit_close;
+          }else{
+            // Lấy số dư đầu kỳ
+            $account_systems_balance = AccAccountBalance::get_account(0,$item);
+            $do = $account_systems_balance->debit_open;
+            $co = $account_systems_balance->credit_open;
           };
           $de = max($do - $co + $debit_sum_fi - $credit_sum_fi,0) ;
           $ce = max($co - $do - $debit_sum_fi + $credit_sum_fi,0 );
+                $arr = [
+                  'period' => $data->id,
+                  'account_systems' => $item,
+                  'debit_open' => $do,
+                  'credit_open' => $co,
+                  'debit' => $debit_sum_fi,
+                  'credit' => $credit_sum_fi,
+                  'debit_close' => $de,
+                  'credit_close' => $ce,
+              ];     
+              $data->account_balance()->create($arr);
          };
+
+          // Lưu chi tiết NCC,KH chốt kỳ theo tháng
+
+          $subject_debit_sum = $general->withSum(['detail', 'amount_rate' => function (Builder $query) { $query->orderBy('subject_id_debit'); }]); // Tổng phát sinh nợ
+          $subject_debit_account = $subject_debit_sum->detail()->pluck('debit');
+          $subject_credit_sum = $general->withSum(['detail', 'amount_rate' => function (Builder $query) { $query->orderBy('subject_id_credit'); }]); // Tổng phát sinh có
+          $subject_credit_account = $subject_credit_sum->detail()->pluck('credit');
+          $subject_merged_account = $subject_debit_account->merge($subject_credit_account);
+          foreach ($subject_merged_account as $item ){
+           $do = 0; // Nợ đầu kỳ  
+           $co = 0; // Có đầu kỳ    
+           $de = 0; // Nợ cuối kỳ
+           $ce = 0; // Có cuối kỳ
+           $debit_sum_fi = $subject_debit_sum->detail()->firstWhere('debit',$item);// Tìm số tiền tài khoản nợ
+           $credit_sum_fi = $subject_credit_sum->detail()->firstWhere('credit',$item);// Tìm số tiền tài khoản có
+           if($period_last){
+             // Lấy bảng chi tiết đã lưu của kỳ trước (số đầu kỳ)
+             $account_systems_balance = $period_last->object_balance()->where('object',$item);
+             $do = $account_systems_balance->debit_close;
+             $co = $account_systems_balance->credit_close;
+           }else{
+             // Lấy số dư đầu kỳ
+             $account_systems_balance = AccAccountBalance::get_object(0,$item);
+             $do = $account_systems_balance->debit_open;
+             $co = $account_systems_balance->credit_open;
+           };
+           $de = max($do - $co + $debit_sum_fi - $credit_sum_fi,0) ;
+           $ce = max($co - $do - $debit_sum_fi + $credit_sum_fi,0 );
+                 $arr = [
+                   'period' => $data->id,
+                   'object' => $item,
+                   'debit_open' => $do,
+                   'credit_open' => $co,
+                   'debit' => $debit_sum_fi,
+                   'credit' => $credit_sum_fi,
+                   'debit_close' => $de,
+                   'credit_close' => $ce,
+               ];     
+               $data->object_balance()->create($arr);
+          };
         
-         // Lưu tồn kho type = 2
+         // Lưu tồn kho chốt kỳ theo tháng
         
-         // Lưu chi tiết NCC,KH type = 3
+        
 
 
          // Lưu lịch sử
@@ -200,6 +256,9 @@ class AccPeriodController extends Controller
             //
             $data->active = 0 ;
             $data->save();
+            // Xóa chi tiết stk
+            $data->account_balance()->delete();
+
             broadcast(new \App\Events\DataSend($arr));
             return response()->json(['status'=>true,'message'=> trans('messages.delete_success')]);
           }else{

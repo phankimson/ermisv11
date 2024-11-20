@@ -34,4 +34,13 @@ class AccPeriod extends Model
         $result = AccPeriod::where('date',$date)->where('active',$active)->first();
         return $result;
       }
+
+      public function account_balance()
+      {
+          return $this->hasMany(AccAccountBalance::class, 'period' ,'id');
+      }
+      public function object_balance()
+      {
+          return $this->hasMany(AccObjectBalance::class, 'period' ,'id');
+      }
 }
