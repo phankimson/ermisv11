@@ -495,6 +495,7 @@ CREATE TABLE `acc_detail` (
   `general_id` varchar(36) NOT NULL,
   `item_id` varchar(36) NOT NULL,
   `item_code` varchar(50) NOT NULL,
+  `item_name` varchar(50) NOT NULL,
   `description` varchar(100) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `currency` varchar(36) NOT NULL,
   `unit` varchar(36) NOT NULL,

@@ -13,8 +13,8 @@ return [
     |
     */
     "voucher"=>"Số chứng từ",
-    "date_voucher"=>"Ngày chứng từ",
-    "accounting_date"=>"Ngày hạch toán",
+    "voucher_date"=>"Ngày chứng từ",
+    "accounting_date"=>"Ngày hạch toán",    
     "detail" => "Chi tiết",
     "vat" => "Thuế",
     "subject" => "Đối tượng",

@@ -39,15 +39,7 @@ class AccDetail extends Model
       }
 
       protected $casts = [
-          'quantity' => Decimal::class,
-          'quantity_receipt' => Decimal::class,
-          'price'=> Decimal::class,
-          'purchase_price'=> Decimal::class,
-          'amount'=> Decimal::class,
-          'rate'=> Decimal::class,
-          'amount_rate'=> Decimal::class,
-          'purchase_amount'=> Decimal::class,
-          'expiry_date' => Date::class,
+          'amount'=> Decimal::class,        
           'active' => 'boolean',
       ];
 

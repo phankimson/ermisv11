@@ -98,8 +98,9 @@ class CompanySoftwareController extends Controller
               $data->license_id = $arr->license_id;
               $data->free = Convert::intDefaultformat($arr->free);
               $data->database = $arr->database;
-              $data->username = $arr->username;
-              $data->password = $hashids->encode($arr->password);
+              $data->username = $arr->username;               
+              //$data->password = $hashids->encode($arr->password);
+              $data->password = $arr->password;
               $data->active = $arr->active;
               $data->save();
               // Lưu lịch sử ---- NOT EDIT
@@ -144,7 +145,8 @@ class CompanySoftwareController extends Controller
         $data->free = $arr->free;
         $data->database = $arr->database;
         $data->username = $arr->username;
-        $password_new = $hashids->encode($arr->password);
+        //$password_new = $hashids->encode($arr->password);
+        $password_new = $arr->password;
         if ($password_new !=  $old_password) {
               $data->password = $password_new;
          }

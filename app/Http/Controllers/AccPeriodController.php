@@ -154,7 +154,6 @@ class AccPeriodController extends Controller
          };
 
           // Lưu chi tiết NCC,KH chốt kỳ theo tháng
-
           $subject_debit_sum = $general->withSum(['detail', 'amount_rate' => function (Builder $query) { $query->orderBy('subject_id_debit'); }]); // Tổng phát sinh nợ
           $subject_debit_account = $subject_debit_sum->detail()->pluck('debit');
           $subject_credit_sum = $general->withSum(['detail', 'amount_rate' => function (Builder $query) { $query->orderBy('subject_id_credit'); }]); // Tổng phát sinh có
@@ -191,10 +190,9 @@ class AccPeriodController extends Controller
                    'credit_close' => $ce,
                ];     
                $data->object_balance()->create($arr);
-          };
-        
+          };        
          // Lưu tồn kho chốt kỳ theo tháng
-        
+         $debit_sum = $general->withSum(['detail', 'amount_rate' => function (Builder $query) { $query->orderBy('debit'); }]); // Tổng phát sinh nợ
         
 
 

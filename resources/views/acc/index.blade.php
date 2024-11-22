@@ -103,7 +103,7 @@
                                         <dd><a class="text-center lazyload change-map" data-uk-tooltip title="@lang('acc_index.payroll')" href="javascript:;" data-id="#payroll"><img src="{{url('addon/img/icon/payroll-icon.png')}}" /></a></dd>
                                         <dd><a class="text-center lazyload change-map" data-uk-tooltip title="@lang('acc_index.buy')" href="javascript:;" data-id="#buy"><img src="{{url('addon/img/icon/shopping-icon.png')}}" /></a></dd>
                                         <dd><a class="text-center lazyload change-map" data-uk-tooltip title="@lang('acc_index.sale')" href="javascript:;" data-id="#sale"><img src="{{url('addon/img/icon/sale-icon.png')}}" /></a></dd>
-                                        <dd><a class="text-center lazyload change-map" data-uk-tooltip title="@lang('acc_index.tax')" href="javascript:;" data-id="#tax"><img src="{{url('addon/img/icon/Tax-icon.png')}}" /></a></dd>
+                                        <dd><a class="text-center lazyload change-map" data-uk-tooltip title="@lang('acc_index.tax')" href="javascript:;" data-id="#tax"><img src="{{url('addon/img/icon/tax-icon.png')}}" /></a></dd>
                                         <dd><a class="text-center lazyload change-map" data-uk-tooltip title="@lang('acc_index.bank')" href="javascript:;" data-id="#bank"><img src="{{url('addon/img/icon/Bank-icon.png')}}" /></a></dd>
                                     </dl>
                                 </div>

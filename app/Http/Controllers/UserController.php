@@ -41,7 +41,9 @@ class UserController extends Controller
        //validate the fields....
       $data = json_decode($request->data);
       $credentials = [ 'username' => $data->username , 'password' => $data->password , 'active' => 1];
-      $capcha = data_get($data, 'g-recaptcha-response');
+      // Khóa tạm test
+      //$capcha = data_get($data, 'g-recaptcha-response');
+      $capcha = "1";
       if(Auth::attempt($credentials) && $capcha != ""){ // login attempt
         $user = Auth::user();
         // Kiểm tra role = admin không

@@ -38,6 +38,7 @@ class AccSuppliesGoodsController extends Controller
 {
   public function __construct(Request $request)
  {
+    ini_set('memory_limit', -1);
      $this->url =  $request->segment(3);
      $this->key = "supplies-goods";
      $this->menu = Menu::where('code', '=', $this->key)->first();
