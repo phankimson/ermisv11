@@ -25,6 +25,12 @@ class AccUnit extends Model
         return $result;
       }
 
+      static public function get_raw_page($page) {
+        $result = AccUnit::WithRowNumberDb('mysql2')->orderBy('row_number','desc')->simplePaginate($page);    
+        return $result;
+      }
+
+
       static public function get_raw_export($select) {
         $result =  AccUnit::WithRowNumberDb('mysql2')->orderBy('row_number','asc')->get(['row_number',DB::raw($select)]);        
         return $result;
