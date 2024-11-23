@@ -14,6 +14,7 @@ class AccUnit extends Model
       protected $table = 'unit';
       public $incrementing = false; // and it doesn't even have to be auto-incrementing!
       protected $guarded = []; //Thiếu dòng create bị lỗi Add [code] to fillable property to allow mass assignment on
+      protected $hidden = array('created_at','updated_at');
 
       protected static function booted()
       {
@@ -25,8 +26,8 @@ class AccUnit extends Model
         return $result;
       }
 
-      static public function get_raw_page($page) {
-        $result = AccUnit::WithRowNumberDb('mysql2')->orderBy('row_number','desc')->simplePaginate($page);    
+      static public function get_raw_skip_page($skip,$limit,$orderBy) {
+        $result = AccUnit::WithRowNumberDb('mysql2')->orderBy($orderBy,'desc')->skip($skip)->take($limit)->get();  
         return $result;
       }
 

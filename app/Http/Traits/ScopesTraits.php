@@ -7,10 +7,10 @@ trait ScopesTraits
       public function scopeWithRowNumber($query, $column = 'created_at', $order = 'asc')
     {              
         //DB::statement(DB::raw('set @i=0')); version laravel 9 under
-        //DB::statement(DB::raw('set @i=0')->getValue(DB::connection()->getQueryGrammar()));// version laravel 10
+        DB::statement(DB::raw('set @i=0')->getValue(DB::connection()->getQueryGrammar()));// version laravel 10
         
-        //$sub = static::selectRaw('*, @i:=@i+1 as row_number')
-        $sub = static::selectRaw('*, ROW_NUMBER() OVER (ORDER BY id asc) as "row_number"')  
+        $sub = static::selectRaw('*, @i:=@i+1 as "row_number"')
+        //$sub = static::selectRaw('*, ROW_NUMBER() OVER (ORDER BY id asc) as "row_number"')  
             ->orderBy($column, $order)->toSql();
         
         $query->from(DB::raw("({$sub}) as t"));
@@ -19,10 +19,10 @@ trait ScopesTraits
 
     public function scopeWithRowNumberWhereColumn($query,$column_where, $value_where ,$column = 'created_at', $order = 'asc')
   {
-      //DB::statement(DB::raw('set @i=0')->getValue(DB::connection()->getQueryGrammar()));
+      DB::statement(DB::raw('set @i=0')->getValue(DB::connection()->getQueryGrammar()));
 
-      //$sub = static::selectRaw('*, @i:=@i+1 as row_number')
-      $sub = static::selectRaw('*, ROW_NUMBER() OVER (ORDER BY id asc) as "row_number"') 
+      $sub = static::selectRaw('*, @i:=@i+1 as "row_number"')
+      //$sub = static::selectRaw('*, ROW_NUMBER() OVER (ORDER BY id asc) as "row_number"') 
           ->where($column_where, $value_where)
           ->orderBy($column, $order);
 
@@ -32,10 +32,10 @@ trait ScopesTraits
 
   public function scopeWithRowNumberDb($query,$db ,$column = 'created_at', $order = 'asc')
   {
-      //DB::connection($db)->statement(DB::raw('set @i=0')->getValue(DB::connection()->getQueryGrammar()));
+      DB::connection($db)->statement(DB::raw('set @i=0')->getValue(DB::connection()->getQueryGrammar()));
   
-      //$sub = static::selectRaw('*, @i:=@i+1 as row_number')
-      $sub = static::selectRaw('*, ROW_NUMBER() OVER (ORDER BY id asc) as "row_number"') 
+      $sub = static::selectRaw('*, @i:=@i+1 as "row_number"')
+      //$sub = static::selectRaw('*, ROW_NUMBER() OVER (ORDER BY id asc) as "row_number"') 
           ->orderBy($column, $order)->toSql();
     
       $query->from(DB::raw("({$sub}) as t"));
@@ -44,10 +44,10 @@ trait ScopesTraits
 
   public function scopeWithRowNumberWhereColumnDb($query, $db, $column_where, $value_where ,$column = 'created_at', $order = 'asc')
   {
-      //DB::connection($db)->statement(DB::raw('set @i=0')->getValue(DB::connection()->getQueryGrammar()));
+      DB::connection($db)->statement(DB::raw('set @i=0')->getValue(DB::connection()->getQueryGrammar()));
 
-      //$sub = static::selectRaw('*, @i:=@i+1 as row_number')
-      $sub = static::selectRaw('*, ROW_NUMBER() OVER (ORDER BY id asc) as "row_number"') 
+      $sub = static::selectRaw('*, @i:=@i+1 as "row_number"')
+      //$sub = static::selectRaw('*, ROW_NUMBER() OVER (ORDER BY id asc) as "row_number"') 
           ->where($column_where, $value_where)
           ->orderBy($column, $order);
 

@@ -648,7 +648,7 @@ Route::prefix('acc')->group(function () {
     'controller' => AccApiUnitController::class
   ],function () {
   Route::get('/unit',  'show')->name('');
-  Route::get('/unit-data',  'data')->name('-data');
+  Route::get('/unit-data', 'data')->name('-data');
   Route::post('/unit-load', 'load')->name('-load');
   Route::post('/unit-get', 'get')->name('-get');
   Route::post('/unit-save', 'save')->name('-save');

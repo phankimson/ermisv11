@@ -49,7 +49,10 @@ var Ermis = function () {
       $kWindow = ErmisKendoWindowTemplate(myWindow, "600px", "");
       $kWindow.title("Extra");
       //KendoGridTemplate0
-      ErmisKendoGridTemplateApi0($kGrid, Ermis.page_size , Ermis.link+'-data', onChange, "row", jQuery(window).height() * 0.75, data.fields, data.columns);
+      ErmisKendoGridTemplateApi0($kGrid, Ermis.page_size , Ermis.link+'-data', onChange, "row", jQuery(window).height() * 0.75, {
+        numeric: false,
+        previousNext: false
+    } , data.fields, data.columns);
     }
 
     var initStatus = function (flag) {

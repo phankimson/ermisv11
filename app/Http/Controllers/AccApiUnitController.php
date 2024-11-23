@@ -37,9 +37,14 @@ class AccApiUnitController extends Controller
   public function data(Request $request){    
     $mysql2 = $request->session()->get('mysql2');
     config(['database.connections.mysql2' => $mysql2]);
-    $data = AccUnit::get_raw_page(50);
+    $perPage = $request->input('$top',30);
+    $skip = $request->input('$skip',0);
+    $orderby =   $request->input('$orderby','');
+    $arr = AccUnit::get_raw_skip_page($skip,$perPage);
+    $total = AccUnit::count();
+    $data = collect(['data' => $arr,'total' => $total]);            
     if($data){
-      return response()->json($data->items());
+      return response()->json($data);
     }else{
       return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
     }
