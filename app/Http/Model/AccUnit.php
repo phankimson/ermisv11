@@ -26,8 +26,13 @@ class AccUnit extends Model
         return $result;
       }
 
-      static public function get_raw_skip_page($skip,$limit,$orderBy) {
-        $result = AccUnit::WithRowNumberDb('mysql2')->orderBy($orderBy,'desc')->skip($skip)->take($limit)->get();  
+      static public function get_raw_skip_page($skip,$limit,$orderBy,$asc) {
+        $result = AccUnit::WithRowNumberDb('mysql2',$orderBy,$asc)->skip($skip)->take($limit)->get();  
+        return $result;
+      }
+
+      static public function get_raw_skip_filter_page($skip,$limit,$orderBy,$asc,$filter) {
+        $result = AccUnit::WithRowNumberWhereRawColumnDb('mysql2',$filter,$orderBy,$asc)->skip($skip)->take($limit)->get();  
         return $result;
       }
 

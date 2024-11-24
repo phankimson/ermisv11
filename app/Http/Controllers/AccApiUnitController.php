@@ -39,9 +39,24 @@ class AccApiUnitController extends Controller
     config(['database.connections.mysql2' => $mysql2]);
     $perPage = $request->input('$top',30);
     $skip = $request->input('$skip',0);
-    $orderby =   $request->input('$orderby','');
-    $arr = AccUnit::get_raw_skip_page($skip,$perPage);
-    $total = AccUnit::count();
+    $orderby =   $request->input('$orderby','created_at');
+    $filter =   $request->input('$filter');
+    $asc  = 'desc';
+    if (!str_contains($orderby, 'desc')) { 
+      $asc = 'asc';
+    }else{
+      $orderby = explode(' ', $orderby)[0];
+    };
+    if($filter){
+      $filter_sql = Convert::filterRow($filter);
+      dd();
+      $arr = AccUnit::get_raw_skip_filter_page($skip,$perPage,$orderby,$asc,$filter_sql);
+      $total = AccUnit::whereRaw($filter_sql)->count();
+    }else{
+      $arr = AccUnit::get_raw_skip_page($skip,$perPage,$orderby,$asc);
+      $total = AccUnit::count();
+    }   
+   
     $data = collect(['data' => $arr,'total' => $total]);            
     if($data){
       return response()->json($data);

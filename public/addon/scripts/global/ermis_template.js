@@ -947,8 +947,8 @@ var ErmisKendoGridTemplateApi0 = function($kGrid, pageSize, url, onChange, selec
         },  
         type: "odata",
         serverPaging: true,
-        serverFiltering: true,
-        serverSorting: true,
+        serverFiltering: true,        
+        serverSorting: true,  
         pageSize: 30,      
          schema: {
             data: "data",
@@ -964,7 +964,7 @@ var ErmisKendoGridTemplateApi0 = function($kGrid, pageSize, url, onChange, selec
         dataSource: dataSource,
         change: onChange,
         selectable: selectable,
-        height: height,
+        height: height,     
         scrollable: {
             virtual: true
         },

@@ -30,6 +30,7 @@ trait ScopesTraits
             ->mergeBindings($sub->getQuery()) ;
   }
 
+
   public function scopeWithRowNumberDb($query,$db ,$column = 'created_at', $order = 'asc')
   {
       DB::connection($db)->statement(DB::raw('set @i=0')->getValue(DB::connection()->getQueryGrammar()));
@@ -49,6 +50,19 @@ trait ScopesTraits
       $sub = static::selectRaw('*, @i:=@i+1 as "row_number"')
       //$sub = static::selectRaw('*, ROW_NUMBER() OVER (ORDER BY id asc) as "row_number"') 
           ->where($column_where, $value_where)
+          ->orderBy($column, $order);
+
+      $query->from(DB::raw("({$sub->toSql()}) as t"))
+            ->mergeBindings($sub->getQuery()) ;
+  }
+
+  public function scopeWithRowNumberWhereRawColumnDb($query, $db, $value_where ,$column = 'created_at', $order = 'asc')
+  {
+      DB::connection($db)->statement(DB::raw('set @i=0')->getValue(DB::connection()->getQueryGrammar()));
+
+      $sub = static::selectRaw('*, @i:=@i+1 as "row_number"')
+      //$sub = static::selectRaw('*, ROW_NUMBER() OVER (ORDER BY id asc) as "row_number"') 
+          ->whereRaw($value_where)
           ->orderBy($column, $order);
 
       $query->from(DB::raw("({$sub->toSql()}) as t"))

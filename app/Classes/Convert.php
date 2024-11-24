@@ -94,4 +94,53 @@ class Convert
     }
     return $obj;    
   }
+
+  static public function filterRow($filter){
+    if(!$filter) return;
+    $mappings = array(
+      "eq"=>"=",
+      "neq"=>"!=",
+      "lt"=>"{0} < '{1}'",
+      "lte"=>"{0} <= '{1}'",
+      "gt"=>"{0} > '{1}'",
+      "gte"=>"{0} >= '{1}'",
+      "startswith"=>"({0} LIKE '{1}%)'",
+      "doesnotstartwith"=>"({0} NOT LIKE '{1}%')",
+      "contains"=>"({0} LIKE '%{1}%')",
+      "doesnotcontain"=>"({0} NOT LIKE '%{1}%')",
+    );
+    	// Remove all of the ' characters from the string.
+		$filter = str_replace("'", '"',$filter);
+		$arr = explode(' ', $filter);
+    $array_mapping = array();
+    foreach($mappings as $k=>$v){
+      if(str_contains($filter, $k)){
+        $array_mapping[$k] = $v;
+      }
+    }   
+    foreach($arr as $k=>$key){
+      if(array_key_exists($key,$mappings)){
+          $arr[$k] = $mappings[$key];
+      }else{
+        // Dang loi      
+        dd($key); 
+          if(in_array($key, $array_mapping)){        
+            $arr_con = explode(',', $key);   
+            if(strpos($arr_con[0],'(',1)){
+              $arr_con[0] = preg_replace('/(/', '', $arr_con[0], 1);
+            };
+              $arr_con[1] = preg_replace(')', '', $arr_con[1]);
+              $arr_cont = explode('(', $arr_con[0]);
+              $arr_con[0] = $arr_cont[0];
+              $arr_con[2] = $arr_cont[1];
+              $val  = $array_mapping[$arr_con[0]];
+              $val = preg_replace('{1}', $arr_con[1], $val);
+              $val = preg_replace('{0}', $arr_con[2], $val);
+            $arr[$k] = $val;         
+          }
+        }
+      }   
+         
+          return $arr;
+    }  
 }
