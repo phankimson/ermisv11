@@ -8,8 +8,9 @@ use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithBatchInserts;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
+use Illuminate\Contracts\Queue\ShouldQueue;
 
-class AccUnitImport implements ToModel, WithHeadingRow, WithBatchInserts, WithChunkReading
+class AccUnitImport implements ToModel, WithHeadingRow, WithBatchInserts, WithChunkReading, ShouldQueue
 {
   private static $result = array();
   public function sheets(): array
@@ -54,12 +55,12 @@ class AccUnitImport implements ToModel, WithHeadingRow, WithBatchInserts, WithCh
 
     public function batchSize(): int
    {
-       return 1000;
+       return 200;
    }
 
     public function chunkSize(): int
    {
-       return 1000;
+       return 200;
    }
 
 }
