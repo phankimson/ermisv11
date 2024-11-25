@@ -57,7 +57,6 @@ var Ermis = function () {
           previousNext: false
       } , data.fields, data.columns);
       }else{
-        console.log("b");
         ErmisKendoGridTemplateApi0($kGrid, Ermis.page_size , Ermis.link+'-data', onChange, "row", jQuery(window).height() * 0.75, {
           numeric: false,
           previousNext: false
