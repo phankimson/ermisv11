@@ -627,25 +627,9 @@ Route::prefix('acc')->group(function () {
   });
 
   // Unit
-  //Route::group([
-  //  'as' => 'unit',
-  //  'controller' => AccUnitController::class
-  //],function () {
-  //Route::get('/unit',  'show')->name('');
-  //Route::post('/unit-load', 'load')->name('-load');
-  //Route::post('/unit-get', 'get')->name('-get');
-  //Route::post('/unit-save', 'save')->name('-save');
-  //Route::post('/unit-delete', 'delete')->name('-delete');
-  //Route::any('/unit-import', 'import')->name('-import');
-  //Route::get('/unit-export', 'export')->name('-export');
-  //Route::get('/unit-DownloadExcel', 'DownloadExcel')->name('-DownloadExcel');
-  //Route::post('/unit-change-database', 'ChangeDatabase')->name('-change-database');
-  //});
-
-  // Api Unit
   Route::group([
     'as' => 'unit',
-    'controller' => AccApiUnitController::class
+    'controller' => AccUnitController::class
   ],function () {
   Route::get('/unit',  'show')->name('');
   Route::get('/unit-data', 'data')->name('-data');

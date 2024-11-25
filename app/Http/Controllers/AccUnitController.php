@@ -13,6 +13,7 @@ use App\Http\Model\CompanySoftware;
 use App\Http\Model\Company;
 use App\Http\Model\AccNumberCode;
 use App\Http\Model\Error;
+use App\Http\Model\AccSystems;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Model\Imports\AccUnitImport;
 use App\Http\Model\Exports\AccUnitExport;
@@ -25,14 +26,53 @@ class AccUnitController extends Controller
  {
      $this->url =  $request->segment(3);
      $this->key = "unit";
-     $this->menu = Menu::where('code', '=', $this->key)->first();
+     $this->menu = Menu::where('code', '=', $this->key)->first();  
  }
 
   public function show(Request $request){    
     $mysql2 = $request->session()->get('mysql2');
     config(['database.connections.mysql2' => $mysql2]);
-    $data = AccUnit::get_raw();
-    return view('acc.unit',['data' => $data, 'key' => $this->key ]);
+    //$data = AccUnit::get_raw();  
+    $count = AccUnit::count();
+    $sys_page = AccSystems::get_systems('MAX_COUNT_CHANGE_PAGE');
+    $paging = $count>$sys_page->value?1:0; 
+    return view('acc.unit',['paging' => $paging, 'key' => $this->key ]);
+  }
+
+  public function data(Request $request){    
+    $mysql2 = $request->session()->get('mysql2');
+    config(['database.connections.mysql2' => $mysql2]);
+    $total = AccUnit::count();
+    $sys_page = AccSystems::get_systems('MAX_COUNT_CHANGE_PAGE');
+    $paging = $total>$sys_page->value?1:0;     
+    if($paging == 0){
+      $arr = AccUnit::get_raw();   
+    }else{
+    $perPage = $request->input('$top',30);
+    $skip = $request->input('$skip',0);
+    $orderby =   $request->input('$orderby','created_at desc');
+    $filter =   $request->input('$filter');
+    $asc  = 'desc';
+        if (!str_contains($orderby, 'desc')) { 
+          $asc = 'asc';
+        }else{
+          $orderby = explode(' ', $orderby)[0];
+        };
+        if($filter){
+          $filter_sql = Convert::filterRow($filter);
+          $arr = AccUnit::get_raw_skip_filter_page($skip,$perPage,$orderby,$asc,$filter_sql);
+          $total = AccUnit::whereRaw($filter_sql)->count();
+        }else{
+          $arr = AccUnit::get_raw_skip_page($skip,$perPage,$orderby,$asc);  
+          $total = AccUnit::count();    
+        }   
+    }  
+    $data = collect(['data' => $arr,'total' => $total]);              
+    if($data){
+      return response()->json($data);
+    }else{
+      return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
+    }
   }
 
   public function load(Request $request){

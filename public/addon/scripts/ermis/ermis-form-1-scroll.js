@@ -48,8 +48,21 @@ var Ermis = function () {
       //Window Extra
       $kWindow = ErmisKendoWindowTemplate(myWindow, "600px", "");
       $kWindow.title("Extra");
-      //KendoGridTemplate0
-      ErmisKendoGridTemplate0($kGrid, Ermis.page_size , Ermis.data, onChange, "row", jQuery(window).height() * 0.75, {numeric: false, previousNext: false}, data.fields, data.columns);
+      //KendoGridTemplate0  Load dữ liệu trực tiếp lâu
+      //ErmisKendoGridTemplate0($kGrid, Ermis.page_size , Ermis.data, onChange, "row", jQuery(window).height() * 0.75, {numeric: false, previousNext: false}, data.fields, data.columns);
+      // Pagesize set 20 
+      if(Ermis.paging == 1){
+        ErmisKendoGridTemplatePageApi0($kGrid, Ermis.page_size , Ermis.link+'-data', onChange, "row", jQuery(window).height() * 0.75, {
+          numeric: false,
+          previousNext: false
+      } , data.fields, data.columns);
+      }else{
+        console.log("b");
+        ErmisKendoGridTemplateApi0($kGrid, Ermis.page_size , Ermis.link+'-data', onChange, "row", jQuery(window).height() * 0.75, {
+          numeric: false,
+          previousNext: false
+      } , data.fields, data.columns);
+      }          
     }
 
     var initStatus = function (flag) {

@@ -100,17 +100,26 @@ class Convert
     $mappings = array(
       "eq"=>"=",
       "neq"=>"!=",
-      "lt"=>"{0} < '{1}'",
-      "lte"=>"{0} <= '{1}'",
-      "gt"=>"{0} > '{1}'",
-      "gte"=>"{0} >= '{1}'",
-      "startswith"=>"({0} LIKE '{1}%)'",
-      "doesnotstartwith"=>"({0} NOT LIKE '{1}%')",
-      "contains"=>"({0} LIKE '%{1}%')",
-      "doesnotcontain"=>"({0} NOT LIKE '%{1}%')",
+      "lt"=>'{0} < "{1}"',
+      "lte"=>'{0} <= "{1}"',
+      "gt"=>'{0} > "{1}"',
+      "gte"=>'{0} >= "{1}"',
+      "startswith"=>'({0} LIKE "{1}%")',
+      "endswith"=>'({0} LIKE "%{1}")',
+      "substringof"=>'({1} LIKE "%{0}%")',
+      "notsubstringof"=>'({1} NOT LIKE "%{0}%")',
     );
     	// Remove all of the ' characters from the string.
 		$filter = str_replace("'", '"',$filter);
+    // Tìm notsubstringof
+    $pattern = '/substringof\([^()]*\)\seq\sfalse/';
+    $text_match = "";
+    if (preg_match($pattern, $filter, $match)){
+        if(preg_match('/\([^()]*\)/', $match[0], $match1)){
+          $text_match = $match1[0];
+        }      
+    }
+    $filter = preg_replace('/substringof\([^()]*\)\seq\sfalse/', 'notsubstringof'.$text_match, $filter);
 		$arr = explode(' ', $filter);
     $array_mapping = array();
     foreach($mappings as $k=>$v){
@@ -122,25 +131,21 @@ class Convert
       if(array_key_exists($key,$mappings)){
           $arr[$k] = $mappings[$key];
       }else{
-        // Dang loi      
-        dd($key); 
-          if(in_array($key, $array_mapping)){        
-            $arr_con = explode(',', $key);   
-            if(strpos($arr_con[0],'(',1)){
-              $arr_con[0] = preg_replace('/(/', '', $arr_con[0], 1);
-            };
-              $arr_con[1] = preg_replace(')', '', $arr_con[1]);
-              $arr_cont = explode('(', $arr_con[0]);
-              $arr_con[0] = $arr_cont[0];
-              $arr_con[2] = $arr_cont[1];
-              $val  = $array_mapping[$arr_con[0]];
-              $val = preg_replace('{1}', $arr_con[1], $val);
-              $val = preg_replace('{0}', $arr_con[2], $val);
-            $arr[$k] = $val;         
-          }
+        // Tách chuỗi
+          foreach($array_mapping as $l=>$a){
+            if(str_contains($key, $l)){
+              $key = str_replace('"', '',$key);
+              $arr_con = explode(',', $key);            
+              $arr_cont = explode($l.'(', $arr_con[0]);              
+              $arr_con[1] = str_replace(")", "", $arr_con[1]);
+              $val  =  $a;
+              $val = str_replace('{1}', $arr_con[1], $val);
+              $val = str_replace('{0}', $arr_cont[1], $val);
+              $arr[$k] = $val;
+            }
+          }     
         }
       }   
-         
-          return $arr;
+          return join(" ",$arr);
     }  
 }

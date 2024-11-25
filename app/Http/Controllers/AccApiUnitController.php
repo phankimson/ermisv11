@@ -49,7 +49,6 @@ class AccApiUnitController extends Controller
     };
     if($filter){
       $filter_sql = Convert::filterRow($filter);
-      dd();
       $arr = AccUnit::get_raw_skip_filter_page($skip,$perPage,$orderby,$asc,$filter_sql);
       $total = AccUnit::whereRaw($filter_sql)->count();
     }else{
