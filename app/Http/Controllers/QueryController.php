@@ -68,11 +68,11 @@ class QueryController extends Controller
        try {
        $t = json_decode($request->data);
        $sql = $t->query;
-       $check = $request->session()->has('mysql3');
+       $check = $request->session()->has('mysql2');
        if($check == true){
-        $params = $request->session()->get('mysql3');
-        config(['database.connections.mysql3' => $params]);
-        $con = 'mysql3';
+        $params = $request->session()->get('mysql2');
+        config(['database.connections.mysql2' => $params]);
+        $con = 'mysql2';
        }else{
         $con = 'mysql';
       };

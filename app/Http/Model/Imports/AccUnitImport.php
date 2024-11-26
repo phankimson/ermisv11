@@ -6,19 +6,12 @@ use App\Http\Model\AccUnit;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
-use Maatwebsite\Excel\Concerns\WithBatchInserts;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class AccUnitImport implements ToModel, WithHeadingRow, WithBatchInserts, WithChunkReading, ShouldQueue
+class AccUnitImport implements ToModel, WithHeadingRow, WithChunkReading, ShouldQueue
 {
   private static $result = array();
-  public function sheets(): array
-    {
-        return [
-            new FirstSheetImport()
-        ];
-    }
 
     public function setData($arr)
     {
@@ -37,9 +30,10 @@ class AccUnitImport implements ToModel, WithHeadingRow, WithBatchInserts, WithCh
 
     public function model(array $row)
     {
+      
         //dump($row);
         $code_check = AccUnit::WhereCheck('code',$row['code'],'id',null)->first();
-        if($code_check == null){
+        if($code_check == null){          
           $arr = [
             'id'     => Str::uuid()->toString(),
             'code'    => $row['code'],
@@ -53,14 +47,9 @@ class AccUnitImport implements ToModel, WithHeadingRow, WithBatchInserts, WithCh
       }
     }
 
-    public function batchSize(): int
-   {
-       return 200;
-   }
-
     public function chunkSize(): int
    {
-       return 200;
+       return 1000;
    }
 
 }

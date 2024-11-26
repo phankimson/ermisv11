@@ -8,10 +8,10 @@ use App\Http\Model\Regions;
 use App\Classes\Convert;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
-use Maatwebsite\Excel\Concerns\WithBatchInserts;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
+use Illuminate\Contracts\Queue\ShouldQueue;
 
-class AreaImport implements ToModel, WithHeadingRow, WithBatchInserts, WithChunkReading
+class AreaImport implements ToModel, WithHeadingRow, WithChunkReading, ShouldQueue
 {
   private static $result = array();
   public function sheets(): array
@@ -56,13 +56,8 @@ class AreaImport implements ToModel, WithHeadingRow, WithBatchInserts, WithChunk
      }
     }
 
-    public function batchSize(): int
-   {
-       return 1000;
-   }
-
     public function chunkSize(): int
    {
-       return 1000;
+       return 200;
    }
 }

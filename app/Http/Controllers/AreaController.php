@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Model\HistoryAction;
-use App\Http\Model\User;
+use App\Http\Model\Systems;
 use App\Http\Model\Menu;
 use App\Http\Model\Area;
 use App\Http\Model\Regions;
@@ -21,6 +21,10 @@ use Excel;
 
 class AreaController extends Controller
 {
+  protected $url;
+  protected $key;
+  protected $menu;
+
   public function __construct(Request $request)
  {
      $this->url =  $request->segment(3);
@@ -29,9 +33,48 @@ class AreaController extends Controller
  }
 
   public function show(){
-    $data = Area::get_raw();
+    //$data = Area::get_raw();
     $regions = collect(DropDownListResource::collection(Regions::active()->get()));
-    return view('manage.area',['data' => $data, 'key' => $this->key ,'regions' =>$regions ]);
+    $count = Area::count();
+    $sys_page = Systems::get_systems('MAX_COUNT_CHANGE_PAGE');
+    $paging = $count>$sys_page->value?1:0; 
+    return view('manage.area',['paging' => $paging, 'key' => $this->key ,'regions' =>$regions ]);
+  }
+
+  public function data(Request $request){    
+    $mysql2 = $request->session()->get('mysql2');
+    config(['database.connections.mysql2' => $mysql2]);
+    $total = Area::count();
+    $sys_page = Systems::get_systems('MAX_COUNT_CHANGE_PAGE');
+    $paging = $total>$sys_page->value?1:0;     
+    if($paging == 0){
+      $arr = Area::get_raw();   
+    }else{
+    $perPage = $request->input('$top',30);
+    $skip = $request->input('$skip',0);
+    $orderby =   $request->input('$orderby','created_at desc');
+    $filter =   $request->input('$filter');
+    $asc  = 'desc';
+        if (!str_contains($orderby, 'desc')) { 
+          $asc = 'asc';
+        }else{
+          $orderby = explode(' ', $orderby)[0];
+        };
+        if($filter){
+          $filter_sql = Convert::filterRow($filter);
+          $arr = Area::get_raw_skip_filter_page($skip,$perPage,$orderby,$asc,$filter_sql);
+          $total = Area::whereRaw($filter_sql)->count();
+        }else{
+          $arr = Area::get_raw_skip_page($skip,$perPage,$orderby,$asc);  
+          $total = Area::count();    
+        }   
+    }  
+    $data = collect(['data' => $arr,'total' => $total]);            
+    if($data){
+      return response()->json($data);
+    }else{
+      return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
+    }
   }
 
   public function save(Request $request){
@@ -176,7 +219,7 @@ class AreaController extends Controller
        $file = $request->file;
        // Import dữ liệu
        $import = new AreaImport;
-       Excel::import($import, $file);
+       Excel::queueImport($import, $file);
        // Lấy lại dữ liệu
        //$array = Area::get_raw();
 

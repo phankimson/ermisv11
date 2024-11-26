@@ -19,19 +19,25 @@ use App\Http\Model\Imports\AccUnitImport;
 use App\Http\Model\Exports\AccUnitExport;
 use App\Classes\Convert;
 use Excel;
+use DB;
 
 class AccUnitController extends Controller
 {
+  protected $url;
+  protected $key;
+  protected $menu;
+
   public function __construct(Request $request)
  {
+  
      $this->url =  $request->segment(3);
      $this->key = "unit";
      $this->menu = Menu::where('code', '=', $this->key)->first();  
  }
 
-  public function show(Request $request){    
+  public function show(Request $request){
     $mysql2 = $request->session()->get('mysql2');
-    config(['database.connections.mysql2' => $mysql2]);
+    config(['database.connections.mysql2' => $mysql2]); 
     //$data = AccUnit::get_raw();  
     $count = AccUnit::count();
     $sys_page = AccSystems::get_systems('MAX_COUNT_CHANGE_PAGE');
@@ -270,9 +276,13 @@ class AccUnitController extends Controller
  }
 
  public function import(Request $request) {
-   ini_set('max_execution_time', 600);
+   //DB::purge('mysql2');
    $mysql2 = $request->session()->get('mysql2');
-   config(['database.connections.mysql2' => $mysql2]);
+   config(['database.connections.mysql2' => $mysql2]); 
+   //config(['queue.failed.database' => 'mysql2']);
+   config(['queue.connections.database.queue' => 'mysql2']);
+   //config(['database.default' => 'mysql2']);
+   //DB::setDefaultConnection('mysql2');
   $type = 5;
    try{
    $permission = $request->session()->get('per');
@@ -288,7 +298,7 @@ class AccUnitController extends Controller
        $file = $request->file;
        // Import dữ liệu
        $import = new AccUnitImport;
-       Excel::import($import, $file);
+       Excel::queueImport($import,$file);
        // Lấy lại dữ liệu
        //$array = AccUnit::get_raw();
 

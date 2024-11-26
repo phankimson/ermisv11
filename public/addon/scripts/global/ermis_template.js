@@ -1149,6 +1149,109 @@ var ErmisKendoGridTemplateDefault = function($kGrid, pageSize, data, onChange, s
     });
 };
 
+var ErmisKendoGridTemplateDefaultApi = function($kGrid, pageSize, url, onChange, selectable, height, pageable, fields, columns) {
+    var dataSource = new kendo.data.DataSource({
+        transport: {
+            read: {
+                url: url,
+                dataType: "json",
+            },       
+        },
+        pageSize: parseInt(pageSize),      
+         schema: {
+            data: "data",
+            total: "total",
+            model: {
+                id: "id",
+                fields: fields
+            }
+        }     
+    });
+    var grid = $kGrid.kendoGrid({
+        dataSource: dataSource,
+        change: onChange,
+        selectable: selectable,
+        height: height,
+        groupable: true,
+        sortable: true,
+        scrollable: {
+            endless: true
+        },
+        pageable: pageable,
+        filterable: true,
+        columns: columns,
+        dataBound: function() {
+            var rows = this.items();
+            $(rows).each(function() {
+                var index = $(this).index() + 1;
+                var rowLabel = $(this).find(".row-number");
+                $(rowLabel).html(index);
+            });
+        },
+    });
+    grid.data("kendoGrid").thead.kendoTooltip({
+        filter: "th",
+        content: function(e) {
+            var target = e.target; // element for which the tooltip is shown
+            return $(target).text();
+        }
+    });
+};
+
+
+var ErmisKendoGridTemplateDefaultPageApi = function($kGrid, pageSize, url, onChange, selectable, height, pageable, fields, columns) {
+    var dataSource = new kendo.data.DataSource({
+        transport: {
+            read: {
+                url: url,
+                dataType: "json",
+            },       
+        },
+        type: "odata",
+        serverPaging: true,
+        serverFiltering: true,        
+        serverSorting: true,  
+        pageSize: parseInt(pageSize),      
+         schema: {
+            data: "data",
+            total: "total",
+            model: {
+                id: "id",
+                fields: fields
+            }
+        }     
+    });
+    var grid = $kGrid.kendoGrid({
+        dataSource: dataSource,
+        change: onChange,
+        selectable: selectable,
+        height: height,
+        groupable: true,
+        sortable: true,
+        scrollable: {
+            virtual: true
+        },
+        pageable: pageable,
+        filterable: true,
+        columns: columns,
+        dataBound: function() {
+            var rows = this.items();
+            $(rows).each(function() {
+                var index = $(this).index() + 1;
+                var rowLabel = $(this).find(".row-number");
+                $(rowLabel).html(index);
+            });
+        },
+    });
+    grid.data("kendoGrid").thead.kendoTooltip({
+        filter: "th",
+        content: function(e) {
+            var target = e.target; // element for which the tooltip is shown
+            return $(target).text();
+        }
+    });
+};
+
 var ErmisKendoGridTemplateDefaultTooltip0 = function($kGrid, pageSize, data, onChange, selectable, height, pageable, fields, columns, elemTooltip, filterTooltip, toolTip) {
     var dataSource = new kendo.data.DataSource({
         pageSize: pageSize,
