@@ -247,6 +247,7 @@ Route::prefix('manage')->group(function () {
     'controller' => AreaController::class
   ],function () {
   Route::get('/area', 'show' )->name('');
+  Route::get('/area-data', 'data')->name('-data');
   //Route::post('/area-get', 'AreaController@get');
   Route::post('/area-save', 'save')->name('-save');
   Route::post('/area-delete', 'delete')->name('-delete');
