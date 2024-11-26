@@ -19,6 +19,7 @@ use App\Http\Model\Imports\AccUnitImport;
 use App\Http\Model\Exports\AccUnitExport;
 use App\Classes\Convert;
 use Excel;
+use Artisan;
 use DB;
 
 class AccUnitController extends Controller
@@ -36,8 +37,6 @@ class AccUnitController extends Controller
  }
 
   public function show(Request $request){
-    $mysql2 = $request->session()->get('mysql2');
-    config(['database.connections.mysql2' => $mysql2]); 
     //$data = AccUnit::get_raw();  
     $count = AccUnit::count();
     $sys_page = AccSystems::get_systems('MAX_COUNT_CHANGE_PAGE');
@@ -45,9 +44,7 @@ class AccUnitController extends Controller
     return view('acc.unit',['paging' => $paging, 'key' => $this->key ]);
   }
 
-  public function data(Request $request){    
-    $mysql2 = $request->session()->get('mysql2');
-    config(['database.connections.mysql2' => $mysql2]);
+  public function data(Request $request){ 
     $total = AccUnit::count();
     $sys_page = AccSystems::get_systems('MAX_COUNT_CHANGE_PAGE');
     $paging = $total>$sys_page->value?1:0;     
@@ -84,8 +81,6 @@ class AccUnitController extends Controller
   public function load(Request $request){
     $type = 10;
     try{
-    $mysql2 = $request->session()->get('mysql2');
-    config(['database.connections.mysql2' => $mysql2]);
     $data = AccNumberCode::get_code($this->key);
     if($data){
       return response()->json(['status'=>true,'data'=> $data]);
@@ -142,8 +137,6 @@ class AccUnitController extends Controller
  }
 
   public function save(Request $request){
-    $mysql2 = $request->session()->get('mysql2');
-    config(['database.connections.mysql2' => $mysql2]);
     $type = 0;
     try{
   $permission = $request->session()->get('per');
@@ -230,8 +223,6 @@ class AccUnitController extends Controller
  }
 
  public function delete(Request $request) {
-   $mysql2 = $request->session()->get('mysql2');
-   config(['database.connections.mysql2' => $mysql2]);
    $type = 4;
       try{
         $permission = $request->session()->get('per');
@@ -276,13 +267,7 @@ class AccUnitController extends Controller
  }
 
  public function import(Request $request) {
-   //DB::purge('mysql2');
-   $mysql2 = $request->session()->get('mysql2');
-   config(['database.connections.mysql2' => $mysql2]); 
-   //config(['queue.failed.database' => 'mysql2']);
-   config(['queue.connections.database.queue' => 'mysql2']);
-   //config(['database.default' => 'mysql2']);
-   //DB::setDefaultConnection('mysql2');
+   config(['queue.default' => 'database2']);
   $type = 5;
    try{
    $permission = $request->session()->get('per');

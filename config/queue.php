@@ -34,21 +34,24 @@ return [
             'driver' => 'sync',
         ],
 
-        'database' => [
+        'database' => [   
             'driver' => 'database',
+            'connection' => 'mysql',
             'table' => 'jobs',
             'queue' => 'default',
             'retry_after' => 90,
             'after_commit' => false,
         ],
+
         'database2' => [
             'driver' => 'database',
+            'connection' => 'mysql2',
             'table' => 'jobs',
-            'queue' => 'mysql',
+            'queue' => 'default',
             'retry_after' => 90,
             'after_commit' => false,
         ],
-
+        
         'beanstalkd' => [
             'driver' => 'beanstalkd',
             'host' => 'localhost',

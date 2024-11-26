@@ -13,6 +13,7 @@ use App\Http\Model\CompanySoftware;
 use App\Http\Model\Company;
 use App\Classes\bitmask;
 use Illuminate\Support\Facades\Auth;
+use Artisan;
 
 class CheckPermission
 {
@@ -58,6 +59,7 @@ class CheckPermission
       View::share('manage',$manage);
       $request->session()->put('manage', $manage);
       $request->session()->put('type', $type);
+      $params = array();
       if($link != null && $skip == false && $manage != '' && $this->request->method() == "GET" ){
           $sl = CompanySoftware::get_company_software_with_license(isset($user->company_default)?$user->company_default:null,$type,1);
           if($sl){
@@ -69,11 +71,11 @@ class CheckPermission
                 $check_database = true;
               }
             }
-
             if($check_database == false){
               $params = array(
                     'driver'    => env('DB_CONNECTION', 'mysql'),
                     'host'      => env('DB_HOST', '127.0.0.1'),
+                    'port'      => env('DB_PORT', '3306'),
                     'database'  => $sl->database,
                     'username'  => $sl->username,
                     'password'  => $sl->password,
@@ -81,13 +83,12 @@ class CheckPermission
                     'collation' => 'utf8_unicode_ci',
                     'prefix'    => '',
                     'strict'    => false,
-                );
-                $request->session()->put('mysql2', $params);
-                View::share('db',$params['database']);
+                );                
+                $request->session()->put('mysql2', $params);               
             }else{
-              $params = $request->session()->get('mysql2');
-              View::share('db',$params['database']);
-            }
+                $params = $request->session()->get('mysql2');
+            }          
+            View::share('db',$params['database']);   
               // Lấy tên công ty
             $com = Company::find($sl->company_id);
             $request->session()->put('com', $com);
@@ -136,6 +137,8 @@ class CheckPermission
             return redirect($locale.'/'.$manage.'/'.$skip_load[0]);
           }
       }
+      config(['database.connections.mysql2' => $request->session()->get('mysql2')]);   
+      Artisan::call('config:clear');
       return $next($request);
     }
 }
