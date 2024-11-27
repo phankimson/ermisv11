@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Model\AccHistoryAction;
-use App\Http\Model\User;
 use App\Http\Model\Menu;
 use App\Http\Model\AccNaturalResources;
 use App\Http\Model\AccUnit;
@@ -20,11 +19,14 @@ use Illuminate\Support\Facades\Storage;
 use App\Http\Model\Imports\AccNaturalResourcesImport;
 use App\Http\Model\Exports\AccNaturalResourcesExport;
 use App\Classes\Convert;
-use Illuminate\Support\Str;
 use Excel;
+use Exception;
 
 class AccNaturalResourcesController extends Controller
 {
+  protected $url;
+  protected $key;
+  protected $menu;
   public function __construct(Request $request)
   {
      $this->url =  $request->segment(3);
@@ -32,19 +34,24 @@ class AccNaturalResourcesController extends Controller
      $this->menu = Menu::where('code', '=', $this->key)->first();
  }
 
-  public function show(Request $request){
-    $mysql2 = $request->session()->get('mysql2');
-    config(['database.connections.mysql2' => $mysql2]);
-    $unit = collect(DropDownListResource::collection(AccUnit::active()->OrderBy('code','asc')->get()));
-    $data = AccNaturalResources::get_raw();
-    return view('acc.natural_resources',['data' => $data, 'key' => $this->key , 'parent'=>$data ,'unit'=>$unit]);
+  public function show(){    
+    $unit = collect(DropDownListResource::collection(AccUnit::active()->orderBy('code','asc')->get()));
+    $parent = collect(DropDownListResource::collection(AccNaturalResources::active()->orderBy('code','asc')->get()));
+    return view('acc.natural_resources',[ 'key' => $this->key , 'parent'=>$parent ,'unit'=>$unit]);
   }
 
-  public function load(Request $request){
+  public function data(){   
+    $data = AccNaturalResources::get_raw();               
+    if($data){
+      return response()->json($data);
+    }else{
+      return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
+    }
+  }
+
+  public function load(){
     $type = 10;
     try{
-    $mysql2 = $request->session()->get('mysql2');
-    config(['database.connections.mysql2' => $mysql2]);
     $data = AccNumberCode::get_code($this->key);
     if($data){
       return response()->json(['status'=>true,'data'=> $data]);
@@ -101,8 +108,6 @@ class AccNaturalResourcesController extends Controller
  }
 
   public function save(Request $request){
-    $mysql2 = $request->session()->get('mysql2');
-    config(['database.connections.mysql2' => $mysql2]);
     $type = 0;
     try{
   $permission = $request->session()->get('per');
@@ -200,8 +205,6 @@ class AccNaturalResourcesController extends Controller
  }
 
  public function delete(Request $request) {
-   $mysql2 = $request->session()->get('mysql2');
-   config(['database.connections.mysql2' => $mysql2]);
    $type = 4;
       try{
         $permission = $request->session()->get('per');
@@ -246,14 +249,11 @@ class AccNaturalResourcesController extends Controller
       }
  }
 
- public function DownloadExcel(Request $request){
+ public function DownloadExcel(){
    return Storage::download('public/downloadFile/AccNaturalResources.xlsx');
  }
 
  public function import(Request $request) {
-   ini_set('max_execution_time', 600);
-   $mysql2 = $request->session()->get('mysql2');
-   config(['database.connections.mysql2' => $mysql2]);
   $type = 5;
    try{
    $permission = $request->session()->get('per');
@@ -317,8 +317,6 @@ class AccNaturalResourcesController extends Controller
  }
 
  public function export(Request $request) {
-   $mysql2 = $request->session()->get('mysql2');
-   config(['database.connections.mysql2' => $mysql2]);
    $type = 6;
    try{
        $arr = $request->data;

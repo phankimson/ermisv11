@@ -49,7 +49,11 @@ var Ermis = function () {
       $kWindow = ErmisKendoWindowTemplate(myWindow, "600px", "");
       $kWindow.title("Extra");    
       // KendoGridTemplateToolTip0
-      ErmisKendoGridTemplateToolTip0($kGrid, Ermis.page_size, Ermis.data, onChange, "row", jQuery(window).height() * 0.75, {numeric: false, previousNext: false}, data.fields, data.columns,".k-grid-content",".tooltipImg",toolTip); 
+      if(Ermis.paging == 1){
+        ErmisKendoGridTemplateToolTipPageApi0($kGrid,  Ermis.page_size, Ermis.link+'-data', onChange, "row", jQuery(window).height() * 0.75, {numeric: false, previousNext: false}, data.fields, data.columns,".k-grid-content",".tooltipImg",toolTip);
+        }else{
+        ErmisKendoGridTemplateToolTipApi0($kGrid,  Ermis.page_size, Ermis.link+'-data', onChange, "row", jQuery(window).height() * 0.75, {numeric: false, previousNext: false}, data.fields, data.columns,".k-grid-content",".tooltipImg",toolTip);
+        }
     }
 
     var initStatus = function (flag) {

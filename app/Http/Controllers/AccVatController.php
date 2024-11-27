@@ -13,34 +13,73 @@ use App\Http\Model\CompanySoftware;
 use App\Http\Model\Company;
 use App\Http\Model\AccNumberCode;
 use App\Http\Model\Error;
+use App\Http\Model\AccSystems;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Model\Imports\AccVatImport;
 use App\Http\Model\Exports\AccVatExport;
 use App\Classes\Convert;
-use Illuminate\Support\Str;
 use Excel;
+use Exception;
 
 class AccVatController extends Controller
 {
+  protected $url;
+  protected $key;
+  protected $menu;
+  protected $page_system;
   public function __construct(Request $request)
  {
      $this->url =  $request->segment(3);
      $this->key = "vat";
      $this->menu = Menu::where('code', '=', $this->key)->first();
+     $this->page_system = "MAX_COUNT_CHANGE_PAGE";
  }
 
   public function show(Request $request){
-    $mysql2 = $request->session()->get('mysql2');
-    config(['database.connections.mysql2' => $mysql2]);
-    $data = AccVat::get_raw();
-    return view('acc.vat',['data' => $data, 'key' => $this->key ]);
+    //$data = AccVat::get_raw();
+    $count = AccVat::count();
+    $sys_page = AccSystems::get_systems($this->page_system);
+    $paging = $count>$sys_page->value?1:0;   
+    return view('acc.vat',['paging' => $paging, 'key' => $this->key ]);
   }
 
-  public function load(Request $request){
+  
+  public function data(Request $request){   
+    $total = AccVat::count();
+    $sys_page = AccSystems::get_systems($this->page_system);
+    $paging = $total>$sys_page->value?1:0;   
+    if($paging == 0){
+      $arr = AccVat::get_raw();   
+    }else{
+    $perPage = $request->input('$top',30);
+    $skip = $request->input('$skip',0);
+    $orderby =   $request->input('$orderby','created_at desc');
+    $filter =   $request->input('$filter');
+    $asc  = 'desc';
+        if (!str_contains($orderby, 'desc')) { 
+          $asc = 'asc';
+        }else{
+          $orderby = explode(' ', $orderby)[0];
+        };
+        if($filter){
+          $filter_sql = Convert::filterRow($filter);
+          $arr = AccVat::get_raw_skip_filter_page($skip,$perPage,$orderby,$asc,$filter_sql);
+          $total = AccVat::whereRaw($filter_sql)->count();
+        }else{
+          $arr = AccVat::get_raw_skip_page($skip,$perPage,$orderby,$asc); 
+        }   
+    }  
+    $data = collect(['data' => $arr,'total' => $total]);              
+    if($data){
+      return response()->json($data);
+    }else{
+      return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
+    }
+  }
+
+  public function load(){
     $type = 10;
     try{
-    $mysql2 = $request->session()->get('mysql2');
-    config(['database.connections.mysql2' => $mysql2]);
     $data = AccNumberCode::get_code($this->key);
     if($data){
       return response()->json(['status'=>true,'data'=> $data]);
@@ -97,8 +136,6 @@ class AccVatController extends Controller
  }
 
   public function save(Request $request){
-    $mysql2 = $request->session()->get('mysql2');
-    config(['database.connections.mysql2' => $mysql2]);
     $type = 0;
     try{
   $permission = $request->session()->get('per');
@@ -187,8 +224,6 @@ class AccVatController extends Controller
  }
 
  public function delete(Request $request) {
-   $mysql2 = $request->session()->get('mysql2');
-   config(['database.connections.mysql2' => $mysql2]);
    $type = 4;
       try{
         $permission = $request->session()->get('per');
@@ -228,14 +263,11 @@ class AccVatController extends Controller
       }
  }
 
- public function DownloadExcel(Request $request){
+ public function DownloadExcel(){
    return Storage::download('public/downloadFile/AccVat.xlsx');
  }
 
  public function import(Request $request) {
-   ini_set('max_execution_time', 600);
-   $mysql2 = $request->session()->get('mysql2');
-   config(['database.connections.mysql2' => $mysql2]);
   $type = 5;
    try{
    $permission = $request->session()->get('per');

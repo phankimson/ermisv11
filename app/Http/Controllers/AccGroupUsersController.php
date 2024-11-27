@@ -10,34 +10,73 @@ use App\Http\Model\AccHistoryAction;
 use App\Http\Model\Menu;
 use App\Http\Model\AccGroupUsers;
 use App\Http\Model\Error;
+use App\Http\Model\AccSystems;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Model\Imports\AccGroupUsersImport;
 use App\Http\Model\Exports\AccGroupUsersExport;
+use App\Classes\Convert;
 use Excel;
-use Illuminate\Support\Str;
+use Exception;
 
 
 class AccGroupUsersController extends Controller
 {
+  protected $url;
+  protected $key;
+  protected $menu;
+  protected $page_system;
   public function __construct(Request $request)
   {
      $this->url =  $request->segment(3);
      $this->key = "group-users";
      $this->menu = Menu::where('code', '=', $this->key)->first();
-
+     $this->page_system = "MAX_COUNT_CHANGE_PAGE";
  }
 
   public function show(Request $request){
-    $mysql2 = $request->session()->get('mysql2');
-    config(['database.connections.mysql2' => $mysql2]);
     $com = $request->session()->get('com');
-    $data = AccGroupUsers::get_raw($com->id);
-    return view('acc.group_users',['data' => $data, 'key' => $this->key ]);
+    //$data = AccGroupUsers::get_raw($com->id);
+    $count = AccGroupUsers::where('company_id',$com->id)->count();
+    $sys_page = AccSystems::get_systems($this->page_system);
+    $paging = $count>$sys_page->value?1:0;   
+    return view('acc.group_users',['paging' => $paging, 'key' => $this->key ]);
+  }
+
+  public function data(Request $request){  
+    $com = $request->session()->get('com'); 
+    $total = AccGroupUsers::where('company_id',$com->id)->count();
+    $sys_page = AccSystems::get_systems($this->page_system);
+    $paging = $total>$sys_page->value?1:0;   
+    if($paging == 0){
+      $arr = AccGroupUsers::get_raw($com->id);   
+    }else{
+    $perPage = $request->input('$top',30);
+    $skip = $request->input('$skip',0);
+    $orderby =   $request->input('$orderby','created_at desc');
+    $filter =   $request->input('$filter');
+    $asc  = 'desc';
+        if (!str_contains($orderby, 'desc')) { 
+          $asc = 'asc';
+        }else{
+          $orderby = explode(' ', $orderby)[0];
+        };
+        if($filter){
+          $filter_sql = Convert::filterRow($filter);
+          $arr = AccGroupUsers::get_raw_skip_filter_page($skip,$perPage,$orderby,$asc,$filter_sql,$com->id);
+          $total = AccGroupUsers::whereRaw($filter_sql)->where('company_id',$com->id)->count();
+        }else{
+          $arr = AccGroupUsers::get_raw_skip_page($skip,$perPage,$orderby,$asc,$com->id); 
+        }   
+    }  
+    $data = collect(['data' => $arr,'total' => $total]);              
+    if($data){
+      return response()->json($data);
+    }else{
+      return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
+    }
   }
 
   public function save(Request $request){
-    $mysql2 = $request->session()->get('mysql2');
-    config(['database.connections.mysql2' => $mysql2]);
     $type = 0;
     try{
   $permission = $request->session()->get('per');
@@ -118,8 +157,6 @@ class AccGroupUsersController extends Controller
  }
 
  public function delete(Request $request) {
-  $mysql2 = $request->session()->get('mysql2');
-  config(['database.connections.mysql2' => $mysql2]);
    $type = 4;
       try{
         $permission = $request->session()->get('per');
@@ -159,13 +196,11 @@ class AccGroupUsersController extends Controller
       }
  }
 
- public function DownloadExcel(Request $request){
+ public function DownloadExcel(){
    return Storage::download('public/downloadFile/AccGroupUsers.xlsx');
  }
 
  public function import(Request $request) {
-  $mysql2 = $request->session()->get('mysql2');
-  config(['database.connections.mysql2' => $mysql2]);
    $type = 5;
    try{
    $com = $request->session()->get('com');
@@ -230,8 +265,6 @@ class AccGroupUsersController extends Controller
  }
 
  public function export(Request $request) {
-  $mysql2 = $request->session()->get('mysql2');
-  config(['database.connections.mysql2' => $mysql2]);
    $type = 6;
    try{
        $arr = $request->data;

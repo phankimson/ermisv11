@@ -1067,6 +1067,105 @@ var ErmisKendoGridTemplateToolTip0 = function($kGrid, pageSize, data, onChange, 
     });
 };
 
+var ErmisKendoGridTemplateToolTipApi0 = function($kGrid, pageSize, url, onChange, selectable, height, pageable, fields, columns, elemTooltip, filterTooltip, toolTip) {
+    var dataSource = new kendo.data.DataSource({
+        transport: {
+            read: {
+                url: url,
+                dataType: "json",
+            },           
+        }, 
+        type: "odata",
+        serverPaging: true,
+        serverFiltering: true,        
+        serverSorting: true,  
+        pageSize: parseInt(pageSize),      
+        schema: {
+           data: "data",
+           total: "total",
+           model: {
+               id: "id",
+               fields: fields
+           }
+       }     
+    });
+    var grid = $kGrid.kendoGrid({
+        dataSource: dataSource,
+        change: onChange,
+        selectable: selectable,
+        height: height,
+        scrollable:  {
+            virtual: true
+        },
+        groupable: true,
+        sortable: true,
+        pageable: pageable,
+        filterable: true,
+        columns: columns,
+    });
+    grid.data("kendoGrid").thead.kendoTooltip({
+        filter: "th",
+        content: function(e) {
+            var target = e.target; // element for which the tooltip is shown
+            return $(target).text();
+        }
+    });
+
+    jQuery(elemTooltip).kendoTooltip({
+        filter: filterTooltip,
+        content: toolTip,
+        position: "top",
+    });
+};
+
+
+var ErmisKendoGridTemplateToolTipPageApi0 = function($kGrid, pageSize, url, onChange, selectable, height, pageable, fields, columns, elemTooltip, filterTooltip, toolTip) {
+    var dataSource = new kendo.data.DataSource({
+        transport: {
+            read: {
+                url: url,
+                dataType: "json",
+            },           
+        }, 
+        pageSize: parseInt(pageSize),      
+        schema: {
+           data: "data",
+           total: "total",
+           model: {
+               id: "id",
+               fields: fields
+           }
+       }     
+    });
+    var grid = $kGrid.kendoGrid({
+        dataSource: dataSource,
+        change: onChange,
+        selectable: selectable,
+        height: height,
+        scrollable: {
+            endless: true
+        },
+        groupable: true,
+        sortable: true,
+        pageable: pageable,
+        filterable: true,
+        columns: columns,
+    });
+    grid.data("kendoGrid").thead.kendoTooltip({
+        filter: "th",
+        content: function(e) {
+            var target = e.target; // element for which the tooltip is shown
+            return $(target).text();
+        }
+    });
+
+    jQuery(elemTooltip).kendoTooltip({
+        filter: filterTooltip,
+        content: toolTip,
+        position: "top",
+    });
+};
+
 
 var ErmisKendoGridTemplate = function($kGrid, pageSize, data, onChange, selectable, height, pageable, fields, columns) {
     var dataSource = new kendo.data.DataSource({

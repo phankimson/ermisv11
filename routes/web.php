@@ -383,6 +383,7 @@ Route::prefix('acc')->group(function () {
     'controller' => AccSystemsController::class
   ],function () {
   Route::get('/systems','show' )->name('');
+  Route::get('/systems-data','data')->name('-data');
   Route::post('/systems-get','get')->name('-get');
   Route::post('/systems-save', 'save' )->name('-save');
   Route::post('/systems-delete', 'delete' )->name('-delete');
@@ -398,6 +399,7 @@ Route::prefix('acc')->group(function () {
     'controller' => AccNumberVoucherController::class
   ],function () {
   Route::get('/number-voucher', 'show')->name('');
+  Route::get('/number-voucher-data', 'data')->name('-data');
   Route::post('/number-voucher-get', 'get')->name('-get');
   Route::post('/number-voucher-save', 'save')->name('-save');
   Route::post('/number-voucher-delete', 'delete')->name('-delete');
@@ -413,6 +415,7 @@ Route::prefix('acc')->group(function () {
       'controller' => AccCountVoucherController::class
     ],function () {
     Route::get('/count-voucher', 'show')->name('');
+    Route::get('/count-voucher-data', 'data')->name('-data');
     Route::post('/count-voucher-get', 'get')->name('-get');
     Route::post('/count-voucher-save', 'save')->name('-save');
     Route::post('/count-voucher-delete', 'delete')->name('-delete');
@@ -428,6 +431,7 @@ Route::prefix('acc')->group(function () {
     'controller' => AccNumberCodeController::class
   ],function () {
   Route::get('/number-code', 'show')->name('');
+  Route::get('/number-code-data', 'data' )->name('-data');
   Route::post('/number-code-get', 'get' )->name('-get');
   Route::post('/number-code-save', 'save' )->name('-save');
   Route::post('/number-code-delete',  'delete' )->name('-delete');
@@ -443,6 +447,7 @@ Route::prefix('acc')->group(function () {
     'controller' => AccSettingVoucherController::class
   ],function () {
   Route::get('/setting-voucher', 'show' )->name('');
+  Route::get('/setting-voucher-data', 'data' )->name('-data');
   Route::post('/setting-voucher-get', 'get' )->name('-get');
   Route::post('/setting-voucher-save', 'save' )->name('-save');
   Route::post('/setting-voucher-delete', 'delete' )->name('-delete');
@@ -458,6 +463,7 @@ Route::prefix('acc')->group(function () {
     'controller' => AccExciseController::class
   ],function () {
   Route::get('/excise','show')->name('');
+  Route::get('/excise-data',  'data')->name('-data');
   Route::post('/excise-load', 'load')->name('-load');
   Route::post('/excise-get', 'get' )->name('-get');
   Route::post('/excise-save', 'save' )->name('-save');
@@ -474,6 +480,7 @@ Route::prefix('acc')->group(function () {
     'controller' => AccNaturalResourcesController::class
   ],function () {
   Route::get('/natural-resources','show' )->name('');
+  Route::get('/natural-resources-data', 'data' )->name('-data');
   Route::post('/natural-resources-load', 'load' )->name('-load');
   Route::post('/natural-resources-get', 'get' )->name('-get');
   Route::post('/natural-resources-save', 'save' )->name('-save');
@@ -490,6 +497,7 @@ Route::prefix('acc')->group(function () {
     'controller' => AccVatController::class
   ],function () {
   Route::get('/vat',  'show' )->name('');
+  Route::get('/vat-data',  'data')->name('-data');
   Route::post('/vat-load',  'load')->name('-load');
   Route::post('/vat-get', 'get')->name('-get');
   Route::post('/vat-save', 'save')->name('-save');
@@ -539,6 +547,7 @@ Route::prefix('acc')->group(function () {
     'controller' => AccCaseCodeController::class
   ],function () {
   Route::get('/case-code', 'show' )->name('');
+  Route::get('/case-code-data', 'data')->name('-data');
   Route::post('/case-code-load', 'load')->name('-load');
   Route::post('/case-code-get', 'get')->name('-get');
   Route::post('/case-code-save', 'save')->name('-save');
@@ -555,6 +564,7 @@ Route::prefix('acc')->group(function () {
     'controller' => AccCostCodeController::class
   ],function () {
   Route::get('/cost-code', 'show' )->name('');
+  Route::get('/cost-code-data','data' )->name('-data');
   Route::post('/cost-code-load','load' )->name('-load');
   Route::post('/cost-code-get','get' )->name('-get');
   Route::post('/cost-code-save', 'save')->name('-save');
@@ -571,6 +581,7 @@ Route::prefix('acc')->group(function () {
     'controller' => AccStatisticalCodeController::class
   ],function () {
   Route::get('/statistical-code', 'show' )->name('');
+  Route::get('/statistical-code-data',  'data')->name('-data');
   Route::post('/statistical-code-load',  'load')->name('-load');
   Route::post('/statistical-code-get',  'get')->name('-get');
   Route::post('/statistical-code-save',  'save')->name('-save');
@@ -587,6 +598,7 @@ Route::prefix('acc')->group(function () {
     'controller' => AccWorkCodeController::class
   ],function () {
   Route::get('/work-code', 'show' )->name('');
+  Route::get('/work-code-data', 'data' )->name('-data');
   Route::post('/work-code-load', 'load' )->name('-load');
   Route::post('/work-code-get', 'get' )->name('-get');
   Route::post('/work-code-save', 'save' )->name('-save');
@@ -603,6 +615,7 @@ Route::prefix('acc')->group(function () {
     'controller' => AccRevenueExpenditureTypeController::class
   ],function () {
   Route::get('/revenue-expenditure-type', 'show' )->name('');
+  Route::get('/revenue-expenditure-type-data','data' )->name('-data');
   Route::post('/revenue-expenditure-type-load','load' )->name('-load');
   Route::post('/revenue-expenditure-type-get','get' )->name('-get');
   Route::post('/revenue-expenditure-type-save', 'save')->name('-save');
@@ -619,6 +632,7 @@ Route::prefix('acc')->group(function () {
     'controller' => AccRevenueExpenditureController::class
   ],function () {
   Route::get('/revenue-expenditure', 'show')->name('');
+  Route::get('/revenue-expenditure-data', 'data')->name('-data');
   Route::post('/revenue-expenditure-load', 'load')->name('-load');
   Route::post('/revenue-expenditure-get', 'get')->name('-get');
   Route::post('/revenue-expenditure-save', 'save')->name('-save');
@@ -737,6 +751,7 @@ Route::prefix('acc')->group(function () {
     'controller' => AccObjectTypeController::class
   ],function () {
   Route::get('/object-type', 'show' )->name('');
+  Route::get('/object-type-data',  'data' )->name('-data');
   Route::post('/object-type-load',  'load' )->name('-load');
   Route::post('/object-type-get',  'get' )->name('-get');
   Route::post('/object-type-save',  'save' )->name('-save');
@@ -753,6 +768,7 @@ Route::prefix('acc')->group(function () {
     'controller' => AccObjectGroupController::class
   ],function () {
   Route::get('/object-group', 'show')->name('');
+  Route::get('/object-group-data', 'data')->name('-data');
   Route::post('/object-group-load', 'load')->name('-load');
   Route::post('/object-group-get', 'get')->name('-get');
   Route::post('/object-group-save', 'save')->name('-save');
@@ -769,6 +785,7 @@ Route::prefix('acc')->group(function () {
     'controller' => AccDepartmentController::class
   ],function () {
   Route::get('/department', 'show')->name('');
+  Route::get('/department-data','data')->name('-data');
   Route::post('/department-load','load')->name('-load');
   Route::post('/department-get', 'get')->name('-get');
   Route::post('/department-save', 'save')->name('-save');
@@ -785,6 +802,7 @@ Route::prefix('acc')->group(function () {
     'controller' => AccObjectController::class
   ],function () {
   Route::get('/object', 'show')->name('');
+  Route::get('/object-data', 'data')->name('-data');
   Route::post('/object-load', 'load')->name('-load');
   Route::post('/object-get', 'get')->name('-get');
   Route::post('/object-save', 'save')->name('-save');
@@ -818,6 +836,7 @@ Route::prefix('acc')->group(function () {
     'controller' => AccGroupUsersController::class
   ],function () {
   Route::get('/group-users','show')->name('');
+  Route::get('/group-users-data', 'data' )->name('-data');
   Route::post('/group-users-save', 'save')->name('-save');
   Route::post('/group-users-delete', 'delete')->name('-delete');
   Route::any('/group-users-import', 'import')->name('-import');
@@ -831,6 +850,7 @@ Route::prefix('acc')->group(function () {
     'controller' => AccUserManagerController::class
   ],function () {
   Route::get('/users', 'show')->name('');
+  Route::get('/users-data', 'data')->name('-data');
   Route::post('/users-save', 'save')->name('-save');
   Route::post('/users-delete', 'delete')->name('-delete');
   Route::any('/users-import', 'import')->name('-import');
@@ -894,6 +914,7 @@ Route::prefix('acc')->group(function () {
     'controller' => AccPrintTemplateController::class
   ],function () {
   Route::get('/print-template', 'show')->name('');
+  Route::get('/print-template-data', 'data')->name('-data');
   Route::post('/print-template-load', 'load')->name('-load');
   Route::post('/print-template-get', 'get')->name('-get');
   Route::post('/print-template-save','save' )->name('-save');
@@ -961,6 +982,7 @@ Route::prefix('acc')->group(function () {
   ],function () {
   Route::get('/period', 'show' )->name('');
   //Route::post('/period-load',[AccPeriodController::class,'load']);
+  Route::get('/period-data','data')->name('-data');
   Route::post('/period-get','get')->name('-get');
   Route::post('/period-save','save' )->name('-save');
   Route::post('/period-delete','delete')->name('-delete');

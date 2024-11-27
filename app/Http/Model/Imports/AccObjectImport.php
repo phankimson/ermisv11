@@ -17,8 +17,9 @@ use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithBatchInserts;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Illuminate\Support\Arr;
+use Maatwebsite\Excel\Concerns\WithLimit;
 
-class AccObjectImport implements OnEachRow, WithHeadingRow, WithBatchInserts, WithChunkReading
+class AccObjectImport implements OnEachRow, WithHeadingRow, WithBatchInserts, WithChunkReading, WithLimit
 {
   private static $result = array();
   public function sheets(): array
@@ -122,13 +123,18 @@ class AccObjectImport implements OnEachRow, WithHeadingRow, WithBatchInserts, Wi
     }
 
     public function batchSize(): int
-   {
-       return 1000;
-   }
-
-    public function chunkSize(): int
-   {
-       return 1000;
-   }
+    {
+        return 200;
+    }
+ 
+     public function chunkSize(): int
+    {
+        return 200;
+    }
+ 
+    public function limit(): int
+    {
+        return 1000;
+    }
 
 }

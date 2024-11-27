@@ -8,8 +8,9 @@ use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithBatchInserts;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
+use Maatwebsite\Excel\Concerns\WithLimit;
 
-class AccCaseCodeImport implements ToModel, WithHeadingRow, WithBatchInserts, WithChunkReading
+class AccCaseCodeImport implements ToModel, WithHeadingRow, WithBatchInserts, WithChunkReading, WithLimit
 {
   private static $result = array();
   public function sheets(): array
@@ -55,13 +56,17 @@ class AccCaseCodeImport implements ToModel, WithHeadingRow, WithBatchInserts, Wi
     }
 
     public function batchSize(): int
-   {
-       return 1000;
-   }
-
-    public function chunkSize(): int
-   {
-       return 1000;
-   }
-
+    {
+        return 200;
+    }
+ 
+     public function chunkSize(): int
+    {
+        return 200;
+    }
+ 
+    public function limit(): int
+    {
+        return 1000;
+    }
 }

@@ -20,6 +20,7 @@ use App\Http\Model\Country;
 use App\Http\Model\CompanySoftware;
 use App\Http\Model\Company;
 use App\Http\Model\Error;
+use App\Http\Model\AccSystems;
 use App\Http\Resources\DropDownListResource;
 use App\Http\Resources\ObjectTypeDropDownListResource;
 use Illuminate\Support\Facades\Storage;
@@ -28,21 +29,25 @@ use App\Http\Model\Exports\AccObjectExport;
 use App\Classes\Convert;
 use App\Http\Model\AccObjectFilterObjectType;
 use Excel;
+use Exception;
 
 class AccObjectController extends Controller
 {
+  protected $url;
+  protected $key;
+  protected $menu;
+  protected $page_system;
   public function __construct(Request $request)
   {
      $this->url =  $request->segment(3);
      $this->key = "object";
      $this->menu = Menu::where('code', '=', $this->key)->first();
+     $this->page_system = "MAX_COUNT_CHANGE_PAGE";
  }
 
-  public function show(Request $request){
+  public function show(){
     $type = 2;
-    $mysql2 = $request->session()->get('mysql2');
-    config(['database.connections.mysql2' => $mysql2]);
-    $data = AccObject::get_raw();
+    //$data = AccObject::get_raw();
     $object_type = collect(ObjectTypeDropDownListResource::collection(AccObjectType::active()->OrderBy('code','asc')->get()));
     $object_group = collect(DropDownListResource::collection(AccObjectGroup::active()->OrderBy('code','asc')->get()));
     $menu = Menu::get_raw_type($type);
@@ -51,15 +56,50 @@ class AccObjectController extends Controller
     $department = collect(DropDownListResource::collection(AccDepartment::active()->OrderBy('code','asc')->get()));
     $distric = collect(DropDownListResource::collection(Distric::active()->OrderBy('code','asc')->get()));
     $country = Country::all();
-    return view('acc.object',['data' => $data, 'key' => $this->key ,'department'=>$department,'object_type' =>$object_type,'object_group' =>$object_group,'menu'=>$menu,'regions'=>$regions , 'area'=>$area , 'distric'=>$distric , 'country'=>$country]);
+    $count = AccObject::count();
+    $sys_page = AccSystems::get_systems($this->page_system);
+    $paging = $count>$sys_page->value?1:0;   
+    return view('acc.object',['paging' => $paging, 'key' => $this->key ,'department'=>$department,'object_type' =>$object_type,'object_group' =>$object_group,'menu'=>$menu,'regions'=>$regions , 'area'=>$area , 'distric'=>$distric , 'country'=>$country]);
+  }
+
+  
+  public function data(Request $request){   
+    $total = AccObject::count();
+    $sys_page = AccSystems::get_systems($this->page_system);
+    $paging = $total>$sys_page->value?1:0;   
+    if($paging == 0){
+      $arr = AccObject::get_raw();   
+    }else{
+    $perPage = $request->input('$top',30);
+    $skip = $request->input('$skip',0);
+    $orderby =   $request->input('$orderby','created_at desc');
+    $filter =   $request->input('$filter');
+    $asc  = 'desc';
+        if (!str_contains($orderby, 'desc')) { 
+          $asc = 'asc';
+        }else{
+          $orderby = explode(' ', $orderby)[0];
+        };
+        if($filter){
+          $filter_sql = Convert::filterRow($filter);
+          $arr = AccObject::get_raw_skip_filter_page($skip,$perPage,$orderby,$asc,$filter_sql);
+          $total = AccObject::whereRaw($filter_sql)->count();
+        }else{
+          $arr = AccObject::get_raw_skip_page($skip,$perPage,$orderby,$asc); 
+        }   
+    }  
+    $data = collect(['data' => $arr,'total' => $total]);              
+    if($data){
+      return response()->json($data);
+    }else{
+      return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
+    }
   }
 
   public function load(Request $request){
     $type = 10;
     try{
     $req = json_decode($request->data);
-    $mysql2 = $request->session()->get('mysql2');
-    config(['database.connections.mysql2' => $mysql2]);
     $object_type = AccObjectType::find($req);  
     $data = AccNumberCode::get_code($this->key.'_'.$object_type->filter);
     if($data){
@@ -117,8 +157,6 @@ class AccObjectController extends Controller
  }
 
   public function save(Request $request){
-    $mysql2 = $request->session()->get('mysql2');
-    config(['database.connections.mysql2' => $mysql2]);
     $type = 0;
     try{
   $permission = $request->session()->get('per');
@@ -308,8 +346,6 @@ class AccObjectController extends Controller
  }
 
  public function delete(Request $request) {
-   $mysql2 = $request->session()->get('mysql2');
-   config(['database.connections.mysql2' => $mysql2]);
    $type = 4;
       try{
         $permission = $request->session()->get('per');
@@ -355,14 +391,11 @@ class AccObjectController extends Controller
       }
  }
 
- public function DownloadExcel(Request $request){
+ public function DownloadExcel(){
    return Storage::download('public/downloadFile/AccObject.xlsx');
  }
 
  public function import(Request $request) {
-   ini_set('max_execution_time', 600);
-   $mysql2 = $request->session()->get('mysql2');
-   config(['database.connections.mysql2' => $mysql2]);
   $type = 5;
    try{
    $permission = $request->session()->get('per');
@@ -426,8 +459,6 @@ class AccObjectController extends Controller
  }
 
  public function export(Request $request) {
-   $mysql2 = $request->session()->get('mysql2');
-   config(['database.connections.mysql2' => $mysql2]);
    $type = 6;
    try{
        $arr = $request->data;

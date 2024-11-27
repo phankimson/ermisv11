@@ -24,6 +24,17 @@ class AccGroupUsers extends Model
         return $result;
       }
 
+      static public function get_raw_skip_page($skip,$limit,$orderBy,$asc,$company) {
+        $result = AccGroupUsers::WithRowNumber($orderBy,$asc)->where('company_id',$company)->skip($skip)->take($limit)->get();  
+        return $result;
+      }
+
+      static public function get_raw_skip_filter_page($skip,$limit,$orderBy,$asc,$filter,$company) {
+        $result = AccGroupUsers::WithRowNumberWhereRawColumn($filter,$orderBy,$asc)->where('company_id',$company)->skip($skip)->take($limit)->get();  
+        return $result;
+      }
+
+
       static public function get_raw_export($select,$company) {
         $result = AccGroupUsers::WithRowNumberWhereColumn('company_id',$company)
         ->leftJoin('company as c', 't.company_id', '=', 'c.id')

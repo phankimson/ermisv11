@@ -30,6 +30,16 @@ class AccNumberCode extends Model
         return $result;
       }
 
+      static public function get_raw_skip_page($skip,$limit,$orderBy,$asc) {
+        $result = AccNumberCode::WithRowNumberDb('mysql2',$orderBy,$asc)->skip($skip)->take($limit)->with('object_type')->get()->pluckDistant('object_type', 'object_type');       
+        return $result;
+      }
+    
+      static public function get_raw_skip_filter_page($skip,$limit,$orderBy,$asc,$filter) {
+        $result = AccNumberCode::WithRowNumberWhereRawColumnDb('mysql2',$filter,$orderBy,$asc)->skip($skip)->take($limit)->with('object_type')->get()->pluckDistant('object_type', 'object_type');
+        return $result;
+      }
+
       static public function get_raw_export($select) {
         $env = env("DB_DATABASE");
         $result = AccNumberCode::WithRowNumberDb('mysql2')->orderBy('row_number','asc')

@@ -85,6 +85,23 @@ class AccUser extends Authenticatable
       return $result;
     }
 
+    static public function get_raw($company) {
+      $result = User::WithRowNumberWhereColumn('company_default',$company)->get()->makeVisible(['active_code','password']);      
+      return $result;
+    }
+
+
+    static public function get_raw_skip_page($skip,$limit,$orderBy,$asc,$company) {
+      $result = User::WithRowNumber($orderBy,$asc)->where('company_default',$company)->skip($skip)->take($limit)->get()->makeVisible(['active_code','password']);
+      return $result;
+    }
+
+    static public function get_raw_skip_filter_page($skip,$limit,$orderBy,$asc,$filter,$company) {
+      $result = User::WithRowNumberWhereRawColumn($filter,$orderBy,$asc)->where('company_default',$company)->skip($skip)->take($limit)->get()->makeVisible(['active_code','password']);
+      return $result;
+    }
+
+
     static public function get_raw_export($select,$com) {
       $result = DB::select(DB::raw("SELECT @i:=@i+1 as row_number, {$select} FROM users t
         LEFT JOIN group_users m ON t.group_users_id = m.id

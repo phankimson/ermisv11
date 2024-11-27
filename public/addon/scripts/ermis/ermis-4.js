@@ -134,7 +134,17 @@ var Ermis = function () {
 
 
     var initKendoUiGridView = function () {
-      ErmisKendoGridTemplate0($kGrid, Ermis.page_size , Ermis.data, onChange, "row", jQuery(window).height() * 0.75, {numeric: false, previousNext: false},[], Ermis.columns);
+      if(Ermis.paging == 1){
+        ErmisKendoGridTemplatePageApi0($kGrid, Ermis.page_size , Ermis.link+'-data', onChange, "row", jQuery(window).height() * 0.75, {
+          numeric: false,
+          previousNext: false
+      } , [], Ermis.columns);
+      }else{
+        ErmisKendoGridTemplateApi0($kGrid, Ermis.page_size , Ermis.link+'-data', onChange, "row", jQuery(window).height() * 0.75, {
+          numeric: false,
+          previousNext: false
+      } , [], Ermis.columns);
+      }
     };
 
     var initClientReceive = function(){

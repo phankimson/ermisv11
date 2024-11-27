@@ -20,9 +20,13 @@ use App\Http\Model\Imports\AccExciseImport;
 use App\Http\Model\Exports\AccExciseExport;
 use App\Classes\Convert;
 use Excel;
+use Exception;
 
 class AccExciseController extends Controller
 {
+  protected $url;
+  protected $key;
+  protected $menu;
   public function __construct(Request $request)
   {
      $this->url =  $request->segment(3);
@@ -30,19 +34,26 @@ class AccExciseController extends Controller
      $this->menu = Menu::where('code', '=', $this->key)->first();
  }
 
-  public function show(Request $request){
-    $mysql2 = $request->session()->get('mysql2');
-    config(['database.connections.mysql2' => $mysql2]);
-    $unit = collect(DropDownListResource::collection(AccUnit::active()->OrderBy('code','asc')->get()));
-    $data = AccExcise::get_raw();
-    return view('acc.excise',['data' => $data, 'key' => $this->key , 'parent'=>$data ,'unit'=>$unit]);
+  public function show(){    
+    $unit = collect(DropDownListResource::collection(AccUnit::active()->orderBy('code','asc')->get()));
+    $parent = collect(DropDownListResource::collection(AccExcise::active()->orderBy('code','asc')->get()));
+    //$data = AccExcise::get_raw();
+    return view('acc.excise',[ 'key' => $this->key , 'parent'=>$parent ,'unit'=>$unit]);
   }
 
-  public function load(Request $request){
+  
+  public function data(){   
+    $data = AccExcise::get_raw();               
+    if($data){
+      return response()->json($data);
+    }else{
+      return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
+    }
+  }
+
+  public function load(){
     $type = 10;
     try{
-    $mysql2 = $request->session()->get('mysql2');
-    config(['database.connections.mysql2' => $mysql2]);
     $data = AccNumberCode::get_code($this->key);
     if($data){
       return response()->json(['status'=>true,'data'=> $data]);
@@ -57,7 +68,7 @@ class AccExciseController extends Controller
         'user_id' => Auth::id(),
         'menu_id' => $this->menu->id,
         'error' => $e->getMessage(),
-          'url'  => $this->url,
+         'url'  => $this->url,
         'check' => 0 ]);
       return response()->json(['status'=>false,'message'=> trans('messages.error').' '.$e->getMessage()]);
     }
@@ -99,8 +110,6 @@ class AccExciseController extends Controller
  }
 
   public function save(Request $request){
-    $mysql2 = $request->session()->get('mysql2');
-    config(['database.connections.mysql2' => $mysql2]);
     $type = 0;
     try{
   $permission = $request->session()->get('per');
@@ -200,8 +209,6 @@ class AccExciseController extends Controller
  }
 
  public function delete(Request $request) {
-   $mysql2 = $request->session()->get('mysql2');
-   config(['database.connections.mysql2' => $mysql2]);
    $type = 4;
       try{
         $permission = $request->session()->get('per');
@@ -246,14 +253,11 @@ class AccExciseController extends Controller
       }
  }
 
- public function DownloadExcel(Request $request){
+ public function DownloadExcel(){
    return Storage::download('public/downloadFile/AccExcise.xlsx');
  }
 
  public function import(Request $request) {
-   ini_set('max_execution_time', 600);
-   $mysql2 = $request->session()->get('mysql2');
-   config(['database.connections.mysql2' => $mysql2]);
   $type = 5;
    try{
    $permission = $request->session()->get('per');
@@ -317,8 +321,6 @@ class AccExciseController extends Controller
  }
 
  public function export(Request $request) {
-   $mysql2 = $request->session()->get('mysql2');
-   config(['database.connections.mysql2' => $mysql2]);
    $type = 6;
    try{
        $arr = $request->data;

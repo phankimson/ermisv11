@@ -26,6 +26,16 @@ class AccRevenueExpenditure extends Model
     return $result;
   }
 
+  static public function get_raw_skip_page($skip,$limit,$orderBy,$asc) {
+    $result = AccRevenueExpenditure::WithRowNumberDb('mysql2',$orderBy,$asc)->skip($skip)->take($limit)->get();  
+    return $result;
+  }
+
+  static public function get_raw_skip_filter_page($skip,$limit,$orderBy,$asc,$filter) {
+    $result = AccRevenueExpenditure::WithRowNumberWhereRawColumnDb('mysql2',$filter,$orderBy,$asc)->skip($skip)->take($limit)->get();  
+    return $result;
+  }
+
   static public function get_raw_export($select) {
     $result = AccRevenueExpenditure::WithRowNumberDb('mysql2')->orderBy('row_number','asc')
     ->leftJoin('revenue_expenditure_type as a', 't.type', '=', 'm.id')

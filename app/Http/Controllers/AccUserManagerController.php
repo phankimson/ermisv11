@@ -12,40 +12,79 @@ use App\Http\Model\Country;
 use App\Http\Model\AccGroupUsers;
 use App\Http\Model\Systems;
 use App\Http\Model\Error;
+use App\Http\Model\AccSystems;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Model\Imports\AccUserImport;
 use App\Http\Model\Exports\AccUserExport;
 use App\Classes\Convert;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Crypt;
-use Illuminate\Support\Arr;
 use Excel;
 use File;
 
 class AccUserManagerController extends Controller
 {
+  protected $url;
+  protected $key;
+  protected $menu;
+  protected $page_system;
+  protected $path;
   public function __construct(Request $request)
  {
      $this->url =  $request->segment(3);
      $this->key = "users";
      $this->path = "PATH_UPLOAD_AVATAR";
      $this->menu = Menu::where('code', '=', $this->key)->first();
+     $this->page_system = "MAX_COUNT_CHANGE_PAGE";
  }
 
   public function show(Request $request){
-    $mysql2 = $request->session()->get('mysql2');
-    config(['database.connections.mysql2' => $mysql2]);
     $com = $request->session()->get('com');
-    $data = AccUser::company($com->id)->get()->makeVisible(['active_code','password']);
+    //$data = AccUser::company($com->id)->get()->makeVisible(['active_code','password']);
     $group_user = AccGroupUsers::activeCompany($com->id)->active()->get();
     $country = Country::all();
     $prefix_username = substr(Crypt::encryptString($com->id),0,5);
-    return view('acc.users',['data' => $data, 'key' => $this->key , 'group_user'=>$group_user ,'country' =>$country ,'prefix_username'=>$prefix_username]);
+    $count = AccUser::where('company_default',$com->id)->count();
+    $sys_page = AccSystems::get_systems($this->page_system);
+    $paging = $count>$sys_page->value?1:0;  
+    return view('acc.users',['paging' => $paging, 'key' => $this->key , 'group_user'=>$group_user ,'country' =>$country ,'prefix_username'=>$prefix_username]);
+  }
+
+  public function data(Request $request){  
+    $com = $request->session()->get('com'); 
+    $total = AccUser::where('company_default',$com->id)->count();
+    $sys_page = AccSystems::get_systems($this->page_system);
+    $paging = $total>$sys_page->value?1:0;   
+    if($paging == 0){
+      $arr = AccUser::get_raw($com->id);   
+    }else{
+    $perPage = $request->input('$top',30);
+    $skip = $request->input('$skip',0);
+    $orderby =   $request->input('$orderby','created_at desc');
+    $filter =   $request->input('$filter');
+    $asc  = 'desc';
+        if (!str_contains($orderby, 'desc')) { 
+          $asc = 'asc';
+        }else{
+          $orderby = explode(' ', $orderby)[0];
+        };
+        if($filter){
+          $filter_sql = Convert::filterRow($filter);
+          $arr = AccUser::get_raw_skip_filter_page($skip,$perPage,$orderby,$asc,$filter_sql,$com->id);
+          $total = AccUser::whereRaw($filter_sql)->where('company_default',$com->id)->count();
+        }else{
+          $arr = AccUser::get_raw_skip_page($skip,$perPage,$orderby,$asc,$com->id); 
+        }   
+    }  
+    $data = collect(['data' => $arr,'total' => $total]);              
+    if($data){
+      return response()->json($data);
+    }else{
+      return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
+    }
   }
 
   public function save(Request $request){
-    $mysql2 = $request->session()->get('mysql2');
-    config(['database.connections.mysql2' => $mysql2]);
     $type = 0 ;
     try{
   $com = $request->session()->get('com');
@@ -212,8 +251,6 @@ class AccUserManagerController extends Controller
  }
 
  public function delete(Request $request) {
-  $mysql2 = $request->session()->get('mysql2');
-  config(['database.connections.mysql2' => $mysql2]);
       $type = 4;
       try{
         $permission = $request->session()->get('per');
@@ -258,13 +295,11 @@ class AccUserManagerController extends Controller
       }
  }
 
- public function DownloadExcel(Request $request){
+ public function DownloadExcel(){
    return Storage::download('public/downloadFile/AccUser.xlsx');
  }
 
  public function import(Request $request) {
-  $mysql2 = $request->session()->get('mysql2');
-  config(['database.connections.mysql2' => $mysql2]);
    $type = 5;
    try{
   $com = $request->session()->get('com');
@@ -328,8 +363,6 @@ class AccUserManagerController extends Controller
  }
 
  public function export(Request $request) {
-  $mysql2 = $request->session()->get('mysql2');
-  config(['database.connections.mysql2' => $mysql2]);
     $type = 6;
    try{
        $com = $request->session()->get('com');
