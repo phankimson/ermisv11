@@ -27,6 +27,16 @@ class AccAccountNature extends Model
         return $result;
       }
 
+      static public function get_raw_skip_page($skip,$limit,$orderBy,$asc) {
+        $result = AccAccountNature::WithRowNumberDb('mysql2',$orderBy,$asc)->skip($skip)->take($limit)->get();  
+        return $result;
+      }
+
+      static public function get_raw_skip_filter_page($skip,$limit,$orderBy,$asc,$filter) {
+        $result = AccAccountNature::WithRowNumberWhereRawColumnDb('mysql2',$filter,$orderBy,$asc)->skip($skip)->take($limit)->get();  
+        return $result;
+      }
+
       static public function get_raw_export($select) {
         $result =  AccAccountNature::WithRowNumberDb('mysql2')->orderBy('row_number','asc')->get(['row_number',DB::raw($select)]);        
         return $result;

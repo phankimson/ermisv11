@@ -19,14 +19,14 @@ use App\Http\Model\Imports\AccUnitImport;
 use App\Http\Model\Exports\AccUnitExport;
 use App\Classes\Convert;
 use Excel;
-use Artisan;
-use DB;
+use Exception;
 
 class AccUnitController extends Controller
 {
   protected $url;
   protected $key;
   protected $menu;
+  protected $page_system;
 
   public function __construct(Request $request)
  {
@@ -34,20 +34,21 @@ class AccUnitController extends Controller
      $this->url =  $request->segment(3);
      $this->key = "unit";
      $this->menu = Menu::where('code', '=', $this->key)->first();  
+     $this->page_system = "MAX_COUNT_CHANGE_PAGE";    
  }
 
-  public function show(Request $request){
+  public function show(){
     //$data = AccUnit::get_raw();  
     $count = AccUnit::count();
-    $sys_page = AccSystems::get_systems('MAX_COUNT_CHANGE_PAGE');
+    $sys_page = AccSystems::get_systems($this->page_system);
     $paging = $count>$sys_page->value?1:0; 
     return view('acc.unit',['paging' => $paging, 'key' => $this->key ]);
   }
 
-  public function data(Request $request){ 
+  public function data(Request $request){  
     $total = AccUnit::count();
-    $sys_page = AccSystems::get_systems('MAX_COUNT_CHANGE_PAGE');
-    $paging = $total>$sys_page->value?1:0;     
+    $sys_page = AccSystems::get_systems($this->page_system);
+    $paging = $total>$sys_page->value?1:0;  
     if($paging == 0){
       $arr = AccUnit::get_raw();   
     }else{
@@ -67,7 +68,6 @@ class AccUnitController extends Controller
           $total = AccUnit::whereRaw($filter_sql)->count();
         }else{
           $arr = AccUnit::get_raw_skip_page($skip,$perPage,$orderby,$asc);  
-          $total = AccUnit::count();    
         }   
     }  
     $data = collect(['data' => $arr,'total' => $total]);              
@@ -78,7 +78,7 @@ class AccUnitController extends Controller
     }
   }
 
-  public function load(Request $request){
+  public function load(){
     $type = 10;
     try{
     $data = AccNumberCode::get_code($this->key);
@@ -267,7 +267,7 @@ class AccUnitController extends Controller
  }
 
  public function import(Request $request) {
-   config(['queue.default' => 'database2']);
+   //config(['queue.default' => 'database2']);
   $type = 5;
    try{
    $permission = $request->session()->get('per');
@@ -283,7 +283,7 @@ class AccUnitController extends Controller
        $file = $request->file;
        // Import dữ liệu
        $import = new AccUnitImport;
-       Excel::queueImport($import,$file);
+       Excel::import($import,$file);
        // Lấy lại dữ liệu
        //$array = AccUnit::get_raw();
 
@@ -332,7 +332,6 @@ class AccUnitController extends Controller
 
  public function export(Request $request) {
    $mysql2 = $request->session()->get('mysql2');
-   config(['database.connections.mysql2' => $mysql2]);
    $type = 6;
    try{
        $arr = $request->data;

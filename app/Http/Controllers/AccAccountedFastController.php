@@ -18,6 +18,7 @@ use App\Http\Model\AccBankAccount;
 use App\Http\Model\AccDepartment;
 use App\Http\Model\CompanySoftware;
 use App\Http\Model\Company;
+use App\Http\Model\AccSystems;
 use App\Http\Model\AccObject;
 use App\Http\Model\Error;
 use Illuminate\Support\Facades\Storage;
@@ -25,21 +26,29 @@ use App\Http\Resources\DropDownListResource;
 use App\Http\Resources\BankAccountDropDownListResource;
 use App\Http\Model\Imports\AccAccountedFastImport;
 use App\Http\Model\Exports\AccAccountedFastExport;
+use App\Classes\Convert;
 use Excel;
+use Exception;
 
 class AccAccountedFastController extends Controller
 {
+  protected $url;
+  protected $key;
+  protected $menu;
+  protected $page_system;
   public function __construct(Request $request)
   {
      $this->url =  $request->segment(3);
      $this->key = "accounted-fast";
      $this->menu = Menu::where('code', '=', $this->key)->first();
+     $this->page_system = "MAX_COUNT_CHANGE_PAGE";
  }
 
-  public function show(Request $request){
-    $mysql2 = $request->session()->get('mysql2');
-    config(['database.connections.mysql2' => $mysql2]);
-    $data = AccAccountedFast::get_raw();
+  public function show(){
+    //$data = AccAccountedFast::get_raw();
+    $count = AccAccountedFast::count();
+    $sys_page = AccSystems::get_systems($this->page_system);
+    $paging = $count>$sys_page->value?1:0; 
     $account = collect(DropDownListResource::collection(AccAccountSystems::active()->OrderBy('code','asc')->doesntHave('account')->get()));
     $case_code = collect(DropDownListResource::collection(AccCaseCode::active()->OrderBy('code','asc')->get()));
     $cost_code = collect(DropDownListResource::collection(AccCostCode::active()->OrderBy('code','asc')->get()));
@@ -48,7 +57,41 @@ class AccAccountedFastController extends Controller
     $bank_account = collect(BankAccountDropDownListResource::collection(AccBankAccount::active()->OrderBy('bank_account','asc')->get()));
     $object = collect(DropDownListResource::collection(AccObject::active()->OrderBy('code','asc')->get()));
     $department = collect(DropDownListResource::collection(AccDepartment::active()->OrderBy('code','asc')->get()));
-    return view('acc.accounted_fast',['data' => $data, 'key' => $this->key ,'account' =>$account ,'case_code'=>$case_code,'cost_code'=>$cost_code,'statistical_code'=>$statistical_code,'work_code'=>$work_code,'bank_account'=>$bank_account,'object'=>$object,'department'=>$department]);
+    return view('acc.accounted_fast',['paging' => $paging, 'key' => $this->key ,'account' =>$account ,'case_code'=>$case_code,'cost_code'=>$cost_code,'statistical_code'=>$statistical_code,'work_code'=>$work_code,'bank_account'=>$bank_account,'object'=>$object,'department'=>$department]);
+  }
+
+  
+  public function data(Request $request){   
+    $total = AccAccountedFast::count();
+    $sys_page = AccSystems::get_systems($this->page_system);
+    $paging = $total>$sys_page->value?1:0;   
+    if($paging == 0){
+      $arr = AccAccountedFast::get_raw();   
+    }else{
+    $perPage = $request->input('$top',30);
+    $skip = $request->input('$skip',0);
+    $orderby =   $request->input('$orderby','created_at desc');
+    $filter =   $request->input('$filter');
+    $asc  = 'desc';
+        if (!str_contains($orderby, 'desc')) { 
+          $asc = 'asc';
+        }else{
+          $orderby = explode(' ', $orderby)[0];
+        };
+        if($filter){
+          $filter_sql = Convert::filterRow($filter);
+          $arr = AccAccountedFast::get_raw_skip_filter_page($skip,$perPage,$orderby,$asc,$filter_sql);
+          $total = AccAccountedFast::whereRaw($filter_sql)->count();
+        }else{
+          $arr = AccAccountedFast::get_raw_skip_page($skip,$perPage,$orderby,$asc); 
+        }   
+    }  
+    $data = collect(['data' => $arr,'total' => $total]);              
+    if($data){
+      return response()->json($data);
+    }else{
+      return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
+    }
   }
 
   public function ChangeDatabase(Request $request){
@@ -87,8 +130,6 @@ class AccAccountedFastController extends Controller
  }
 
   public function save(Request $request){
-    $mysql2 = $request->session()->get('mysql2');
-    config(['database.connections.mysql2' => $mysql2]);
     $type = 0;
     try{
   $permission = $request->session()->get('per');
@@ -188,8 +229,6 @@ class AccAccountedFastController extends Controller
  }
 
  public function delete(Request $request) {
-   $mysql2 = $request->session()->get('mysql2');
-   config(['database.connections.mysql2' => $mysql2]);
    $type = 4;
       try{
         $permission = $request->session()->get('per');
@@ -203,7 +242,7 @@ class AccAccountedFastController extends Controller
             'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
             'user' => Auth::id(),
             'menu' => $this->menu->id,
-              'url'  => $this->url,
+            'url'  => $this->url,
             'dataz' => \json_encode($data)]);
             //
             $data->delete();
@@ -229,14 +268,11 @@ class AccAccountedFastController extends Controller
       }
  }
 
- public function DownloadExcel(Request $request){
+ public function DownloadExcel(){
    return Storage::download('public/downloadFile/AccAccountedFast.xlsx');
  }
 
  public function import(Request $request) {
-   ini_set('max_execution_time', 600);
-   $mysql2 = $request->session()->get('mysql2');
-   config(['database.connections.mysql2' => $mysql2]);
   $type = 5;
    try{
    $permission = $request->session()->get('per');
@@ -300,8 +336,6 @@ class AccAccountedFastController extends Controller
  }
 
  public function export(Request $request) {
-   $mysql2 = $request->session()->get('mysql2');
-   config(['database.connections.mysql2' => $mysql2]);
    $type = 6;
    try{
        $arr = $request->data;

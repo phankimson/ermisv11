@@ -51,10 +51,10 @@ var Ermis = function () {
       // ChangeInputArr
       ErmisChangeInputArr();
       //Window Extra
-      $kWindow = ErmisKendoWindowTemplate(myWindow_extra, "600px", "");
-      $kWindow.title("Extra");    
+      $kWindow_extra = ErmisKendoWindowTemplate(myWindow_extra, "600px", "");
+      $kWindow_extra.title("Extra");    
       // KendoGridTemplateDefault
-      ErmisKendoTreeViewTemplate($kGrid, Ermis.data, "parent_id", true, onChange, "row", jQuery(window).height() * 0.75, true, data.fields, data.columns);
+      ErmisKendoTreeViewApiTemplate($kGrid, Ermis.link+'-data', "parent_id", true, onChange, "row", jQuery(window).height() * 0.75, true, data.fields, data.columns);
     }  
 
     var initStatus = function (flag) {

@@ -304,7 +304,7 @@ class AccWorkCodeController extends Controller
        $arr = $request->data;
        //return (new HistoryActionExport($arr))->download('HistoryActionExportErmis.xlsx');
        //$myFile = Excel::download(new HistoryActionExport($arr), 'HistoryActionExportErmis.xlsx');
-       $myFile = Excel::raw(new AccWorkCodeExport($arr,$mysql2['database']), \Maatwebsite\Excel\Excel::XLSX);
+       $myFile = Excel::raw(new AccWorkCodeExport($arr), \Maatwebsite\Excel\Excel::XLSX);
        $response =  array(
          'status' =>true,
          'name' => "AccWorkCodeExportErmis", //no extention needed

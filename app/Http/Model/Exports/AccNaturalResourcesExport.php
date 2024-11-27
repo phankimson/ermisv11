@@ -9,6 +9,7 @@ use Maatwebsite\Excel\Events\AfterSheet;
 
 class AccNaturalResourcesExport implements FromCollection, ShouldAutoSize, WithEvents
 {
+  protected $select;
     public function __construct($select)
    {
        $this->select = $select;

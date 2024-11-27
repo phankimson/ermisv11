@@ -9,15 +9,15 @@ use Maatwebsite\Excel\Events\AfterSheet;
 
 class AccWorkCodeExport implements FromCollection, ShouldAutoSize, WithEvents
 {
-    public function __construct($select,$db)
+  protected $select;
+    public function __construct($select)
    {
        $this->select = $select;
-       $this->db = $db;
    }
 
     public function collection()
     {
-        $a = AccWorkCode::get_raw_export($this->select,$this->db);
+        $a = AccWorkCode::get_raw_export($this->select);
         $b = collect($a);
         if($b->count()>0){
         $key = collect($a[0])->keys();

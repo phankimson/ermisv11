@@ -13,33 +13,74 @@ use App\Http\Model\CompanySoftware;
 use App\Http\Model\Company;
 use App\Http\Model\AccNumberCode;
 use App\Http\Model\Error;
+use App\Http\Model\AccSystems;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Model\Imports\AccSuppliesGoodsTypeImport;
 use App\Http\Model\Exports\AccSuppliesGoodsTypeExport;
 use App\Classes\Convert;
 use Excel;
+use Exception;
 
 class AccSuppliesGoodsTypeController extends Controller
 {
+      protected $url;
+      protected $key;
+      protected $menu;
+      protected $page_system;
+
   public function __construct(Request $request)
  {
      $this->url =  $request->segment(3);
      $this->key = "supplies-goods-type";
      $this->menu = Menu::where('code', '=', $this->key)->first();
+     $this->page_system = "MAX_COUNT_CHANGE_PAGE";
  }
 
-  public function show(Request $request){
-    $mysql2 = $request->session()->get('mysql2');
-    config(['database.connections.mysql2' => $mysql2]);
-    $data = AccSuppliesGoodsType::get_raw();
-    return view('acc.supplies_goods_type',['data' => $data, 'key' => $this->key ]);
+  public function show(){
+    //$data = AccSuppliesGoodsType::get_raw();
+    $count = AccSuppliesGoodsType::count();
+    $sys_page = AccSystems::get_systems($this->page_system);
+    $paging = $count>$sys_page->value?1:0;   
+    return view('acc.supplies_goods_type',['paging' => $paging, 'key' => $this->key ]);
   }
 
-  public function load(Request $request){
+  
+  public function data(Request $request){   
+    $total = AccSuppliesGoodsType::count();
+    $sys_page = AccSystems::get_systems($this->page_system);
+    $paging = $total>$sys_page->value?1:0;   
+    if($paging == 0){
+      $arr = AccSuppliesGoodsType::get_raw();   
+    }else{
+    $perPage = $request->input('$top',30);
+    $skip = $request->input('$skip',0);
+    $orderby =   $request->input('$orderby','created_at desc');
+    $filter =   $request->input('$filter');
+    $asc  = 'desc';
+        if (!str_contains($orderby, 'desc')) { 
+          $asc = 'asc';
+        }else{
+          $orderby = explode(' ', $orderby)[0];
+        };
+        if($filter){
+          $filter_sql = Convert::filterRow($filter);
+          $arr = AccSuppliesGoodsType::get_raw_skip_filter_page($skip,$perPage,$orderby,$asc,$filter_sql);
+          $total = AccSuppliesGoodsType::whereRaw($filter_sql)->count();
+        }else{
+          $arr = AccSuppliesGoodsType::get_raw_skip_page($skip,$perPage,$orderby,$asc); 
+        }   
+    }  
+    $data = collect(['data' => $arr,'total' => $total]);              
+    if($data){
+      return response()->json($data);
+    }else{
+      return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
+    }
+  }
+
+  public function load(){
     $type = 10;
     try{
-    $mysql2 = $request->session()->get('mysql2');
-    config(['database.connections.mysql2' => $mysql2]);
     $data = AccNumberCode::get_code($this->key);
     if($data){
       return response()->json(['status'=>true,'data'=> $data]);
@@ -96,8 +137,6 @@ class AccSuppliesGoodsTypeController extends Controller
  }
 
   public function save(Request $request){
-    $mysql2 = $request->session()->get('mysql2');
-    config(['database.connections.mysql2' => $mysql2]);
     $type = 0;
     try{
   $permission = $request->session()->get('per');
@@ -185,9 +224,7 @@ class AccSuppliesGoodsTypeController extends Controller
     }
  }
 
- public function delete(Request $request) {
-   $mysql2 = $request->session()->get('mysql2');
-   config(['database.connections.mysql2' => $mysql2]);
+ public function delete(Request $request) {   
    $type = 4;
       try{
         $permission = $request->session()->get('per');
@@ -232,9 +269,6 @@ class AccSuppliesGoodsTypeController extends Controller
  }
 
  public function import(Request $request) {
-   ini_set('max_execution_time', 600);
-   $mysql2 = $request->session()->get('mysql2');
-   config(['database.connections.mysql2' => $mysql2]);
   $type = 5;
    try{
    $permission = $request->session()->get('per');
@@ -298,8 +332,6 @@ class AccSuppliesGoodsTypeController extends Controller
  }
 
  public function export(Request $request) {
-   $mysql2 = $request->session()->get('mysql2');
-   config(['database.connections.mysql2' => $mysql2]);
    $type = 6;
    try{
        $arr = $request->data;

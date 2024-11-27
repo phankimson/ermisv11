@@ -49,7 +49,7 @@ class AccAccountSystems extends Model
       }
 
       static public function get_child($parent) {
-        $result = AccExcise::where('parent_id',$parent)->get();
+        $result = AccAccountSystems::where('parent_id',$parent)->get();
         return $result;
       }
 
@@ -58,7 +58,7 @@ class AccAccountSystems extends Model
         $result = AccAccountSystems::WithRowNumberDb('mysql2')->orderBy('row_number','desc')->get();
         //$result = DB::select(DB::raw("SELECT t.* from (SELECT @i:=@i+1 as row_number, s.* FROM country s, (SELECT @i:=0) AS temp order by s.created_at asc) t order by t.row_number desc"));
         return $result;
-      }
+      } 
 
       static public function get_raw_export($select) {
         $env = env("DB_DATABASE");

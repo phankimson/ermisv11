@@ -9,7 +9,8 @@ use Maatwebsite\Excel\Events\AfterSheet;
 
 class AccCurrencyExport implements FromCollection, ShouldAutoSize, WithEvents
 {
-    public function __construct($select,$db)
+  protected $select;
+    public function __construct($select)
    {
        $this->select = $select;
    }

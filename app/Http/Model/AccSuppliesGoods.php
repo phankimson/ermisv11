@@ -34,7 +34,17 @@ class AccSuppliesGoods extends Model
 
       
       static public function get_raw() {
-        $result = AccSuppliesGoods::WithRowNumberDb('mysql2')->orderBy('row_number','desc')->get();      
+        $result = AccSuppliesGoods::WithRowNumberDb('mysql2')->orderBy('row_number','desc')->with('discount')->get();      
+        return $result;
+      }
+
+      static public function get_raw_skip_page($skip,$limit,$orderBy,$asc) {
+        $result = AccSuppliesGoods::WithRowNumberDb('mysql2',$orderBy,$asc)->skip($skip)->take($limit)->with('discount')->get();  
+        return $result;
+      }
+
+      static public function get_raw_skip_filter_page($skip,$limit,$orderBy,$asc,$filter) {
+        $result = AccSuppliesGoods::WithRowNumberWhereRawColumnDb('mysql2',$filter,$orderBy,$asc)->skip($skip)->take($limit)->with('discount')->get();  
         return $result;
       }
 

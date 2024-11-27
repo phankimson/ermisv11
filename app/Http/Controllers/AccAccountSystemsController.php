@@ -22,9 +22,15 @@ use App\Http\Model\Imports\AccAccountSystemsImport;
 use App\Http\Model\Exports\AccAccountSystemsExport;
 use App\Classes\Convert;
 use Excel;
+use Exception;
 
 class AccAccountSystemsController extends Controller
 {
+  protected $url;
+  protected $key;
+  protected $menu;
+  protected $code_type;
+  protected $page_system;
   public function __construct(Request $request)
   {
      $this->url =  $request->segment(3);
@@ -33,15 +39,23 @@ class AccAccountSystemsController extends Controller
      $this->code_type = 'ACC_SYSTEM';
  }
 
-  public function show(Request $request){
-    $mysql2 = $request->session()->get('mysql2');
-    config(['database.connections.mysql2' => $mysql2]);
-    $type_account = collect(DropDownListResource::collection(AccAccountType::active()->OrderBy('code','asc')->get()));
-    $nature = collect(DropDownListResource::collection(AccAccountNature::active()->OrderBy('code','asc')->get()));
+  public function show(){
+    $type_account = collect(DropDownListResource::collection(AccAccountType::active()->orderBy('code','asc')->get()));
+    $nature = collect(DropDownListResource::collection(AccAccountNature::active()->orderBy('code','asc')->get()));
     $document_type = DocumentType::get_code($this->code_type);
     $document = collect(DropDownListResource::collection(Document::get_type($document_type->id)));
-    $data = AccAccountSystems::get_raw();
-    return view('acc.account_systems',['data' => $data, 'key' => $this->key , 'parent'=>$data , 'type_account'=>$type_account,'nature' => $nature,'document'=>$document ]);
+    $parent = collect(DropDownListResource::collection(AccAccountSystems::active()->orderBy('code','asc')->get()));
+    return view('acc.account_systems',[ 'key' => $this->key , 'parent'=>$parent , 'type_account'=>$type_account,'nature' => $nature,'document'=>$document ]);
+  }
+
+  
+  public function data(){  
+    $data = AccAccountSystems::get_raw();       
+    if($data){
+      return response()->json($data);
+    }else{
+      return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
+    }
   }
 
   public function ChangeDatabase(Request $request){
@@ -80,8 +94,6 @@ class AccAccountSystemsController extends Controller
  }
 
   public function save(Request $request){
-    $mysql2 = $request->session()->get('mysql2');
-    config(['database.connections.mysql2' => $mysql2]);
     $type = 0;
     try{
   $permission = $request->session()->get('per');
@@ -202,8 +214,6 @@ class AccAccountSystemsController extends Controller
  }
 
  public function delete(Request $request) {
-   $mysql2 = $request->session()->get('mysql2');
-   config(['database.connections.mysql2' => $mysql2]);
    $type = 4;
       try{
         $permission = $request->session()->get('per');
@@ -248,14 +258,11 @@ class AccAccountSystemsController extends Controller
       }
  }
 
- public function DownloadExcel(Request $request){
+ public function DownloadExcel(){
    return Storage::download('public/downloadFile/AccAccountSystems.xlsx');
  }
 
  public function import(Request $request) {
-   ini_set('max_execution_time', 600);
-   $mysql2 = $request->session()->get('mysql2');
-   config(['database.connections.mysql2' => $mysql2]);
   $type = 5;
    try{
    $permission = $request->session()->get('per');
@@ -319,8 +326,6 @@ class AccAccountSystemsController extends Controller
  }
 
  public function export(Request $request) {
-   $mysql2 = $request->session()->get('mysql2');
-   config(['database.connections.mysql2' => $mysql2]);
    $type = 6;
    try{
        $arr = $request->data;

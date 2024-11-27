@@ -26,6 +26,15 @@ class AccAccountedFast extends Model
         $result = AccAccountedFast::WithRowNumberDb('mysql2')->orderBy('row_number','desc')->get();       
         return $result;
       }
+      static public function get_raw_skip_page($skip,$limit,$orderBy,$asc) {
+        $result = AccAccountedFast::WithRowNumberDb('mysql2',$orderBy,$asc)->skip($skip)->take($limit)->get();  
+        return $result;
+      }
+
+      static public function get_raw_skip_filter_page($skip,$limit,$orderBy,$asc,$filter) {
+        $result = AccAccountedFast::WithRowNumberWhereRawColumnDb('mysql2',$filter,$orderBy,$asc)->skip($skip)->take($limit)->get();  
+        return $result;
+      }
 
       static public function get_raw_export($select) {
         $result = AccAccountedFast::WithRowNumberDb('mysql2')->orderBy('row_number','asc')

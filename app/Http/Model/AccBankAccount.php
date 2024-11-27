@@ -26,6 +26,17 @@ class AccBankAccount extends Model
         //$result = DB::select(DB::raw("SELECT t.* from (SELECT @i:=@i+1 as row_number, s.* FROM country s, (SELECT @i:=0) AS temp order by s.created_at asc) t order by t.row_number desc"));
         return $result;
       }
+
+      static public function get_raw_skip_page($skip,$limit,$orderBy,$asc) {
+        $result = AccBankAccount::WithRowNumberDb('mysql2',$orderBy,$asc)->skip($skip)->take($limit)->get();  
+        return $result;
+      }
+
+      static public function get_raw_skip_filter_page($skip,$limit,$orderBy,$asc,$filter) {
+        $result = AccBankAccount::WithRowNumberWhereRawColumnDb('mysql2',$filter,$orderBy,$asc)->skip($skip)->take($limit)->get();  
+        return $result;
+      }
+
           
       static public function get_raw_export($select) {
         $result = AccBankAccount::WithRowNumberDb('mysql2')->orderBy('row_number','asc')

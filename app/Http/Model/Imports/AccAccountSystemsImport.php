@@ -12,8 +12,9 @@ use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithBatchInserts;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
+use Maatwebsite\Excel\Concerns\WithLimit;
 
-class AccAccountSystemsImport implements ToModel, WithHeadingRow, WithBatchInserts, WithChunkReading
+class AccAccountSystemsImport implements ToModel, WithHeadingRow, WithBatchInserts, WithChunkReading, WithLimit
 {
   private static $result = array();
   public function sheets(): array
@@ -80,10 +81,15 @@ class AccAccountSystemsImport implements ToModel, WithHeadingRow, WithBatchInser
 
     public function batchSize(): int
    {
-       return 1000;
+       return 200;
    }
 
     public function chunkSize(): int
+   {
+       return 200;
+   }
+
+   public function limit(): int
    {
        return 1000;
    }

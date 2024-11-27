@@ -53,11 +53,19 @@ var Ermis = function () {
       $kWindow_extra = ErmisKendoWindowTemplate(myWindow_extra, "600px", "");
       $kWindow_extra.title("Extra");    
       // KendoGridTemplateDefault
-      ErmisKendoGridTemplateDefault($kGrid, Ermis.page_size, Ermis.data, onChange, "row", jQuery(window).height() * 0.75, {
-        refresh: true,
-        pageSizes: true,
-        buttonCount: 5
-    }, data.fields, data.columns);
+      if(Ermis.paging == 1){
+        ErmisKendoGridTemplateDefaultPageApi($kGrid,  Ermis.page_size, Ermis.link+'-data', onChange, "row", jQuery(window).height() * 0.75, {
+          refresh: true,
+          pageSizes: true,
+          buttonCount: 5
+      }, data.fields, data.columns);
+        }else{
+          ErmisKendoGridTemplateDefaultApi($kGrid,  Ermis.page_size, Ermis.link+'-data', onChange, "row", jQuery(window).height() * 0.75, {
+            refresh: true,
+            pageSizes: true,
+            buttonCount: 5
+        }, data.fields, data.columns);
+        }
     }
 
     var initStatus = function (flag) {

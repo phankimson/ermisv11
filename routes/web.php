@@ -506,6 +506,7 @@ Route::prefix('acc')->group(function () {
     'controller' => AccBankController::class
   ],function () {
   Route::get('/bank', 'show')->name('');
+  Route::get('/bank-data', 'data')->name('-data');
   Route::post('/bank-load', 'load')->name('-load');
   Route::post('/bank-get', 'get')->name('-get');
   Route::post('/bank-save', 'save')->name('-save');
@@ -522,6 +523,7 @@ Route::prefix('acc')->group(function () {
     'controller' => AccBankAccountController::class
   ],function () {
   Route::get('/bank-account', 'show' )->name('');
+  Route::get('/bank-account-data', 'data')->name('-data');
   Route::post('/bank-account-get', 'get')->name('-get');
   Route::post('/bank-account-save','save')->name('-save');
   Route::post('/bank-account-delete','delete' )->name('-delete');
@@ -650,6 +652,7 @@ Route::prefix('acc')->group(function () {
     'controller' => AccWarrantyPeriodController::class
   ],function () {
   Route::get('/warranty-period', 'show')->name('');
+  Route::get('/warranty-period-data', 'data')->name('-data');
   Route::post('/warranty-period-load', 'load')->name('-load');
   Route::post('/warranty-period-get', 'get')->name('-get');
   Route::post('/warranty-period-save', 'save')->name('-save');
@@ -666,6 +669,7 @@ Route::prefix('acc')->group(function () {
     'controller' => AccStockController::class
   ],function () {
   Route::get('/stock', 'show')->name('');
+  Route::get('/stock-data','data')->name('-data');
   Route::post('/stock-load','load')->name('-load');
   Route::post('/stock-get','get')->name('-get');
   Route::post('/stock-save', 'save')->name('-save');
@@ -682,6 +686,7 @@ Route::prefix('acc')->group(function () {
     'controller' => AccSuppliesGoodsTypeController::class
   ],function () {
   Route::get('/supplies-goods-type', 'show')->name('');
+  Route::get('/supplies-goods-type-data', 'data')->name('-data');
   Route::post('/supplies-goods-type-load', 'load')->name('-load');
   Route::post('/supplies-goods-type-get', 'get')->name('-get');
   Route::post('/supplies-goods-type-save', 'save')->name('-save');
@@ -698,6 +703,7 @@ Route::prefix('acc')->group(function () {
     'controller' => AccSuppliesGoodsController::class
   ],function () {
   Route::get('/supplies-goods', 'show')->name('');
+  Route::get('/supplies-goods-data', 'data')->name('-data');
   Route::post('/supplies-goods-load', 'load')->name('-load');
   Route::post('/supplies-goods-get', 'get')->name('-get');
   Route::post('/supplies-goods-save', 'save')->name('-save');
@@ -714,6 +720,7 @@ Route::prefix('acc')->group(function () {
     'controller' => AccSuppliesGoodsGroupController::class
   ],function () {
   Route::get('/supplies-goods-group', 'show' )->name('');
+  Route::get('/supplies-goods-group-data','data')->name('-data');
   Route::post('/supplies-goods-group-load','load')->name('-load');
   Route::post('/supplies-goods-group-get', 'get' )->name('-get');
   Route::post('/supplies-goods-group-save', 'save')->name('-save');
@@ -794,6 +801,7 @@ Route::prefix('acc')->group(function () {
     'controller' => AccCurrencyController::class
   ],function () {
   Route::get('/currency','show' )->name('');
+  Route::get('/currency-data', 'data' )->name('-data');
   Route::post('/currency-load', 'load' )->name('-load');
   Route::post('/currency-get', 'get' )->name('-get');
   Route::post('/currency-save', 'save' )->name('-save');
@@ -836,6 +844,7 @@ Route::prefix('acc')->group(function () {
     'controller' => AccAccountSystemsController::class
   ],function () {
   Route::get('/account-systems', 'show')->name('');
+  Route::get('/account-systems-data', 'data' )->name('-data');
   Route::post('/account-systems-get', 'get' )->name('-get');
   Route::post('/account-systems-save', 'save' )->name('-save');
   Route::post('/account-systems-delete', 'delete' )->name('-delete');
@@ -851,6 +860,7 @@ Route::prefix('acc')->group(function () {
     'controller' => AccAccountedFastController::class
   ],function () {
   Route::get('/accounted-fast', 'show')->name('');
+  Route::get('/accounted-fast-data', 'data')->name('-data');
   Route::post('/accounted-fast-load', 'load')->name('-load');
   Route::post('/accounted-fast-get', 'get')->name('-get');
   Route::post('/accounted-fast-save', 'save' )->name('-save');
@@ -867,6 +877,7 @@ Route::prefix('acc')->group(function () {
     'controller' => AccAccountedAutoController::class
   ],function () {
   Route::get('/accounted-auto', 'show')->name('');
+  Route::get('/accounted-auto-data', 'data')->name('-data');
   Route::post('/accounted-auto-load', 'load')->name('-load');
   Route::post('/accounted-auto-get', 'get')->name('-get');
   Route::post('/accounted-auto-save','save' )->name('-save');
@@ -899,6 +910,7 @@ Route::prefix('acc')->group(function () {
     'controller' => AccSettingAccountGroupController::class
   ],function () {
   Route::get('/setting-account-group', 'show')->name('');
+  Route::get('/setting-account-group-data','data' )->name('-data');
   Route::post('/setting-account-group-get','get' )->name('-get');
   Route::post('/setting-account-group-save','save' )->name('-save');
   Route::post('/setting-account-group-delete','delete' )->name('-delete');
@@ -914,6 +926,7 @@ Route::prefix('acc')->group(function () {
     'controller' => AccAccountTypeController::class
   ],function () {
   Route::get('/account-type', 'show')->name('');
+  Route::get('/account-type-data', 'data')->name('-data');
   Route::post('/account-type-load', 'load')->name('-load');
   Route::post('/account-type-get', 'get')->name('-get');
   Route::post('/account-type-save','save' )->name('-save');
@@ -930,6 +943,7 @@ Route::prefix('acc')->group(function () {
     'controller' => AccAccountNatureController::class
   ],function () {
     Route::get('/account-nature', 'show')->name('');
+    Route::get('/account-nature-data', 'data')->name('-data');
     Route::post('/account-nature-load', 'load')->name('-load');
     Route::post('/account-nature-get', 'get')->name('-get');
     Route::post('/account-nature-save','save' )->name('-save');

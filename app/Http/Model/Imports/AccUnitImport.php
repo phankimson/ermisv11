@@ -8,9 +8,9 @@ use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\WithBatchInserts;
-use Illuminate\Contracts\Queue\ShouldQueue;
+use Maatwebsite\Excel\Concerns\WithLimit;
 
-class AccUnitImport implements ToModel, WithHeadingRow, WithChunkReading, WithBatchInserts, ShouldQueue
+class AccUnitImport implements ToModel, WithHeadingRow, WithChunkReading, WithBatchInserts, WithLimit
 {
   private static $result = array();
 
@@ -24,14 +24,14 @@ class AccUnitImport implements ToModel, WithHeadingRow, WithChunkReading, WithBa
         return self::$result;
     }   
 
+
   /**
     * @param array $row
     *
     * @return \Illuminate\Database\Eloquent\Model|null    */
 
     public function model(array $row)
-    {
-      
+    {  
         //dump($row);
         $code_check = AccUnit::WhereCheck('code',$row['code'],'id',null)->first();
         if($code_check == null){          
@@ -50,11 +50,16 @@ class AccUnitImport implements ToModel, WithHeadingRow, WithChunkReading, WithBa
 
     public function batchSize(): int
     {
-        return 1000;
+        return 200;
     }
     
 
     public function chunkSize(): int
+   {
+       return 200;
+   }
+
+   public function limit(): int
    {
        return 1000;
    }

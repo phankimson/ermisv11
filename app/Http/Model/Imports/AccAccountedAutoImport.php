@@ -21,8 +21,9 @@ use App\Http\Model\AccObject;
 use App\Http\Model\AccStatisticalCode;
 use App\Http\Model\AccWorkCode;
 use Illuminate\Support\Arr;
+use Maatwebsite\Excel\Concerns\WithLimit;
 
-class AccAccountedAutoImport implements  WithHeadingRow, WithBatchInserts, WithChunkReading, WithMultipleSheets
+class AccAccountedAutoImport implements  WithHeadingRow, WithBatchInserts, WithChunkReading, WithMultipleSheets, WithLimit
 {
   public static $first = array();
   public static $second = array();
@@ -65,14 +66,19 @@ class AccAccountedAutoImport implements  WithHeadingRow, WithBatchInserts, WithC
 
 
     public function batchSize(): int
-   {
-       return 1000;
-   }
-
-    public function chunkSize(): int
-   {
-       return 1000;
-   }
+    {
+        return 200;
+    }
+ 
+     public function chunkSize(): int
+    {
+        return 200;
+    }
+ 
+    public function limit(): int
+    {
+        return 1000;
+    }
 
 }
 

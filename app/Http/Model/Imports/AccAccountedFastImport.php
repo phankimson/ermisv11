@@ -16,8 +16,9 @@ use App\Http\Model\AccDepartment;
 use App\Http\Model\AccObject;
 use App\Http\Model\AccStatisticalCode;
 use App\Http\Model\AccWorkCode;
+use Maatwebsite\Excel\Concerns\WithLimit;
 
-class AccAccountedFastImport implements ToModel, WithHeadingRow, WithBatchInserts, WithChunkReading
+class AccAccountedFastImport implements ToModel, WithHeadingRow, WithBatchInserts, WithChunkReading, WithLimit
 {
   private static $result = array();
   public function sheets(): array
@@ -80,13 +81,18 @@ class AccAccountedFastImport implements ToModel, WithHeadingRow, WithBatchInsert
     }
 
     public function batchSize(): int
-   {
-       return 1000;
-   }
-
-    public function chunkSize(): int
-   {
-       return 1000;
-   }
+    {
+        return 200;
+    }
+ 
+     public function chunkSize(): int
+    {
+        return 200;
+    }
+ 
+    public function limit(): int
+    {
+        return 1000;
+    }
 
 }

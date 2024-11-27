@@ -7,36 +7,76 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Model\AccHistoryAction;
-use App\Http\Model\User;
 use App\Http\Model\Menu;
 use App\Http\Model\AccBankAccount;
 use App\Http\Model\AccBank;
 use App\Http\Model\CompanySoftware;
 use App\Http\Model\Company;
 use App\Http\Model\Error;
+use App\Http\Model\AccSystems;
 use App\Http\Resources\DropDownListResource;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Model\Imports\AccBankAccountImport;
 use App\Http\Model\Exports\AccBankAccountExport;
 use App\Classes\Convert;
-use Illuminate\Support\Str;
 use Excel;
+use Exception;
 
 class AccBankAccountController extends Controller
 {
+  protected $url;
+  protected $key;
+  protected $menu;
+  protected $page_system;
   public function __construct(Request $request)
   {
      $this->url =  $request->segment(3);
      $this->key = "bank-account";
      $this->menu = Menu::where('code', '=', $this->key)->first();
+     $this->page_system = "MAX_COUNT_CHANGE_PAGE";
  }
 
-  public function show(Request $request){
-    $mysql2 = $request->session()->get('mysql2');
-    config(['database.connections.mysql2' => $mysql2]);
-    $data = AccBankAccount::get_raw();
+  public function show(){
+    //$data = AccBankAccount::get_raw();
+    $count = AccBankAccount::count();
+    $sys_page = AccSystems::get_systems($this->page_system);
+    $paging = $count>$sys_page->value?1:0;   
     $bank = collect(DropDownListResource::collection(AccBank::active()->OrderBy('code','asc')->get()));
-    return view('acc.bank_account',['data' => $data, 'key' => $this->key ,'bank'=>$bank ]);
+    return view('acc.bank_account',['paging' => $paging, 'key' => $this->key ,'bank'=>$bank ]);
+  }
+
+  
+  public function data(Request $request){   
+    $total = AccBankAccount::count();
+    $sys_page = AccSystems::get_systems($this->page_system);
+    $paging = $total>$sys_page->value?1:0;   
+    if($paging == 0){
+      $arr = AccBankAccount::get_raw();   
+    }else{
+    $perPage = $request->input('$top',30);
+    $skip = $request->input('$skip',0);
+    $orderby =   $request->input('$orderby','created_at desc');
+    $filter =   $request->input('$filter');
+    $asc  = 'desc';
+        if (!str_contains($orderby, 'desc')) { 
+          $asc = 'asc';
+        }else{
+          $orderby = explode(' ', $orderby)[0];
+        };
+        if($filter){
+          $filter_sql = Convert::filterRow($filter);
+          $arr = AccBankAccount::get_raw_skip_filter_page($skip,$perPage,$orderby,$asc,$filter_sql);
+          $total = AccBankAccount::whereRaw($filter_sql)->count();
+        }else{
+          $arr = AccBankAccount::get_raw_skip_page($skip,$perPage,$orderby,$asc); 
+        }   
+    }  
+    $data = collect(['data' => $arr,'total' => $total]);              
+    if($data){
+      return response()->json($data);
+    }else{
+      return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
+    }
   }
 
   public function ChangeDatabase(Request $request){
@@ -75,8 +115,6 @@ class AccBankAccountController extends Controller
  }
 
   public function save(Request $request){
-    $mysql2 = $request->session()->get('mysql2');
-    config(['database.connections.mysql2' => $mysql2]);
     $type = 0;
     try{
   $permission = $request->session()->get('per');
@@ -161,8 +199,6 @@ class AccBankAccountController extends Controller
  }
 
  public function delete(Request $request) {
-   $mysql2 = $request->session()->get('mysql2');
-   config(['database.connections.mysql2' => $mysql2]);
    $type = 4;
       try{
         $permission = $request->session()->get('per');
@@ -202,14 +238,11 @@ class AccBankAccountController extends Controller
       }
  }
 
- public function DownloadExcel(Request $request){
+ public function DownloadExcel(){
    return Storage::download('public/downloadFile/AccBankAccount.xlsx');
  }
 
  public function import(Request $request) {
-   ini_set('max_execution_time', 600);
-   $mysql2 = $request->session()->get('mysql2');
-   config(['database.connections.mysql2' => $mysql2]);
   $type = 5;
    try{
    $permission = $request->session()->get('per');
@@ -273,14 +306,12 @@ class AccBankAccountController extends Controller
  }
 
  public function export(Request $request) {
-   $mysql2 = $request->session()->get('mysql2');
-   config(['database.connections.mysql2' => $mysql2]);
    $type = 6;
    try{
        $arr = $request->data;
        //return (new HistoryActionExport($arr))->download('HistoryActionExportErmis.xlsx');
        //$myFile = Excel::download(new HistoryActionExport($arr), 'HistoryActionExportErmis.xlsx');
-       $myFile = Excel::raw(new AccBankAccountExport($arr,$mysql2['database']), \Maatwebsite\Excel\Excel::XLSX);
+       $myFile = Excel::raw(new AccBankAccountExport($arr), \Maatwebsite\Excel\Excel::XLSX);
        $response =  array(
          'status' =>true,
          'name' => "AccBankAccountExportErmis", //no extention needed

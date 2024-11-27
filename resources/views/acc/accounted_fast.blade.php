@@ -182,10 +182,10 @@
 @section('scripts_up')
 <script>
   jQuery(document).ready(function () {
-      Ermis.data = <?= json_encode($data);?>;
       Ermis.per = <?= json_encode($per);?>;
       Ermis.flag = 1;
       Ermis.link = "{{$key}}";
+      Ermis.paging = "{{$paging}}";
       Ermis.page_size = "{{$page_size}}";
       Ermis.fieldload = 'code';
       Ermis.short_key = "{{ config('app.short_key')}}";
@@ -213,8 +213,8 @@
 @endsection
 @section('scripts_end')
 @if($decimal_symbol === ".")
-document.write('<script src="{{ asset('library/kendoui/js/cultures/kendo.culture.de-DE.min.js') }}"></script>')
-document.write('<script>kendo.culture('de-DE')</script>')
+<script src="{{ asset('library/kendoui/js/cultures/kendo.culture.de-DE.min.js') }}"></script>
+<script>kendo.culture('de-DE')</script>
 @endif
 <script src="{{ url('addon/scripts/ermis/ermis-form-2-page.js') }}"></script>
 @endsection

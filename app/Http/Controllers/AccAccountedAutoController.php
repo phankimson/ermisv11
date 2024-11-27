@@ -18,6 +18,7 @@ use App\Http\Model\AccWorkCode;
 use App\Http\Model\AccBankAccount;
 use App\Http\Model\AccDepartment;
 use App\Http\Model\AccObject;
+use App\Http\Model\AccSystems;
 use App\Http\Model\AccAccountedFast;
 use App\Http\Resources\DropDownListResource;
 use App\Http\Resources\LangDropDownListResource;
@@ -32,20 +33,27 @@ use App\Http\Model\Imports\AccAccountedAutoImport;
 use App\Http\Model\Exports\AccAccountedAutoExport;
 use App\Classes\Convert;
 use Excel;
+use Exception;
 
 class AccAccountedAutoController extends Controller
 {
+  protected $url;
+  protected $key;
+  protected $menu;
+  protected $page_system;
   public function __construct(Request $request)
   {
      $this->url =  $request->segment(3);
      $this->key = "accounted-auto";
      $this->menu = Menu::where('code', '=', $this->key)->first();
+     $this->page_system = "MAX_COUNT_CHANGE_PAGE";
  }
 
-  public function show(Request $request){
-    $mysql2 = $request->session()->get('mysql2');
-    config(['database.connections.mysql2' => $mysql2]);
-    $data = AccAccountedAuto::with('accounted_auto_detail')->get();
+  public function show(){
+    //$data = AccAccountedAuto::with('accounted_auto_detail')->get();
+    $count = AccAccountedAuto::count();
+    $sys_page = AccSystems::get_systems($this->page_system);
+    $paging = $count>$sys_page->value?1:0; 
     $account = json_encode(LangDropDownListResource::collection(AccAccountSystems::active()->OrderBy('code','asc')->doesntHave('account')->get()));
     $work_code = json_encode(collect(LangDropDownListResource::collection(AccWorkCode::active()->OrderBy('code','asc')->get())));
     $department = json_encode(collect(LangDropDownListResource::collection(AccDepartment::active()->OrderBy('code','asc')->get())));
@@ -55,7 +63,7 @@ class AccAccountedAutoController extends Controller
     $statistical_code = json_encode(collect(LangDropDownListResource::collection(AccStatisticalCode::active()->OrderBy('code','asc')->get())));
     $accounted_fast = json_encode(collect(AccountedFastDropDownListResource::collection(AccAccountedFast::active()->OrderBy('code','asc')->get())));
     $object = json_encode(collect(DropDownListResource::collection(AccObject::active()->get())));
-    return view('acc.accounted_auto',['data' => $data,
+    return view('acc.accounted_auto',['paging' => $paging,
      'key' => $this->key ,'account' =>$account ,
      'case_code'=>$case_code,'cost_code'=>$cost_code,
      'statistical_code'=>$statistical_code,'work_code'=>$work_code,
@@ -63,11 +71,43 @@ class AccAccountedAutoController extends Controller
      'accounted_fast'=>$accounted_fast,'object'=>$object]);
   }
 
-  public function load(Request $request){
+
+  public function data(Request $request){   
+    $total = AccAccountedAuto::count();
+    $sys_page = AccSystems::get_systems($this->page_system);
+    $paging = $total>$sys_page->value?1:0;   
+    if($paging == 0){
+      $arr = AccAccountedAuto::get_raw();   
+    }else{
+    $perPage = $request->input('$top',30);
+    $skip = $request->input('$skip',0);
+    $orderby =   $request->input('$orderby','created_at desc');
+    $filter =   $request->input('$filter');
+    $asc  = 'desc';
+        if (!str_contains($orderby, 'desc')) { 
+          $asc = 'asc';
+        }else{
+          $orderby = explode(' ', $orderby)[0];
+        };
+        if($filter){
+          $filter_sql = Convert::filterRow($filter);
+          $arr = AccAccountedAuto::get_raw_skip_filter_page($skip,$perPage,$orderby,$asc,$filter_sql);
+          $total = AccAccountedAuto::whereRaw($filter_sql)->count();
+        }else{
+          $arr = AccAccountedAuto::get_raw_skip_page($skip,$perPage,$orderby,$asc); 
+        }   
+    }  
+    $data = collect(['data' => $arr,'total' => $total]);              
+    if($data){
+      return response()->json($data);
+    }else{
+      return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
+    }
+  }
+
+  public function load(){
     $type = 10;
     try{
-    $mysql2 = $request->session()->get('mysql2');
-    config(['database.connections.mysql2' => $mysql2]);
     $data = AccNumberCode::get_code($this->key);
     if($data){
       return response()->json(['status'=>true,'data'=> $data]);
@@ -124,8 +164,6 @@ class AccAccountedAutoController extends Controller
  }
 
   public function save(Request $request){
-    $mysql2 = $request->session()->get('mysql2');
-    config(['database.connections.mysql2' => $mysql2]);
     $type = 0;
     try{
   $permission = $request->session()->get('per');
@@ -287,8 +325,6 @@ class AccAccountedAutoController extends Controller
  }
 
  public function delete(Request $request) {
-   $mysql2 = $request->session()->get('mysql2');
-   config(['database.connections.mysql2' => $mysql2]);
    $type = 4;
       try{
         $permission = $request->session()->get('per');
@@ -336,14 +372,11 @@ class AccAccountedAutoController extends Controller
       }
  }
 
- public function DownloadExcel(Request $request){
+ public function DownloadExcel(){
    return Storage::download('public/downloadFile/AccAccountedAuto.xlsx');
  }
 
  public function import(Request $request) {
-   ini_set('max_execution_time', 600);
-   $mysql2 = $request->session()->get('mysql2');
-   config(['database.connections.mysql2' => $mysql2]);
   $type = 5;
    try{
    $permission = $request->session()->get('per');
@@ -407,8 +440,6 @@ class AccAccountedAutoController extends Controller
  }
 
  public function export(Request $request) {
-   $mysql2 = $request->session()->get('mysql2');
-   config(['database.connections.mysql2' => $mysql2]);
    $type = 6;
    try{
        $arr = $request->data;

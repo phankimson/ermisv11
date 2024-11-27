@@ -1029,7 +1029,7 @@ var ErmisKendoGridTemplateApi0 = function($kGrid, pageSize , url, onChange, sele
 
 var ErmisKendoGridTemplateToolTip0 = function($kGrid, pageSize, data, onChange, selectable, height, pageable, fields, columns, elemTooltip, filterTooltip, toolTip) {
     var dataSource = new kendo.data.DataSource({
-        pageSize: pageSize,
+        pageSize: parseInt(pageSize),
         data: data
     });
     var grid = $kGrid.kendoGrid({
@@ -1070,7 +1070,7 @@ var ErmisKendoGridTemplateToolTip0 = function($kGrid, pageSize, data, onChange, 
 
 var ErmisKendoGridTemplate = function($kGrid, pageSize, data, onChange, selectable, height, pageable, fields, columns) {
     var dataSource = new kendo.data.DataSource({
-        pageSize: pageSize,
+        pageSize: parseInt(pageSize),
         transport: {
             read: function(e) {
                 e.success(data);
@@ -1109,7 +1109,7 @@ var ErmisKendoGridTemplate = function($kGrid, pageSize, data, onChange, selectab
 
 var ErmisKendoGridTemplateDefault = function($kGrid, pageSize, data, onChange, selectable, height, pageable, fields, columns) {
     var dataSource = new kendo.data.DataSource({
-        pageSize: pageSize,
+        pageSize: parseInt(pageSize),
         transport: {
             read: function(e) {
                 e.success(data);
@@ -1252,9 +1252,10 @@ var ErmisKendoGridTemplateDefaultPageApi = function($kGrid, pageSize, url, onCha
     });
 };
 
+
 var ErmisKendoGridTemplateDefaultTooltip0 = function($kGrid, pageSize, data, onChange, selectable, height, pageable, fields, columns, elemTooltip, filterTooltip, toolTip) {
     var dataSource = new kendo.data.DataSource({
-        pageSize: pageSize,
+        pageSize: parseInt(pageSize),
         transport: {
             read: function(e) {
                 e.success(data);
@@ -1300,6 +1301,116 @@ var ErmisKendoGridTemplateDefaultTooltip0 = function($kGrid, pageSize, data, onC
     });
 };
 
+var ErmisKendoGridTemplateDefaultTooltipApi0 = function($kGrid, pageSize, url, onChange, selectable, height, pageable, fields, columns, elemTooltip, filterTooltip, toolTip) {
+    var dataSource = new kendo.data.DataSource({
+        transport: {
+            read: {
+                url: url,
+                dataType: "json",
+            },       
+        },
+        pageSize: parseInt(pageSize),      
+         schema: {
+            data: "data",
+            total: "total",
+            model: {
+                id: "id",
+                fields: fields
+            }
+        } 
+    });
+    var grid = $kGrid.kendoGrid({
+        dataSource: dataSource,
+        change: onChange,
+        selectable: selectable,
+        height: height,
+        groupable: true,
+        sortable: true,
+        pageable: pageable,
+        filterable: true,       
+        columns: columns,
+        dataBound: function() {
+            var rows = this.items();
+            $(rows).each(function() {
+                var index = $(this).index() + 1;
+                var rowLabel = $(this).find(".row-number");
+                $(rowLabel).html(index);
+            });
+        },
+    });
+    grid.data("kendoGrid").thead.kendoTooltip({
+        filter: "th",
+        content: function(e) {
+            var target = e.target; // element for which the tooltip is shown
+            return $(target).text();
+        }
+    });
+
+    jQuery(elemTooltip).kendoTooltip({
+        filter: filterTooltip,
+        content: toolTip,
+        position: "top",
+    });
+};
+
+var ErmisKendoGridTemplateDefaultTooltipPageApi0 = function($kGrid, pageSize, url, onChange, selectable, height, pageable, fields, columns, elemTooltip, filterTooltip, toolTip) {
+    var dataSource = new kendo.data.DataSource({
+        transport: {
+            read: {
+                url: url,
+                dataType: "json",
+            },       
+        },
+        type: "odata",
+        serverPaging: true,
+        serverFiltering: true,        
+        serverSorting: true,  
+        pageSize: parseInt(pageSize),      
+         schema: {
+            data: "data",
+            total: "total",
+            model: {
+                id: "id",
+                fields: fields
+            }
+        } 
+    });
+    var grid = $kGrid.kendoGrid({
+        dataSource: dataSource,
+        change: onChange,
+        selectable: selectable,
+        height: height,
+        groupable: true,
+        sortable: true,
+        pageable: pageable,
+        filterable: true,       
+        columns: columns,
+        dataBound: function() {
+            var rows = this.items();
+            $(rows).each(function() {
+                var index = $(this).index() + 1;
+                var rowLabel = $(this).find(".row-number");
+                $(rowLabel).html(index);
+            });
+        },
+    });
+    grid.data("kendoGrid").thead.kendoTooltip({
+        filter: "th",
+        content: function(e) {
+            var target = e.target; // element for which the tooltip is shown
+            return $(target).text();
+        }
+    });
+
+    jQuery(elemTooltip).kendoTooltip({
+        filter: filterTooltip,
+        content: toolTip,
+        position: "top",
+    });
+};
+
+
+
 var ErmisKendoGridAddData = function($kGrid,data,page_size,field){
   var grid = $kGrid.data("kendoGrid");
   var ds = new kendo.data.DataSource({
@@ -1319,6 +1430,46 @@ var ErmisKendoGridAddData = function($kGrid,data,page_size,field){
 var ErmisKendoTreeViewTemplate = function($kGrid, data, parentId, expanded, onChange, selectable, height, pageable, fields, columns) {
     var dataSource = new kendo.data.TreeListDataSource({
         data: data,
+        schema: {
+            model: {
+                id: "id",
+                parentId: parentId,
+                fields: fields,
+                expanded: expanded
+            },
+
+        }
+    });
+    var grid = $kGrid.kendoTreeList({
+        dataSource: dataSource,
+        change: onChange,
+        selectable: selectable,
+        height: height,
+        groupable: true,
+        sortable: true,
+        pageable: pageable,
+        filterable: true,
+        columns: columns
+    });
+
+    grid.data("kendoTreeList").thead.kendoTooltip({
+        filter: "th",
+        content: function(e) {
+            var target = e.target; // element for which the tooltip is shown
+            return $(target).text();
+        }
+    });
+};
+
+
+var ErmisKendoTreeViewApiTemplate = function($kGrid, url, parentId, expanded, onChange, selectable, height, pageable, fields, columns) {
+    var dataSource = new kendo.data.TreeListDataSource({
+        transport: {
+            read: {
+                url: url,
+                dataType: "json",
+            },       
+        },
         schema: {
             model: {
                 id: "id",

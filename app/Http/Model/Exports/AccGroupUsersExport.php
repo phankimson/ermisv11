@@ -9,6 +9,8 @@ use Maatwebsite\Excel\Events\AfterSheet;
 
 class AccGroupUsersExport implements FromCollection, ShouldAutoSize, WithEvents
 {
+    protected $select;
+    protected $company;
     public function __construct($select,$company)
    {
        $this->select = $select;
