@@ -78,14 +78,14 @@
 @section('scripts_up')
 <script>
   jQuery(document).ready(function () {
-      Ermis.data = <?= json_encode($data);?>;
       Ermis.per = <?= json_encode($per);?>;
       Ermis.flag = 1;
       Ermis.link = "{{$key}}";
+      Ermis.paging = "{{$paging}}";
       Ermis.page_size = "{{$page_size}}";
       Ermis.elem = "#form-action";
       Ermis.short_key = "{{ config('app.short_key')}}";
-      Ermis.ts = {{$type}};
+      Ermis.ts = '{{$type}}';
       Ermis.fieldload = '';
       Ermis.columns_expend = [{ selectable: true, width: "50px" }, {"field" : "column","title" : "@lang('global.column_name')"}];
       Ermis.data_expend = [{ field : "u.username", column:  "@lang('history_action.user')" },

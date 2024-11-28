@@ -31,6 +31,17 @@ class License extends Model
         return $result;
       }
 
+       
+      static public function get_raw_skip_page($skip,$limit,$orderBy,$asc) {
+        $result = License::WithRowNumber($orderBy,$asc)->skip($skip)->take($limit)->get();  
+        return $result;
+      }
+
+      static public function get_raw_skip_filter_page($skip,$limit,$orderBy,$asc,$filter) {
+        $result = License::WithRowNumberWhereRawColumn($filter,$orderBy,$asc)->skip($skip)->take($limit)->get();  
+        return $result;
+      }
+
       static public function get_raw_export($select) {
         $result = License::WithRowNumber()->orderBy('row_number','asc')
         ->leftJoin('company as c', 't.company_use', '=', 'c.id')

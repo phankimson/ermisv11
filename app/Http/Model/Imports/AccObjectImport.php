@@ -15,11 +15,10 @@ use Maatwebsite\Excel\Row;
 use Maatwebsite\Excel\Concerns\OnEachRow;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithBatchInserts;
-use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Illuminate\Support\Arr;
 use Maatwebsite\Excel\Concerns\WithLimit;
 
-class AccObjectImport implements OnEachRow, WithHeadingRow, WithBatchInserts, WithChunkReading, WithLimit
+class AccObjectImport implements OnEachRow, WithHeadingRow, WithBatchInserts, WithLimit
 {
   private static $result = array();
   public function sheets(): array
@@ -124,17 +123,12 @@ class AccObjectImport implements OnEachRow, WithHeadingRow, WithBatchInserts, Wi
 
     public function batchSize(): int
     {
-        return 200;
-    }
- 
-     public function chunkSize(): int
-    {
-        return 200;
-    }
- 
-    public function limit(): int
-    {
-        return 1000;
-    }
+      return env("IMPORT_SIZE",100);
+    }   
+  
+     public function limit(): int
+     {
+      return env("IMPORT_LIMIT",200);
+     }
 
 }

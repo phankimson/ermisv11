@@ -5,7 +5,6 @@ namespace App\Http\Model\Imports;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithBatchInserts;
-use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 use Maatwebsite\Excel\Concerns\HasReferencesToOtherSheets;
 use Illuminate\Support\Str;
@@ -23,7 +22,7 @@ use App\Http\Model\AccWorkCode;
 use Illuminate\Support\Arr;
 use Maatwebsite\Excel\Concerns\WithLimit;
 
-class AccAccountedAutoImport implements  WithHeadingRow, WithBatchInserts, WithChunkReading, WithMultipleSheets, WithLimit
+class AccAccountedAutoImport implements  WithHeadingRow, WithBatchInserts, WithMultipleSheets, WithLimit
 {
   public static $first = array();
   public static $second = array();
@@ -67,18 +66,14 @@ class AccAccountedAutoImport implements  WithHeadingRow, WithBatchInserts, WithC
 
     public function batchSize(): int
     {
-        return 200;
-    }
- 
-     public function chunkSize(): int
-    {
-        return 200;
-    }
- 
-    public function limit(): int
-    {
-        return 1000;
-    }
+      return env("IMPORT_SIZE",100);
+    }   
+  
+     public function limit(): int
+     {
+      return env("IMPORT_LIMIT",200);
+     }
+  
 
 }
 

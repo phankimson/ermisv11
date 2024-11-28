@@ -26,6 +26,17 @@ class HistoryAction extends Model
       return $result;
     }
 
+    
+    static public function get_raw_skip_page($skip,$limit,$orderBy,$asc,$type) {
+      $result = HistoryAction::WithRowNumber($orderBy,$asc)->where('type',$type)->skip($skip)->take($limit)->get();  
+      return $result;
+    }
+
+    static public function get_raw_skip_filter_page($skip,$limit,$orderBy,$asc,$filter,$type) {
+      $result = HistoryAction::WithRowNumberWhereRawColumn($filter,$orderBy,$asc)->where('type',$type)->skip($skip)->take($limit)->get();  
+      return $result;
+    }
+
     static public function get_raw_export($select) {
       $result = HistoryAction::WithRowNumber()->orderBy('row_number','asc')
       ->leftJoin('menu as m', 't.menu', '=', 'm.id')

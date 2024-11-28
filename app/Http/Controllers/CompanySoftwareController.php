@@ -8,12 +8,12 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Model\HistoryAction;
 use App\Http\Model\Menu;
-use App\Http\Model\User;
 use App\Http\Model\CompanySoftware;
 use App\Http\Model\Company;
 use App\Http\Model\Software;
 use App\Http\Model\License;
 use App\Http\Model\Error;
+use App\Http\Model\Systems;
 use App\Http\Resources\DropDownListResource;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Model\Imports\CompanySoftwareImport;
@@ -22,25 +22,71 @@ use App\Classes\Convert;
 use App\Classes\SchemaDB;
 use Excel;
 use Hashids\Hashids;
+use Exception;
 
 class CompanySoftwareController extends Controller
 {
+  protected $url;
+  protected $key;
+  protected $menu;
+  protected $page_system;
+  protected $length_hash;
     public function __construct(Request $request)
    {
        $this->url = $request->segment(3);
        $this->key = "company-software";
        $this->menu = Menu::where('code', '=', $this->key)->first();
        $this->length_hash = 50;
+       $this->page_system = "MAX_COUNT_CHANGE_PAGE";
    }
 
    public function show(){
       $type = Software::get_url("acc");
-      $data = CompanySoftware::get_raw_type($type->id);
+      //$data = CompanySoftware::get_raw_type($type->id);
       $company = collect(DropDownListResource::collection(Company::active()->get()));
       $software = collect(DropDownListResource::collection(Software::active()->get()));
       $license = License::active()->get();
-      return view('manage.company_software',['data' => $data, 'company'=>$company, 'software'=>$software, 'license'=>$license, 'key' => $this->key , 'type' => $type->id]);
+      $count = CompanySoftware::count();
+      $sys_page = Systems::get_systems($this->page_system);
+      $paging = $count>$sys_page->value?1:0; 
+      return view('manage.company_software',['paging' => $paging, 'company'=>$company, 'software'=>$software, 'license'=>$license, 'key' => $this->key , 'type' => $type->id]);
    }
+
+   public function data(Request $request){    
+    $type = Software::get_url("acc");
+    $total = CompanySoftware::where('type',$type->id)->count();
+    $sys_page = Systems::get_systems($this->page_system);
+    $paging = $total>$sys_page->value?1:0;     
+    if($paging == 0){
+      $arr = CompanySoftware::get_raw_type($type->id);   
+    }else{
+    $perPage = $request->input('$top',30);
+    $skip = $request->input('$skip',0);
+    $orderby =   $request->input('$orderby','created_at desc');
+    $filter =   $request->input('$filter');
+    $asc  = 'desc';
+        if (!str_contains($orderby, 'desc')) { 
+          $asc = 'asc';
+        }else{
+          $orderby = explode(' ', $orderby)[0];
+        };
+        if($filter){
+          $filter_sql = Convert::filterRow($filter);
+          $arr = CompanySoftware::get_raw_skip_filter_page($skip,$perPage,$orderby,$asc,$filter_sql,$type->id);
+          $total = CompanySoftware::whereRaw($filter_sql)->count();
+        }else{
+          $arr = CompanySoftware::get_raw_skip_page($skip,$perPage,$orderby,$asc,$type->id);   
+        }   
+    }  
+    $data = collect(['data' => $arr,'total' => $total]);            
+    if($data){
+      return response()->json($data);
+    }else{
+      return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
+    }
+  }
+
+
     public function get(Request $request){
       $type = 9;
       try{

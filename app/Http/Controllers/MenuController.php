@@ -8,32 +8,76 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Model\HistoryAction;
-use App\Http\Model\User;
 use App\Http\Model\Menu;
 use App\Http\Model\Error;
 use App\Http\Model\Software;
+use App\Http\Model\Systems;
 use App\Http\Resources\DropDownListResource;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Model\Imports\MenuImport;
 use App\Http\Model\Exports\MenuExport;
 use App\Classes\Convert;
 use Excel;
+use Exception;
 
 class MenuController extends Controller
 {
+  protected $url;
+  protected $key;
+  protected $menu;
+  protected $page_system;
     public function __construct(Request $request)
    {
        $this->url = $request->segment(3);
        $this->key = "menu";
        $this->menu = Menu::where('code', '=', $this->key)->first();
+       $this->page_system = "MAX_COUNT_CHANGE_PAGE";
    }
 
    public function show(){
       $type = Software::first();
       $data = Menu::get_raw_type($type->id);
       $software = collect(DropDownListResource::collection(SoftWare::all()));
-      return view('manage.menu',['data' => $data, 'key' => $this->key , 'type' => $type->id ,'software' => $software]);
+      $count = Menu::count();
+      $sys_page = Systems::get_systems($this->page_system);
+      $paging = $count>$sys_page->value?1:0; 
+      return view('manage.menu',['paging' => $paging,'data' => $data, 'key' => $this->key , 'type' => $type->id ,'software' => $software]);
    }
+   
+  public function data(Request $request){    
+    $type = Software::first();
+    $total = Menu::where('type',$type->id)->count();
+    $sys_page = Systems::get_systems($this->page_system);
+    $paging = $total>$sys_page->value?1:0;     
+    if($paging == 0){
+      $arr = Menu::get_raw_type($type->id);   
+    }else{
+    $perPage = $request->input('$top',30);
+    $skip = $request->input('$skip',0);
+    $orderby =   $request->input('$orderby','created_at desc');
+    $filter =   $request->input('$filter');
+    $asc  = 'desc';
+        if (!str_contains($orderby, 'desc')) { 
+          $asc = 'asc';
+        }else{
+          $orderby = explode(' ', $orderby)[0];
+        };
+        if($filter){
+          $filter_sql = Convert::filterRow($filter);
+          $arr = Menu::get_raw_skip_filter_page($skip,$perPage,$orderby,$asc,$filter_sql,$type->id);
+          $total = Menu::whereRaw($filter_sql)->count();
+        }else{
+          $arr = Menu::get_raw_skip_page($skip,$perPage,$orderby,$asc,$type->id);   
+        }   
+    }  
+    $data = collect(['data' => $arr,'total' => $total]);            
+    if($data){
+      return response()->json($data);
+    }else{
+      return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
+    }
+  }
+
     public function get(Application $app,Request $request){
       $type = 9;
       try{
@@ -191,7 +235,7 @@ class MenuController extends Controller
          return response()->json(['status'=>false,'message'=> trans('messages.delete_fail').' '.$e->getMessage()]);
        }
   }
-  public function DownloadExcel(Request $request){
+  public function DownloadExcel(){
     return Storage::download('public/downloadFile/Menu.xlsx');
   }
 

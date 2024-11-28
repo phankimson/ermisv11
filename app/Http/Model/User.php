@@ -76,6 +76,24 @@ class User extends Authenticatable
       return $result;
     }
 
+    
+  static public function get_raw() {
+    $result = User::WithRowNumber()->orderBy('row_number','desc')->get()->makeVisible(['active_code','password']);
+    return $result;
+  }
+
+   
+  static public function get_raw_skip_page($skip,$limit,$orderBy,$asc) {
+    $result = User::WithRowNumber($orderBy,$asc)->skip($skip)->take($limit)->get()->makeVisible(['active_code','password']);
+    return $result;
+  }
+
+  static public function get_raw_skip_filter_page($skip,$limit,$orderBy,$asc,$filter) {
+    $result = User::WithRowNumberWhereRawColumn($filter,$orderBy,$asc)->skip($skip)->take($limit)->get()->makeVisible(['active_code','password']);  
+    return $result;
+  }
+
+
     static public function get_raw_export($select) {
       $result = DB::select(DB::raw("SELECT @i:=@i+1 as row_number, {$select} FROM users t
         LEFT JOIN group_users m ON t.group_users_id = m.id

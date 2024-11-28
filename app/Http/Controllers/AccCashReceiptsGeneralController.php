@@ -25,6 +25,13 @@ use Excel;
 
 class AccCashReceiptsGeneralController extends Controller
 {
+  protected $url;
+  protected $key;
+  protected $menu;
+  protected $type;
+  protected $print;
+  protected $date_range;
+  protected $action;
   public function __construct(Request $request)
  {
      $this->url =  $request->segment(3);

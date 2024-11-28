@@ -7,38 +7,81 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Model\HistoryAction;
-use App\Http\Model\User;
 use App\Http\Model\Menu;
 use App\Http\Model\License;
 use App\Http\Model\Systems;
 use App\Http\Model\Company;
 use App\Http\Model\Software;
 use App\Http\Model\Error;
+use App\Http\Resources\DropDownListResource;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Model\Imports\LicenseImport;
 use App\Http\Model\Exports\LicenseExport;
 use App\Classes\Convert;
 use Illuminate\Support\Str;
 use Excel;
+use Exception;
 
 
 class LicenseController extends Controller
 {
+  protected $url;
+  protected $key;
+  protected $menu;
+  protected $page_system;
   public function __construct(Request $request)
  {
      $this->url = $request->segment(3);
      $this->key = "license";
      $this->menu = Menu::where('code', '=', $this->key)->first();
+     $this->page_system = "MAX_COUNT_CHANGE_PAGE";
  }
 
   public function show(){
-    $data = License::get_raw();
-    $company_use = Company::active()->get();
-    $software_use = Software::active()->get();
-    return view('manage.license',['data' => $data, 'key' => $this->key ,'company_use' => $company_use,'software_use' => $software_use]);
+    //$data = License::get_raw();
+    $company_use = collect(DropDownListResource::collection(Company::active()->get()));
+    $software_use = collect(DropDownListResource::collection(Software::active()->get()));
+    $count = License::count();
+    $sys_page = Systems::get_systems($this->page_system);
+    $paging = $count>$sys_page->value?1:0; 
+    return view('manage.license',['paging' => $paging, 'key' => $this->key ,'company_use' => $company_use,'software_use' => $software_use]);
   }
 
-  public function load(Request $request){
+
+  public function data(Request $request){    
+    $total = License::count();
+    $sys_page = Systems::get_systems($this->page_system);
+    $paging = $total>$sys_page->value?1:0;     
+    if($paging == 0){
+      $arr = License::get_raw();   
+    }else{
+    $perPage = $request->input('$top',30);
+    $skip = $request->input('$skip',0);
+    $orderby =   $request->input('$orderby','created_at desc');
+    $filter =   $request->input('$filter');
+    $asc  = 'desc';
+        if (!str_contains($orderby, 'desc')) { 
+          $asc = 'asc';
+        }else{
+          $orderby = explode(' ', $orderby)[0];
+        };
+        if($filter){
+          $filter_sql = Convert::filterRow($filter);
+          $arr = License::get_raw_skip_filter_page($skip,$perPage,$orderby,$asc,$filter_sql);
+          $total = License::whereRaw($filter_sql)->count();
+        }else{
+          $arr = License::get_raw_skip_page($skip,$perPage,$orderby,$asc);   
+        }   
+    }  
+    $data = collect(['data' => $arr,'total' => $total]);            
+    if($data){
+      return response()->json($data);
+    }else{
+      return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
+    }
+  }
+  
+  public function load(){
     $type = 9;
     try{
       $sys = Systems::get_systems('MAX_RANDOM');
@@ -58,6 +101,7 @@ class LicenseController extends Controller
       return response()->json(['status'=>false,'message'=> trans('messages.error').' '.$e->getMessage()]);
     }
  }
+ 
 
   public function save(Request $request){
     $type = 0;

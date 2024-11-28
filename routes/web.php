@@ -106,6 +106,7 @@ Route::prefix('manage')->group(function () {
     'controller' => HistoryActionController::class
   ],function () {
   Route::get('/history-action', 'show')->name('');
+  Route::get('/history-action-data', 'data')->name('-data');
   Route::post('/history-action-get', 'get')->name('-get');
   Route::post('/history-action-save','save')->name('-save');
   Route::post('/history-action-delete','delete')->name('-delete');
@@ -120,6 +121,7 @@ Route::prefix('manage')->group(function () {
     'controller' => ErrorController::class
   ],function () {
   Route::get('/error','show')->name('');
+  Route::get('/error-data', 'data')->name('-data');
   Route::post('/error-get', 'get')->name('-get');
   Route::post('/error-save', 'save')->name('-save');
   Route::post('/error-delete', 'delete' )->name('-delete');
@@ -134,6 +136,7 @@ Route::prefix('manage')->group(function () {
     'controller' => MenuController::class
   ],function () {
   Route::get('/menu', 'show')->name('');
+  Route::get('/menu-data', 'data')->name('-data');
   Route::post('/menu-get', 'get')->name('-get');
   Route::post('/menu-save', 'save' )->name('-save');
   Route::post('/menu-delete', 'delete' )->name('-delete');
@@ -149,6 +152,7 @@ Route::prefix('manage')->group(function () {
   ],function () {
   Route::get('/software', 'show')->name('');
   //Route::post('/software-get', 'SoftwareController@get');
+  Route::get('/software-data', 'data')->name('-data');
   Route::post('/software-save', 'save')->name('-save');
   Route::post('/software-delete','delete')->name('-delete');
   Route::any('/software-import', 'import' )->name('-import');
@@ -163,6 +167,7 @@ Route::prefix('manage')->group(function () {
   ],function () {
   Route::get('/license', 'show' )->name('');
   //Route::post('/license-get', 'LicenseController@get');
+  Route::get('/license-data', 'data' )->name('-data');
   Route::post('/license-save', 'save' )->name('-save');
   Route::post('/license-delete',  'delete' )->name('-delete');
   Route::any('/license-import', 'import' )->name('-import');
@@ -177,6 +182,7 @@ Route::prefix('manage')->group(function () {
     'controller' => SystemsController::class
   ],function () {
   Route::get('/systems', 'show')->name('');
+  Route::get('/systems-data', 'data')->name('-data');
   Route::post('/systems-get', 'get')->name('-get');
   Route::post('/systems-save', 'save' )->name('-save');
   Route::post('/systems-delete', 'delete')->name('-delete');
@@ -192,6 +198,7 @@ Route::prefix('manage')->group(function () {
   ],function () {
   Route::get('/group-users', 'show' )->name('');
   //Route::post('/country-get', 'CountryController@get');
+  Route::get('/group-users-data', 'data')->name('-data');
   Route::post('/group-users-save', 'save')->name('-save');
   Route::post('/group-users-delete', 'delete' )->name('-delete');
   Route::any('/group-users-import', 'import' )->name('-import');
@@ -206,6 +213,7 @@ Route::prefix('manage')->group(function () {
   ],function () {
   Route::get('/country','show' )->name('');
   //Route::post('/country-get', 'CountryController@get');
+  Route::get('/country-data','data' )->name('-data');
   Route::post('/country-save','save' )->name('-save');
   Route::post('/country-delete', 'delete')->name('-delete');
   Route::any('/country-import', 'import')->name('-import');
@@ -220,6 +228,7 @@ Route::prefix('manage')->group(function () {
   ],function () {
   Route::get('/regions', 'show' )->name('');
   //Route::post('/regions-get', 'RegionsController@get');
+  Route::get('/regions-data', 'data')->name('-data');
   Route::post('/regions-save', 'save')->name('-save');
   Route::post('/regions-delete', 'delete')->name('-delete');
   Route::any('/regions-import', 'import' )->name('-import');
@@ -234,6 +243,7 @@ Route::prefix('manage')->group(function () {
   ],function () {
   Route::get('/key-ai', 'show' )->name('');
   //Route::post('/area-get', 'AreaController@get');
+  Route::get('/key-ai-data', 'data')->name('-data');
   Route::post('/key-ai-save', 'save')->name('-save');
   Route::post('/key-ai-delete', 'delete' )->name('-delete');
   Route::any('/key-ai-import', 'import')->name('-import');
@@ -263,6 +273,7 @@ Route::prefix('manage')->group(function () {
   ],function () {
   Route::get('/distric', 'show')->name('');
   //Route::post('/distric-get', 'DistricController@get');
+  Route::get('/distric-data', 'data')->name('-data');
   Route::post('/distric-save', 'save')->name('-save');
   Route::post('/distric-delete', 'delete')->name('-delete');
   Route::any('/distric-import', 'import' )->name('-import');
@@ -276,6 +287,7 @@ Route::prefix('manage')->group(function () {
     'controller' => DocumentTypeController::class
   ],function () {
   Route::get('/document-type','show')->name('');
+  Route::get('/document-type-data', 'data')->name('-data');
   Route::post('/document-type-save', 'save')->name('-save');
   Route::post('/document-type-delete','delete' )->name('-delete');
   Route::any('/document-type-import', 'import' )->name('-import');
@@ -289,6 +301,7 @@ Route::prefix('manage')->group(function () {
     'controller' => DocumentController::class
   ],function () {
   Route::get('/document', 'show' )->name('');
+  Route::get('/document-data', 'data')->name('-data');
   Route::post('/document-save', 'save')->name('-save');
   Route::post('/document-delete', 'delete' )->name('-delete');
   Route::any('/document-import', 'import' )->name('-import');
@@ -303,6 +316,7 @@ Route::prefix('manage')->group(function () {
   ],function () {
   Route::get('/company', 'show')->name('');
   //Route::post('/company-get', 'CompanyController@get');
+  Route::get('/company-data', 'data')->name('-data');
   Route::post('/company-save', 'save')->name('-save');
   Route::post('/company-delete','delete' )->name('-delete');
   Route::any('/company-import', 'import' )->name('-import');
@@ -316,6 +330,7 @@ Route::prefix('manage')->group(function () {
     'controller' => CompanySoftwareController::class
   ],function () {
   Route::get('/company-software', 'show')->name('');
+  Route::get('/company-software-data', 'data')->name('-data');
   Route::post('/company-software-get', 'get')->name('-get');
   Route::post('/company-software-save', 'save' )->name('-save');
   Route::post('/company-software-delete', 'delete' )->name('-delete');
@@ -330,6 +345,7 @@ Route::prefix('manage')->group(function () {
     'controller' => UserManagerController::class
   ],function () {
   Route::get('/users', 'show' )->name('');
+  Route::get('/users-data', 'data' )->name('-data');
   Route::post('/users-save', 'save' )->name('-save');
   Route::post('/users-delete','delete')->name('-delete');
   Route::any('/users-import', 'import' )->name('-import');

@@ -18,34 +18,35 @@ use App\Http\Model\Imports\AreaImport;
 use App\Http\Model\Exports\AreaExport;
 use App\Classes\Convert;
 use Excel;
+use Exception;
 
 class AreaController extends Controller
 {
   protected $url;
   protected $key;
   protected $menu;
+  protected $page_system;
 
   public function __construct(Request $request)
  {
      $this->url =  $request->segment(3);
      $this->key = "area";
      $this->menu = Menu::where('code', '=', $this->key)->first();
+     $this->page_system = "MAX_COUNT_CHANGE_PAGE";
  }
 
   public function show(){
     //$data = Area::get_raw();
     $regions = collect(DropDownListResource::collection(Regions::active()->get()));
     $count = Area::count();
-    $sys_page = Systems::get_systems('MAX_COUNT_CHANGE_PAGE');
+    $sys_page = Systems::get_systems($this->page_system);
     $paging = $count>$sys_page->value?1:0; 
     return view('manage.area',['paging' => $paging, 'key' => $this->key ,'regions' =>$regions ]);
   }
 
   public function data(Request $request){    
-    $mysql2 = $request->session()->get('mysql2');
-    config(['database.connections.mysql2' => $mysql2]);
     $total = Area::count();
-    $sys_page = Systems::get_systems('MAX_COUNT_CHANGE_PAGE');
+    $sys_page = Systems::get_systems($this->page_system);
     $paging = $total>$sys_page->value?1:0;     
     if($paging == 0){
       $arr = Area::get_raw();   
@@ -65,8 +66,7 @@ class AreaController extends Controller
           $arr = Area::get_raw_skip_filter_page($skip,$perPage,$orderby,$asc,$filter_sql);
           $total = Area::whereRaw($filter_sql)->count();
         }else{
-          $arr = Area::get_raw_skip_page($skip,$perPage,$orderby,$asc);  
-          $total = Area::count();    
+          $arr = Area::get_raw_skip_page($skip,$perPage,$orderby,$asc);    
         }   
     }  
     $data = collect(['data' => $arr,'total' => $total]);            
@@ -219,7 +219,7 @@ class AreaController extends Controller
        $file = $request->file;
        // Import dữ liệu
        $import = new AreaImport;
-       Excel::queueImport($import, $file);
+       Excel::import($import, $file);
        // Lấy lại dữ liệu
        //$array = Area::get_raw();
 

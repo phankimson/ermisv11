@@ -8,13 +8,12 @@ use App\Http\Model\Menu;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithBatchInserts;
-use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Row;
 use Maatwebsite\Excel\Concerns\OnEachRow;
 use Illuminate\Support\Arr;
 use Maatwebsite\Excel\Concerns\WithLimit;
 
-class AccSettingVoucherImport implements OnEachRow, WithHeadingRow, WithBatchInserts, WithChunkReading, WithLimit
+class AccSettingVoucherImport implements OnEachRow, WithHeadingRow, WithBatchInserts, WithLimit
 {
   private static $result = array();
   public function sheets(): array
@@ -116,17 +115,12 @@ class AccSettingVoucherImport implements OnEachRow, WithHeadingRow, WithBatchIns
 
  public function batchSize(): int
  {
-     return 200;
- }
+   return env("IMPORT_SIZE",100);
+ }   
 
-  public function chunkSize(): int
- {
-     return 200;
- }
-
- public function limit(): int
- {
-     return 1000;
- }
+  public function limit(): int
+  {
+   return env("IMPORT_LIMIT",200);
+  }
 
 }

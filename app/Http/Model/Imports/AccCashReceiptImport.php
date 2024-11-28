@@ -5,7 +5,7 @@ namespace App\Http\Model\Imports;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithBatchInserts;
-use Maatwebsite\Excel\Concerns\WithChunkReading;
+use Maatwebsite\Excel\Concerns\WithLimit;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 use Maatwebsite\Excel\Concerns\HasReferencesToOtherSheets;
 use Illuminate\Support\Str;
@@ -18,7 +18,7 @@ use App\Http\Model\AccDepartment;
 use App\Http\Model\AccBankAccount;
 
 
-class AccCashReceiptImport implements  WithHeadingRow, WithBatchInserts, WithChunkReading, WithMultipleSheets
+class AccCashReceiptImport implements  WithHeadingRow, WithBatchInserts, WithLimit, WithMultipleSheets
 { 
   public static $first = array();
   public static $second = array();
@@ -39,14 +39,15 @@ class AccCashReceiptImport implements  WithHeadingRow, WithBatchInserts, WithChu
 
 
     public function batchSize(): int
-   {
-       return 1000;
-   }
-
-    public function chunkSize(): int
-   {
-       return 1000;
-   }
+    {
+      return env("IMPORT_SIZE",100);
+    }   
+  
+     public function limit(): int
+     {
+      return env("IMPORT_LIMIT",200);
+     }
+     
    public function setDataFirst($arr)
    {
        array_push(self::$first,$arr);

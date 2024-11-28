@@ -31,6 +31,18 @@ class Company extends Model
         return $result;
       }
 
+      
+      static public function get_raw_skip_page($skip,$limit,$orderBy,$asc) {
+        $result = Company::WithRowNumber($orderBy,$asc)->skip($skip)->take($limit)->get();  
+        return $result;
+      }
+
+      static public function get_raw_skip_filter_page($skip,$limit,$orderBy,$asc,$filter) {
+        $result = Company::WithRowNumberWhereRawColumn($filter,$orderBy,$asc)->skip($skip)->take($limit)->get();  
+        return $result;
+      }
+
+
       static public function get_raw_export($select) {
         $result = Company::WithRowNumber()->orderBy('row_number','asc')
         ->leftJoin('regions as m', 't.regions', '=', 'm.id')

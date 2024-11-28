@@ -28,12 +28,12 @@ class Area extends Model
   }
 
   static public function get_raw_skip_page($skip,$limit,$orderBy,$asc) {
-    $result = Area::WithRowNumberDb('mysql2',$orderBy,$asc)->skip($skip)->take($limit)->get();  
+    $result = Area::WithRowNumber($orderBy,$asc)->skip($skip)->take($limit)->get();  
     return $result;
   }
 
   static public function get_raw_skip_filter_page($skip,$limit,$orderBy,$asc,$filter) {
-    $result = Area::WithRowNumberWhereRawColumnDb('mysql2',$filter,$orderBy,$asc)->skip($skip)->take($limit)->get();  
+    $result = Area::WithRowNumberWhereRawColumn($filter,$orderBy,$asc)->skip($skip)->take($limit)->get();  
     return $result;
   }
 

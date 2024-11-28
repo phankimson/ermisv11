@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Model\HistoryAction;
-use App\Http\Model\User;
+use App\Http\Model\Systems;
 use App\Http\Model\Menu;
 use App\Http\Model\Country;
 use App\Http\Model\Error;
@@ -20,17 +20,61 @@ use Excel;
 
 class CountryController extends Controller
 {
+  protected $url;
+  protected $key;
+  protected $menu;
+  protected $page_system;
   public function __construct(Request $request)
  {
      $this->url = $request->segment(3);
      $this->key = "country";
      $this->menu = Menu::where('code', '=', $this->key)->first();
+     $this->page_system = "MAX_COUNT_CHANGE_PAGE";
  }
 
   public function show(){
-    $data = Country::get_raw();
-    return view('manage.country',['data' => $data, 'key' => $this->key ]);
+    //$data = Country::get_raw();
+    $count = Country::count();
+    $sys_page = Systems::get_systems($this->page_system);
+    $paging = $count>$sys_page->value?1:0; 
+    return view('manage.country',['paging' => $paging, 'key' => $this->key ]);
   }
+
+
+  
+  public function data(Request $request){    
+    $total = Country::count();
+    $sys_page = Systems::get_systems($this->page_system);
+    $paging = $total>$sys_page->value?1:0;     
+    if($paging == 0){
+      $arr = Country::get_raw();   
+    }else{
+    $perPage = $request->input('$top',30);
+    $skip = $request->input('$skip',0);
+    $orderby =   $request->input('$orderby','created_at desc');
+    $filter =   $request->input('$filter');
+    $asc  = 'desc';
+        if (!str_contains($orderby, 'desc')) { 
+          $asc = 'asc';
+        }else{
+          $orderby = explode(' ', $orderby)[0];
+        };
+        if($filter){
+          $filter_sql = Convert::filterRow($filter);
+          $arr = Country::get_raw_skip_filter_page($skip,$perPage,$orderby,$asc,$filter_sql);
+          $total = Country::whereRaw($filter_sql)->count();
+        }else{
+          $arr = Country::get_raw_skip_page($skip,$perPage,$orderby,$asc);    
+        }   
+    }  
+    $data = collect(['data' => $arr,'total' => $total]);            
+    if($data){
+      return response()->json($data);
+    }else{
+      return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
+    }
+  }
+
 
   public function save(Request $request){
     $type = 0;

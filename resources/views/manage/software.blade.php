@@ -75,10 +75,10 @@
 @section('scripts_up')
 <script>
   jQuery(document).ready(function () {
-      Ermis.data = <?= json_encode($data);?>;
       Ermis.per = <?= json_encode($per);?>;
       Ermis.flag = 1;
       Ermis.link = "{{$key}}";
+      Ermis.paging = "{{$paging}}";
       Ermis.page_size = "{{$page_size}}";
       Ermis.fieldload = '';
       Ermis.image_upload = '#image';

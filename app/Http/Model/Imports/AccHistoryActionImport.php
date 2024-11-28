@@ -6,13 +6,12 @@ use App\Http\Model\AccHistoryAction;
 use App\Http\Model\User;
 use App\Http\Model\Menu;
 use Illuminate\Support\Str;
-use App\Classes\Convert;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithBatchInserts;
-use Maatwebsite\Excel\Concerns\WithChunkReading;
+use Maatwebsite\Excel\Concerns\WithLimit;
 
-class AccHistoryActionImport implements ToModel, WithHeadingRow, WithBatchInserts, WithChunkReading
+class AccHistoryActionImport implements ToModel, WithHeadingRow, WithBatchInserts, WithLimit
 {
   public function sheets(): array
     {
@@ -41,12 +40,12 @@ class AccHistoryActionImport implements ToModel, WithHeadingRow, WithBatchInsert
        ]);
     }
     public function batchSize(): int
-   {
-       return 1000;
-   }
-
-    public function chunkSize(): int
-   {
-       return 1000;
-   }
+    {
+      return env("IMPORT_SIZE",100);
+    }   
+  
+     public function limit(): int
+     {
+      return env("IMPORT_LIMIT",200);
+     }
 }

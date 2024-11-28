@@ -45,6 +45,14 @@ use Excel;
 
 class AccCashReceiptsVoucherController extends Controller
 {
+  protected $url;
+  protected $key;
+  protected $menu;
+  protected $type;
+  protected $print;
+  protected $type_object;
+  protected $document;
+  protected $path;
   public function __construct(Request $request)
  {
      $this->url =  $request->segment(3);

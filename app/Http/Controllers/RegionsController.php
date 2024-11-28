@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Model\HistoryAction;
-use App\Http\Model\User;
+use App\Http\Model\Systems;
 use App\Http\Model\Menu;
 use App\Http\Model\Regions;
 use App\Http\Model\Country;
@@ -20,17 +20,61 @@ use Excel;
 
 class RegionsController extends Controller
 {
+
+  protected $url;
+  protected $key;
+  protected $menu;
+  protected $page_system;
+
   public function __construct(Request $request)
  {
      $this->url = $request->segment(3);
      $this->key = "regions";
      $this->menu = Menu::where('code', '=', $this->key)->first();
+     $this->page_system = "MAX_COUNT_CHANGE_PAGE";
  }
 
   public function show(){
-    $data = Regions::get_raw();
+    //$data = Regions::get_raw();
     $country = Country::active()->get();
-    return view('manage.regions',['data' => $data, 'key' => $this->key ,'country' =>$country ]);
+    $count = Regions::count();
+    $sys_page = Systems::get_systems($this->page_system);
+    $paging = $count>$sys_page->value?1:0; 
+    return view('manage.regions',['paging' => $paging, 'key' => $this->key ,'country' =>$country ]);
+  }
+
+  
+  public function data(Request $request){    
+    $total = Regions::count();
+    $sys_page = Systems::get_systems($this->page_system);
+    $paging = $total>$sys_page->value?1:0;     
+    if($paging == 0){
+      $arr = Regions::get_raw();   
+    }else{
+    $perPage = $request->input('$top',30);
+    $skip = $request->input('$skip',0);
+    $orderby =   $request->input('$orderby','created_at desc');
+    $filter =   $request->input('$filter');
+    $asc  = 'desc';
+        if (!str_contains($orderby, 'desc')) { 
+          $asc = 'asc';
+        }else{
+          $orderby = explode(' ', $orderby)[0];
+        };
+        if($filter){
+          $filter_sql = Convert::filterRow($filter);
+          $arr = Regions::get_raw_skip_filter_page($skip,$perPage,$orderby,$asc,$filter_sql);
+          $total = Regions::whereRaw($filter_sql)->count();
+        }else{
+          $arr = Regions::get_raw_skip_page($skip,$perPage,$orderby,$asc);    
+        }   
+    }  
+    $data = collect(['data' => $arr,'total' => $total]);            
+    if($data){
+      return response()->json($data);
+    }else{
+      return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
+    }
   }
 
   public function save(Request $request){

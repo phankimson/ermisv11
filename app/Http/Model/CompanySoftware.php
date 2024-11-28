@@ -26,6 +26,16 @@ class CompanySoftware extends Model
         return $result;
       }
 
+      static public function get_raw_skip_page($skip,$limit,$orderBy,$asc,$type) {
+        $result = CompanySoftware::WithRowNumber($orderBy,$asc)->where('type',$type)->skip($skip)->take($limit)->get();  
+        return $result;
+      }
+
+      static public function get_raw_skip_filter_page($skip,$limit,$orderBy,$asc,$filter,$type) {
+        $result = CompanySoftware::WithRowNumberWhereRawColumn($filter,$orderBy,$asc)->where('type',$type)->skip($skip)->take($limit)->get();  
+        return $result;
+      }
+
       static public function get_raw_export($select) {
         $result = CompanySoftware::WithRowNumber()->orderBy('row_number','asc')
         ->leftJoin('company as m', 't.company_id', '=', 'm.id')

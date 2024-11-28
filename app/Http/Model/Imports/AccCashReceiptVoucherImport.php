@@ -5,7 +5,7 @@ namespace App\Http\Model\Imports;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithBatchInserts;
-use Maatwebsite\Excel\Concerns\WithChunkReading;
+use Maatwebsite\Excel\Concerns\WithLimit;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 use Maatwebsite\Excel\Concerns\HasReferencesToOtherSheets;
 use Maatwebsite\Excel\Concerns\WithStartRow;
@@ -17,8 +17,9 @@ use App\Http\Model\AccAccountSystems;
 use App\Http\Model\AccDepartment;
 use App\Http\Model\AccBankAccount;
 
-class AccCashReceiptVoucherImport implements  WithHeadingRow, WithBatchInserts, WithChunkReading, WithMultipleSheets
+class AccCashReceiptVoucherImport implements  WithHeadingRow, WithBatchInserts, WithLimit, WithMultipleSheets
 {
+  protected $general_id;
   public function sheets(): array
     {
         return [
@@ -39,14 +40,14 @@ class AccCashReceiptVoucherImport implements  WithHeadingRow, WithBatchInserts, 
 
 
     public function batchSize(): int
-   {
-       return 1000;
-   }
-
-    public function chunkSize(): int
-   {
-       return 1000;
-   }
+    {
+      return env("IMPORT_SIZE",100);
+    }   
+  
+     public function limit(): int
+     {
+      return env("IMPORT_LIMIT",200);
+     }
 
 }
 

@@ -14,6 +14,7 @@ use App\Http\Model\Country;
 use App\Http\Model\GroupUsers;
 use App\Http\Model\Systems;
 use App\Http\Model\Error;
+use App\Http\Resources\DropDownListResource;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Model\Imports\UserImport;
 use App\Http\Model\Exports\UserExport;
@@ -24,20 +25,63 @@ use File;
 
 class UserManagerController extends Controller
 {
+  protected $url;
+  protected $key;
+  protected $menu;
+  protected $page_system;
+  protected $path;
   public function __construct(Request $request)
  {
      $this->url =  $request->segment(3);
      $this->key = "users";
      $this->path = "PATH_UPLOAD_AVATAR";
      $this->menu = Menu::where('code', '=', $this->key)->first();
+     $this->page_system = "MAX_COUNT_CHANGE_PAGE";
  }
 
   public function show(){
-    $data = User::all()->makeVisible(['active_code','password']);
+    //$data = User::all()->makeVisible(['active_code','password']);
     $group_user = GroupUsers::active()->get();
-    $company_default = Company::active()->get();
+    $company_default = collect(DropDownListResource::collection(Company::active()->get()));
     $country = Country::all();
-    return view('manage.users',['data' => $data, 'key' => $this->key , 'group_user'=>$group_user ,'company_default' =>$company_default ,'country' =>$country ]);
+    $count = User::count();
+    $sys_page = Systems::get_systems($this->page_system);
+    $paging = $count>$sys_page->value?1:0; 
+    return view('manage.users',['paging' => $paging, 'key' => $this->key , 'group_user'=>$group_user ,'company_default' =>$company_default ,'country' =>$country ]);
+  }
+
+  
+  public function data(Request $request){    
+    $total = User::count();
+    $sys_page = Systems::get_systems($this->page_system);
+    $paging = $total>$sys_page->value?1:0;     
+    if($paging == 0){
+      $arr = User::get_raw();   
+    }else{
+    $perPage = $request->input('$top',30);
+    $skip = $request->input('$skip',0);
+    $orderby =   $request->input('$orderby','created_at desc');
+    $filter =   $request->input('$filter');
+    $asc  = 'desc';
+        if (!str_contains($orderby, 'desc')) { 
+          $asc = 'asc';
+        }else{
+          $orderby = explode(' ', $orderby)[0];
+        };
+        if($filter){
+          $filter_sql = Convert::filterRow($filter);
+          $arr = User::get_raw_skip_filter_page($skip,$perPage,$orderby,$asc,$filter_sql);
+          $total = User::whereRaw($filter_sql)->count();
+        }else{
+          $arr = User::get_raw_skip_page($skip,$perPage,$orderby,$asc);    
+        }   
+    }  
+    $data = collect(['data' => $arr,'total' => $total]);            
+    if($data){
+      return response()->json($data);
+    }else{
+      return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
+    }
   }
 
   public function save(Request $request){

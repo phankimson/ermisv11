@@ -56,9 +56,9 @@
 @section('scripts_up')
 <script>
   jQuery(document).ready(function () {
-      Ermis.data = <?= json_encode($data);?>;
       Ermis.per = <?= json_encode($per);?>;
       Ermis.flag = 1;
+      Ermis.paging = "{{$paging}}";
       Ermis.link = "{{$key}}";
       Ermis.page_size = "{{$page_size}}";
       Ermis.short_key = "{{ config('app.short_key')}}";

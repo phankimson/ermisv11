@@ -39,7 +39,7 @@ class AccCountVoucherController extends Controller
      $this->page_system = "MAX_COUNT_CHANGE_PAGE";
  }
 
-  public function show(Request $request){
+  public function show(){
     $type = Software::get_url($this->type);
     //$data = AccCountVoucher::get_raw();
     $menu = Menu::get_raw_type($type->id);

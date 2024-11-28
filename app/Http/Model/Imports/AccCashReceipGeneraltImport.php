@@ -7,6 +7,8 @@ use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 use Maatwebsite\Excel\Concerns\WithMappedCells;
 use Maatwebsite\Excel\Concerns\HasReferencesToOtherSheets;
+use Maatwebsite\Excel\Concerns\WithBatchInserts;
+use Maatwebsite\Excel\Concerns\WithLimit;
 use Illuminate\Support\Str;
 use App\Http\Model\AccGeneral;
 use App\Http\Model\AccNumberVoucher;
@@ -14,7 +16,7 @@ use App\Http\Model\AccCountVoucher;
 use App\Http\Model\AccObject;
 use App\Classes\Convert;
 
-class AccCashReceiptGeneralImport implements  WithHeadingRow, WithMultipleSheets
+class AccCashReceiptGeneralImport implements  WithHeadingRow, WithMultipleSheets, WithBatchInserts, WithLimit
 {
   public function sheets(): array
     {
@@ -22,6 +24,16 @@ class AccCashReceiptGeneralImport implements  WithHeadingRow, WithMultipleSheets
           'detail' => new FirstSheetImport()
         ];
     }
+
+    public function batchSize(): int
+    {
+      return env("IMPORT_SIZE",100);
+    }   
+  
+     public function limit(): int
+     {
+      return env("IMPORT_LIMIT",200);
+     }
 
 }
 

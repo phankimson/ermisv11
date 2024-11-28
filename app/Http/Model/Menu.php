@@ -30,6 +30,18 @@ class Menu extends Model
         return $result;
       }
 
+      
+      static public function get_raw_skip_page($skip,$limit,$orderBy,$asc,$type) {
+        $result = Menu::WithRowNumber($orderBy,$asc)->where('type',$type)->skip($skip)->take($limit)->get();  
+        return $result;
+      }
+
+      static public function get_raw_skip_filter_page($skip,$limit,$orderBy,$asc,$filter,$type) {
+        $result = Menu::WithRowNumberWhereRawColumn($filter,$orderBy,$asc)->where('type',$type)->skip($skip)->take($limit)->get();  
+        return $result;
+      }
+
+
       static public function get_raw_export($select) {
         $result = Menu::WithRowNumber()->orderBy('row_number','asc')
         ->leftJoin('menu as m', 't.parent_id', '=', 'm.id')

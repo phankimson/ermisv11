@@ -1946,6 +1946,27 @@ var ErmisKendoTabstripAjaxTemplate = function(jqueryElem, dataAttr, url, callbac
     }
 };
 
+var ErmisKendoTabstripAjaxTemplateGet = function(jqueryElem, dataAttr, url, callback_true, callback_false) {
+    jqueryElem.kendoTabStrip({
+        select: onSelected
+    });
+    jqueryElem.show();
+
+    function onSelected(e) {
+        var search = jQuery(e.item).attr(dataAttr);
+        var postdata = {
+            data: search
+        };
+        RequestURLWaitingGet(url, 'json', postdata, function(result) {
+            if (result.status === true) {
+                callback_true(result);
+            } else {
+                callback_false(result);
+            }
+        }, true);
+    }
+};
+
 var ErmisKendoContextMenuTemplate = function(elem, target) {
     jQuery(elem).kendoContextMenu({
         target: target

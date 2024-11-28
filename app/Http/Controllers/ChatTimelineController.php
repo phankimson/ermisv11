@@ -12,6 +12,7 @@ use App\Http\Model\Error;
 
 class ChatTimelineController extends Controller
 {
+  protected $url;
   public function __construct(Request $request)
  {
      $this->url = $request->segment(3);

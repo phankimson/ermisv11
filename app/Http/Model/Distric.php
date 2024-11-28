@@ -26,6 +26,16 @@ class Distric extends Model
     return $result;
   }
 
+  static public function get_raw_skip_page($skip,$limit,$orderBy,$asc) {
+    $result = Distric::WithRowNumber($orderBy,$asc)->skip($skip)->take($limit)->get();  
+    return $result;
+  }
+
+  static public function get_raw_skip_filter_page($skip,$limit,$orderBy,$asc,$filter) {
+    $result = Distric::WithRowNumberWhereRawColumn($filter,$orderBy,$asc)->skip($skip)->take($limit)->get();  
+    return $result;
+  }
+
   static public function get_raw_export($select) {
     $result = Distric::WithRowNumber()->orderBy('row_number','asc')
     ->leftJoin('area as m', 't.area', '=', 'm.id')

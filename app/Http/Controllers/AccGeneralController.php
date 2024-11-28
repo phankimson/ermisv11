@@ -23,9 +23,13 @@ use App\Classes\NumberConvert;
 use App\Classes\Replace;
 use Carbon\Carbon;
 use File;
+use Exception;
 
 class AccGeneralController extends Controller
 {
+  protected $url;
+  protected $key;
+  protected $menu;
   public function __construct(Request $request)
  {
    $this->url =  $request->segment(3);

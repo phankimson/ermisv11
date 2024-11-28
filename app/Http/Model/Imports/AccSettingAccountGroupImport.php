@@ -7,13 +7,12 @@ use App\Http\Model\AccSettingAccountGroup;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithBatchInserts;
-use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Row;
 use Maatwebsite\Excel\Concerns\OnEachRow;
 use Illuminate\Support\Arr;
 use Maatwebsite\Excel\Concerns\WithLimit;
 
-class AccSettingAccountGroupImport implements OnEachRow, WithHeadingRow, WithBatchInserts, WithChunkReading, WithLimit
+class AccSettingAccountGroupImport implements OnEachRow, WithHeadingRow, WithBatchInserts, WithLimit
 {
   private static $result = array();
   public function sheets(): array
@@ -83,19 +82,14 @@ class AccSettingAccountGroupImport implements OnEachRow, WithHeadingRow, WithBat
     }
 
     public function batchSize(): int
-   {
-       return 200;
-   }
-
-    public function chunkSize(): int
-   {
-       return 200;
-   }
-
-   public function limit(): int
-   {
-       return 1000;
-   }
+    {
+      return env("IMPORT_SIZE",100);
+    }   
+  
+     public function limit(): int
+     {
+      return env("IMPORT_LIMIT",200);
+     }
 
 }
 
