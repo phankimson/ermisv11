@@ -46,7 +46,7 @@ class CompanySoftwareController extends Controller
       $company = collect(DropDownListResource::collection(Company::active()->get()));
       $software = collect(DropDownListResource::collection(Software::active()->get()));
       $license = License::active()->get();
-      $count = CompanySoftware::count();
+      $count = CompanySoftware::where('software_id',$type->id)->count();
       $sys_page = Systems::get_systems($this->page_system);
       $paging = $count>$sys_page->value?1:0; 
       return view('manage.company_software',['paging' => $paging, 'company'=>$company, 'software'=>$software, 'license'=>$license, 'key' => $this->key , 'type' => $type->id]);
