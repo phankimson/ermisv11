@@ -27,7 +27,7 @@ class CompanySoftware extends Model
       }
 
       static public function get_raw_skip_page($skip,$limit,$orderBy,$asc,$type) {
-        $result = CompanySoftware::WithRowNumber($orderBy,$asc)->where('type',$type)->skip($skip)->take($limit)->get();  
+        $result = CompanySoftware::WithRowNumber($orderBy,$asc)->where('software_id',$type)->skip($skip)->take($limit)->get();  
         return $result;
       }
 
