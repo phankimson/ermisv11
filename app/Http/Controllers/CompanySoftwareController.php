@@ -54,7 +54,7 @@ class CompanySoftwareController extends Controller
 
    public function data(Request $request){    
     $type = Software::get_url("acc");
-    $total = CompanySoftware::where('type',$type->id)->count();
+    $total = CompanySoftware::where('software_id',$type->id)->count();
     $sys_page = Systems::get_systems($this->page_system);
     $paging = $total>$sys_page->value?1:0;     
     if($paging == 0){

@@ -662,7 +662,7 @@ Route::prefix('acc')->group(function () {
   // Unit
   Route::group([
     'as' => 'unit',
-    'controller' => AccUnitController::class
+    'controller' => AccUnitIController::class
   ],function () {
   Route::get('/unit',  'show')->name('');
   Route::get('/unit-data', 'data')->name('-data');

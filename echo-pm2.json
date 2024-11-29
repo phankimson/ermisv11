@@ -1,5 +1,5 @@
 {
     "name": "echo",
-    "script": "/root/.nvm/versions/node/v22.11.0/lib/node_modules/laravel-echo-server/bin/server.js",
+    "script": "/root/.nvm/versions/node/v23.3.0/lib/node_modules/laravel-echo-server/bin/server.js",
     "args": "start"
   }

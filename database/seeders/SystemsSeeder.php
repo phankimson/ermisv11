@@ -14,7 +14,7 @@ class SystemsSeeder extends Seeder
      */
     public function run(): void
     {
-            DB::connection('mysql2')->table('systems')->insert([
+            DB::table('systems')->insert([
             'id' => Str::uuid()->toString(),
             'code' => 'MAX_COUNT_CHANGE_PAGE',
             'name' => 'Thiết lập tối đa dòng chuyển sang phân trang',
