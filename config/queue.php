@@ -43,15 +43,6 @@ return [
             'after_commit' => false,
         ],
 
-        'database2' => [
-            'driver' => 'database',
-            'connection' => 'mysql2',
-            'table' => 'jobs',
-            'queue' => 'default',
-            'retry_after' => 90,
-            'after_commit' => false,
-        ],
-        
         'beanstalkd' => [
             'driver' => 'beanstalkd',
             'host' => 'localhost',
@@ -76,7 +67,7 @@ return [
             'driver' => 'redis',
             'connection' => 'default',
             'queue' => env('REDIS_QUEUE', 'default'),
-            'retry_after' => 90,
+            'retry_after' => 1,
             'block_for' => null,
             'after_commit' => false,
         ],
