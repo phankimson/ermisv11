@@ -10,6 +10,8 @@
 .env.production
 .phpunit.result.cache
 Homestead.json
+laravel-echo-server.json
+echo-pm2.json
 Homestead.yaml
 auth.json
 npm-debug.log

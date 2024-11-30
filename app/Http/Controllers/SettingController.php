@@ -9,6 +9,8 @@ use App\Http\Model\Systems;
 
 class SettingController extends Controller
 {
+  protected $url;
+  protected $key;
     public function __construct(Request $request)
    {
        $this->url = $request->segment(3);

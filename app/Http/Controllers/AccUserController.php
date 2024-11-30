@@ -8,6 +8,7 @@ use App\Classes\SchemaDB;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Model\AccHistoryAction;
 use App\Http\Model\Error;
+use Exception;
 
 class AccUserController extends Controller
 {

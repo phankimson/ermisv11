@@ -18,9 +18,11 @@ use App\Http\Model\HistoryAction;
 use App\Http\Model\Error;
 use File;
 use Hash;
+use Exception;
 
 class UserController extends Controller
 {
+  protected $url;
   public function __construct(Request $request)
  {
      $this->url = $request->segment(3);
@@ -42,7 +44,7 @@ class UserController extends Controller
       $data = json_decode($request->data);
       $credentials = [ 'username' => $data->username , 'password' => $data->password , 'active' => 1];
       // Khóa tạm test
-      //$capcha = data_get($data, 'g-recaptcha-response');
+      $capcha = data_get($data, 'g-recaptcha-response');
       $capcha = "1";
       if(Auth::attempt($credentials) && $capcha != ""){ // login attempt
         $user = Auth::user();
