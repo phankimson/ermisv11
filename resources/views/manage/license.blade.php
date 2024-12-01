@@ -24,7 +24,7 @@
             <td><input type="text" id="start" class="k-widget k-datepicker k-header k-textbox" data-position="1" data-title="@lang('license.date_start')" data-template="#= FormatDate(date_start) #" data-width="200px" data-type="date" name="date_start" /></td>
         </tr>
         <tr>
-            <td><label>@lang('license.date_start') *</label></td>
+            <td><label>@lang('license.date_end') *</label></td>
             <td><input type="text" id="end" class="k-widget k-datepicker k-header k-textbox" data-position="2" data-title="@lang('license.date_end')" data-template="#= FormatDate(date_end) #" data-width="200px" data-type="date" name="date_end" /></td>
         </tr>
         <tr>

@@ -22,6 +22,7 @@ use App\Classes\Convert;
 use Illuminate\Support\Facades\Hash;
 use Excel;
 use File;
+use Exception;
 
 class UserManagerController extends Controller
 {

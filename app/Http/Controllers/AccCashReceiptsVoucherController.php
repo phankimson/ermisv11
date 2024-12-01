@@ -42,6 +42,8 @@ use App\Http\Model\Imports\AccCashReceiptVoucherImport;
 use App\Http\Model\Document;
 use Carbon\Carbon;
 use Excel;
+use Exception;
+use File;
 
 class AccCashReceiptsVoucherController extends Controller
 {
@@ -392,7 +394,7 @@ class AccCashReceiptsVoucherController extends Controller
         // Đổi dữ liệu Excel sang collect
         $data = Excel::toCollection(new AccCashReceiptGeneralImport, $file); 
         $detail = Excel::toCollection(new AccCashReceiptVoucherImport($data->id), $file); 
-       
+        $merged = collect($data)->push($detail->getData());
       // Lưu lịch sử
       $h = new AccHistoryAction();
       $h ->create([

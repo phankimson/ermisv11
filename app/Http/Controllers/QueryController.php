@@ -11,9 +11,13 @@ use App\Http\Model\CompanySoftware;
 use App\Classes\SchemaDB;
 use DB;
 use Config;
+use Exception;
 
 class QueryController extends Controller
 {
+  protected $url;
+  protected $key;
+  protected $menu;
     public function __construct(Request $request)
    {
        $this->url = $request->segment(3);
@@ -68,6 +72,7 @@ class QueryController extends Controller
        try {
        $t = json_decode($request->data);
        $sql = $t->query;
+       // Lỗi tạo combobox select sql
        $check = $request->session()->has('mysql2');
        if($check == true){
         $params = $request->session()->get('mysql2');

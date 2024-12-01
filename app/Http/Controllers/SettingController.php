@@ -6,14 +6,19 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Model\Systems;
+use App\Http\Model\Error;
+use App\Http\Model\Menu;
+use Exception;
 
 class SettingController extends Controller
 {
   protected $url;
   protected $key;
+  protected $menu;
     public function __construct(Request $request)
    {
        $this->url = $request->segment(3);
+       $this->menu = Menu::where('code', '=', $this->key)->first();
        $this->key = "setting";
    }
 

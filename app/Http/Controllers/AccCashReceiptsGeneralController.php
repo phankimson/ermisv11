@@ -22,6 +22,7 @@ use App\Http\Model\Imports\AccCashReceiptImport;
 use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
 use Excel;
+use Exception;
 
 class AccCashReceiptsGeneralController extends Controller
 {
