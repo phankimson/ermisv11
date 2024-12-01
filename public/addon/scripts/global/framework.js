@@ -56,10 +56,10 @@ function UrlString (url){
   var port = window.location.port;
   var protocal = window.location.protocol;
   var string = '';
-  if(window.location.port){
-    string = window.location.protocol + '//' + window.location.hostname + ':' + window.location.port + '/' + url;
+  if(port){
+    string = protocal + '//' + hostname + ':' + port + '/' + url;
   }else{
-    string = window.location.protocol + '//' + window.location.hostname + '/' + url;
+    string = protocal + '//' + hostname + '/' + url;
   }
   return string;
 }
@@ -69,10 +69,10 @@ function UrlStringPath (url,path){
   var port = window.location.port;
   var protocal = window.location.protocol;
   var string = '';
-  if(window.location.port){
-    string = window.location.protocol + '//' + window.location.hostname + ':' + window.location.port + '/' + path + '/' + url;
+  if(port){
+    string = protocal + '//' + hostname + ':' + port + '/' + path + '/' + url;
   }else{
-    string = window.location.protocol + '//' + window.location.hostname + '/' + path + '/' + url;
+    string = protocal + '//' + hostname + '/' + path + '/' + url;
   }
 
   return string;
@@ -105,6 +105,16 @@ function ConvertNumber ($string , $decimal = ","){
     $string = 0;
   }
     return $string;
+}
+
+function ConvertDataArrayKendos(arr , lang){
+  var result = array();
+  var lang_text = lang == "vn"?"":"en";
+  arr.map(function(value,index) {
+    result['value'] = value.id;
+    result['text'] = value.code+' - '+value['name'+lang_text];
+  })
+    return result;
 }
 
 function findObjectByKey(array, key, value) {

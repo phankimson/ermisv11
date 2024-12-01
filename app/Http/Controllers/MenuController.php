@@ -45,12 +45,12 @@ class MenuController extends Controller
    }
    
   public function data(Request $request){    
-    $type = Software::first();
-    $total = Menu::where('type',$type->id)->count();
+    $ts = $request->input('ts');
+    $total = Menu::where('type',$ts)->count();
     $sys_page = Systems::get_systems($this->page_system);
     $paging = $total>$sys_page->value?1:0;     
     if($paging == 0){
-      $arr = Menu::get_raw_type($type->id);   
+      $arr = Menu::get_raw_type($ts);   
     }else{
     $perPage = $request->input('$top',30);
     $skip = $request->input('$skip',0);
@@ -64,10 +64,10 @@ class MenuController extends Controller
         };
         if($filter){
           $filter_sql = Convert::filterRow($filter);
-          $arr = Menu::get_raw_skip_filter_page($skip,$perPage,$orderby,$asc,$filter_sql,$type->id);
+          $arr = Menu::get_raw_skip_filter_page($skip,$perPage,$orderby,$asc,$filter_sql,$ts);
           $total = Menu::whereRaw($filter_sql)->count();
         }else{
-          $arr = Menu::get_raw_skip_page($skip,$perPage,$orderby,$asc,$type->id);   
+          $arr = Menu::get_raw_skip_page($skip,$perPage,$orderby,$asc,$ts);   
         }   
     }  
     $data = collect(['data' => $arr,'total' => $total]);            

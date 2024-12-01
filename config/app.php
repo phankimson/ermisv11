@@ -80,7 +80,7 @@ return [
     |
     */
 
-    'locale' => 'en',
+    'locale' => 'vi',
 
     'locales' => ['en' => 'English', 'vi' => 'Vietnamese'],
 
@@ -97,7 +97,7 @@ return [
     |
     */
 
-    'fallback_locale' => 'en',
+    'fallback_locale' => 'vi',
 
     /*
     |--------------------------------------------------------------------------

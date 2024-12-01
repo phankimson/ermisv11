@@ -40,4 +40,5 @@ return [
     "error" => "Error",
     "diagrams"=>"Diagrams",
     "analytic"=>"Analytic",
+    'failed_jobs'=>"Failed jobs",
 ];

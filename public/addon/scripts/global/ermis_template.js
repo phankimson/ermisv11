@@ -937,6 +937,59 @@ var ErmisKendoGridTemplate0 = function($kGrid, pageSize, data, onChange, selecta
     });
 };
 
+var ErmisKendoGridTemplateTbPageApi0 = function($kGrid, pageSize , url, onChange, selectable ,height, pageable ,fields, columns , ts) {
+    var dataSource = new kendo.data.DataSource({
+        transport: {
+            read: {
+                url: url,
+                dataType: "json",
+                data: function() {
+                    return {
+                        ts: ts
+                    }
+                }
+            },           
+        },  
+        type: "odata",
+        serverPaging: true,
+        serverFiltering: true,        
+        serverSorting: true,  
+        pageSize: parseInt(pageSize),      
+         schema: {
+            data: "data",
+            total: "total",
+            model: {
+                id: "id",
+                fields: fields
+            }
+        }     
+    });
+
+    var grid = $kGrid.kendoGrid({
+        dataSource: dataSource,
+        change: onChange,
+        selectable: selectable,
+        height: height,     
+        scrollable:  {
+            virtual: true
+        },
+        pageable: pageable,
+        groupable: true,
+        sortable: true,
+        filterable: true,     
+        columns: columns,
+    });
+    grid.data("kendoGrid").thead.kendoTooltip({
+        filter: "th",
+        content: function(e) {
+            var target = e.target; // element for which the tooltip is shown
+            return $(target).text();
+        }
+    });
+    
+};
+
+
 var ErmisKendoGridTemplatePageApi0 = function($kGrid, pageSize , url, onChange, selectable ,height, pageable ,fields, columns) {
     var dataSource = new kendo.data.DataSource({
         transport: {
@@ -1937,6 +1990,27 @@ var ErmisKendoTabstripAjaxTemplate = function(jqueryElem, dataAttr, url, callbac
             data: search
         };
         RequestURLWaiting(url, 'json', postdata, function(result) {
+            if (result.status === true) {
+                callback_true(result);
+            } else {
+                callback_false(result);
+            }
+        }, true);
+    }
+};
+
+var ErmisKendoTabstripAjaxTemplateGetTb = function(jqueryElem, dataAttr, url, callback_true, callback_false) {
+    jqueryElem.kendoTabStrip({
+        select: onSelected
+    });
+    jqueryElem.show();
+
+    function onSelected(e) {
+        var search = jQuery(e.item).attr(dataAttr);
+        var postdata = {
+            ts: search
+        };
+        RequestURLWaitingGet(url, 'json', postdata, function(result) {
             if (result.status === true) {
                 callback_true(result);
             } else {

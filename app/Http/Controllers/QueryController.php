@@ -10,7 +10,6 @@ use App\Http\Model\Error;
 use App\Http\Model\CompanySoftware;
 use App\Classes\SchemaDB;
 use DB;
-use Config;
 use Exception;
 
 class QueryController extends Controller
@@ -33,26 +32,30 @@ class QueryController extends Controller
      $type = 9;
      try{
        $req = json_decode($request->data);
-       $db = CompanySoftware::find($req->database);
-       $checkDB = SchemaDB::checkDB($db->database);
-       if($checkDB == 1){
-         $params = array(
-               'driver'    => env('DB_CONNECTION', 'mysql'),
-               'host'      => env('DB_HOST', '127.0.0.1'),
-               'database'  => $db->database,
-               'username'  => $db->username,
-               'password'  => $db->password,
-               'charset'   => 'utf8',
-               'collation' => 'utf8_unicode_ci',
-               'prefix'    => '',
-               'strict'    => false,
-           );
-           $request->session()->put('mysql3', $params);
-           return response()->json(['status'=>true ,'message'=> trans('messages.connect_success')]);
-       }else{
-           return response()->json(['status'=>false ,'message'=> trans('messages.connect_fail')]);
-       }
-
+      if($req->database =="0"){
+        $request->session()->forget('mysql3');
+        return response()->json(['status'=>true ,'message'=> trans('messages.connect_success')]);        
+      }else{
+        $db = CompanySoftware::find($req->database);
+        $checkDB = SchemaDB::checkDB($db->database);
+        if($checkDB == 1){
+          $params = array(
+                'driver'    => env('DB_CONNECTION', 'mysql'),
+                'host'      => env('DB_HOST', '127.0.0.1'),
+                'database'  => $db->database,
+                'username'  => $db->username,
+                'password'  => $db->password==""?"":null,
+                'charset'   => 'utf8',
+                'collation' => 'utf8_unicode_ci',
+                'prefix'    => '',
+                'strict'    => false,
+            );
+            $request->session()->put('mysql3', $params);
+            return response()->json(['status'=>true ,'message'=> trans('messages.connect_success')]);
+        }else{
+            return response()->json(['status'=>false ,'message'=> trans('messages.connect_fail')]);
+        }
+      }     
      }catch(Exception $e){
        // Lưu lỗi
        $err = new Error();
@@ -72,17 +75,16 @@ class QueryController extends Controller
        try {
        $t = json_decode($request->data);
        $sql = $t->query;
-       // Lỗi tạo combobox select sql
-       $check = $request->session()->has('mysql2');
+       $check = $request->session()->has('mysql3');
        if($check == true){
-        $params = $request->session()->get('mysql2');
-        config(['database.connections.mysql2' => $params]);
-        $con = 'mysql2';
+        $params = $request->session()->get('mysql3');
+        config(['database.connections.mysql3' => $params]);
+        $con = 'mysql3';
        }else{
         $con = 'mysql';
-      };
+      };     
        if(strpos($sql,'select') !== false){
-        $results =  DB::connection($con)->select(DB::raw($sql));
+        $results =  DB::connection($con)->select($sql);
        }else{
         $results = DB::connection($con)->statement($sql);
         }

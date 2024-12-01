@@ -11,7 +11,7 @@ use App\Http\Model\Company;
 use App\Http\Model\CompanySoftWare;
 use App\Http\Model\User;
 use App\Http\Model\Error;
-use App\Classes\NumberConvert;
+use App\Http\Model\FailedJobs;
 use Illuminate\Support\Facades\Auth;
 use Hash;
 
@@ -42,7 +42,8 @@ class HomeController extends Controller
      $database = CompanySoftWare::active()->count();
      $user = User::active()->count();
      $error = Error::get_check("0")->count();
-     return view('global.index',['company' => $company,'database'=>$database,'user'=>$user,'error'=>$error]);
+     $failed_jobs = FailedJobs::count();
+     return view('global.index',['company' => $company,'database'=>$database,'user'=>$user,'error'=>$error,'failed_jobs'=>$failed_jobs]);
   }
 
   public function profile(){

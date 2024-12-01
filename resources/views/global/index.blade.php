@@ -49,13 +49,22 @@
                            <h2 class="uk-margin-remove"><span class="countUpMe">0<noscript>{{$error}}</noscript></span></h2>
                        </div>
                    </div>
-               </div>
+               </div>               
                <div>
                    <div class="md-card">
                        <div class="md-card-content">
                            <div class="uk-float-right uk-margin-top uk-margin-small-right"><span class="peity_live peity_data">5,3,9,6,5,9,7,3,5,2,5,3,9,6,5,9,7,3,5,2</span></div>
                            <span class="uk-text-muted uk-text-small">@lang('index.user')</span>
                            <h2 class="uk-margin-remove" id="peity_live_text">{{$user}}</h2>
+                       </div>
+                   </div>
+               </div>
+               <div>
+                   <div class="md-card">
+                       <div class="md-card-content">
+                           <div class="uk-float-right uk-margin-top uk-margin-small-right"><span class="peity_sale peity_data">64/100</span></div>
+                           <span class="uk-text-muted uk-text-small">@lang('index.failed_jobs')</span>
+                           <h2 class="uk-margin-remove"><span class="countUpMe">0<noscript>{{$failed_jobs}}</noscript></span></h2>
                        </div>
                    </div>
                </div>

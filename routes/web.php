@@ -130,6 +130,20 @@ Route::prefix('manage')->group(function () {
   Route::get('/error-DownloadExcel', 'DownloadExcel' )->name('-DownloadExcel');
   });
 
+   // Jobs
+   Route::group([
+    'as' => 'jobs',
+    'controller' => JobsController::class
+  ],function () {
+  Route::get('/jobs','show')->name('');
+  Route::get('/jobs-data', 'data')->name('-data');
+  Route::post('/jobs-save', 'save')->name('-save');
+  Route::post('/jobs-delete', 'delete' )->name('-delete');
+  Route::any('/jobs-import', 'import' )->name('-import');
+  Route::get('/jobs-export', 'export' )->name('-export');
+  Route::get('/jobs-DownloadExcel', 'DownloadExcel' )->name('-DownloadExcel');
+  });
+
   // Menu
   Route::group([
     'as' => 'menu',

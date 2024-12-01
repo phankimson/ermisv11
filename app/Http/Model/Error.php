@@ -31,6 +31,18 @@ class Error extends Model
         return $result;
       }
 
+      static public function get_raw_skip_page($skip,$limit,$orderBy,$asc,$type) {
+        $result = Error::WithRowNumber($orderBy,$asc)->where('type',$type)->skip($skip)->take($limit)->get();  
+        return $result;
+      }
+
+      static public function get_raw_skip_filter_page($skip,$limit,$orderBy,$asc,$filter,$type) {
+        $result = Error::WithRowNumberWhereRawColumn($filter,$orderBy,$asc)->where('type',$type)->skip($skip)->take($limit)->get();  
+        return $result;
+      }
+
+
+
       static public function get_raw_type($type) {
         $result = Error::WithRowNumberWhereColumn('type',$type)->orderBy('row_number','desc')->get();
         return $result;

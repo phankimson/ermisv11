@@ -57,10 +57,10 @@ var Ermis = function () {
       $kWindow.title("Extra");    
       // KendoGridTemplateToolTip0
       if(Ermis.paging == 1){
-        ErmisKendoGridTemplatePageApi0($kGrid, Ermis.page_size , Ermis.link+'-data', onChange, "row", jQuery(window).height() * 0.75, {
+        ErmisKendoGridTemplateTbPageApi0($kGrid, Ermis.page_size , Ermis.link+'-data', onChange, "row", jQuery(window).height() * 0.75, {
           numeric: false,
           previousNext: false
-      } , data.fields, data.columns);
+      } , data.fields, data.columns,tss);
       }else{
         ErmisKendoGridTemplateApi0($kGrid, Ermis.page_size , Ermis.link+'-data', onChange, "row", jQuery(window).height() * 0.75, {
           numeric: false,
@@ -213,7 +213,7 @@ var Ermis = function () {
     };
 
     var initKendoUiTabStrip = function () {
-      ErmisKendoTabstripAjaxTemplate(ts,"data-search",Ermis.link+'-get',
+      ErmisKendoTabstripAjaxTemplate (ts,"data-search",Ermis.link+'-get',
           function(result){
             tss = ts.find('.k-state-active').attr("data-search");
             // Load data droplist ".load_droplist"
@@ -223,12 +223,13 @@ var Ermis = function () {
                     var parent = jQuery('select[name="' + v.field + '"]').parents('td');
                     var id = jQuery('select[name="' + v.field + '"]').attr('id');
                     jQuery('#'+id).data('kendoDropDownList').destroy();
+                    var arr = ConvertDataArrayKendos(result.data,Ermis.lang)
                     parent.empty();
                     parent.append('<select id="'+ id+'" class="droplist load_droplist large" data-width="200px" name="'+id+'">');
                   jQuery('#'+ id).kendoDropDownList({
                        dataTextField: "text",
                        dataValueField: "value",
-                       dataSource: result.datatb,
+                       dataSource: arr,
                        filter: "contains",
                        optionLabel: "Select ..."
                    });

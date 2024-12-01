@@ -9,17 +9,17 @@ use Illuminate\Support\Facades\Validator;
 use App\Http\Model\HistoryAction;
 use App\Http\Model\Systems;
 use App\Http\Model\Menu;
-use App\Http\Model\Country;
+use App\Http\Model\Jobs;
 use App\Http\Model\Error;
 use Illuminate\Support\Facades\Storage;
-use App\Http\Model\Imports\CountryImport;
-use App\Http\Model\Exports\CountryExport;
+use App\Http\Model\Imports\JobsImport;
+use App\Http\Model\Exports\JobsExport;
 use App\Classes\Convert;
 use Excel;
 use Exception;
 
 
-class CountryController extends Controller
+class JobsController extends Controller
 {
   protected $url;
   protected $key;
@@ -28,27 +28,27 @@ class CountryController extends Controller
   public function __construct(Request $request)
  {
      $this->url = $request->segment(3);
-     $this->key = "country";
+     $this->key = "jobs";
      $this->menu = Menu::where('code', '=', $this->key)->first();
      $this->page_system = "MAX_COUNT_CHANGE_PAGE";
  }
 
   public function show(){
-    //$data = Country::get_raw();
-    $count = Country::count();
+    //$data = Jobs::get_raw();
+    $count = Jobs::count();
     $sys_page = Systems::get_systems($this->page_system);
     $paging = $count>$sys_page->value?1:0; 
-    return view('manage.country',['paging' => $paging, 'key' => $this->key ]);
+    return view('manage.jobs',['paging' => $paging, 'key' => $this->key ]);
   }
 
 
   
   public function data(Request $request){    
-    $total = Country::count();
+    $total = Jobs::count();
     $sys_page = Systems::get_systems($this->page_system);
     $paging = $total>$sys_page->value?1:0;     
     if($paging == 0){
-      $arr = Country::get_raw();   
+      $arr = Jobs::get_raw();   
     }else{
     $perPage = $request->input('$top',30);
     $skip = $request->input('$skip',0);
@@ -62,10 +62,10 @@ class CountryController extends Controller
         };
         if($filter){
           $filter_sql = Convert::filterRow($filter);
-          $arr = Country::get_raw_skip_filter_page($skip,$perPage,$orderby,$asc,$filter_sql);
-          $total = Country::whereRaw($filter_sql)->count();
+          $arr = Jobs::get_raw_skip_filter_page($skip,$perPage,$orderby,$asc,$filter_sql);
+          $total = Jobs::whereRaw($filter_sql)->count();
         }else{
-          $arr = Country::get_raw_skip_page($skip,$perPage,$orderby,$asc);    
+          $arr = Jobs::get_raw_skip_page($skip,$perPage,$orderby,$asc);    
         }   
     }  
     $data = collect(['data' => $arr,'total' => $total]);            
@@ -87,11 +87,9 @@ class CountryController extends Controller
             'name' => 'required',
         ]);
     if($validator->passes()){
-     $code_check = Country::WhereCheck('code',$arr->code,'id',$arr->id)->first();
-     if($code_check == null){
        if($permission['a'] == true && !$arr->id ){
          $type = 2;
-         $data = new Country();
+         $data = new Jobs();
          $data->code = $arr->code;
          $data->name = $arr->name;
          $data->phonecode = $arr->phonecode;
@@ -114,7 +112,7 @@ class CountryController extends Controller
          return response()->json(['status'=>true,'message'=> trans('messages.update_success')]);
        }else if($permission['e'] == true && $arr->id){
          $type = 3;
-         $data = Country::find($arr->id);
+         $data = Jobs::find($arr->id);
          // Lưu lịch sử
          $h = new HistoryAction();
          $h ->create([
@@ -139,10 +137,7 @@ class CountryController extends Controller
          }
      }else{
           return response()->json(['status'=>false,'message'=> trans('messages.code_is_already')]);
-     }
-     }else{
-       return response()->json(['status'=>false,'error'=>$validator->getMessageBag()->toArray() ,'message'=>trans('messages.error')]);
-     }
+     }     
     }catch(Exception $e){
       // Lưu lỗi
       $err = new Error();
@@ -164,7 +159,7 @@ class CountryController extends Controller
         $arr = json_decode($request->data);
         if($arr){
           if($permission['d'] == true){
-            $data = Country::find($arr->id);
+            $data = Jobs::find($arr->id);
             // Lưu lịch sử
             $h = new HistoryAction();
             $h ->create([
@@ -198,7 +193,7 @@ class CountryController extends Controller
  }
 
  public function DownloadExcel(Request $request){
-   return Storage::download('public/downloadFile/Country.xlsx');
+   return Storage::download('public/downloadFile/Jobs.xlsx');
  }
 
  public function import(Request $request) {
@@ -216,10 +211,10 @@ class CountryController extends Controller
 
        $file = $request->file;
        // Import dữ liệu
-       $import = new CountryImport;
+       $import = new JobsImport;
        Excel::import($import, $file);
        // Lấy lại dữ liệu
-       //$array = Country::get_raw();
+       //$array = Jobs::get_raw();
        // Import dữ liệu bằng collection
        //$results = Excel::toCollection(new HistoryActionImport, $file);
        //dump($results);
@@ -269,10 +264,10 @@ class CountryController extends Controller
        $arr = $request->data;
        //return (new HistoryActionExport($arr))->download('HistoryActionExportErmis.xlsx');
        //$myFile = Excel::download(new HistoryActionExport($arr), 'HistoryActionExportErmis.xlsx');
-       $myFile = Excel::raw(new CountryExport($arr), \Maatwebsite\Excel\Excel::XLSX);
+       $myFile = Excel::raw(new JobsExport($arr), \Maatwebsite\Excel\Excel::XLSX);
        $response =  array(
          'status' =>true,
-         'name' => "CountryExportErmis", //no extention needed
+         'name' => "JobsExportErmis", //no extention needed
          'file' => "data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,".base64_encode($myFile) //mime type of used format
       );
       return response()->json($response);

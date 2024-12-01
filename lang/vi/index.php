@@ -39,4 +39,5 @@ return [
     "error" => "Lỗi",
     "diagrams"=>"Sơ đồ",
     "analytic"=>"Biểu đồ",
+    'failed_jobs'=>"Jobs thất bại",
 ];
