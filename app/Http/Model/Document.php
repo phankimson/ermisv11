@@ -36,6 +36,16 @@ class Document extends Model
         return $result;
       }
 
+      static public function get_raw_skip_page($skip,$limit,$orderBy,$asc) {
+        $result = Document::WithRowNumber($orderBy,$asc)->skip($skip)->take($limit)->get();  
+        return $result;
+      }
+    
+      static public function get_raw_skip_filter_page($skip,$limit,$orderBy,$asc,$filter) {
+        $result = Document::WithRowNumberWhereRawColumn($filter,$orderBy,$asc)->skip($skip)->take($limit)->get();  
+        return $result;
+      }
+
       static public function get_raw_export($select) {
         $result = Document::WithRowNumber()->orderBy('row_number','asc')
         ->leftJoin('document_type as m', 't.type', '=', 'm.id')

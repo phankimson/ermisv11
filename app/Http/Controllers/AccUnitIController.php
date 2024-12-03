@@ -15,11 +15,14 @@ use App\Http\Model\AccNumberCode;
 use App\Http\Model\Error;
 use App\Http\Model\AccSystems;
 use Illuminate\Support\Facades\Storage;
-use App\Http\Model\Imports\AccUnitImport;
+use App\Http\Model\Imports\AccUnit1Import;
 use App\Http\Model\Exports\AccUnitExport;
 use App\Classes\Convert;
 use Excel;
 use Exception;
+use DB;
+use Artisan;
+use Schema;
 
 class AccUnitIController extends Controller
 {
@@ -262,7 +265,23 @@ class AccUnitIController extends Controller
  }
 
  public function import(Request $request) {
-   //config(['queue.default' => 'database2']);
+  $db = [
+    'driver' => 'mysql',
+    "host" => "localhost",
+    "database" => "acc_ermis",
+    "username" => "root",
+    "password" => null,
+    "port" => '',
+    'charset'   => 'utf8',
+    'collation' => 'utf8_unicode_ci',
+    'prefix'    => '',
+    'strict'    => false,
+  ];
+   DB::purge('mysql2');
+   config(['database.connections.mysql2' => $db]);
+   DB::reconnect('mysql2');
+   Schema::connection('mysql2')->getConnection()->reconnect();
+   Artisan::command('queue:restart', function () {});
   $type = 5;
    try{
    $permission = $request->session()->get('per');
@@ -277,8 +296,8 @@ class AccUnitIController extends Controller
 
        $file = $request->file;
        // Import dữ liệu
-       $import = new AccUnitImport;        
-       app('queue')->connection('database2')->pushOn('database', Excel::import($import,$file));
+       $import = new AccUnit1Import;        
+       Excel::queueImport($import,$file);
        // Lấy lại dữ liệu
        //$array = AccUnit::get_raw();
 

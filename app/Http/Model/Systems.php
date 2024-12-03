@@ -34,6 +34,16 @@ class Systems extends Model
         return $result;
       }
 
+      static public function get_raw_skip_page($skip,$limit,$orderBy,$asc) {
+        $result = Systems::WithRowNumber($orderBy,$asc)->skip($skip)->take($limit)->get();  
+        return $result;
+      }
+    
+      static public function get_raw_skip_filter_page($skip,$limit,$orderBy,$asc,$filter) {
+        $result = Systems::WithRowNumberWhereRawColumn($filter,$orderBy,$asc)->skip($skip)->take($limit)->get();  
+        return $result;
+      }
+
       static public function get_systems($code) {
         $result = Systems::where('code',$code)->where('active',1)->first();
         return $result;
