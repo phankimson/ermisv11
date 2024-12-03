@@ -54,11 +54,7 @@ class AccUserManagerController extends Controller
     $com = $request->session()->get('com'); 
     $total = AccUser::where('company_default',$com->id)->count();
     $sys_page = AccSystems::get_systems($this->page_system);
-    $paging = $total>$sys_page->value?1:0;   
-    if($paging == 0){
-      $arr = AccUser::get_raw($com->id);   
-    }else{
-    $perPage = $request->input('$top',30);
+    $perPage = $request->input('$top',$sys_page->value);
     $skip = $request->input('$skip',0);
     $orderby =   $request->input('$orderby','created_at desc');
     $filter =   $request->input('$filter');
@@ -74,8 +70,7 @@ class AccUserManagerController extends Controller
           $total = AccUser::whereRaw($filter_sql)->where('company_default',$com->id)->count();
         }else{
           $arr = AccUser::get_raw_skip_page($skip,$perPage,$orderby,$asc,$com->id); 
-        }   
-    }  
+        } 
     $data = collect(['data' => $arr,'total' => $total]);              
     if($data){
       return response()->json($data);

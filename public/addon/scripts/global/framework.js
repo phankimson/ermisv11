@@ -108,11 +108,10 @@ function ConvertNumber ($string , $decimal = ","){
 }
 
 function ConvertDataArrayKendos(arr , lang){
-  var result = array();
-  var lang_text = lang == "vn"?"":"en";
+  var result = [];
+  var lang_text = lang == "vi"?"":"_"+lang;
   arr.map(function(value,index) {
-    result['value'] = value.id;
-    result['text'] = value.code+' - '+value['name'+lang_text];
+    result.push({value:value.id, text:value.code+' - '+value['name'+lang_text]});
   })
     return result;
 }

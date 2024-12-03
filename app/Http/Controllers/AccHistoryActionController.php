@@ -10,6 +10,7 @@ use App\Http\Model\AccHistoryAction;
 use App\Http\Model\User;
 use App\Http\Model\Menu;
 use App\Http\Model\Error;
+use App\Http\Model\AccSystems;
 use App\Http\Resources\DropDownListResource;
 use App\Http\Resources\UserDropDownListResource;
 use Illuminate\Support\Facades\Storage;
@@ -17,14 +18,20 @@ use App\Http\Model\Imports\HistoryActionImport;
 use App\Http\Model\Exports\AccHistoryActionExport;
 use App\Classes\Convert;
 use Excel;
+use Exception;
 
 class AccHistoryActionController extends Controller
 {
+    protected $url;
+    protected $key;
+    protected $menu;
+    protected $page_system;
     public function __construct(Request $request)
    {
        $this->url = $request->segment(3);
        $this->key = "history-action";
        $this->menu = Menu::where('code', '=', $this->key)->first();
+       $this->page_system = "MAX_COUNT_CHANGE_PAGE";
    }
 
    public function show(){
@@ -34,6 +41,36 @@ class AccHistoryActionController extends Controller
       $user = collect(UserDropDownListResource::collection(User::all()));
       return view('global.history_action',['data' => $data, 'user'=>$user, 'menu'=>$menu, 'key' => $this->key , 'type'=>$type]);
    }
+
+   public function data(Request $request){   
+    $ts = $request->input('ts',0);
+    $total = AccHistoryAction::count();
+    $sys_page = AccSystems::get_systems($this->page_system);
+    $perPage = $request->input('$top',$sys_page->value);
+    $skip = $request->input('$skip',0);
+    $orderby =   $request->input('$orderby','created_at desc');
+    $filter =   $request->input('$filter');
+    $asc  = 'desc';
+        if (!str_contains($orderby, 'desc')) { 
+          $asc = 'asc';
+        }else{
+          $orderby = explode(' ', $orderby)[0];
+        };
+        if($filter){
+          $filter_sql = Convert::filterRow($filter);
+          $arr = AccHistoryAction::get_raw_skip_filter_page($skip,$perPage,$orderby,$asc,$filter_sql,$ts);
+          $total = AccHistoryAction::whereRaw($filter_sql)->count();
+        }else{
+          $arr = AccHistoryAction::get_raw_skip_page($skip,$perPage,$orderby,$asc,$ts); 
+        }     
+    $data = collect(['data' => $arr,'total' => $total]);              
+    if($data){
+      return response()->json($data);
+    }else{
+      return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
+    }
+  }
+
     public function get(Request $request){
       $type = 9;
       try{

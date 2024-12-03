@@ -9,9 +9,14 @@ use App\Http\Model\Notes;
 use App\Http\Model\Systems;
 use App\Http\Model\HistoryAction;
 use App\Http\Model\Menu;
+use App\Http\Model\Error;
+use Exception;
 
 class NotesController extends Controller
 {
+  protected $url;
+  protected $key;
+  protected $menu;
   public function __construct(Request $request)
  {
      $this->url = $request->segment(3);
@@ -48,6 +53,7 @@ class NotesController extends Controller
         $type = 8;
            try{
              $arr = $request->data;
+             $sys = Systems::get_systems('MAX_NOTES');
              $data = Notes::get_notes(($arr-1)*$sys->value,$arr*$sys->value);
              return response()->json(['status'=>true,'data'=> $data ]);
            }catch(Exception $e){

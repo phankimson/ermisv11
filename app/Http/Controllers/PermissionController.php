@@ -11,11 +11,14 @@ use App\Http\Model\Menu;
 use App\Http\Model\GroupUsers;
 use App\Http\Model\GroupUsersPermission;
 use App\Http\Model\Error;
-use App\Http\Model\User;
 use App\Http\Model\HistoryAction;
+use Exception;
 
 class PermissionController extends Controller
 {
+    protected $url;
+    protected $key;
+    protected $menu;
     public function __construct(Request $request)
    {
        $this->url = $request->segment(3);

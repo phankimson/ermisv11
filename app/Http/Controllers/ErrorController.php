@@ -50,11 +50,7 @@ class ErrorController extends Controller
     $type = 0;
     $total = Error::where('type',$type)->count();
     $sys_page = Systems::get_systems($this->page_system);
-    $paging = $total>$sys_page->value?1:0;     
-    if($paging == 0){
-      $arr = Error::get_raw_type($type);   
-    }else{
-    $perPage = $request->input('$top',30);
+    $perPage = $request->input('$top',$sys_page->value);
     $skip = $request->input('$skip',0);
     $orderby =   $request->input('$orderby','created_at desc');
     $filter =   $request->input('$filter');
@@ -70,8 +66,7 @@ class ErrorController extends Controller
           $total = Error::whereRaw($filter_sql)->count();
         }else{
           $arr = Error::get_raw_skip_page($skip,$perPage,$orderby,$asc,$type);   
-        }   
-    }  
+        }  
     $data = collect(['data' => $arr,'total' => $total]);            
     if($data){
       return response()->json($data);

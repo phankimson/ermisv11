@@ -26,6 +26,17 @@ class AccDepartment extends Model
         $result = AccDepartment::WithRowNumberDb('mysql2')->orderBy('row_number','desc')->get();       
         return $result;
       }
+      
+      static public function get_raw_skip_page($skip,$limit,$orderBy,$asc) {
+        $result = AccDepartment::WithRowNumberDb('mysql2',$orderBy,$asc)->skip($skip)->take($limit)->get();  
+        return $result;
+      }
+
+      static public function get_raw_skip_filter_page($skip,$limit,$orderBy,$asc,$filter) {
+        $result = AccDepartment::WithRowNumberWhereRawColumnDb('mysql2',$filter,$orderBy,$asc)->skip($skip)->take($limit)->get();  
+        return $result;
+      }
+
 
       static public function get_raw_export($select) {
         $result =  AccDepartment::WithRowNumberDb('mysql2')->orderBy('row_number','asc')->get(['row_number',DB::raw($select)]);        

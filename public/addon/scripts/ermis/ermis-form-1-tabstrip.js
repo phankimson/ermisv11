@@ -213,7 +213,7 @@ var Ermis = function () {
     };
 
     var initKendoUiTabStrip = function () {
-      ErmisKendoTabstripAjaxTemplate (ts,"data-search",Ermis.link+'-get',
+      ErmisKendoTabstripAjaxTemplate(ts,"data-search",Ermis.link+'-get',
           function(result){
             tss = ts.find('.k-state-active').attr("data-search");
             // Load data droplist ".load_droplist"
@@ -223,7 +223,7 @@ var Ermis = function () {
                     var parent = jQuery('select[name="' + v.field + '"]').parents('td');
                     var id = jQuery('select[name="' + v.field + '"]').attr('id');
                     jQuery('#'+id).data('kendoDropDownList').destroy();
-                    var arr = ConvertDataArrayKendos(result.data,Ermis.lang)
+                    var arr = ConvertDataArrayKendos(result.data,Lang.current)
                     parent.empty();
                     parent.append('<select id="'+ id+'" class="droplist load_droplist large" data-width="200px" name="'+id+'">');
                   jQuery('#'+ id).kendoDropDownList({
@@ -237,7 +237,7 @@ var Ermis = function () {
               });
 
             };
-            //
+            //        
             var grid = $kGrid.data("kendoGrid");
             var ds = new kendo.data.DataSource({ data: result.data , pageSize : Ermis.page_size });
             grid.setDataSource(ds);

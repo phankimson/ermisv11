@@ -23,10 +23,14 @@ use App\Classes\Convert;
 use App\Http\Model\AccCountVoucher;
 use App\Http\Model\AccNumberVoucher;
 use Illuminate\Support\Facades\Validator;
+use Exception;
 
 
 class AccVoucherController extends Controller
 {
+  protected $url;
+  protected $key;
+  protected $menu;
   public function __construct(Request $request)
  {
    $key = explode("/",$request->headers->get('referer'));

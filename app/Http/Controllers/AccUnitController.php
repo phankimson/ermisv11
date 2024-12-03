@@ -48,11 +48,7 @@ class AccUnitController extends Controller
   public function data(Request $request){  
     $total = AccUnit::count();
     $sys_page = AccSystems::get_systems($this->page_system);
-    $paging = $total>$sys_page->value?1:0;  
-    if($paging == 0){
-      $arr = AccUnit::get_raw();   
-    }else{
-    $perPage = $request->input('$top',30);
+    $perPage = $request->input('$top',$sys_page->value);
     $skip = $request->input('$skip',0);
     $orderby =   $request->input('$orderby','created_at desc');
     $filter =   $request->input('$filter');
@@ -68,8 +64,7 @@ class AccUnitController extends Controller
           $total = AccUnit::whereRaw($filter_sql)->count();
         }else{
           $arr = AccUnit::get_raw_skip_page($skip,$perPage,$orderby,$asc);  
-        }   
-    }  
+        }     
     $data = collect(['data' => $arr,'total' => $total]);              
     if($data){
       return response()->json($data);

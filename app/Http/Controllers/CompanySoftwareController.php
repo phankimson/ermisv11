@@ -56,11 +56,7 @@ class CompanySoftwareController extends Controller
     $type = Software::get_url("acc");
     $total = CompanySoftware::where('software_id',$type->id)->count();
     $sys_page = Systems::get_systems($this->page_system);
-    $paging = $total>$sys_page->value?1:0;     
-    if($paging == 0){
-      $arr = CompanySoftware::get_raw_type($type->id);   
-    }else{
-    $perPage = $request->input('$top',30);
+    $perPage = $request->input('$top',$sys_page->value);
     $skip = $request->input('$skip',0);
     $orderby =   $request->input('$orderby','created_at desc');
     $filter =   $request->input('$filter');
@@ -76,8 +72,7 @@ class CompanySoftwareController extends Controller
           $total = CompanySoftware::whereRaw($filter_sql)->count();
         }else{
           $arr = CompanySoftware::get_raw_skip_page($skip,$perPage,$orderby,$asc,$type->id);   
-        }   
-    }  
+        }  
     $data = collect(['data' => $arr,'total' => $total]);            
     if($data){
       return response()->json($data);

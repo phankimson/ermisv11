@@ -1999,7 +1999,7 @@ var ErmisKendoTabstripAjaxTemplate = function(jqueryElem, dataAttr, url, callbac
     }
 };
 
-var ErmisKendoTabstripAjaxTemplateGetTb = function(jqueryElem, dataAttr, url, callback_true, callback_false) {
+var ErmisKendoTabstripAjaxTemplateGetTs = function(jqueryElem, dataAttr, url, callback_true, callback_false) {
     jqueryElem.kendoTabStrip({
         select: onSelected
     });

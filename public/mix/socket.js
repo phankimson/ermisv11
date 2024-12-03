@@ -32927,6 +32927,13 @@ if (token) {
 window.Echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_0__["default"]({
   broadcaster: 'socket.io',
   host: window.location.hostname + ':6001',
+  auth:
+  {
+      headers:
+      {
+          'Authorization': 'Bearer ' + token
+      }
+  },
   pingTimeout: 25000,
   upgradeTimeout: 21000,
   pingInterval: 40000,

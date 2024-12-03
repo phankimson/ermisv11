@@ -45,17 +45,14 @@ class MenuController extends Controller
    }
    
   public function data(Request $request){    
-    $ts = $request->input('ts');
+    $type = Software::first();
+    $ts = $request->input('ts',$type->id);
     $total = Menu::where('type',$ts)->count();
     $sys_page = Systems::get_systems($this->page_system);
-    $paging = $total>$sys_page->value?1:0;     
-    if($paging == 0){
-      $arr = Menu::get_raw_type($ts);   
-    }else{
-    $perPage = $request->input('$top',30);
+    $perPage = $request->input('$top',$sys_page->value);
     $skip = $request->input('$skip',0);
     $orderby =   $request->input('$orderby','created_at desc');
-    $filter =   $request->input('$filter');
+    $filter =   $request->input('$filter');   
     $asc  = 'desc';
         if (!str_contains($orderby, 'desc')) { 
           $asc = 'asc';
@@ -63,13 +60,12 @@ class MenuController extends Controller
           $orderby = explode(' ', $orderby)[0];
         };
         if($filter){
-          $filter_sql = Convert::filterRow($filter);
+          $filter_sql = Convert::filterRow($filter);     
           $arr = Menu::get_raw_skip_filter_page($skip,$perPage,$orderby,$asc,$filter_sql,$ts);
           $total = Menu::whereRaw($filter_sql)->count();
         }else{
           $arr = Menu::get_raw_skip_page($skip,$perPage,$orderby,$asc,$ts);   
         }   
-    }  
     $data = collect(['data' => $arr,'total' => $total]);            
     if($data){
       return response()->json($data);
@@ -78,20 +74,12 @@ class MenuController extends Controller
     }
   }
 
-    public function get(Application $app,Request $request){
+    public function get(Request $request){
       $type = 9;
       try{
         $req = $request->data;
-        $locale = $app->getLocale();
-        $name = '';
-        if($locale == 'vi'){
-          $name = 'name';
-        }else{
-          $name = 'name_'.$locale;
-        };
         $data = Menu::get_raw_type($req);
-        $datatb = Menu::get_menu_droplist($req,$name);
-        return response()->json(['status'=>true,'data'=> $data ,'datatb' => $datatb ]);
+        return response()->json(['status'=>true,'data'=> $data ]);
       }catch(Exception $e){
         // Lưu lỗi
         $err = new Error();

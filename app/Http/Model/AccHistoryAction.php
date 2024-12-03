@@ -35,6 +35,17 @@ class AccHistoryAction extends Model
       return $result;
     }
 
+
+    static public function get_raw_skip_page($skip,$limit,$orderBy,$asc,$type) {
+      $result = AccHistoryAction::WithRowNumberDb('mysql2',$orderBy,$asc)->where('type',$type)->skip($skip)->take($limit)->get();  
+      return $result;
+    }
+
+    static public function get_raw_skip_filter_page($skip,$limit,$orderBy,$asc,$filter,$type) {
+      $result = AccHistoryAction::WithRowNumberWhereRawColumnDb('mysql2',$filter,$orderBy,$asc)->where('type',$type)->skip($skip)->take($limit)->get();  
+      return $result;
+    }
+
     static public function get_raw_type($type) {
       $result = AccHistoryAction::WithRowNumberWhereColumnDb('mysql2','type',$type)->orderBy('row_number','desc')->get();
       return $result;
