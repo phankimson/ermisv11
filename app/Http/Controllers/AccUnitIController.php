@@ -279,6 +279,7 @@ class AccUnitIController extends Controller
   ];
    DB::purge('mysql2');
    config(['database.connections.mysql2' => $db]);
+   Artisan::call('config:clear');
    DB::reconnect('mysql2');
    Schema::connection('mysql2')->getConnection()->reconnect();
    Artisan::command('queue:restart', function () {});
