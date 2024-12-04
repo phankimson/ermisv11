@@ -600,7 +600,7 @@ var Ermis = function () {
 
     var initExportExtra = function (e) {
           initAddPageExportExtra();
-          $kWindow.open();
+          $kWindow_extra.open();
     };
 
     var initKendoGridExtra = function () {

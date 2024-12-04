@@ -69,6 +69,7 @@ return [
   "failed_upload" => "Upload Failed",
   "success_import" => "Import Successful",
   "failed_import" => "Import Failed",
+  "failed_export" => "Export Failed",
   "no_matching_records_found" => "No matching records found !",
   "are_you_sure" => "Are you sure",
   "please_choose_user" => "Please choose user",

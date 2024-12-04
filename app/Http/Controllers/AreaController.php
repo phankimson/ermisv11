@@ -282,7 +282,7 @@ class AreaController extends Controller
        'menu_id' => $this->menu->id,
        'error' => $e->getMessage(),
        'check' => 0 ]);
-     return response()->json(['status'=>false,'message'=> trans('messages.failed_import').' '.$e->getMessage()]);
+     return response()->json(['status'=>false,'message'=> trans('messages.failed_export').' '.$e->getMessage()]);
    }
  }
 

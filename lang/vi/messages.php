@@ -67,6 +67,7 @@ return [
       "failed_upload" => "Upload thất bại",
       "success_import" => "Import thành công",
       "failed_import" => "Import thất bại",
+      "failed_export" => "Export thất bại",
       "no_matching_records_found" => "Không tìm thấy dòng nào !",
       "are_you_sure" => "Bạn chắc chắn chứ",
       "please_choose_user" => "Xin vui lòng chọn tên người dùng",

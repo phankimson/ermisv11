@@ -53,10 +53,11 @@ class Convert
     $voucher = "";
     $number = $data->length_number;
      if ($data->number) {
-       return $voucher = $data->prefix .$data->middle. str_repeat($char,$number - strlen($data->number."")) . $data->number . $data->suffixed;
+       $voucher = $data->prefix .$data->middle. str_repeat($char,$number - strlen($data->number."")) . $data->number . $data->suffixed;
      }else {
-       return $voucher = str_repeat($char,$number);
+       $voucher = str_repeat($char,$number);
     }
+    return $voucher;
   }
   
   static public function VoucherMasker1($data,$prefix){

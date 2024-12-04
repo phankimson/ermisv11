@@ -326,9 +326,10 @@ class AccWarrantyPeriodController extends Controller
    $type = 6;
    try{
        $arr = $request->data;
+       $page = $request->page;
        //return (new HistoryActionExport($arr))->download('HistoryActionExportErmis.xlsx');
        //$myFile = Excel::download(new HistoryActionExport($arr), 'HistoryActionExportErmis.xlsx');
-       $myFile = Excel::raw(new AccWarrantyPeriodExport($arr), \Maatwebsite\Excel\Excel::XLSX);
+       $myFile = Excel::raw(new AccWarrantyPeriodExport($arr,$page), \Maatwebsite\Excel\Excel::XLSX);
        $response =  array(
          'status' =>true,
          'name' => "AccWarrantyPeriodExportErmis", //no extention needed
@@ -345,7 +346,7 @@ class AccWarrantyPeriodController extends Controller
        'error' => $e->getMessage(),
        'url'  => $this->url,
        'check' => 0 ]);
-     return response()->json(['status'=>false,'message'=> trans('messages.failed_import').' '.$e->getMessage()]);
+     return response()->json(['status'=>false,'message'=> trans('messages.failed_export').' '.$e->getMessage()]);
    }
  }
 

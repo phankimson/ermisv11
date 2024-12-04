@@ -48,7 +48,7 @@ class AccSuppliesGoods extends Model
         return $result;
       }
 
-      static public function get_raw_export($select) {
+      static public function get_raw_export($select,$skip,$limit) {
         $result = AccSuppliesGoods::WithRowNumberDb('mysql2')->orderBy('row_number','asc')
         ->leftJoin('unit as a', 't.type', '=', 'a.id')
         ->leftJoin('supplies_goods_type as b', 't.type', '=', 'b.id')
@@ -60,6 +60,7 @@ class AccSuppliesGoods extends Model
         ->leftJoin('account_systems as h', 't.cost_account', '=', 'h.id')
         ->leftJoin('vat as j', 't.vat_tax', '=', 'j.id')
         ->leftJoin('excise as m', 't.excise_tax', '=', 'm.id')
+        ->skip($skip)->take($limit)
         ->get(['row_number',DB::raw($select)]);
         return $result;
       }   

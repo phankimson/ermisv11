@@ -70,13 +70,14 @@ class AccAccountSystems extends Model
         return $result;
       }
 
-      static public function get_raw_export($select) {
+      static public function get_raw_export($select,$skip,$limit) {
         $env = env("DB_DATABASE");
         $result = AccAccountSystems::WithRowNumberDb('mysql2')->orderBy('row_number','asc')
         ->leftJoin('account_type as a', 't.type', '=', 'a.id')
         ->leftJoin('account_nature as n', 't.nature', '=', 'n.id')
         ->leftJoin('account_systems as p', 't.parent_id', '=', 'p.id')
         ->leftJoin($env.'.document as d', 't.document_id', '=', 'd.id')
+        ->skip($skip)->take($limit)
         ->get(['row_number',DB::raw($select)]);
         return $result;
       }   

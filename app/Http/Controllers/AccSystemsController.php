@@ -315,7 +315,7 @@ class AccSystemsController extends Controller
        'error' => $e->getMessage(),
         'url'  => $this->url,
        'check' => 0 ]);
-     return response()->json(['status'=>false,'message'=> trans('messages.failed_import').' '.$e->getMessage()]);
+     return response()->json(['status'=>false,'message'=> trans('messages.failed_export').' '.$e->getMessage()]);
    }
  }
 

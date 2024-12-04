@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Crypt;
 use Excel;
 use File;
+use Exception;
 
 class AccUserManagerController extends Controller
 {
@@ -381,7 +382,7 @@ class AccUserManagerController extends Controller
        'error' => $e->getMessage(),
        'url'  => $this->url,
        'check' => 0 ]);
-     return response()->json(['status'=>false,'message'=> trans('messages.failed_import').' '.$e->getMessage()]);
+     return response()->json(['status'=>false,'message'=> trans('messages.failed_export').' '.$e->getMessage()]);
    }
  }
 

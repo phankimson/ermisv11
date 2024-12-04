@@ -324,10 +324,11 @@ class AccAccountNatureController extends Controller
  public function export(Request $request) {
    $type = 6;
    try{
-       $arr = $request->data;
+      $arr = $request->data;
+      $page = $request->page;
        //return (new HistoryActionExport($arr))->download('HistoryActionExportErmis.xlsx');
        //$myFile = Excel::download(new HistoryActionExport($arr), 'HistoryActionExportErmis.xlsx');
-       $myFile = Excel::raw(new AccAccountNatureExport($arr), \Maatwebsite\Excel\Excel::XLSX);
+       $myFile = Excel::raw(new AccAccountNatureExport($arr,$page), \Maatwebsite\Excel\Excel::XLSX);
        $response =  array(
          'status' =>true,
          'name' => "AccAccountNatureExportErmis", //no extention needed
@@ -344,7 +345,7 @@ class AccAccountNatureController extends Controller
        'error' => $e->getMessage(),
        'url'  => $this->url,
        'check' => 0 ]);
-     return response()->json(['status'=>false,'message'=> trans('messages.failed_import').' '.$e->getMessage()]);
+     return response()->json(['status'=>false,'message'=> trans('messages.failed_export').' '.$e->getMessage()]);
    }
  }
 

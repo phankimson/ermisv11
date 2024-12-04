@@ -32,17 +32,27 @@ class AccSettingAccountGroup extends Model
       }
 
       static public function get_raw_skip_page($skip,$limit,$orderBy,$asc) {
-        $result = AccSettingAccountGroup::WithRowNumberDb('mysql2',$orderBy,$asc)->skip($skip)->take($limit)->get();  
+        $result = AccSettingAccountGroup::WithRowNumberDb('mysql2',$orderBy,$asc)->with('account_filter')->skip($skip)->take($limit)->get()->pluckDistant('account_filter', 'account_systems'); 
         return $result;
       }
 
       static public function get_raw_skip_filter_page($skip,$limit,$orderBy,$asc,$filter) {
-        $result = AccSettingAccountGroup::WithRowNumberWhereRawColumnDb('mysql2',$filter,$orderBy,$asc)->skip($skip)->take($limit)->get();  
+        $result = AccSettingAccountGroup::WithRowNumberWhereRawColumnDb('mysql2',$filter,$orderBy,$asc)->with('account_filter')->skip($skip)->take($limit)->get()->pluckDistant('account_filter', 'account_systems');  
         return $result;
       }
 
-      static public function get_raw_export($select) {
-        $result =  AccSettingAccountGroup::WithRowNumberDb('mysql2')->orderBy('row_number','asc')->get(['row_number',DB::raw($select)]);        
+      static public function get_raw_export($select,$skip,$limit) {
+        $check = 'account_filter';
+        if (str_contains($select, $check) == true) {
+          $select = str_replace('t.'.$check.",","",$select);
+          $result =  AccSettingAccountGroup::WithRowNumberDb('mysql2')->orderBy('row_number','asc')->with($check)->skip($skip)->take($limit)->get(['row_number','id',DB::raw($select)]);
+          $result->makeHidden('id');
+          $result->pluckDistant($check, 'account_systems');
+          
+        }else{
+          $result =  AccSettingAccountGroup::WithRowNumberDb('mysql2')->orderBy('row_number','asc')->skip($skip)->take($limit)->get(['row_number',DB::raw($select)]);
+        }
+          
         return $result;
       } 
 

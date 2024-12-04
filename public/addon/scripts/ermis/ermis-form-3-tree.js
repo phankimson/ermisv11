@@ -524,7 +524,7 @@ var Ermis = function () {
     // Window Extra Export
 
     var initAddPageExportExtra = function(){
-      var totalRecords = $kGrid.data("kendoGrid").dataSource.total();
+      var totalRecords = $kGrid.data("kendoTreeList").dataSource.total();
       var $total_page = Math.ceil(totalRecords/Ermis.export_limit);
       if($total_page>$total_export_page){
         $total_export_page = $total_page;
@@ -538,7 +538,7 @@ var Ermis = function () {
 
     var initExportExtra = function (e) {
           initAddPageExportExtra();
-          $kWindow.open();
+          $kWindow_extra.open();
     };
 
        var initKendoGridExtra = function () {
