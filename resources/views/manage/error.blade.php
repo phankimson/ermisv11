@@ -85,6 +85,7 @@
       Ermis.flag = 1;
       Ermis.paging = "{{$paging}}";
       Ermis.page_size = "{{$page_size}}";
+      Ermis.export_limit = '{{ env("EXPORT_LIMIT") }}';
       Ermis.link = "{{$key}}";
       Ermis.row_multiselect = 0;
       Ermis.elem = "#form-action";

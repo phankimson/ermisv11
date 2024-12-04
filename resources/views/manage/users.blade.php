@@ -179,6 +179,7 @@
       Ermis.link = "{{$key}}";
       Ermis.paging = "{{$paging}}";
       Ermis.page_size = "{{$page_size}}";
+      Ermis.export_limit = '{{ env("EXPORT_LIMIT") }}';
       Ermis.fieldload = 'keygen';
       Ermis.short_key = "{{ config('app.short_key')}}";
       Ermis.image_upload = '#avatar';

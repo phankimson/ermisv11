@@ -277,6 +277,7 @@
       Ermis.link = "{{$key}}";
       Ermis.page_size = "{{$page_size}}";
       Ermis.paging = "{{$paging}}";
+      Ermis.export_limit = '{{ env("EXPORT_LIMIT") }}';
       Ermis.fieldload = 'code';
       Ermis.fieldload_crit = 'type';
       Ermis.short_key = "{{ config('app.short_key')}}";

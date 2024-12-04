@@ -7,6 +7,8 @@ var Ermis = function () {
     var dataId = '';
     var extra_data = '';
     var $export = ''; var $import = '';
+    var $export_page_value = 0;var $total_export_page = 0;
+    var $extra_page = jQuery("#list_extra_page");
     var myWindow = jQuery("#form-window-extra");
     var $kWindow = '';
 
@@ -509,7 +511,21 @@ var Ermis = function () {
 
     // Window Extra Export
 
+    var initAddPageExportExtra = function(){
+      var totalRecords = $kGrid.data("kendoGrid").dataSource.total();
+      var $total_page = Math.ceil(totalRecords/Ermis.export_limit);
+      if($total_page>$total_export_page){
+        $total_export_page = $total_page;
+        for (let i = 1; i <= $total_export_page; i++) {          
+          $extra_page.empty();
+          $extra_page.data("kendoDropDownList")
+              .dataSource.add({ "text": i, "value": i });
+        }
+      }     
+    }
+
     var initExportExtra = function (e) {
+          initAddPageExportExtra();
           $kWindow.open();
     };
 
@@ -527,7 +543,8 @@ var Ermis = function () {
    };
 
    var initChooseExtraExport = function(e){
-     var postdata = { data: extra_data };
+    $export_page_value = parseInt($extra_page.data("kendoDropDownList").value());
+    var postdata = { data: extra_data , page: $export_page_value };
      ErmisTemplateAjaxGet0(e,postdata,Ermis.link+'-export',
          function (result) {
            var a = document.createElement("a");
@@ -536,6 +553,10 @@ var Ermis = function () {
             document.body.appendChild(a);
             a.click();
             a.remove();
+            if($export_page_value >= $total_export_page){
+              $export_page_value = 0;
+            };
+            $extra_page.data("kendoDropDownList").select($export_page_value);
             $kWindow.close();
          },
          function (result) {

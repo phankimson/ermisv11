@@ -80,6 +80,7 @@
       Ermis.link = "{{$key}}";
       Ermis.paging = "{{$paging}}";
       Ermis.page_size = "{{$page_size}}";
+      Ermis.export_limit = '{{ env("EXPORT_LIMIT") }}';
       Ermis.fieldload = '';
       Ermis.image_upload = '#image';
       Ermis.row_multiselect = 0;

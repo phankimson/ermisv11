@@ -10,14 +10,17 @@ use Maatwebsite\Excel\Events\AfterSheet;
 class AccSuppliesGoodsGroupExport implements FromCollection, ShouldAutoSize, WithEvents
 {
   protected $select;
-    public function __construct($select)
+    public function __construct($select,$page)
    {
        $this->select = $select;
+       $this->page = $page;
    }
 
     public function collection()
     {
-        $a = AccSuppliesGoodsGroup::get_raw_export($this->select);
+      $skip = ($this->page - 1) * env("EXPORT_LIMIT");
+      $limit = $this->page * env("EXPORT_LIMIT");
+        $a = AccSuppliesGoodsGroup::get_raw_export($this->select,$skip,$limit);
         $b = collect($a);
         if($b->count()>0){
         $key = collect($a[0])->keys();

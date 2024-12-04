@@ -74,7 +74,7 @@ class AccStockController extends Controller
   }
 
 
-  public function load(Request $request){
+  public function load(){
     $type = 10;
     try{    
     $data = AccNumberCode::get_code($this->key);
@@ -260,7 +260,7 @@ class AccStockController extends Controller
       }
  }
 
- public function DownloadExcel(Request $request){
+ public function DownloadExcel(){
    return Storage::download('public/downloadFile/AccStock.xlsx');
  }
 
@@ -331,9 +331,10 @@ class AccStockController extends Controller
    $type = 6;
    try{
        $arr = $request->data;
+       $page = $request->page;
        //return (new HistoryActionExport($arr))->download('HistoryActionExportErmis.xlsx');
        //$myFile = Excel::download(new HistoryActionExport($arr), 'HistoryActionExportErmis.xlsx');
-       $myFile = Excel::raw(new AccStockExport($arr), \Maatwebsite\Excel\Excel::XLSX);
+       $myFile = Excel::raw(new AccStockExport($arr,$page), \Maatwebsite\Excel\Excel::XLSX);
        $response =  array(
          'status' =>true,
          'name' => "AccStockExportErmis", //no extention needed
