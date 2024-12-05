@@ -42,9 +42,10 @@ class Menu extends Model
       }
 
 
-      static public function get_raw_export($select) {
-        $result = Menu::WithRowNumber()->orderBy('row_number','asc')
+      static public function get_raw_export($select,$skip,$limit) {
+        $result = Menu::WithRowNumber()->orderBy('row_number','asc')->skip($skip)->take($limit)
         ->leftJoin('menu as m', 't.parent_id', '=', 'm.id')
+        ->leftJoin('software as c', 't.type', '=', 'c.id')
         ->get(['row_number',DB::raw($select)]);
         return $result;
       }

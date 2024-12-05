@@ -43,8 +43,8 @@ class Company extends Model
       }
 
 
-      static public function get_raw_export($select) {
-        $result = Company::WithRowNumber()->orderBy('row_number','asc')
+      static public function get_raw_export($select,$skip,$limit) {
+        $result = Company::WithRowNumber()->orderBy('row_number','asc')->skip($skip)->take($limit)
         ->leftJoin('regions as m', 't.regions', '=', 'm.id')
         ->leftJoin('area as n', 't.area', '=', 'n.id')
         ->leftJoin('distric as s', 't.distric', '=', 's.id')

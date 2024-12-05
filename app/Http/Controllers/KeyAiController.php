@@ -271,9 +271,10 @@ class KeyAiController extends Controller
    $type = 6;
    try{
        $arr = $request->data;
+       $page = $request->page;
        //return (new HistoryActionExport($arr))->download('HistoryActionExportErmis.xlsx');
        //$myFile = Excel::download(new HistoryActionExport($arr), 'HistoryActionExportErmis.xlsx');
-       $myFile = Excel::raw(new KeyAiExport($arr), \Maatwebsite\Excel\Excel::XLSX);
+       $myFile = Excel::raw(new KeyAiExport($arr,$page), \Maatwebsite\Excel\Excel::XLSX);
        $response =  array(
          'status' =>true,
          'name' => "KeyAiExportErmis", //no extention needed

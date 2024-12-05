@@ -363,9 +363,10 @@ class AccUserManagerController extends Controller
    try{
        $com = $request->session()->get('com');
        $arr = $request->data;
+       $page = $request->page;
        //return (new HistoryActionExport($arr))->download('HistoryActionExportErmis.xlsx');
        //$myFile = Excel::download(new HistoryActionExport($arr), 'HistoryActionExportErmis.xlsx');
-       $myFile = Excel::raw(new AccUserExport($arr,$com->id), \Maatwebsite\Excel\Excel::XLSX);
+       $myFile = Excel::raw(new AccUserExport($arr,$com->id,$page), \Maatwebsite\Excel\Excel::XLSX);
        $response =  array(
          'status' =>true,
          'name' => "UserExportErmis", //no extention needed

@@ -102,13 +102,11 @@ class AccUser extends Authenticatable
     }
 
 
-    static public function get_raw_export($select,$com) {
-      $result = DB::select(DB::raw("SELECT @i:=@i+1 as row_number, {$select} FROM users t
-        LEFT JOIN group_users m ON t.group_users_id = m.id
-        LEFT JOIN country d ON t.country = d.id,
-        (SELECT @i:=0) AS temp
-        where company_default = {$com}
-        order by row_number asc"));
+    static public function get_raw_export($select,$com,$skip,$limit) {
+      $result = User::WithRowNumberWhereColumn('company_default',$com)->skip($skip)->take($limit)
+      ->leftJoin('group_users as m', 't.group_users_id', '=', 'm.id')
+      ->leftJoin('country as d', 't.country', '=', 'd.id')
+      ->get(['row_number',DB::raw($select)]);
       return $result;
     }
 

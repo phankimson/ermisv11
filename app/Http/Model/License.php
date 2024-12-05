@@ -42,8 +42,8 @@ class License extends Model
         return $result;
       }
 
-      static public function get_raw_export($select) {
-        $result = License::WithRowNumber()->orderBy('row_number','asc')
+      static public function get_raw_export($select,$skip,$limit) {
+        $result = License::WithRowNumber()->orderBy('row_number','asc')->skip($skip)->take($limit)
         ->leftJoin('company as c', 't.company_use', '=', 'c.id')
         ->leftJoin('software as s', 't.software_use', '=', 's.id')
         ->get(['row_number',DB::raw($select)]);

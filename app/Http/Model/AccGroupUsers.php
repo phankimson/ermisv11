@@ -35,8 +35,8 @@ class AccGroupUsers extends Model
       }
 
 
-      static public function get_raw_export($select,$company) {
-        $result = AccGroupUsers::WithRowNumberWhereColumn('company_id',$company)
+      static public function get_raw_export($select,$company,$skip,$limit) {
+        $result = AccGroupUsers::WithRowNumberWhereColumn('company_id',$company)->skip($skip)->take($limit)
         ->leftJoin('company as c', 't.company_id', '=', 'c.id')
         ->get(['row_number',DB::raw($select)]);
         return $result;

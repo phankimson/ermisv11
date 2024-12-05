@@ -41,8 +41,19 @@ class AccNaturalResources extends Model
         return $result;
       }
 
-      static public function get_raw_export($select) {
-        $result = AccNaturalResources::WithRowNumberDb('mysql2')->orderBy('row_number','asc')
+      static public function get_raw_skip_page($skip,$limit,$orderBy,$asc) {
+        $result = AccNaturalResources::WithRowNumberDb('mysql2',$orderBy,$asc)->skip($skip)->take($limit)->get();  
+        return $result;
+      }
+
+      static public function get_raw_skip_filter_page($skip,$limit,$orderBy,$asc,$filter) {
+        $result = AccNaturalResources::WithRowNumberWhereRawColumnDb('mysql2',$filter,$orderBy,$asc)->skip($skip)->take($limit)->get();  
+        return $result;
+      }
+
+
+      static public function get_raw_export($select,$skip,$limit) {
+        $result = AccNaturalResources::WithRowNumberDb('mysql2')->orderBy('row_number','asc')->skip($skip)->take($limit)
         ->leftJoin('unit as n', 't.unit_id', '=', 'n.id')
         ->leftJoin('natural_resources as p', 't.parent_id', '=', 'p.id')
         ->get(['row_number',DB::raw($select)]);

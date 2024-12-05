@@ -90,7 +90,7 @@
       Ermis.decimal = "{{$decimal}}";
       Ermis.short_key = "{{ config('app.short_key')}}";
       Ermis.columns_expend = [{ selectable: true, width: "50px" }, {"field" : "column","title" : "@lang('global.column_name')"}];
-      Ermis.data_expend = [{field : "t.number_voucher", column:  "@lang('acc_count_voucher.number_voucher')" },                       
+      Ermis.data_expend = [{field : "m.code as number_voucher", column:  "@lang('acc_count_voucher.number_voucher')" },                       
                            {field : "t.day", column:  "@lang('acc_count_voucher.day')" },
                            {field : "t.month", column:  "@lang('acc_count_voucher.month')" },
                            {field : "t.year", column:  "@lang('acc_count_voucher.year')" },

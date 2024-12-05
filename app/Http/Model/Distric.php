@@ -36,8 +36,8 @@ class Distric extends Model
     return $result;
   }
 
-  static public function get_raw_export($select) {
-    $result = Distric::WithRowNumber()->orderBy('row_number','asc')
+  static public function get_raw_export($select,$skip,$limit) {
+    $result = Distric::WithRowNumber()->orderBy('row_number','asc')->skip($skip)->take($limit)
     ->leftJoin('area as m', 't.area', '=', 'm.id')
     ->get(['row_number',DB::raw($select)]);
     //$result = DB::select(DB::raw("SELECT t.row_number,{$select} from (SELECT @i:=@i+1 as row_number, s.* FROM country s, (SELECT @i:=0) AS temp order by s.created_at asc) t order by t.row_number asc"));

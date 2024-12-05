@@ -45,10 +45,16 @@ class AccSettingAccountGroup extends Model
         $check = 'account_filter';
         if (str_contains($select, $check) == true) {
           $select = str_replace('t.'.$check.",","",$select);
-          $result =  AccSettingAccountGroup::WithRowNumberDb('mysql2')->orderBy('row_number','asc')->with($check)->skip($skip)->take($limit)->get(['row_number','id',DB::raw($select)]);
+          $result =  AccSettingAccountGroup::WithRowNumberDb('mysql2')->orderBy('row_number','asc')->with([$check => function ($q) {
+            $q->select('account_systems_filter.*','account_systems.id','account_systems.code');
+            $q->join('account_systems', 'account_systems.id', '=', 'account_systems_filter.account_systems');
+          }])->skip($skip)->take($limit)->get(['row_number','id',DB::raw($select)]);   
           $result->makeHidden('id');
-          $result->pluckDistant($check, 'account_systems');
-          
+          $result->pluckDistant($check, 'code');
+          $result->each(function($r, $k) use ($check){
+            $r->$check = $r->$check->join(",");  
+            $r->unsetRelation($check);
+          });
         }else{
           $result =  AccSettingAccountGroup::WithRowNumberDb('mysql2')->orderBy('row_number','asc')->skip($skip)->take($limit)->get(['row_number',DB::raw($select)]);
         }

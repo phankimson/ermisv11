@@ -36,8 +36,8 @@ class AccAccountedFast extends Model
         return $result;
       }
 
-      static public function get_raw_export($select) {
-        $result = AccAccountedFast::WithRowNumberDb('mysql2')->orderBy('row_number','asc')
+      static public function get_raw_export($select,$skip,$limit) {
+        $result = AccAccountedFast::WithRowNumberDb('mysql2')->orderBy('row_number','asc')->skip($skip)->take($limit)
         ->leftJoin('account_systems as a', 't.debit', '=', 'a.id')
         ->leftJoin('account_systems as b', 't.credit', '=', 'b.id')
         ->leftJoin('case_code as c', 't.case_code', '=', 'c.id')

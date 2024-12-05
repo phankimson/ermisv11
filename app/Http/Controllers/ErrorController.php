@@ -284,9 +284,10 @@ class ErrorController extends Controller
       $type = 6;
     try{
         $arr = $request->data;
+        $page = $request->page;
         //return (new HistoryActionExport($arr))->download('HistoryActionExportErmis.xlsx');
         //$myFile = Excel::download(new HistoryActionExport($arr), 'HistoryActionExportErmis.xlsx');
-        $myFile = Excel::raw(new ErrorExport($arr), \Maatwebsite\Excel\Excel::XLSX);
+        $myFile = Excel::raw(new ErrorExport($arr,$page), \Maatwebsite\Excel\Excel::XLSX);
         $response =  array(
           'status' =>true,
           'name' => "ErrorExportErmis", //no extention needed

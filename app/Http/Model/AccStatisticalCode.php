@@ -36,8 +36,8 @@ class AccStatisticalCode extends Model
       }
 
 
-      static public function get_raw_export($select) {
-        $result =  AccStatisticalCode::WithRowNumberDb('mysql2')->orderBy('row_number','asc')->get(['row_number',DB::raw($select)]);        
+      static public function get_raw_export($select,$skip,$limit) {
+        $result =  AccStatisticalCode::WithRowNumberDb('mysql2')->orderBy('row_number','asc')->skip($skip)->take($limit)->get(['row_number',DB::raw($select)]);        
         return $result;
       } 
 }

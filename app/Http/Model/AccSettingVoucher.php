@@ -37,15 +37,45 @@ class AccSettingVoucher extends Model
       }
 
 
-      static public function get_raw_export($select) {
+      static public function get_raw_export($select,$skip,$limit) {
+        $check = 'debit_filter';$check1 = 'credit_filter';
         $env = env("DB_DATABASE");
-        $result = AccSettingVoucher::WithRowNumberDb('mysql2')->orderBy('row_number','asc')
+        if (str_contains($select, $check) == true || str_contains($select, $check1) == true) {
+          $select = str_replace('t.'.$check.",","",$select);
+          $select = str_replace('t.'.$check1.",","",$select);
+          $result =  AccSettingVoucher::WithRowNumberDb('mysql2')->orderBy('row_number','asc')->with([$check => function ($q) {
+            $q->select('account_systems_filter.*','account_systems.id','account_systems.code');
+            $q->join('account_systems', 'account_systems.id', '=', 'account_systems_filter.account_systems');
+          }])
+          ->with([$check1 => function ($q) {
+            $q->select('account_systems_filter.*','account_systems.id','account_systems.code');
+            $q->join('account_systems', 'account_systems.id', '=', 'account_systems_filter.account_systems');
+          }])
+          ->leftJoin('account_systems as a', 't.debit', '=', 'a.id')
+          ->leftJoin('account_systems as b', 't.credit', '=', 'b.id')
+          ->leftJoin($env.'.menu as c', 't.menu_id', '=', 'c.id')
+          ->leftJoin('account_systems as d', 't.vat_account', '=', 'd.id')
+          ->leftJoin('account_systems as e', 't.discount_account', '=', 'e.id') 
+          ->skip($skip)->take($limit)->get(['row_number',DB::raw($select)]);   
+          $result->makeHidden('id');
+          $result->pluckDistant($check, 'code');
+          $result->pluckDistant($check1, 'code');
+          $result->each(function($r, $k) use ($check,$check1){
+            $r->$check = $r->$check->join(","); 
+            $r->unsetRelation($check);
+            $r->$check1 = $r->$check1->join(",");   
+            $r->unsetRelation($check1);
+          });
+
+        }else{
+          $result = AccSettingVoucher::WithRowNumberDb('mysql2')->orderBy('row_number','asc')->skip($skip)->take($limit)
         ->leftJoin('account_systems as a', 't.debit', '=', 'a.id')
         ->leftJoin('account_systems as b', 't.credit', '=', 'b.id')
         ->leftJoin($env.'.menu as c', 't.menu_id', '=', 'c.id')
         ->leftJoin('account_systems as d', 't.vat_account', '=', 'd.id')
         ->leftJoin('account_systems as e', 't.discount_account', '=', 'e.id') 
         ->get(['row_number',DB::raw($select)]);
+        }        
         return $result;
       }
 

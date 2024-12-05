@@ -332,14 +332,13 @@ class AccPrintTemplateController extends Controller
  }
 
  public function export(Request $request) {
-   $mysql2 = $request->session()->get('mysql2');
-   config(['database.connections.mysql2' => $mysql2]);
    $type = 6;
    try{
        $arr = $request->data;
+       $page = $request->page;
        //return (new HistoryActionExport($arr))->download('HistoryActionExportErmis.xlsx');
        //$myFile = Excel::download(new HistoryActionExport($arr), 'HistoryActionExportErmis.xlsx');
-       $myFile = Excel::raw(new AccPrintTemplateExport($arr,$mysql2['database']), \Maatwebsite\Excel\Excel::XLSX);
+       $myFile = Excel::raw(new AccPrintTemplateExport($arr,$page), \Maatwebsite\Excel\Excel::XLSX);
        $response =  array(
          'status' =>true,
          'name' => "AccPrintTemplateExportErmis", //no extention needed

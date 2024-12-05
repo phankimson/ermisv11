@@ -593,7 +593,8 @@ var Ermis = function () {
    };
 
    var initChooseExtraExport = function(e){
-     var postdata = { data: extra_data };
+    $export_page_value = parseInt($extra_page.data("kendoDropDownList").value());
+    var postdata = { data: extra_data , page: $export_page_value };
      ErmisTemplateAjaxGet0(e,postdata,Ermis.link+'-export',
          function (result) {
            var a = document.createElement("a");

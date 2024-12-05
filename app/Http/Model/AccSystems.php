@@ -35,8 +35,8 @@ class AccSystems extends Model
         return $result;
       }
 
-      static public function get_raw_export($select) {
-        $result =  AccSystems::WithRowNumberDb('mysql2')->orderBy('row_number','asc')->get(['row_number',DB::raw($select)]);        
+      static public function get_raw_export($select,$skip,$limit) {
+        $result =  AccSystems::WithRowNumberDb('mysql2')->orderBy('row_number','asc')->skip($skip)->take($limit)->get(['row_number',DB::raw($select)]);        
         return $result;
       } 
 

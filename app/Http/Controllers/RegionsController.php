@@ -17,7 +17,7 @@ use App\Http\Model\Imports\RegionsImport;
 use App\Http\Model\Exports\RegionsExport;
 use App\Classes\Convert;
 use Excel;
-
+use Exception;
 class RegionsController extends Controller
 {
 
@@ -265,9 +265,10 @@ class RegionsController extends Controller
    $type = 6;
    try{
        $arr = $request->data;
+       $page = $request->page;
        //return (new HistoryActionExport($arr))->download('HistoryActionExportErmis.xlsx');
        //$myFile = Excel::download(new HistoryActionExport($arr), 'HistoryActionExportErmis.xlsx');
-       $myFile = Excel::raw(new RegionsExport($arr), \Maatwebsite\Excel\Excel::XLSX);
+       $myFile = Excel::raw(new RegionsExport($arr,$page), \Maatwebsite\Excel\Excel::XLSX);
        $response =  array(
          'status' =>true,
          'name' => "RegionsExportErmis", //no extention needed

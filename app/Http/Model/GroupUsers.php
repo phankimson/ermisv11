@@ -36,8 +36,8 @@ class GroupUsers extends Model
     
     
 
-      static public function get_raw_export($select) {
-        $result = GroupUsers::WithRowNumber()->orderBy('row_number','asc')
+      static public function get_raw_export($select,$skip,$limit) {
+        $result = GroupUsers::WithRowNumber()->orderBy('row_number','asc')->skip($skip)->take($limit)
         ->leftJoin('company as c', 't.company_id', '=', 'c.id')
         ->get(['row_number',DB::raw($select)]);
         return $result;

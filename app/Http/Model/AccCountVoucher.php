@@ -35,8 +35,8 @@ class AccCountVoucher extends Model
         return $result;
       }
 
-      static public function get_raw_export($select) {
-        $result = AccCountVoucher::WithRowNumberDb('mysql2')->orderBy('row_number','asc')
+      static public function get_raw_export($select,$skip,$limit) {
+        $result = AccCountVoucher::WithRowNumberDb('mysql2')->orderBy('row_number','asc')->skip($skip)->take($limit)
         ->leftJoin('number_voucher as m', 't.number_voucher', '=', 'm.id')
         ->get(['row_number',DB::raw($select)]);
         return $result;

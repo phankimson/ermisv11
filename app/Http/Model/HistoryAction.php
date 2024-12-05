@@ -37,8 +37,8 @@ class HistoryAction extends Model
       return $result;
     }
 
-    static public function get_raw_export($select) {
-      $result = HistoryAction::WithRowNumber()->orderBy('row_number','asc')
+    static public function get_raw_export($select,$skip,$limit) {
+      $result = HistoryAction::WithRowNumber()->orderBy('row_number','asc')->skip($skip)->take($limit)
       ->leftJoin('menu as m', 't.menu', '=', 'm.id')
       ->leftJoin('users as u', 't.user', '=', 'u.id')
       ->get(['row_number',DB::raw($select)]);

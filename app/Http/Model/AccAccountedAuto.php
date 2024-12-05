@@ -29,12 +29,12 @@ class AccAccountedAuto extends Model
       }
 
       static public function get_raw_skip_page($skip,$limit,$orderBy,$asc) {
-        $result = AccAccountNature::WithRowNumberDb('mysql2',$orderBy,$asc)->skip($skip)->take($limit)->with('accounted_auto_detail')->get();  
+        $result = AccAccountedAuto::WithRowNumberDb('mysql2',$orderBy,$asc)->skip($skip)->take($limit)->with('accounted_auto_detail')->get();  
         return $result;
       }
 
       static public function get_raw_skip_filter_page($skip,$limit,$orderBy,$asc,$filter) {
-        $result = AccAccountNature::WithRowNumberWhereRawColumnDb('mysql2',$filter,$orderBy,$asc)->skip($skip)->take($limit)->with('accounted_auto_detail')->get();  
+        $result = AccAccountedAuto::WithRowNumberWhereRawColumnDb('mysql2',$filter,$orderBy,$asc)->skip($skip)->take($limit)->with('accounted_auto_detail')->get();  
         return $result;
       }
 

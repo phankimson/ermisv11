@@ -93,15 +93,14 @@ class User extends Authenticatable
     return $result;
   }
 
-
-    static public function get_raw_export($select) {
-      $result = DB::select(DB::raw("SELECT @i:=@i+1 as row_number, {$select} FROM users t
-        LEFT JOIN group_users m ON t.group_users_id = m.id
-        LEFT JOIN company n ON t.company_default = n.id
-        LEFT JOIN country d ON t.country = d.id,
-        (SELECT @i:=0) AS temp order by row_number asc"));
-      return $result;
-    }
+  static public function get_raw_export($select,$skip,$limit) {
+    $result = User::WithRowNumber()->orderBy('row_number','asc')->skip($skip)->take($limit)
+    ->leftJoin('group_users as m', 't.group_users_id', '=', 'm.id')
+    ->leftJoin('country as d', 't.country', '=', 'd.id')
+    ->leftJoin('company as n', 't.company_default', '=', 'n.id')
+    ->get(['row_number',DB::raw($select)]);
+    return $result;
+  }
 
 
     public function messages() {

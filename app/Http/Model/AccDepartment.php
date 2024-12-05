@@ -38,8 +38,8 @@ class AccDepartment extends Model
       }
 
 
-      static public function get_raw_export($select) {
-        $result =  AccDepartment::WithRowNumberDb('mysql2')->orderBy('row_number','asc')->get(['row_number',DB::raw($select)]);        
+      static public function get_raw_export($select,$skip,$limit) {
+        $result =  AccDepartment::WithRowNumberDb('mysql2')->orderBy('row_number','asc')->skip($skip)->take($limit)->get(['row_number',DB::raw($select)]);        
         return $result;
       } 
 }

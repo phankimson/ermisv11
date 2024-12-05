@@ -46,16 +46,39 @@ class AccObject extends Model
         return $result;
       }
 
-      static public function get_raw_export($select) {
+      static public function get_raw_export($select,$skip,$limit) {
         $env = env("DB_DATABASE");
-        $result = AccObject::WithRowNumberDb('mysql2')->orderBy('row_number','asc')
-        ->leftJoin('object_group as a', 't.object_group', '=', 'a.id')
-        ->leftJoin('department as c', 't.department', '=', 'c.id')
-        ->leftJoin($env.'.regions as m', 't.regions', '=', 'm.id')
-        ->leftJoin($env.'.area as n', 't.area', '=', 'n.id')
-        ->leftJoin($env.'.distric as s', 't.distric', '=', 's.id')
-        ->leftJoin($env.'.country as d', 't.country', '=', 'd.id')
-        ->get(['row_number',DB::raw($select)]);
+        $check = 'object_type';
+        if (str_contains($select, $check) == true) {
+          $select = str_replace('t.'.$check.",","",$select);
+          $result = AccObject::WithRowNumberDb('mysql2')->orderBy('row_number','asc')->skip($skip)->take($limit)
+          ->with([$check => function ($q) {
+            $q->select('object_filter_object_type.*','object_type.id','object_type.code');
+            $q->join('object_type', 'object_type.id', '=', 'object_filter_object_type.object_type');
+          }])
+          ->leftJoin('object_group as a', 't.object_group', '=', 'a.id')
+          ->leftJoin('department as c', 't.department', '=', 'c.id')
+          ->leftJoin($env.'.regions as m', 't.regions', '=', 'm.id')
+          ->leftJoin($env.'.area as n', 't.area', '=', 'n.id')
+          ->leftJoin($env.'.distric as s', 't.distric', '=', 's.id')
+          ->leftJoin($env.'.country as d', 't.country', '=', 'd.id')
+          ->get(['row_number',DB::raw($select)]);
+          $result->makeHidden('id');
+          $result->pluckDistant($check, 'code');
+          $result->each(function($r, $k) use ($check){
+            $r->$check = $r->$check->join(",");  
+            $r->unsetRelation($check);
+          });    
+        }else{
+          $result = AccObject::WithRowNumberDb('mysql2')->orderBy('row_number','asc')->skip($skip)->take($limit)
+          ->leftJoin('object_group as a', 't.object_group', '=', 'a.id')
+          ->leftJoin('department as c', 't.department', '=', 'c.id')
+          ->leftJoin($env.'.regions as m', 't.regions', '=', 'm.id')
+          ->leftJoin($env.'.area as n', 't.area', '=', 'n.id')
+          ->leftJoin($env.'.distric as s', 't.distric', '=', 's.id')
+          ->leftJoin($env.'.country as d', 't.country', '=', 'd.id')
+          ->get(['row_number',DB::raw($select)]);
+        }       
         return $result;
       }
 

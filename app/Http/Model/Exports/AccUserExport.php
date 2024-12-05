@@ -10,15 +10,20 @@ use Maatwebsite\Excel\Events\AfterSheet;
 class AccUserExport implements FromCollection, ShouldAutoSize, WithEvents
 {
   protected $select;
-    public function __construct($select,$company)
+  protected $company;
+  protected $page;
+    public function __construct($select,$company,$page)
    {
        $this->select = $select;
        $this->company = $company;
+       $this->page = $page;
    }
 
     public function collection()
     {
-        $a = AccUser::get_raw_export($this->select,$this->company);
+      $skip = ($this->page - 1) * env("EXPORT_LIMIT");
+      $limit = $this->page * env("EXPORT_LIMIT");
+        $a = AccUser::get_raw_export($this->select,$this->company,$skip,$limit);
         $b = collect($a);
         if($b->count()>0){
         $key = collect($a[0])->keys();

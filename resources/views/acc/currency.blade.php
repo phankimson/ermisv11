@@ -197,10 +197,10 @@
 <script src="{{ asset('library/kendoui/js/cultures/kendo.culture.de-DE.min.js') }}"></script>
 <script>kendo.culture('de-DE')</script>
 @endif
-@if(app()->getLocale() == 'vi')
-<script src="{{ url('library/handsontable/dist/languages/vi-VI.js') }}"></script>
-@endif
 <script src="{{ url('library/handsontable/dist/handsontable.full.min.js') }}"></script>
 <script src="{{ url('library/handsontable/dist/numbro/languages.min.js') }}"></script>
 <script src="{{ url('addon/scripts/ermis/ermis-form-2-pagehot.js') }}"></script>
+@if(app()->getLocale() == 'vi')
+<script src="{{ url('library/handsontable/dist/languages/vi-VI.min.js') }}"></script>
+@endif
 @endsection

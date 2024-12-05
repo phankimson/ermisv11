@@ -20,7 +20,7 @@ class AccCurrency extends Model
       protected static function booted()
   {
       static::BootedBaseTrait();
-      static::OrderByCreatedAtBaseTrait();
+      //static::OrderByCreatedAtBaseTrait();
   }
 
 
@@ -44,8 +44,8 @@ class AccCurrency extends Model
         return $result;
       }
 
-      static public function get_raw_export($select) {
-        $result = AccCurrency::WithRowNumberDb('mysql2')->orderBy('row_number','asc')
+      static public function get_raw_export($select,$skip,$limit) {
+        $result = AccCurrency::WithRowNumberDb('mysql2')->orderBy('row_number','asc')->skip($skip)->take($limit)
         ->leftJoin('account_systems as a', 't.account_bank', '=', 'a.id')
         ->leftJoin('account_systems as b', 't.account_cash', '=', 'b.id')
         ->get(['row_number',DB::raw($select)]);

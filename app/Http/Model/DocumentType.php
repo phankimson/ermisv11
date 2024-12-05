@@ -37,8 +37,8 @@ class DocumentType extends Model
   }
 
 
-  static public function get_raw_export($select) {
-    $result =  DocumentType::WithRowNumber()->orderBy('row_number','asc')->get(['row_number',DB::raw($select)]);
+  static public function get_raw_export($select,$skip,$limit) {
+    $result =  DocumentType::WithRowNumber()->orderBy('row_number','asc')->skip($skip)->take($limit)->get(['row_number',DB::raw($select)]);
     //$result = DB::select(DB::raw("SELECT t.row_number,{$select} from (SELECT @i:=@i+1 as row_number, s.* FROM country s, (SELECT @i:=0) AS temp order by s.created_at asc) t order by t.row_number asc"));
     return $result;
   }

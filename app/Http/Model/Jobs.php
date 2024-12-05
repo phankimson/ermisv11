@@ -35,8 +35,8 @@ class Jobs extends Model
       }
      
 
-      static public function get_raw_export($select) {
-        $result = Jobs::WithRowNumber()->orderBy('row_number','asc')->get(['row_number',DB::raw($select)]);
+      static public function get_raw_export($select,$skip,$limit) {
+        $result = Jobs::WithRowNumber()->orderBy('row_number','asc')->skip($skip)->take($limit)->get(['row_number',DB::raw($select)]);
         return $result;
       }
 

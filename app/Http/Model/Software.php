@@ -48,8 +48,8 @@ class Software extends Model
 
 
 
-  static public function get_raw_export($select) {
-    $result = Software::WithRowNumber()->orderBy('row_number','asc')
+  static public function get_raw_export($select,$skip,$limit) {
+    $result = Software::WithRowNumber()->orderBy('row_number','asc')->skip($skip)->take($limit)
     ->get(['row_number',DB::raw($select)]);
     return $result;
   }

@@ -93,7 +93,7 @@
       Ermis.fieldload = '';
       Ermis.ts = '{{$type}}';
       Ermis.columns_expend = [{ selectable: true, width: "50px" }, {"field" : "column","title" : "@lang('global.column_name')"}];
-      Ermis.data_expend = [{ field : "t.type", column:  "@lang('menu.type')" },
+      Ermis.data_expend = [{ field : "{{ $lang == 'vi'? 'c.name as type' : 'c.name_en as type' }}", column:  "@lang('menu.type')" },
                            {field : "{{ $lang == 'vi'? 'm.name as parent' : 'm.name_en as parent' }}", column:  "@lang('menu.parent')" },
                            {field : "t.code", column:  "@lang('menu.code')" },
                            {field : "t.name", column:  "@lang('menu.name')" },

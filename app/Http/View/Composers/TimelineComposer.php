@@ -14,6 +14,7 @@ class TimelineComposer
      * @var UserRepository
      */
     /**protected $users;*/
+    protected $timeline;
 
     /**
      * Create a new profile composer.

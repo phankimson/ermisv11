@@ -38,8 +38,8 @@ class Area extends Model
   }
 
 
-  static public function get_raw_export($select) {
-    $result = Area::WithRowNumber()->orderBy('row_number','asc')
+  static public function get_raw_export($select,$skip,$limit) {
+    $result = Area::WithRowNumber()->orderBy('row_number','asc')->skip($skip)->take($limit)
     ->leftJoin('regions as m', 't.regions', '=', 'm.id')
     ->get(['row_number',DB::raw($select)]);
     return $result;

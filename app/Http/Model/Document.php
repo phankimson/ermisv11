@@ -46,8 +46,8 @@ class Document extends Model
         return $result;
       }
 
-      static public function get_raw_export($select) {
-        $result = Document::WithRowNumber()->orderBy('row_number','asc')
+      static public function get_raw_export($select,$skip,$limit) {
+        $result = Document::WithRowNumber()->orderBy('row_number','asc')->skip($skip)->take($limit)
         ->leftJoin('document_type as m', 't.type', '=', 'm.id')
         ->get(['row_number',DB::raw($select)]);
         return $result;

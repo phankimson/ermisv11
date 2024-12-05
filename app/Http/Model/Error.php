@@ -48,8 +48,8 @@ class Error extends Model
         return $result;
       }
 
-      static public function get_raw_export($select) {
-        $result = Error::WithRowNumber()->orderBy('row_number','asc')
+      static public function get_raw_export($select,$skip,$limit) {
+        $result = Error::WithRowNumber()->orderBy('row_number','asc')->skip($skip)->take($limit)
         ->leftJoin('menu as m', 't.menu_id', '=', 'm.id')
         ->leftJoin('users as u', 't.user_id', '=', 'u.id')
         ->get(['row_number',DB::raw($select)]);

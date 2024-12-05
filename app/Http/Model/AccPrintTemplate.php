@@ -36,9 +36,9 @@ class AccPrintTemplate extends Model
         return $result;
       }
           
-      static public function get_raw_export($select) {
+      static public function get_raw_export($select,$skip,$limit) {
         $env = env("DB_DATABASE");
-        $result = AccPrintTemplate::WithRowNumberDb('mysql2')->orderBy('row_number','asc')
+        $result = AccPrintTemplate::WithRowNumberDb('mysql2')->orderBy('row_number','asc')->skip($skip)->take($limit)
         ->leftJoin($env.'.menu as m', 't.menu', '=', 'm.id')
         ->get(['row_number',DB::raw($select)]);        
         return $result;
