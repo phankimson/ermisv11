@@ -17,6 +17,7 @@
 @include('action.toolbar_1')
 @endpush
 @section('content_add')
+
     <div id="notification"></div>
     <table>
       <tr>

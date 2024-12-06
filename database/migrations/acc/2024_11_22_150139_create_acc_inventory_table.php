@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('acc_inventory', function (Blueprint $table) {
             $table->uuid('id');
             $table->uuid('general_id');
-            $table->uuid('detail_id');
             $table->uuid('item_id');
             $table->string('item_code', length: 50);
             $table->string('item_name', length: 100);

@@ -96,6 +96,10 @@ class AccGeneral extends Model
       return $this->hasMany(AccDetail::class,'general_id','id');
     }
 
+    public function inventory() {
+      return $this->hasMany(AccInventory::class,'general_id','id');
+    }
+
     public function tax() {
       return $this->hasMany(AccVatDetail::class,'general_id','id');
     }

@@ -54,4 +54,9 @@ class AccPeriod extends Model
       {
           return $this->hasMany(AccObjectBalance::class, 'period' ,'id');
       }
+
+      public function stock_balance()
+      {
+          return $this->hasMany(AccStockBalance::class, 'period' ,'id');
+      }
 }

@@ -16,6 +16,7 @@ use App\Http\Model\Company;
 use App\Http\Model\Error;
 use App\Http\Model\AccSystems;
 use App\Classes\Convert;
+use App\Http\Model\AccStock;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
@@ -228,11 +229,26 @@ class AccPeriodController extends Controller
                    'credit_close' => $ce,
                ];     
                $data->object_balance()->create($arr);
-          };        
-         // Lưu tồn kho chốt kỳ theo tháng
-         $debit_sum = $general->withSum(['detail', 'amount_rate' => function (Builder $query) { $query->orderBy('debit'); }]); // Tổng phát sinh nợ
-        
+          }; 
 
+         // Lưu tồn kho chốt kỳ theo tháng
+         $stock = AccStock::all();
+         foreach($stock as $s){
+          $ao = 0; // Số tiền đầu kỳ  
+          $qo = 0; // Số lượng đầu kỳ  
+          $ae = 0; // Số tiền cuối kỳ  
+          $qe = 0; // Số lượng cuối kỳ  
+          $amount_sum_receipt = $general->where('stock_receipt',$s)->withSum(['inventory', 'amount' => function (Builder $query) { $query->orderBy('item_id'); }]); // Tổng tiền phát sinh nhập
+          $number_sum_receipt = $general->where('stock_receipt',$s)->withSum(['inventory', 'quantity' => function (Builder $query) { $query->orderBy('item_id'); } ]); // Tổng số lượng phát sinh nhập
+          $amount_sum_issue = $general->where('stock_issue',$s)->withSum(['inventory', 'amount' => function (Builder $query) { $query->orderBy('item_id'); }]); // Tổng tiền phát sinh xuất
+          $number_sum_issue = $general->where('stock_issue',$s)->withSum(['inventory', 'quantity' => function (Builder $query) { $query->orderBy('item_id'); }]); // Tổng số lượng phát sinh xuất
+          if($period_last){
+            $stock_item_balance = $period_last->stock_balance()->where('supplies_goods',$item);
+          }else{
+
+          }
+ 
+         }       
 
          // Lưu lịch sử
          $h = new AccHistoryAction();
