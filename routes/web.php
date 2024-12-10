@@ -1008,7 +1008,7 @@ Route::prefix('acc')->group(function () {
   // Period
   Route::group([
     'as' => 'period',
-    'controller' => AccPeriodController::class
+    'controller' => AccPeriodReController::class
   ],function () {
   Route::get('/period', 'show' )->name('');
   //Route::post('/period-load',[AccPeriodController::class,'load']);

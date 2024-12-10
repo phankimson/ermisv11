@@ -84,22 +84,33 @@ var Ermis = function () {
       arr.action = 'save';
       arr.com = Chat.com;
       arr.key = Ermis.link;
-      ErmisTemplateAjaxPostAdd4(e, null , data, Ermis.link+'-save', arr ,dataId,
-        function(result){
-          jQuery('#notification').EPosMessage('success', result.message);
-        },
-        function(result){
-          if(result.error){
-            ValidationErrorMessages(result.error);
-          };
-          jQuery('#notification').EPosMessage('error', result.message);
-        },
-        function(){
-
-        },
-        function(){
-          jQuery('#notification').EPosMessage('error', Lang.get('messages.please_fill_field'));
-        });
+      arr.date = jQuery('input[name="date"]').val();
+      jQuery.ajaxQueue({
+        url: Ermis.link+'-save',
+        data : {
+          data: JSON.stringify(arr)
+      },
+        dataType: "json",
+        type: 'POST',
+      }).done(function( result ) {
+        jQuery('#notification').EPosMessage('success', result.message);
+      });
+      //ErmisTemplateAjaxPostAdd4(e, null , data, Ermis.link+'-save', arr ,dataId,
+      //  function(result){
+       //   jQuery('#notification').EPosMessage('success', result.message);
+       // },
+       // function(result){
+       //   if(result.error){
+       //     ValidationErrorMessages(result.error);
+       //   };
+       //   jQuery('#notification').EPosMessage('error', result.message);
+      //  },
+       // function(){
+//
+     //   },
+     //   function(){
+      //    jQuery('#notification').EPosMessage('error', Lang.get('messages.please_fill_field'));
+       // });
     };
 
     var initDelete = function (e) {
