@@ -23,6 +23,7 @@ var Ermis = function () {
       shortcut.add(key + "D", function (e) { initDelete(e); });
     }
 
+    
 
     var onChange = function () {
         var grid = this;

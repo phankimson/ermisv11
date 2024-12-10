@@ -288,9 +288,7 @@ class AccPeriodReController extends Controller
        }
 
       }       
-       }
-      
-       
+       }           
 
        // Lưu lịch sử
        $h = new AccHistoryAction();
