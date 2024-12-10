@@ -47,8 +47,8 @@ class AccGeneral extends Model
   //  }
 
 
-      static public function get_range_date($stock,$type,$end_date,$start_date) {
-        $result = AccGeneral::where('stock_id',$stock)->where('type',$type)->whereBetween('accounting_date',[$end_date,$start_date])->orderBy('created_at', 'desc')->get();
+      static public function get_range_date($end_date,$start_date) {
+        $result = AccGeneral::whereBetween('accounting_date',[$end_date,$start_date])->orderBy('created_at', 'desc')->get();
         return $result;
       }
 

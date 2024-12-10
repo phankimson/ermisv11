@@ -79,6 +79,7 @@ return [
       "duplicate_date" => "Ngày bị trùng",
       "duplicate_username" => "Tên đăng nhập bị trùng",
       "duplicate_email" => "Email bị trùng",
+      "must_lock_the_previous_period" => "Phải khóa kỳ trước !",
       "please_fill_field" => "Xin vui lòng điền vào các trường đánh dấu * !",
       "voucher_not_active" => "Chứng từ phát sinh chưa ghi sổ ! Vui lòng kiểm tra lại .",
       "locked_period" => "Đã khóa kỳ ! Xin vui lòng mở khóa kỳ !",

@@ -81,6 +81,7 @@ return [
   "duplicate_date" => "Duplicate date",
   "duplicate_username" => "Duplicate username",
   "duplicate_email" => "Duplicate email",
+  "must_lock_the_previous_period" => "Must lock the previous period !",
   "please_fill_field" => "Please fill in the tick fields !",
   "voucher_not_active" => "Unpublished voucher! Please check again .",
   "locked_period" => "Locked Period ! Please open period !",
