@@ -86,6 +86,11 @@ class AccGeneral extends Model
           return $result;
       }
 
+      static public function get_whereIn($arr) {
+        $result = AccGeneral::whereIn('id',$arr)->get();
+        return $result;
+      }
+
       public function object()
     {
         return $this->belongsTo(AccObject::class,'subject','id');

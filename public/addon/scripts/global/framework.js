@@ -890,6 +890,17 @@ function RequestURLWaiting(url, returnType, postData, callback, displayLoading) 
     });
 }
 
+function RequestURLWaitingQueue(url, returnType, postData,  type, callback ){
+      jQuery.ajaxQueue({
+        url: url,
+        data : postData,
+        dataType: returnType,
+        type: type,
+      }).done(function( result ) {
+        callback(result);
+      });
+}
+
 function RequestURLImage(url, returnType, postData, callback, displayLoading) {
   var windowWidget = jQuery('body');
   if (displayLoading) {

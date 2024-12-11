@@ -55,5 +55,6 @@
   </script>
 @endsection
 @section('scripts_end')
-<script src="{{ url('addon/scripts/ermis/ermis-4.js') }}"></script>
+<script src="{{ url('library/jquery-ajaxQueue/dist/jquery.ajaxQueue.min.js') }}"></script>
+<script src="{{ url('addon/scripts/ermis/ermis-4-queue.js') }}"></script>
 @endsection

@@ -1008,13 +1008,14 @@ Route::prefix('acc')->group(function () {
   // Period
   Route::group([
     'as' => 'period',
-    'controller' => AccPeriodReController::class
+    'controller' => AccPeriodController::class
   ],function () {
   Route::get('/period', 'show' )->name('');
   //Route::post('/period-load',[AccPeriodController::class,'load']);
   Route::get('/period-data','data')->name('-data');
   Route::post('/period-get','get')->name('-get');
   Route::post('/period-save','save' )->name('-save');
+  Route::post('/period-save-detail','saveDetail' )->name('-save-detail');
   Route::post('/period-delete','delete')->name('-delete');
   //Route::any('/period-import',[AccPeriodController::class,'import']);
   //Route::get('/period-export',[AccPeriodController::class,'export'] );

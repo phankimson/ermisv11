@@ -22,12 +22,12 @@ class AccObjectBalance extends Model
 
 
       static public function get_raw() {
-        $result = AccAccountBalance::WithRowNumberDb(env('CONNECTION_DB_ACC'))->orderBy('row_number','desc')->get();       
+        $result = AccObjectBalance::WithRowNumberDb(env('CONNECTION_DB_ACC'))->orderBy('row_number','desc')->get();       
         return $result;
       }
 
       static public function get_raw_export($select) {
-        $result = AccAccountBalance::WithRowNumberDb(env('CONNECTION_DB_ACC'))->orderBy('row_number','asc')
+        $result = AccObjectBalance::WithRowNumberDb(env('CONNECTION_DB_ACC'))->orderBy('row_number','asc')
         ->leftJoin('account_systems as a', 't.type_id', '=', 'a.id')
         ->leftJoin('period as b', 't.period', '=', 'b.id')
         ->get(['row_number',DB::raw($select)]);
@@ -35,7 +35,7 @@ class AccObjectBalance extends Model
       }
 
       static public function get_object($period,$object) {
-        $result = AccAccountBalance::where('period',$period)->where('object',$object)->first();
+        $result = AccObjectBalance::where('period',$period)->where('object',$object)->first();
         return $result;
       }
 
