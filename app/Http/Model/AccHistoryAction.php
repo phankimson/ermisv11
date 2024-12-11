@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Http\Model\Menu;
 use App\Http\Traits\ScopesTraits;
 use App\Http\Traits\BootedTraits;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class AccHistoryAction extends Model
 {
@@ -31,29 +31,29 @@ class AccHistoryAction extends Model
       return $result;
     }
     static public function get_type_all() {
-      $result = AccHistoryAction::WithRowNumberDb('mysql2')->get();
+      $result = AccHistoryAction::WithRowNumberDb(env('CONNECTION_DB_ACC'))->get();
       return $result;
     }
 
 
     static public function get_raw_skip_page($skip,$limit,$orderBy,$asc,$type) {
-      $result = AccHistoryAction::WithRowNumberDb('mysql2',$orderBy,$asc)->where('type',$type)->skip($skip)->take($limit)->get();  
+      $result = AccHistoryAction::WithRowNumberDb(env('CONNECTION_DB_ACC'),$orderBy,$asc)->where('type',$type)->skip($skip)->take($limit)->get();  
       return $result;
     }
 
     static public function get_raw_skip_filter_page($skip,$limit,$orderBy,$asc,$filter,$type) {
-      $result = AccHistoryAction::WithRowNumberWhereRawColumnDb('mysql2',$filter,$orderBy,$asc)->where('type',$type)->skip($skip)->take($limit)->get();  
+      $result = AccHistoryAction::WithRowNumberWhereRawColumnDb(env('CONNECTION_DB_ACC'),$filter,$orderBy,$asc)->where('type',$type)->skip($skip)->take($limit)->get();  
       return $result;
     }
 
     static public function get_raw_type($type) {
-      $result = AccHistoryAction::WithRowNumberWhereColumnDb('mysql2','type',$type)->orderBy('row_number','desc')->get();
+      $result = AccHistoryAction::WithRowNumberWhereColumnDb(env('CONNECTION_DB_ACC'),'type',$type)->orderBy('row_number','desc')->get();
       return $result;
     }
 
     static public function get_raw_export($select) {
       $env = env("DB_DATABASE");
-      $result = AccHistoryAction::WithRowNumberDb('mysql2')->orderBy('row_number','asc')
+      $result = AccHistoryAction::WithRowNumberDb(env('CONNECTION_DB_ACC'))->orderBy('row_number','asc')
       ->leftJoin($env.'.menu as m', 't.menu', '=', 'm.id')
       ->leftJoin($env.'.users as u', 't.user', '=', 'u.id')
       ->get(['row_number',DB::raw($select)]);

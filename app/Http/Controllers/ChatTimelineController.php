@@ -9,6 +9,8 @@ use App\Http\Model\Timeline;
 use App\Http\Model\Chat;
 use App\Http\Model\Systems;
 use App\Http\Model\Error;
+use Exception;
+use Illuminate\Support\Facades\DB;
 
 class ChatTimelineController extends Controller
 {
@@ -21,6 +23,7 @@ class ChatTimelineController extends Controller
 public function timeline(Request $request){
   $type = 7;
     try{
+      DB::beginTransaction();
       $data = json_decode($request->data);
       $user = Auth::user();
       $timeline = new Timeline;
@@ -30,9 +33,11 @@ public function timeline(Request $request){
       $timeline->save();
       $data->user = $user->username;
       $data->created_at = $timeline->created_at;
+      DB::commit();
        broadcast(new \App\Events\ChatTimeline($data));
        return ['status' => true];
     }catch(Exception $e){
+      DB::rollBack();
       // Lưu lỗi
       $err = new Error();
       $err ->create([
@@ -74,6 +79,7 @@ public function viewMore(Request $request){
 public function doChat(Request $request){
   $type = 7;
   try{
+    DB::beginTransaction();
     $data = json_decode($request->data);
     $user = Auth::user();
     $chat = new Chat;
@@ -82,9 +88,11 @@ public function doChat(Request $request){
     $chat->message = $data->message;
     $chat->save();
     $data->user_send = $user->username;
+    DB::commit();
      broadcast(new \App\Events\UserChat($data,$data->user_receipt));
      return ['status' => true];
   }catch(Exception $e){
+    DB::rollBack();
     // Lưu lỗi
     $err = new Error();
     $err ->create([

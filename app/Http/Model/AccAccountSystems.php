@@ -3,7 +3,7 @@
 namespace App\Http\Model;
 use App\Http\Traits\ScopesTraits;
 use App\Http\Traits\BootedTraits;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -55,24 +55,24 @@ class AccAccountSystems extends Model
 
 
       static public function get_raw() {
-        $result = AccAccountSystems::WithRowNumberDb('mysql2')->orderBy('row_number','desc')->get();
+        $result = AccAccountSystems::WithRowNumberDb(env('CONNECTION_DB_ACC'))->orderBy('row_number','desc')->get();
         //$result = DB::select(DB::raw("SELECT t.* from (SELECT @i:=@i+1 as row_number, s.* FROM country s, (SELECT @i:=0) AS temp order by s.created_at asc) t order by t.row_number desc"));
         return $result;
       } 
 
       static public function get_raw_skip_page($skip,$limit,$orderBy,$asc) {
-        $result = AccAccountSystems::WithRowNumberDb('mysql2',$orderBy,$asc)->skip($skip)->take($limit)->get();  
+        $result = AccAccountSystems::WithRowNumberDb(env('CONNECTION_DB_ACC'),$orderBy,$asc)->skip($skip)->take($limit)->get();  
         return $result;
       }
 
       static public function get_raw_skip_filter_page($skip,$limit,$orderBy,$asc,$filter) {
-        $result = AccAccountSystems::WithRowNumberWhereRawColumnDb('mysql2',$filter,$orderBy,$asc)->skip($skip)->take($limit)->get();  
+        $result = AccAccountSystems::WithRowNumberWhereRawColumnDb(env('CONNECTION_DB_ACC'),$filter,$orderBy,$asc)->skip($skip)->take($limit)->get();  
         return $result;
       }
 
       static public function get_raw_export($select,$skip,$limit) {
         $env = env("DB_DATABASE");
-        $result = AccAccountSystems::WithRowNumberDb('mysql2')->orderBy('row_number','asc')
+        $result = AccAccountSystems::WithRowNumberDb(env('CONNECTION_DB_ACC'))->orderBy('row_number','asc')
         ->leftJoin('account_type as a', 't.type', '=', 'a.id')
         ->leftJoin('account_nature as n', 't.nature', '=', 'n.id')
         ->leftJoin('account_systems as p', 't.parent_id', '=', 'p.id')

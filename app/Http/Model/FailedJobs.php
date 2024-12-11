@@ -4,7 +4,7 @@ namespace App\Http\Model;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Http\Traits\ScopesTraits;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class FailedJobs extends Model
 {

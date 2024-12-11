@@ -9,7 +9,7 @@ use App\Http\Model\Menu;
 use App\Http\Model\Error;
 use App\Http\Model\CompanySoftware;
 use App\Classes\SchemaDB;
-use DB;
+use Illuminate\Support\Facades\DB;
 use Exception;
 
 class QueryController extends Controller

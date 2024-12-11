@@ -15,10 +15,11 @@ use Illuminate\Support\Facades\Storage;
 use App\Http\Model\Imports\SoftwareImport;
 use App\Http\Model\Exports\SoftwareExport;
 use App\Classes\Convert;
-use Excel;
-use File;
+use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\File;
 use Hashids\Hashids;
 use Exception;
+use Illuminate\Support\Facades\DB;
 
 class SoftwareController extends Controller
 {
@@ -77,6 +78,7 @@ class SoftwareController extends Controller
   public function save(Request $request){
     $type = 0;
     try{
+      DB::beginTransaction();
     $permission = $request->session()->get('per');
     $arr = json_decode($request->data);
     $validator = Validator::make(collect($arr)->toArray(),[
@@ -135,7 +137,7 @@ class SoftwareController extends Controller
          $arr->image = $pathname;
        }
        //
-
+       DB::commit(); 
        broadcast(new \App\Events\DataSend($arr));
        return response()->json(['status'=>true,'message'=> trans('messages.update_success')]);
      }else if($permission['e'] == true && $arr->id){
@@ -191,7 +193,7 @@ class SoftwareController extends Controller
          //Lưu ảnh lại array
          $arr->image = $pathname;
        }
-       //
+       DB::commit(); 
        broadcast(new \App\Events\DataSend($arr));
        return response()->json(['status'=>true,'message'=> trans('messages.update_success')]);
        }else{
@@ -201,9 +203,11 @@ class SoftwareController extends Controller
           return response()->json(['status'=>false,'message'=> trans('messages.url_is_already')]);
      }
      }else{
+      DB::rollBack();
         return response()->json(['status'=>false,'error'=>$validator->getMessageBag()->toArray() ,'message'=>trans('messages.error')]);
      }
     }catch(Exception $e){
+      DB::rollBack();
       // Lưu lỗi
       $err = new Error();
       $err ->create([
@@ -220,6 +224,7 @@ class SoftwareController extends Controller
  public function delete(Request $request) {
    $type = 4 ;
       try{
+        DB::beginTransaction();
         $permission = $request->session()->get('per');
         $arr = json_decode($request->data);
         if($arr){
@@ -241,6 +246,7 @@ class SoftwareController extends Controller
             };
 
             $data->delete();
+            DB::commit();
             broadcast(new \App\Events\DataSend($arr));
             return response()->json(['status'=>true,'message'=> trans('messages.delete_success')]);
           }else{
@@ -250,6 +256,7 @@ class SoftwareController extends Controller
          return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
        }
       }catch(Exception $e){
+        DB::rollBack();
         // Lưu lỗi
         $err = new Error();
         $err ->create([
@@ -270,6 +277,7 @@ class SoftwareController extends Controller
  public function import(Request $request) {
    $type = 5;
    try{
+    DB::beginTransaction();
    $permission = $request->session()->get('per');
    if($permission['a'] && $request->hasFile('file')){
      //Check
@@ -285,20 +293,7 @@ class SoftwareController extends Controller
        $import = new SoftwareImport;
        Excel::import($import, $file);
        // Lấy lại dữ liệu
-       //$array = Software::get_raw();
 
-       // Import dữ liệu bằng collection
-       //$results = Excel::toCollection(new HistoryActionImport, $file);
-       //dump($results);
-       //foreach($results[0] as $item){
-       //  $data = new HistoryAction();
-       //  $data->type = $item->get('type');
-       //  $data->user = $item->get('user');
-       //  $data->menu = $item->get('menu');
-       //  $data->dataz = $item->get('dataz');
-       //  $data->save();
-       //  $arr->push($data);
-       //}
        $merged = collect($rs)->push($import->getData());
        //dump($merged);
      // Lưu lịch sử
@@ -311,12 +306,14 @@ class SoftwareController extends Controller
        'dataz' => \json_encode($merged)]);
      //
      //Storage::delete($savePath.$filename);
+     DB::commit();
      broadcast(new \App\Events\DataSendCollection($merged));
      return response()->json(['status'=>true,'message'=> trans('messages.success_import')]);
      }else{
        return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
      }
    }catch(Exception $e){
+    DB::rollBack();
      // Lưu lỗi
      $err = new Error();
      $err ->create([

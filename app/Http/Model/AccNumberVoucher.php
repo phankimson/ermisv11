@@ -5,7 +5,7 @@ namespace App\Http\Model;
 use Illuminate\Database\Eloquent\Model;
 use App\Http\Traits\ScopesTraits;
 use App\Http\Traits\BootedTraits;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class AccNumberVoucher extends Model
 {
@@ -21,23 +21,23 @@ class AccNumberVoucher extends Model
       }
 
       static public function get_raw() {
-        $result = AccNumberVoucher::WithRowNumberDb('mysql2')->orderBy('row_number','desc')->get();       
+        $result = AccNumberVoucher::WithRowNumberDb(env('CONNECTION_DB_ACC'))->orderBy('row_number','desc')->get();       
         return $result;
       }
 
       static public function get_raw_skip_page($skip,$limit,$orderBy,$asc) {
-        $result = AccNumberVoucher::WithRowNumberDb('mysql2',$orderBy,$asc)->skip($skip)->take($limit)->get();
+        $result = AccNumberVoucher::WithRowNumberDb(env('CONNECTION_DB_ACC'),$orderBy,$asc)->skip($skip)->take($limit)->get();
         return $result;
       }
     
       static public function get_raw_skip_filter_page($skip,$limit,$orderBy,$asc,$filter) {
-        $result = AccNumberVoucher::WithRowNumberWhereRawColumnDb('mysql2',$filter,$orderBy,$asc)->skip($skip)->take($limit)->get();
+        $result = AccNumberVoucher::WithRowNumberWhereRawColumnDb(env('CONNECTION_DB_ACC'),$filter,$orderBy,$asc)->skip($skip)->take($limit)->get();
         return $result;
       }
 
       static public function get_raw_export($select,$skip,$limit) {
         $env = env("DB_DATABASE");
-        $result = AccNumberVoucher::WithRowNumberDb('mysql2')->orderBy('row_number','asc')->skip($skip)->take($limit)
+        $result = AccNumberVoucher::WithRowNumberDb(env('CONNECTION_DB_ACC'))->orderBy('row_number','asc')->skip($skip)->take($limit)
         ->leftJoin($env.'.menu as m', 't.menu_id', '=', 'm.id')
         ->leftJoin($env.'.menu as n', 't.menu_general_id', '=', 'm.id')
         ->get(['row_number',DB::raw($select)]);

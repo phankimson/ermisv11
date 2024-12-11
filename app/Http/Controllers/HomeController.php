@@ -13,7 +13,6 @@ use App\Http\Model\User;
 use App\Http\Model\Error;
 use App\Http\Model\FailedJobs;
 use Illuminate\Support\Facades\Auth;
-use Hash;
 
 class HomeController extends Controller
 {

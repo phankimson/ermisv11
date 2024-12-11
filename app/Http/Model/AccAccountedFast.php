@@ -5,7 +5,7 @@ namespace App\Http\Model;
 use Illuminate\Database\Eloquent\Model;
 use App\Http\Traits\ScopesTraits;
 use App\Http\Traits\BootedTraits;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class AccAccountedFast extends Model
 {
@@ -23,21 +23,21 @@ class AccAccountedFast extends Model
 
       
       static public function get_raw() {
-        $result = AccAccountedFast::WithRowNumberDb('mysql2')->orderBy('row_number','desc')->get();       
+        $result = AccAccountedFast::WithRowNumberDb(env('CONNECTION_DB_ACC'))->orderBy('row_number','desc')->get();       
         return $result;
       }
       static public function get_raw_skip_page($skip,$limit,$orderBy,$asc) {
-        $result = AccAccountedFast::WithRowNumberDb('mysql2',$orderBy,$asc)->skip($skip)->take($limit)->get();  
+        $result = AccAccountedFast::WithRowNumberDb(env('CONNECTION_DB_ACC'),$orderBy,$asc)->skip($skip)->take($limit)->get();  
         return $result;
       }
 
       static public function get_raw_skip_filter_page($skip,$limit,$orderBy,$asc,$filter) {
-        $result = AccAccountedFast::WithRowNumberWhereRawColumnDb('mysql2',$filter,$orderBy,$asc)->skip($skip)->take($limit)->get();  
+        $result = AccAccountedFast::WithRowNumberWhereRawColumnDb(env('CONNECTION_DB_ACC'),$filter,$orderBy,$asc)->skip($skip)->take($limit)->get();  
         return $result;
       }
 
       static public function get_raw_export($select,$skip,$limit) {
-        $result = AccAccountedFast::WithRowNumberDb('mysql2')->orderBy('row_number','asc')->skip($skip)->take($limit)
+        $result = AccAccountedFast::WithRowNumberDb(env('CONNECTION_DB_ACC'))->orderBy('row_number','asc')->skip($skip)->take($limit)
         ->leftJoin('account_systems as a', 't.debit', '=', 'a.id')
         ->leftJoin('account_systems as b', 't.credit', '=', 'b.id')
         ->leftJoin('case_code as c', 't.case_code', '=', 'c.id')

@@ -5,7 +5,7 @@ namespace App\Http\Model;
 use Illuminate\Database\Eloquent\Model;
 use App\Http\Traits\ScopesTraits;
 use App\Http\Traits\BootedTraits;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class AccCurrencyCheck extends Model
 {
@@ -22,12 +22,12 @@ class AccCurrencyCheck extends Model
 
 
       static public function get_raw() {
-        $result = AccCurrencyCheck::WithRowNumberDb('mysql2')->orderBy('row_number','desc')->get();       
+        $result = AccCurrencyCheck::WithRowNumberDb(env('CONNECTION_DB_ACC'))->orderBy('row_number','desc')->get();       
         return $result;
       }
 
       static public function get_raw_export($select) {
-        $result = AccCurrencyCheck::WithRowNumberDb('mysql2')->orderBy('row_number','asc')
+        $result = AccCurrencyCheck::WithRowNumberDb(env('CONNECTION_DB_ACC'))->orderBy('row_number','asc')
         ->leftJoin('currency as a', 't.currency', '=', 'a.id')
         ->leftJoin('bank_account as b', 't.bank_account', '=', 'b.id')
         ->get(['row_number',DB::raw($select)]);

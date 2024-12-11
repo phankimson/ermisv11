@@ -21,8 +21,9 @@ use App\Http\Resources\CashReceiptGeneralResource;
 use App\Http\Model\Imports\AccCashReceiptImport;
 use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
-use Excel;
+use Maatwebsite\Excel\Facades\Excel;
 use Exception;
+use Illuminate\Support\Facades\DB;
 
 class AccCashReceiptsGeneralController extends Controller
 {
@@ -45,8 +46,6 @@ class AccCashReceiptsGeneralController extends Controller
  }
 
   public function show(Request $request){
-    $mysql2 = $request->session()->get('mysql2');
-    config(['database.connections.mysql2' => $mysql2]);
     $sys = AccSystems::get_systems($this->date_range);
     $end_date_default = Carbon::now();
     $start_date_default = Carbon::now()->subDays($sys->value);
@@ -59,10 +58,9 @@ class AccCashReceiptsGeneralController extends Controller
 
 
   public function unwrite(Request $request) {
-    $mysql2 = $request->session()->get('mysql2');
-    config(['database.connections.mysql2' => $mysql2]);
     $type = 3;
        try{
+        DB::connection(env('CONNECTION_DB_ACC'))->beginTransaction();
          $permission = $request->session()->get('per');
          $arr = json_decode($request->data);
          if($arr){
@@ -94,7 +92,7 @@ class AccCashReceiptsGeneralController extends Controller
                       $ba->save();
                     }
                 });
-
+                DB::connection(env('CONNECTION_DB_ACC'))->commit();
                return response()->json(['status'=>true,'message'=> trans('messages.unrecored_success')]);
              }else{
                return response()->json(['status'=>false,'message'=> trans('messages.locked_period')]);
@@ -107,6 +105,7 @@ class AccCashReceiptsGeneralController extends Controller
           return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
         }
        }catch(Exception $e){
+        DB::connection(env('CONNECTION_DB_ACC'))->rollBack();
          // Lưu lỗi
          $err = new Error();
          $err ->create([
@@ -121,10 +120,9 @@ class AccCashReceiptsGeneralController extends Controller
   }
 
   public function write(Request $request) {
-    $mysql2 = $request->session()->get('mysql2');
-    config(['database.connections.mysql2' => $mysql2]);
     $type = 3;
        try{
+        DB::connection(env('CONNECTION_DB_ACC'))->beginTransaction();
          $permission = $request->session()->get('per');
          $arr = json_decode($request->data);
          if($arr){
@@ -155,7 +153,7 @@ class AccCashReceiptsGeneralController extends Controller
                       $ba->save();
                     }
                 });
-
+                DB::connection(env('CONNECTION_DB_ACC'))->commit();
                return response()->json(['status'=>true,'message'=> trans('messages.unrecored_success')]);
              }else{
                return response()->json(['status'=>false,'message'=> trans('messages.locked_period')]);
@@ -168,6 +166,7 @@ class AccCashReceiptsGeneralController extends Controller
           return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
         }
        }catch(Exception $e){
+        DB::connection(env('CONNECTION_DB_ACC'))->rollBack();
          // Lưu lỗi
          $err = new Error();
          $err ->create([
@@ -184,8 +183,6 @@ class AccCashReceiptsGeneralController extends Controller
   public function find(Request $request){
     $type = 10;
     try{
-      $mysql2 = $request->session()->get('mysql2');
-      config(['database.connections.mysql2' => $mysql2]);
       $req = json_decode($request->data);
       $data = collect(CashReceiptGeneralResource::collection(AccGeneral::get_data_load_between($this->type,$req->start_date_a,$req->end_date_a)));
       if($req->active != ""){
@@ -213,8 +210,6 @@ class AccCashReceiptsGeneralController extends Controller
   public function revoucher(Request $request){
     $type = 10;
     try{
-      $mysql2 = $request->session()->get('mysql2');
-      config(['database.connections.mysql2' => $mysql2]);
       $req = json_decode($request->data);
       // Tìm voucher
       $v = AccNumberVoucher::get_menu($this->menu->id); 
@@ -242,8 +237,6 @@ class AccCashReceiptsGeneralController extends Controller
   public function start_voucher(Request $request){
     $type = 10;
     try{
-      $mysql2 = $request->session()->get('mysql2');
-      config(['database.connections.mysql2' => $mysql2]);
       $req = json_decode($request->data);
       // Tìm voucher
       $v = AccNumberVoucher::get_menu($this->menu->id); 
@@ -274,8 +267,7 @@ class AccCashReceiptsGeneralController extends Controller
   public function change_voucher(Request $request){
     $type = 3;
     try{
-      $mysql2 = $request->session()->get('mysql2');
-      config(['database.connections.mysql2' => $mysql2]);
+      DB::connection(env('CONNECTION_DB_ACC'))->beginTransaction();
       $req = json_decode($request->data);
       // Tìm voucher & lưu voucher
       $voucher = AccCountVoucher::find($req->voucherId);  
@@ -286,8 +278,10 @@ class AccCashReceiptsGeneralController extends Controller
         $general->voucher = $item->revoucher;
         $general->save();
       };   
+      DB::connection(env('CONNECTION_DB_ACC'))->commit();
      return response()->json(['status'=>true , 'message'=> trans('messages.update_success')]);
      }catch(Exception $e){
+      DB::connection(env('CONNECTION_DB_ACC'))->rollBack();
         // Lưu lỗi
         $err = new Error();
         $err ->create([
@@ -301,17 +295,15 @@ class AccCashReceiptsGeneralController extends Controller
       }
   }
 
-    public function DownloadExcel(Request $request){
+    public function DownloadExcel(){
       return Storage::download('public/downloadFile/AccCashReceipts.xlsx');
     }
 
     
  public function import(Request $request) {
-  ini_set('max_execution_time', 600);
-  $mysql2 = $request->session()->get('mysql2');
-  config(['database.connections.mysql2' => $mysql2]);
  $type = 5;
   try{
+  DB::connection(env('CONNECTION_DB_ACC'))->beginTransaction();
   $permission = $request->session()->get('per');
   if($permission['a'] && $request->hasFile('file')){
     //Check
@@ -354,11 +346,13 @@ class AccCashReceiptsGeneralController extends Controller
     //
     //Storage::delete($savePath.$filename);
     //broadcast(new \App\Events\DataSendCollection($merged));
+    DB::connection(env('CONNECTION_DB_ACC'))->commit();
     return response()->json(['status'=>true,'message'=> trans('messages.success_import'),'data' => $merged]);
     }else{
       return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
     }
   }catch(Exception $e){
+    DB::connection(env('CONNECTION_DB_ACC'))->rollBack();
     // Lưu lỗi
     $err = new Error();
     $err ->create([

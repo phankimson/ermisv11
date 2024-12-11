@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
-use App\Classes\SchemaDB;
 use App\Classes\Convert;
 use App\Http\Model\Company;
 use App\Http\Model\Software;
@@ -16,9 +15,10 @@ use App\Http\Model\User;
 use App\Http\Model\Systems;
 use App\Http\Model\HistoryAction;
 use App\Http\Model\Error;
-use File;
-use Hash;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Hash;
 use Exception;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
@@ -40,6 +40,7 @@ class UserController extends Controller
 
  public function doLogin(Request $request){
      try{
+      DB::beginTransaction();
        //validate the fields....
       $data = json_decode($request->data);
       $credentials = [ 'username' => $data->username , 'password' => $data->password , 'active' => 1];
@@ -67,7 +68,7 @@ class UserController extends Controller
 
               // Lịch sử hoạt động
                $hs = HistoryAction::create(['type' =>  1 ,'url'=> $this->url, 'user' =>$user->id , 'menu' => 0 , 'dataz' => '']);
-
+               DB::commit(); 
                return response()->json(['status'=>true, 'message'=> trans('messages.login_success')]);
             }else{
               Auth::logout();
@@ -82,6 +83,7 @@ class UserController extends Controller
          return response()->json(['status'=>false,'message'=> trans('messages.login_fail')]);
       }
      }catch(Exception $e){
+      DB::rollBack();
        // Lưu lỗi
        $err = new Error();
        $err ->create([
@@ -96,6 +98,7 @@ class UserController extends Controller
 
  public function doRegister(Request $request){
     try{
+      DB::beginTransaction();
       //validate the fields...
       $data = json_decode($request->data);
 
@@ -158,9 +161,11 @@ class UserController extends Controller
 
       //login as well.
       Auth::login($user,true);
+      DB::commit(); 
       return response()->json(['status'=>true,'message'=> trans('messages.register_success')]);
       //redirect to your preferred url/route....
     }catch(Exception $e){
+      DB::rollBack();
       // Lưu lỗi
       $err = new Error();
       $err ->create([
@@ -214,6 +219,7 @@ class UserController extends Controller
 
  public function updateProfile(Request $request) {
       try{
+        DB::beginTransaction();
         $data = json_decode($request->data);
         $user = User::find(Auth::id());
         $user->fullname = $data->fullname;
@@ -229,8 +235,10 @@ class UserController extends Controller
         $user->identity_card = $data->identity_card;
         $user->email = $data->email;
         $user->save();
+        DB::commit(); 
         return response()->json(['status'=>true,'message'=> trans('messages.update_success')]);
       }catch(Exception $e){
+        DB::rollBack();
         // Lưu lỗi
         $err = new Error();
         $err ->create([
@@ -245,6 +253,7 @@ class UserController extends Controller
 
  public function changePassword(Request $request) {
    try{
+    DB::beginTransaction();
     $data = json_decode($request->data);
     $user = User::find(Auth::id());
     $checkpassword = Hash::check($data->password, $user->password);
@@ -252,12 +261,14 @@ class UserController extends Controller
      if($checkpassword && $user->password != $new_password && $data->npassword == $data->rpassword){
        $user->password = $new_password;
        $user->save();
+       DB::commit(); 
        Auth::logout();
        return response()->json(['status'=>true,'message'=> trans('messages.change_password_success')]);
      }else{
        return response()->json(['status'=>false,'message'=> trans('messages.change_password_fail')]);
      }
    }catch(Exception $e){
+    DB::rollBack();
      // Lưu lỗi
      $err = new Error();
      $err ->create([
@@ -272,6 +283,7 @@ class UserController extends Controller
 
  public function updateAvatar (Request $request) {
       try{
+        DB::beginTransaction();
         $request->validate([
            'avatar' => 'required|image|mimes:jpeg,png,jpg|max:2048',
       ]);
@@ -303,12 +315,13 @@ class UserController extends Controller
 
         $user->avatar = $sys->value . Auth::id().'/'.$filename;
         $user->save();
-
+        DB::commit(); 
         broadcast(new \App\Events\UserStatus($user));
 
        return response()->json(['status'=>true,'message'=> trans('messages.success_upload') ,'data' => $user]);
         }
       }catch(Exception $e){
+        DB::rollBack();
         // Lưu lỗi
         $err = new Error();
         $err ->create([

@@ -18,8 +18,9 @@ use Illuminate\Support\Facades\Storage;
 use App\Http\Model\Imports\AccUnitImport;
 use App\Http\Model\Exports\AccUnitExport;
 use App\Classes\Convert;
-use Excel;
+use Maatwebsite\Excel\Facades\Excel;
 use Exception;
+use Illuminate\Support\Facades\DB;
 
 class AccUnitController extends Controller
 {
@@ -113,7 +114,7 @@ class AccUnitController extends Controller
             'prefix'    => '',
             'strict'    => false,
         );
-      $request->session()->put('mysql2', $params);
+      $request->session()->put(env('CONNECTION_DB_ACC'), $params);
       config(['database.connections.mysql2' => $params]);
       $data = AccUnit::get_raw();
       return response()->json(['status'=>true,'data'=> $data,'com_name'=> $com->name ]);
@@ -134,9 +135,10 @@ class AccUnitController extends Controller
   public function save(Request $request){
     $type = 0;
     try{
-  $permission = $request->session()->get('per');
-  $arr = json_decode($request->data);
-  $validator = Validator::make(collect($arr)->toArray(),[
+      DB::connection(env('CONNECTION_DB_ACC'))->beginTransaction();
+      $permission = $request->session()->get('per');
+      $arr = json_decode($request->data);
+      $validator = Validator::make(collect($arr)->toArray(),[
             'code' => ['required','max:50'],
             'name' => 'required',
         ]);
@@ -170,6 +172,7 @@ class AccUnitController extends Controller
        // Lấy ID và và phân loại Thêm
        $arr->id = $data->id;
        $arr->t = $type;
+       DB::connection(env('CONNECTION_DB_ACC'))->commit();
        broadcast(new \App\Events\DataSend($arr));
        return response()->json(['status'=>true,'message'=> trans('messages.update_success')]);
      }else if($permission['e'] == true && $arr->id){
@@ -192,6 +195,7 @@ class AccUnitController extends Controller
       $data->save();
        // Phân loại Sửa
        $arr->t = $type;
+       DB::connection(env('CONNECTION_DB_ACC'))->commit();
        broadcast(new \App\Events\DataSend($arr));
        return response()->json(['status'=>true,'message'=> trans('messages.update_success')]);
        }else{
@@ -201,9 +205,11 @@ class AccUnitController extends Controller
         return response()->json(['status'=>false,'message'=> trans('messages.code_is_already')]);
    }
      }else{
+      DB::connection(env('CONNECTION_DB_ACC'))->rollBack();
        return response()->json(['status'=>false,'error'=>$validator->getMessageBag()->toArray() ,'message'=>trans('messages.error')]);
      }
     }catch(Exception $e){
+      DB::connection(env('CONNECTION_DB_ACC'))->rollBack();
       // Lưu lỗi
       $err = new Error();
       $err ->create([
@@ -220,6 +226,7 @@ class AccUnitController extends Controller
  public function delete(Request $request) {
    $type = 4;
       try{
+        DB::connection(env('CONNECTION_DB_ACC'))->beginTransaction();
         $permission = $request->session()->get('per');
         $arr = json_decode($request->data);
         if($arr){
@@ -235,6 +242,7 @@ class AccUnitController extends Controller
             'dataz' => \json_encode($data)]);
             //
             $data->delete();
+            DB::connection(env('CONNECTION_DB_ACC'))->commit();
             broadcast(new \App\Events\DataSend($arr));
             return response()->json(['status'=>true,'message'=> trans('messages.delete_success')]);
           }else{
@@ -244,6 +252,7 @@ class AccUnitController extends Controller
          return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
        }
       }catch(Exception $e){
+        DB::connection(env('CONNECTION_DB_ACC'))->rollBack();
         // Lưu lỗi
         $err = new Error();
         $err ->create([
@@ -257,7 +266,7 @@ class AccUnitController extends Controller
       }
  }
 
- public function DownloadExcel(Request $request){
+ public function DownloadExcel(){
    return Storage::download('public/downloadFile/AccUnit.xlsx');
  }
 
@@ -265,6 +274,7 @@ class AccUnitController extends Controller
    //config(['queue.default' => 'database2']);
   $type = 5;
    try{
+    DB::connection(env('CONNECTION_DB_ACC'))->beginTransaction();
    $permission = $request->session()->get('per');
    if($permission['a'] && $request->hasFile('file')){
      //Check
@@ -280,20 +290,7 @@ class AccUnitController extends Controller
        $import = new AccUnitImport;
        Excel::import($import,$file);
        // Lấy lại dữ liệu
-       //$array = AccUnit::get_raw();
-  
-       // Import dữ liệu bằng collection
-       //$results = Excel::toCollection(new HistoryActionImport, $file);
-       //dump($results);
-       //foreach($results[0] as $item){
-       //  $data = new HistoryAction();
-       //  $data->type = $item->get('type');
-       //  $data->user = $item->get('user');
-       //  $data->menu = $item->get('menu');
-       //  $data->dataz = $item->get('dataz');
-       //  $data->save();
-       //  $arr->push($data);
-       //}
+       
        $merged = collect($rs)->push($import->getData());
        //dump($merged);
      // Lưu lịch sử
@@ -306,12 +303,14 @@ class AccUnitController extends Controller
        'dataz' => \json_encode($merged)]);
      //
      //Storage::delete($savePath.$filename);
+     DB::connection(env('CONNECTION_DB_ACC'))->commit();
      broadcast(new \App\Events\DataSendCollection($merged));
      return response()->json(['status'=>true,'message'=> trans('messages.success_import')]);
      }else{
        return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
      }
    }catch(Exception $e){
+    DB::connection(env('CONNECTION_DB_ACC'))->rollBack();
      // Lưu lỗi
      $err = new Error();
      $err ->create([

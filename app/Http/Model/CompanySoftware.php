@@ -3,10 +3,9 @@
 namespace App\Http\Model;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Http\Model\Scopes\OrderByCreatedAtScope;
 use App\Http\Traits\ScopesTraits;
 use App\Http\Traits\BootedTraits;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class CompanySoftware extends Model
 {

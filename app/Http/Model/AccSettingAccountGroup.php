@@ -5,7 +5,7 @@ namespace App\Http\Model;
 use Illuminate\Database\Eloquent\Model;
 use App\Http\Traits\ScopesTraits;
 use App\Http\Traits\BootedTraits;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class AccSettingAccountGroup extends Model
 {
@@ -27,17 +27,17 @@ class AccSettingAccountGroup extends Model
       }
 
       static public function get_raw() {
-        $result = AccSettingAccountGroup::WithRowNumberDb('mysql2')->orderBy('row_number','desc')->with('account_filter')->get()->pluckDistant('account_filter', 'account_systems');       
+        $result = AccSettingAccountGroup::WithRowNumberDb(env('CONNECTION_DB_ACC'))->orderBy('row_number','desc')->with('account_filter')->get()->pluckDistant('account_filter', 'account_systems');       
         return $result;
       }
 
       static public function get_raw_skip_page($skip,$limit,$orderBy,$asc) {
-        $result = AccSettingAccountGroup::WithRowNumberDb('mysql2',$orderBy,$asc)->with('account_filter')->skip($skip)->take($limit)->get()->pluckDistant('account_filter', 'account_systems'); 
+        $result = AccSettingAccountGroup::WithRowNumberDb(env('CONNECTION_DB_ACC'),$orderBy,$asc)->with('account_filter')->skip($skip)->take($limit)->get()->pluckDistant('account_filter', 'account_systems'); 
         return $result;
       }
 
       static public function get_raw_skip_filter_page($skip,$limit,$orderBy,$asc,$filter) {
-        $result = AccSettingAccountGroup::WithRowNumberWhereRawColumnDb('mysql2',$filter,$orderBy,$asc)->with('account_filter')->skip($skip)->take($limit)->get()->pluckDistant('account_filter', 'account_systems');  
+        $result = AccSettingAccountGroup::WithRowNumberWhereRawColumnDb(env('CONNECTION_DB_ACC'),$filter,$orderBy,$asc)->with('account_filter')->skip($skip)->take($limit)->get()->pluckDistant('account_filter', 'account_systems');  
         return $result;
       }
 
@@ -45,7 +45,7 @@ class AccSettingAccountGroup extends Model
         $check = 'account_filter';
         if (str_contains($select, $check) == true) {
           $select = str_replace('t.'.$check.",","",$select);
-          $result =  AccSettingAccountGroup::WithRowNumberDb('mysql2')->orderBy('row_number','asc')->with([$check => function ($q) {
+          $result =  AccSettingAccountGroup::WithRowNumberDb(env('CONNECTION_DB_ACC'))->orderBy('row_number','asc')->with([$check => function ($q) {
             $q->select('account_systems_filter.*','account_systems.id','account_systems.code');
             $q->join('account_systems', 'account_systems.id', '=', 'account_systems_filter.account_systems');
           }])->skip($skip)->take($limit)->get(['row_number','id',DB::raw($select)]);   
@@ -56,7 +56,7 @@ class AccSettingAccountGroup extends Model
             $r->unsetRelation($check);
           });
         }else{
-          $result =  AccSettingAccountGroup::WithRowNumberDb('mysql2')->orderBy('row_number','asc')->skip($skip)->take($limit)->get(['row_number',DB::raw($select)]);
+          $result =  AccSettingAccountGroup::WithRowNumberDb(env('CONNECTION_DB_ACC'))->orderBy('row_number','asc')->skip($skip)->take($limit)->get(['row_number',DB::raw($select)]);
         }
           
         return $result;

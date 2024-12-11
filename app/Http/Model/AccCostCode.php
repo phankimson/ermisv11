@@ -5,7 +5,7 @@ namespace App\Http\Model;
 use Illuminate\Database\Eloquent\Model;
 use App\Http\Traits\ScopesTraits;
 use App\Http\Traits\BootedTraits;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class AccCostCode extends Model
 {
@@ -22,21 +22,21 @@ class AccCostCode extends Model
 
       
       static public function get_raw() {
-        $result = AccCostCode::WithRowNumberDb('mysql2')->orderBy('row_number','desc')->get();       
+        $result = AccCostCode::WithRowNumberDb(env('CONNECTION_DB_ACC'))->orderBy('row_number','desc')->get();       
         return $result;
       }
       static public function get_raw_skip_page($skip,$limit,$orderBy,$asc) {
-        $result = AccCostCode::WithRowNumberDb('mysql2',$orderBy,$asc)->skip($skip)->take($limit)->get();  
+        $result = AccCostCode::WithRowNumberDb(env('CONNECTION_DB_ACC'),$orderBy,$asc)->skip($skip)->take($limit)->get();  
         return $result;
       }
 
       static public function get_raw_skip_filter_page($skip,$limit,$orderBy,$asc,$filter) {
-        $result = AccCostCode::WithRowNumberWhereRawColumnDb('mysql2',$filter,$orderBy,$asc)->skip($skip)->take($limit)->get();  
+        $result = AccCostCode::WithRowNumberWhereRawColumnDb(env('CONNECTION_DB_ACC'),$filter,$orderBy,$asc)->skip($skip)->take($limit)->get();  
         return $result;
       }
 
       static public function get_raw_export($select) {
-        $result =  AccCostCode::WithRowNumberDb('mysql2')->orderBy('row_number','asc')->get(['row_number',DB::raw($select)]);        
+        $result =  AccCostCode::WithRowNumberDb(env('CONNECTION_DB_ACC'))->orderBy('row_number','asc')->get(['row_number',DB::raw($select)]);        
         return $result;
       } 
 }

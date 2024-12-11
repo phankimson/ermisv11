@@ -22,8 +22,9 @@ use App\Http\Model\Error;
 use App\Classes\NumberConvert;
 use App\Classes\Replace;
 use Carbon\Carbon;
-use File;
+use Illuminate\Support\Facades\File;
 use Exception;
+use Illuminate\Support\Facades\DB;
 
 class AccGeneralController extends Controller
 {
@@ -41,8 +42,6 @@ class AccGeneralController extends Controller
   public function detail(Request $request){
     $type = 10;
     try{
-    $mysql2 = $request->session()->get('mysql2');
-    config(['database.connections.mysql2' => $mysql2]);
     $req = json_decode($request->data);
     $data = AccDetail::get_detail($req);
     if($data->count()>0){
@@ -66,10 +65,9 @@ class AccGeneralController extends Controller
 
 
   public function delete(Request $request) {
-    $mysql2 = $request->session()->get('mysql2');
-    config(['database.connections.mysql2' => $mysql2]);
     $type = 4;
        try{
+        DB::connection(env('CONNECTION_DB_ACC'))->beginTransaction();
          $permission = $request->session()->get('per');
          $arr = json_decode($request->data);
          if($arr){
@@ -114,6 +112,7 @@ class AccGeneralController extends Controller
                  };
                  $a->delete();
                };
+               DB::connection(env('CONNECTION_DB_ACC'))->commit();
                return response()->json(['status'=>true,'message'=> trans('messages.delete_success')]);
            }else{
              return response()->json(['status'=>false,'message'=> trans('messages.you_are_not_permission_delete')]);
@@ -125,6 +124,7 @@ class AccGeneralController extends Controller
           return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
         }
        }catch(Exception $e){
+        DB::connection(env('CONNECTION_DB_ACC'))->rollBack();
          // Lưu lỗi
          $err = new Error();
          $err ->create([
@@ -139,8 +139,7 @@ class AccGeneralController extends Controller
   }
 
     public function prints(Request $request) {
-    $mysql2 = $request->session()->get('mysql2');
-    config(['database.connections.mysql2' => $mysql2]);
+    $mysql2 = $request->session()->get(env('CONNECTION_DB_ACC'));
     $type = 10;
     try{
       $arr = json_decode($request->data);
@@ -154,7 +153,8 @@ class AccGeneralController extends Controller
       $debt = $detail->get('debt');
       $credit = $detail->get('credit');
       $user = User::find($general->user);
-      $locale = $this->app->getLocale();
+      //$locale = $this->app->getLocale();
+      $locale = app()->getLocale();
       $letter = NumberConvert::ReadDecimal($general->total_amount,$locale,"đồng","đôla","xu","cent");
       $values = ['{company}' => $com->name ,
               '{company_address}' => $com->address,

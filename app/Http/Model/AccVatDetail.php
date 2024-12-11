@@ -7,7 +7,6 @@ use App\Http\Model\AccVat;
 use App\Http\Model\Casts\Decimal;
 use App\Http\Traits\ScopesTraits;
 use App\Http\Traits\BootedTraits;
-use DB;
 
 class AccVatDetail extends Model
 {

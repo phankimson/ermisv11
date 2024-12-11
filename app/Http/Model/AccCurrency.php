@@ -7,7 +7,7 @@ use App\Http\Model\AccDenominations;
 use App\Http\Traits\ScopesTraits;
 use App\Http\Traits\BootedTraits;
 use App\Http\Traits\OrderTraits;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class AccCurrency extends Model
 {
@@ -25,17 +25,17 @@ class AccCurrency extends Model
 
 
       static public function get_raw() {
-        $result = AccCurrency::WithRowNumberDb('mysql2')->orderBy('row_number','desc')->with('denominations')->get();       
+        $result = AccCurrency::WithRowNumberDb(env('CONNECTION_DB_ACC'))->orderBy('row_number','desc')->with('denominations')->get();       
         return $result;
       }
 
       static public function get_raw_skip_page($skip,$limit,$orderBy,$asc) {
-        $result = AccCurrency::WithRowNumberDb('mysql2',$orderBy,$asc)->skip($skip)->take($limit)->with('denominations')->get();  
+        $result = AccCurrency::WithRowNumberDb(env('CONNECTION_DB_ACC'),$orderBy,$asc)->skip($skip)->take($limit)->with('denominations')->get();  
         return $result;
       }
 
       static public function get_raw_skip_filter_page($skip,$limit,$orderBy,$asc,$filter) {
-        $result = AccCurrency::WithRowNumberWhereRawColumnDb('mysql2',$filter,$orderBy,$asc)->skip($skip)->take($limit)->with('denominations')->get();  
+        $result = AccCurrency::WithRowNumberWhereRawColumnDb(env('CONNECTION_DB_ACC'),$filter,$orderBy,$asc)->skip($skip)->take($limit)->with('denominations')->get();  
         return $result;
       }
 
@@ -45,7 +45,7 @@ class AccCurrency extends Model
       }
 
       static public function get_raw_export($select,$skip,$limit) {
-        $result = AccCurrency::WithRowNumberDb('mysql2')->orderBy('row_number','asc')->skip($skip)->take($limit)
+        $result = AccCurrency::WithRowNumberDb(env('CONNECTION_DB_ACC'))->orderBy('row_number','asc')->skip($skip)->take($limit)
         ->leftJoin('account_systems as a', 't.account_bank', '=', 'a.id')
         ->leftJoin('account_systems as b', 't.account_cash', '=', 'b.id')
         ->get(['row_number',DB::raw($select)]);

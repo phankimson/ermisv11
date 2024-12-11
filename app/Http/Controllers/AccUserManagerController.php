@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 use App\Http\Model\AccHistoryAction;
 use App\Http\Model\AccUser;
 use App\Http\Model\Menu;
@@ -19,9 +20,11 @@ use App\Http\Model\Exports\AccUserExport;
 use App\Classes\Convert;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Crypt;
-use Excel;
-use File;
+use Illuminate\Support\Facades\File;
+use Maatwebsite\Excel\Facades\Excel;
 use Exception;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class AccUserManagerController extends Controller
 {
@@ -83,10 +86,15 @@ class AccUserManagerController extends Controller
   public function save(Request $request){
     $type = 0 ;
     try{
-  $com = $request->session()->get('com');
-  $prefix_username = substr(Crypt::encryptString($com->id),0,5);
-  $permission = $request->session()->get('per');
-  $arr = json_decode($request->data);
+      DB::beginTransaction();
+      $com = $request->session()->get('com');
+      $prefix_username = substr(Crypt::encryptString($com->id),0,5);
+      $permission = $request->session()->get('per');
+      $arr = json_decode($request->data);
+      $validator = Validator::make(collect($arr)->toArray(),[
+        'username' => 'required',
+            ]);
+        if($validator->passes()){
     if($arr){
      if($permission['a'] == true && !$arr->id ){
        $check_user = AccUser::get_user($prefix_username.'_'.$arr->username);
@@ -150,7 +158,7 @@ class AccUserManagerController extends Controller
          $arr->avatar = $pathname;
        }
        //
-
+       DB::commit();
        broadcast(new \App\Events\DataSend($arr));
        return response()->json(['status'=>true,'message'=> trans('messages.update_success')]);
        }else{
@@ -219,7 +227,7 @@ class AccUserManagerController extends Controller
          $arr->avatar = $pathname;
        }
        //
-
+       DB::commit();
        broadcast(new \App\Events\DataSend($arr));
        return response()->json(['status'=>true,'message'=> trans('messages.update_success')]);
       
@@ -232,7 +240,12 @@ class AccUserManagerController extends Controller
      }else{
        return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
      }
+    }else{
+      DB::rollBack();
+       return response()->json(['status'=>false,'error'=>$validator->getMessageBag()->toArray() ,'message'=>trans('messages.error')]);
+     }
     }catch(Exception $e){
+      DB::rollBack();
       // Lưu lỗi
       $err = new Error();
       $err ->create([
@@ -249,6 +262,7 @@ class AccUserManagerController extends Controller
  public function delete(Request $request) {
       $type = 4;
       try{
+        DB::beginTransaction();
         $permission = $request->session()->get('per');
         $arr = json_decode($request->data);
         if($arr){
@@ -269,6 +283,7 @@ class AccUserManagerController extends Controller
             };
 
             $data->delete();
+            DB::commit();
             broadcast(new \App\Events\DataSend($arr));
             return response()->json(['status'=>true,'message'=> trans('messages.delete_success')]);
           }else{
@@ -278,6 +293,7 @@ class AccUserManagerController extends Controller
          return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
        }
       }catch(Exception $e){
+        DB::rollBack();
         // Lưu lỗi
         $err = new Error();
         $err ->create([
@@ -298,7 +314,7 @@ class AccUserManagerController extends Controller
  public function import(Request $request) {
    $type = 5;
    try{
-  $com = $request->session()->get('com');
+    DB::beginTransaction();
    $permission = $request->session()->get('per');
    if($permission['a'] && $request->hasFile('file')){
      //Check
@@ -314,19 +330,7 @@ class AccUserManagerController extends Controller
        $import = new AccUserImport;
        Excel::import($import, $file);
        // Lấy lại dữ liệu
-       //$array = AccUser::company($com->id)->get()->makeVisible(['active_code','password']);       
-       // Import dữ liệu bằng collection
-       //$results = Excel::toCollection(new HistoryActionImport, $file);
-       //dump($results);
-       //foreach($results[0] as $item){
-       //  $data = new HistoryAction();
-       //  $data->type = $item->get('type');
-       //  $data->user = $item->get('user');
-       //  $data->menu = $item->get('menu');
-       //  $data->dataz = $item->get('dataz');
-       //  $data->save();
-       //  $arr->push($data);
-       //}
+      
        $merged = collect($rs)->push($import->getData());
        //dump($merged);
      // Lưu lịch sử
@@ -339,12 +343,14 @@ class AccUserManagerController extends Controller
        'dataz' => \json_encode($merged)]);
      //
      //Storage::delete($savePath.$filename);
+     DB::commit();
      broadcast(new \App\Events\DataSendCollection($merged));
      return response()->json(['status'=>true,'message'=> trans('messages.success_import')]);
      }else{
        return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
      }
    }catch(Exception $e){
+    DB::rollBack();
      // Lưu lỗi
      $err = new Error();
      $err ->create([

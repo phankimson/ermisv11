@@ -9,7 +9,6 @@ use App\Http\Model\AccAttach;
 use App\Http\Model\Casts\Decimal;
 use App\Http\Traits\ScopesTraits;
 use App\Http\Traits\BootedTraits;
-use DB;
 
 class AccGeneral extends Model
 {

@@ -13,6 +13,7 @@ use App\Http\Model\GroupUsersPermission;
 use App\Http\Model\Error;
 use App\Http\Model\HistoryAction;
 use Exception;
+use Illuminate\Support\Facades\DB;
 
 class PermissionController extends Controller
 {
@@ -99,6 +100,7 @@ class PermissionController extends Controller
       public function save(Request $request) {
         $type = 0;
            try{
+            DB::beginTransaction();
              $permission = $request->session()->get('per');
              $data = json_decode($request->data);
               if($data){
@@ -139,6 +141,7 @@ class PermissionController extends Controller
                       'dataz' => \json_encode($result)]);
                     //
                   }
+                  DB::commit();  
                   return response()->json(['status'=>true,'message'=> trans('messages.update_success')]);
                 }else{
                   return response()->json(['status'=>false,'message'=> trans('messages.you_are_not_permission')]);
@@ -147,6 +150,7 @@ class PermissionController extends Controller
                 return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
               }
            }catch(Exception $e){
+            DB::rollBack();
              // Lưu lỗi
              $err = new Error();
              $err ->create([

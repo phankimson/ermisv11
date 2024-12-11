@@ -13,10 +13,8 @@ use App\Http\Model\AccWorkCode;
 use App\Http\Model\AccDepartment;
 use App\Http\Model\AccBankAccount;
 use App\Http\Model\AccObject;
-use App\Http\Model\Casts\Date;
 use App\Http\Traits\ScopesTraits;
 use App\Http\Traits\BootedTraits;
-use DB;
 
 class AccDetail extends Model
 {

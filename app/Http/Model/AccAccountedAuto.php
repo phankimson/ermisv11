@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Http\Model\AccAccountedAutoDetail;
 use App\Http\Traits\ScopesTraits;
 use App\Http\Traits\BootedTraits;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class AccAccountedAuto extends Model
 {
@@ -24,22 +24,22 @@ class AccAccountedAuto extends Model
 
     
       static public function get_raw() {
-        $result = AccAccountedAuto::WithRowNumberDb('mysql2')->orderBy('row_number','desc')->with('accounted_auto_detail')->get();       
+        $result = AccAccountedAuto::WithRowNumberDb(env('CONNECTION_DB_ACC'))->orderBy('row_number','desc')->with('accounted_auto_detail')->get();       
         return $result;
       }
 
       static public function get_raw_skip_page($skip,$limit,$orderBy,$asc) {
-        $result = AccAccountedAuto::WithRowNumberDb('mysql2',$orderBy,$asc)->skip($skip)->take($limit)->with('accounted_auto_detail')->get();  
+        $result = AccAccountedAuto::WithRowNumberDb(env('CONNECTION_DB_ACC'),$orderBy,$asc)->skip($skip)->take($limit)->with('accounted_auto_detail')->get();  
         return $result;
       }
 
       static public function get_raw_skip_filter_page($skip,$limit,$orderBy,$asc,$filter) {
-        $result = AccAccountedAuto::WithRowNumberWhereRawColumnDb('mysql2',$filter,$orderBy,$asc)->skip($skip)->take($limit)->with('accounted_auto_detail')->get();  
+        $result = AccAccountedAuto::WithRowNumberWhereRawColumnDb(env('CONNECTION_DB_ACC'),$filter,$orderBy,$asc)->skip($skip)->take($limit)->with('accounted_auto_detail')->get();  
         return $result;
       }
 
       static public function get_raw_export($select,$skip,$limit) {
-        $result =  AccAccountedAuto::WithRowNumberDb('mysql2')->orderBy('row_number','asc')->skip($skip)->take($limit)->get(['row_number',DB::raw($select)]);        
+        $result =  AccAccountedAuto::WithRowNumberDb(env('CONNECTION_DB_ACC'))->orderBy('row_number','asc')->skip($skip)->take($limit)->get(['row_number',DB::raw($select)]);        
         return $result;
       } 
 

@@ -20,9 +20,10 @@ use App\Http\Model\Imports\UserImport;
 use App\Http\Model\Exports\UserExport;
 use App\Classes\Convert;
 use Illuminate\Support\Facades\Hash;
-use Excel;
-use File;
+use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\File;
 use Exception;
+use Illuminate\Support\Facades\DB;
 
 class UserManagerController extends Controller
 {
@@ -83,9 +84,10 @@ class UserManagerController extends Controller
   public function save(Request $request){
     $type = 0 ;
     try{
-  $permission = $request->session()->get('per');
-  $arr = json_decode($request->data);
-  $check_user = User::WhereCheck('username',$arr->username,'id',$arr->id)->first();
+      DB::beginTransaction();
+      $permission = $request->session()->get('per');
+      $arr = json_decode($request->data);
+      $check_user = User::WhereCheck('username',$arr->username,'id',$arr->id)->first();
   if(!$check_user){
     if($arr){
      if($permission['a'] == true && !$arr->id ){
@@ -148,7 +150,7 @@ class UserManagerController extends Controller
          $arr->avatar = $pathname;
        }
        //
-
+       DB::commit(); 
        broadcast(new \App\Events\DataSend($arr));
        return response()->json(['status'=>true,'message'=> trans('messages.update_success')]);
      }else if($permission['e'] == true && $arr->id){
@@ -215,7 +217,7 @@ class UserManagerController extends Controller
          $arr->avatar = $pathname;
        }
        //
-
+       DB::commit(); 
        broadcast(new \App\Events\DataSend($arr));
        return response()->json(['status'=>true,'message'=> trans('messages.update_success')]);
        }else{
@@ -229,6 +231,7 @@ class UserManagerController extends Controller
   }
 
     }catch(Exception $e){
+      DB::rollBack();
       // Lưu lỗi
       $err = new Error();
       $err ->create([
@@ -245,6 +248,7 @@ class UserManagerController extends Controller
  public function delete(Request $request) {
       $type = 4;
       try{
+        DB::beginTransaction();
         $permission = $request->session()->get('per');
         $arr = json_decode($request->data);
         if($arr){
@@ -266,6 +270,7 @@ class UserManagerController extends Controller
             };
 
             $data->delete();
+            DB::commit();
             broadcast(new \App\Events\DataSend($arr));
             return response()->json(['status'=>true,'message'=> trans('messages.delete_success')]);
           }else{
@@ -275,6 +280,7 @@ class UserManagerController extends Controller
          return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
        }
       }catch(Exception $e){
+        DB::rollBack();
         // Lưu lỗi
         $err = new Error();
         $err ->create([
@@ -287,13 +293,14 @@ class UserManagerController extends Controller
       }
  }
 
- public function DownloadExcel(Request $request){
+ public function DownloadExcel(){
    return Storage::download('public/downloadFile/User.xlsx');
  }
 
  public function import(Request $request) {
    $type = 5;
    try{
+    DB::beginTransaction();
    $permission = $request->session()->get('per');
    if($permission['a'] && $request->hasFile('file')){
      //Check
@@ -309,20 +316,7 @@ class UserManagerController extends Controller
        $import = new UserImport;
        Excel::import($import, $file);
        // Lấy lại dữ liệu
-       //$array = User::all()->makeVisible(['active_code','password']);
-
-       // Import dữ liệu bằng collection
-       //$results = Excel::toCollection(new HistoryActionImport, $file);
-       //dump($results);
-       //foreach($results[0] as $item){
-       //  $data = new HistoryAction();
-       //  $data->type = $item->get('type');
-       //  $data->user = $item->get('user');
-       //  $data->menu = $item->get('menu');
-       //  $data->dataz = $item->get('dataz');
-       //  $data->save();
-       //  $arr->push($data);
-       //}
+       
        $merged = collect($rs)->push($import->getData());
        //dump($merged);
      // Lưu lịch sử
@@ -335,12 +329,14 @@ class UserManagerController extends Controller
        'dataz' => \json_encode($merged)]);
      //
      //Storage::delete($savePath.$filename);
+     DB::commit();
      broadcast(new \App\Events\DataSendCollection($merged));
      return response()->json(['status'=>true,'message'=> trans('messages.success_import')]);
      }else{
        return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
      }
    }catch(Exception $e){
+    DB::rollBack();
      // Lưu lỗi
      $err = new Error();
      $err ->create([

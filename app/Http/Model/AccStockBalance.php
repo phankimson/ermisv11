@@ -5,7 +5,7 @@ namespace App\Http\Model;
 use Illuminate\Database\Eloquent\Model;
 use App\Http\Traits\ScopesTraits;
 use App\Http\Traits\BootedTraits;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class AccStockBalance extends Model
 {
@@ -22,20 +22,20 @@ class AccStockBalance extends Model
 
 
       static public function get_raw() {
-        $result = AccStockBalance::WithRowNumberDb('mysql2')->orderBy('row_number','desc')->get();       
+        $result = AccStockBalance::WithRowNumberDb(env('CONNECTION_DB_ACC'))->orderBy('row_number','desc')->get();       
         return $result;
       }
 
       static public function get_raw_export($select) {
-        $result = AccStockBalance::WithRowNumberDb('mysql2')->orderBy('row_number','asc')
+        $result = AccStockBalance::WithRowNumberDb(env('CONNECTION_DB_ACC'))->orderBy('row_number','asc')
         ->leftJoin('account_systems as a', 't.type_id', '=', 'a.id')
         ->leftJoin('period as b', 't.period', '=', 'b.id')
         ->get(['row_number',DB::raw($select)]);
         return $result;
       }
 
-      static public function get_item($period,$item) {
-        $result = AccStockBalance::where('period',$period)->where('supplies_goods',$item)->first();
+      static public function get_item($period,$stock,$item) {
+        $result = AccStockBalance::where('period',$period)->where('stock',$stock)->where('supplies_goods',$item)->first();
         return $result;
       }
 

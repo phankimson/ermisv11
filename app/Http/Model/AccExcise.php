@@ -3,7 +3,7 @@
 namespace App\Http\Model;
 use App\Http\Traits\ScopesTraits;
 use App\Http\Traits\BootedTraits;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -36,23 +36,23 @@ class AccExcise extends Model
       }      
 
       static public function get_raw() {
-        $result = AccExcise::WithRowNumberDb('mysql2')->orderBy('row_number','desc')->get();       
+        $result = AccExcise::WithRowNumberDb(env('CONNECTION_DB_ACC'))->orderBy('row_number','desc')->get();       
         return $result;
       }
 
       static public function get_raw_skip_page($skip,$limit,$orderBy,$asc) {
-        $result = AccExcise::WithRowNumberDb('mysql2',$orderBy,$asc)->skip($skip)->take($limit)->get();  
+        $result = AccExcise::WithRowNumberDb(env('CONNECTION_DB_ACC'),$orderBy,$asc)->skip($skip)->take($limit)->get();  
         return $result;
       }
 
       static public function get_raw_skip_filter_page($skip,$limit,$orderBy,$asc,$filter) {
-        $result = AccExcise::WithRowNumberWhereRawColumnDb('mysql2',$filter,$orderBy,$asc)->skip($skip)->take($limit)->get();  
+        $result = AccExcise::WithRowNumberWhereRawColumnDb(env('CONNECTION_DB_ACC'),$filter,$orderBy,$asc)->skip($skip)->take($limit)->get();  
         return $result;
       }
 
 
       static public function get_raw_export($select,$skip,$limit) {
-        $result = AccExcise::WithRowNumberDb('mysql2')->orderBy('row_number','asc')->skip($skip)->take($limit)
+        $result = AccExcise::WithRowNumberDb(env('CONNECTION_DB_ACC'))->orderBy('row_number','asc')->skip($skip)->take($limit)
         ->leftJoin('unit as m', 't.unit_id', '=', 'm.id')
         ->leftJoin('excise as p', 't.parent_id', '=', 'p.id')
         ->get(['row_number',DB::raw($select)]);

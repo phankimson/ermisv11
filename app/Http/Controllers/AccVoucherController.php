@@ -42,8 +42,6 @@ class AccVoucherController extends Controller
   public function get(Request $request){
     $type = 10;
     try{
-      $mysql2 = $request->session()->get('mysql2');
-      config(['database.connections.mysql2' => $mysql2]);
       $req = json_decode($request->data);
       $data = ObjectDropDownListResource::collection(AccObject::get_type($req->filter_type));
         if ($req->filter_value != "" && $req->filter_value != null){
@@ -74,8 +72,6 @@ class AccVoucherController extends Controller
   public function bind(Request $request){
     $type = 10;
     try{
-      $mysql2 = $request->session()->get('mysql2');
-      config(['database.connections.mysql2' => $mysql2]);
       $req = json_decode($request->data);
       $data = new CashReceiptGeneralResource(AccGeneral::get_data_load_all($req));
       if($req && $data->count()>0 ){
@@ -100,8 +96,6 @@ class AccVoucherController extends Controller
   public function auto(Request $request){
     $type = 10;
     try{
-      $mysql2 = $request->session()->get('mysql2');
-      config(['database.connections.mysql2' => $mysql2]);
       $req = json_decode($request->data);
       $data = new AccountedAutoListResource(AccAccountedAuto::get_id_with_detail($req));
       if($req && $data->count()>0 ){
@@ -127,8 +121,6 @@ class AccVoucherController extends Controller
   public function reference(Request $request){
     $type = 10;
     try{
-      $mysql2 = $request->session()->get('mysql2');
-      config(['database.connections.mysql2' => $mysql2]);
       $req = json_decode($request->data);
       if($req->general_id = 0){
         $reference_array = [0 ] ;   
@@ -158,8 +150,6 @@ class AccVoucherController extends Controller
   public function voucher_change(Request $request){
     $type = 10;
     try{
-      $mysql2 = $request->session()->get('mysql2');
-      config(['database.connections.mysql2' => $mysql2]);
       $req = json_decode($request->data);
         $validator = Validator::make(collect($req)->toArray(),[
         'number' => ['required','min:0'],
@@ -199,8 +189,6 @@ class AccVoucherController extends Controller
   public function load_voucher_change(Request $request){
     $type = 10;
         try{
-          $mysql2 = $request->session()->get('mysql2');
-          config(['database.connections.mysql2' => $mysql2]);
           $req = json_decode($request->data);        
           $data = AccNumberVoucher::find($req->id);
           $val = Convert::dateformatArr($data->format,$req->accounting_date);          
@@ -249,8 +237,6 @@ class AccVoucherController extends Controller
         $end_key = trim(substr($req,strlen($rs->name)));
       }
       if($rs->content == 'subject'){
-          $mysql2 = $request->session()->get('mysql2');
-          config(['database.connections.mysql2' => $mysql2]);
           //$sa = explode(" ",$rs->name_en);
           //$field = str_replace(" ","_",trim(substr($rs->name_en,strlen($sa[0]))));
           $data = AccObject::where($rs->field,$end_key)->first();
@@ -263,8 +249,6 @@ class AccVoucherController extends Controller
         }else if($rs->content == 'traders' || $rs->content == 'description'){
             return response()->json(['status'=>true,'data'=> $end_key ,'field'=>$rs->content]);
         }else if($rs->content == 'accounted_auto'){
-          $mysql2 = $request->session()->get('mysql2');
-          config(['database.connections.mysql2' => $mysql2]);
           $data = AccAccountedAuto::where($rs->field,$end_key)->first();
           if($data){
             $data = new DropDownListResource($data);
@@ -288,8 +272,6 @@ class AccVoucherController extends Controller
           };
           return response()->json(['status'=>true,'data'=> $data,'field'=>$rs->content]);
         }else if($rs->content == 'accounted_fast'){
-          $mysql2 = $request->session()->get('mysql2');
-          config(['database.connections.mysql2' => $mysql2]);
           $data = new AccountedFastDropDownListResource(AccAccountedFast::where($rs->field,$end_key)->first());
           if($data){
             return response()->json(['status'=>true,'data'=> $data,'field'=>$rs->content]);
@@ -297,8 +279,6 @@ class AccVoucherController extends Controller
             return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
           }
         }else if($rs->content == 'debit' || $rs->content == 'credit'){
-          $mysql2 = $request->session()->get('mysql2');
-          config(['database.connections.mysql2' => $mysql2]);
           if($locale == "en"){
             $sa = explode($rs->crit_en,$end_key);
           }else{
@@ -354,8 +334,6 @@ class AccVoucherController extends Controller
   public function currency(Request $request){
     $type = 10;
     try{
-      $mysql2 = $request->session()->get('mysql2');
-      config(['database.connections.mysql2' => $mysql2]);
       $req = json_decode($request->data);
       $data = AccCurrency::find($req);
       if($req && $data->count()>0 ){

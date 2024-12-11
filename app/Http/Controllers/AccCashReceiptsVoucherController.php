@@ -41,9 +41,11 @@ use App\Http\Model\Imports\AccCashReceiptGeneralImport;
 use App\Http\Model\Imports\AccCashReceiptVoucherImport;
 use App\Http\Model\Document;
 use Carbon\Carbon;
-use Excel;
+use Illuminate\Support\Facades\File;
+use Maatwebsite\Excel\Facades\Excel;
 use Exception;
-use File;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class AccCashReceiptsVoucherController extends Controller
 {
@@ -68,8 +70,6 @@ class AccCashReceiptsVoucherController extends Controller
  }
 
   public function show(Request $request){
-    $mysql2 = $request->session()->get('mysql2');
-    config(['database.connections.mysql2' => $mysql2]);
     $ot = AccObjectType::get_filter($this->type_object);
     $voucher = AccNumberVoucher::get_menu($this->menu->id);
     $setting_voucher = AccSettingVoucher::get_menu($this->menu->id);
@@ -110,12 +110,10 @@ class AccCashReceiptsVoucherController extends Controller
 
 
   public function save(Request $request){
-    $mysql2 = $request->session()->get('mysql2');
-    config(['database.connections.mysql2' => $mysql2]);
     $type = 0;
     try{
+      DB::connection(env('CONNECTION_DB_ACC'))->beginTransaction();
       $arr = json_decode($request->data);
-
       if($arr){
          $period = AccPeriod::get_date(Carbon::parse($arr->accounting_date)->format('Y-m'),1);
         if(!$period){
@@ -327,7 +325,7 @@ class AccCashReceiptsVoucherController extends Controller
              $files = $request->file('files');
              foreach($files as $file){
                $com = $request->session()->get('com');
-               $filename = $file->getClientOriginalName().'_'.str_random(10);
+               $filename = $file->getClientOriginalName().'_'.Str::random(10);
                $sys = AccSystems::get_systems($this->path);
                $path = public_path().'/'.$sys->value.'/'.$com.'/'. $general->id;
                $pathname = $sys->value . $com.'/'. $general->id.'/'.$filename;
@@ -352,7 +350,7 @@ class AccCashReceiptsVoucherController extends Controller
            'menu' => $this->menu->id,
            'url'  => $this->url,
            'dataz' => \json_encode($arr)]);
-
+           DB::connection(env('CONNECTION_DB_ACC'))->commit();
            return response()->json(['status'=>true,'message'=> trans('messages.update_success'), 'voucher_name' => $v , 'dataId' => $general->id ,  'data' => $arr ]);
            //
       }else{
@@ -362,6 +360,7 @@ class AccCashReceiptsVoucherController extends Controller
           return response()->json(['status'=>false,'message'=> trans('messages.update_fail')]);
       }
     }catch(Exception $e){
+      DB::connection(env('CONNECTION_DB_ACC'))->rollBack();
        // Lưu lỗi
        $err = new Error();
        $err ->create([
@@ -375,11 +374,9 @@ class AccCashReceiptsVoucherController extends Controller
   }
 
   public function import(Request $request) {
-    ini_set('max_execution_time', 600);
-    $mysql2 = $request->session()->get('mysql2');
-    config(['database.connections.mysql2' => $mysql2]);
    $type = 5;
     try{
+      DB::connection(env('CONNECTION_DB_ACC'))->beginTransaction();
     $permission = $request->session()->get('per');
     if($permission['a'] && $request->hasFile('file')){
       //Check
@@ -403,11 +400,13 @@ class AccCashReceiptsVoucherController extends Controller
         'menu' => $this->menu->id,
         'url'  => $this->url,
         'dataz' => \json_encode($merged)]);
+        DB::connection(env('CONNECTION_DB_ACC'))->commit();
       return response()->json(['status'=>true,'message'=> trans('messages.success_import'),'data'=>$data]);
       }else{
         return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
       }
     }catch(Exception $e){
+      DB::connection(env('CONNECTION_DB_ACC'))->rollBack();
       // Lưu lỗi
       $err = new Error();
       $err ->create([

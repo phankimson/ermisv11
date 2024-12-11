@@ -8,11 +8,9 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use App\Http\Model\Message;
 use App\Http\Model\Timeline;
 use App\Http\Model\Country;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Str;
 use App\Http\Traits\ScopesTraits;
 use App\Http\Traits\BootedTraits;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class User extends Authenticatable
 {

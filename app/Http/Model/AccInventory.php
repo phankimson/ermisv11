@@ -7,7 +7,7 @@ use App\Http\Model\Casts\Decimal;
 use App\Http\Model\Casts\Date;
 use App\Http\Traits\ScopesTraits;
 use App\Http\Traits\BootedTraits;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class AccInventory extends Model
 {

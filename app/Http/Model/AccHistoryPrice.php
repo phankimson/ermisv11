@@ -5,7 +5,7 @@ namespace App\Http\Model;
 use Illuminate\Database\Eloquent\Model;
 use App\Http\Traits\ScopesTraits;
 use App\Http\Traits\BootedTraits;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class AccHistoryPrice extends Model
 {
@@ -21,12 +21,12 @@ class AccHistoryPrice extends Model
       }
 
       static public function get_raw() {
-        $result = AccHistoryPrice::WithRowNumberDb('mysql2')->orderBy('row_number','desc')->get();       
+        $result = AccHistoryPrice::WithRowNumberDb(env('CONNECTION_DB_ACC'))->orderBy('row_number','desc')->get();       
         return $result;
       }
 
       static public function get_raw_export($select) {
-        $result = AccHistoryPrice::WithRowNumberDb('mysql2')->orderBy('row_number','asc')
+        $result = AccHistoryPrice::WithRowNumberDb(env('CONNECTION_DB_ACC'))->orderBy('row_number','asc')
         ->leftJoin('supplies_goods as a', 't.supplies_goods_id', '=', 'a.id')
         ->get(['row_number',DB::raw($select)]);
         return $result;

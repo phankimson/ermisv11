@@ -7,7 +7,7 @@ use App\Http\Model\AccSuppliesGoodsDiscount;
 use App\Http\Traits\ScopesTraits;
 use App\Http\Traits\BootedTraits;
 use App\Http\Model\Casts\Decimal;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class AccSuppliesGoods extends Model
 {
@@ -34,22 +34,22 @@ class AccSuppliesGoods extends Model
 
       
       static public function get_raw() {
-        $result = AccSuppliesGoods::WithRowNumberDb('mysql2')->orderBy('row_number','desc')->with('discount')->get();      
+        $result = AccSuppliesGoods::WithRowNumberDb(env('CONNECTION_DB_ACC'))->orderBy('row_number','desc')->with('discount')->get();      
         return $result;
       }
 
       static public function get_raw_skip_page($skip,$limit,$orderBy,$asc) {
-        $result = AccSuppliesGoods::WithRowNumberDb('mysql2',$orderBy,$asc)->skip($skip)->take($limit)->with('discount')->get();  
+        $result = AccSuppliesGoods::WithRowNumberDb(env('CONNECTION_DB_ACC'),$orderBy,$asc)->skip($skip)->take($limit)->with('discount')->get();  
         return $result;
       }
 
       static public function get_raw_skip_filter_page($skip,$limit,$orderBy,$asc,$filter) {
-        $result = AccSuppliesGoods::WithRowNumberWhereRawColumnDb('mysql2',$filter,$orderBy,$asc)->skip($skip)->take($limit)->with('discount')->get();  
+        $result = AccSuppliesGoods::WithRowNumberWhereRawColumnDb(env('CONNECTION_DB_ACC'),$filter,$orderBy,$asc)->skip($skip)->take($limit)->with('discount')->get();  
         return $result;
       }
 
       static public function get_raw_export($select,$skip,$limit) {
-        $result = AccSuppliesGoods::WithRowNumberDb('mysql2')->orderBy('row_number','asc')
+        $result = AccSuppliesGoods::WithRowNumberDb(env('CONNECTION_DB_ACC'))->orderBy('row_number','asc')
         ->leftJoin('unit as a', 't.type', '=', 'a.id')
         ->leftJoin('supplies_goods_type as b', 't.type', '=', 'b.id')
         ->leftJoin('supplies_goods_group as c', 't.group', '=', 'c.id')

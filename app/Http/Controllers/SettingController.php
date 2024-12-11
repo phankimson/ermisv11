@@ -9,6 +9,7 @@ use App\Http\Model\Systems;
 use App\Http\Model\Error;
 use App\Http\Model\Menu;
 use Exception;
+use Illuminate\Support\Facades\DB;
 
 class SettingController extends Controller
 {
@@ -30,6 +31,7 @@ class SettingController extends Controller
   public function changeSetting(Request $request){
     $type = 3;
       try{
+        DB::beginTransaction();
         $data = json_decode($request->data);
         foreach($data as $k => $v){
           if($k != 'action' && $k != 'key' && $k != 'com' ) {
@@ -61,9 +63,11 @@ class SettingController extends Controller
             }
           }
          }
+         DB::commit();  
          broadcast(new \App\Events\DataSend($data));
         return response()->json(['status'=>true,'message'=> trans('messages.update_success') ]);
       }catch(Exception $e){
+        DB::rollBack();
         // Lưu lỗi
         $err = new Error();
         $err ->create([

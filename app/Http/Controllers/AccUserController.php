@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Classes\SchemaDB;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Model\AccHistoryAction;
 use App\Http\Model\Error;
@@ -22,8 +21,6 @@ class AccUserController extends Controller
    try{
      $arr = json_decode($request->data);
      $user = Auth::user();
-     $mysql2 = $request->session()->get('mysql2');
-     config(['database.connections.mysql2' => $mysql2]);
      $data = AccHistoryAction::get_skip($user->id,($arr->current-1)*$arr->length,$arr->length);
 
      if($data->count()>0){

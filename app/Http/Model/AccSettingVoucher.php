@@ -5,7 +5,7 @@ namespace App\Http\Model;
 use Illuminate\Database\Eloquent\Model;
 use App\Http\Traits\ScopesTraits;
 use App\Http\Traits\BootedTraits;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class AccSettingVoucher extends Model
 {
@@ -22,17 +22,17 @@ class AccSettingVoucher extends Model
       }
 
       static public function get_raw() {
-        $result = AccSettingVoucher::WithRowNumberDb('mysql2')->orderBy('row_number','desc')->with('debit_filter','credit_filter')->get()->pluckDistant('debit_filter','account_systems')->pluckDistant('credit_filter','account_systems');       
+        $result = AccSettingVoucher::WithRowNumberDb(env('CONNECTION_DB_ACC'))->orderBy('row_number','desc')->with('debit_filter','credit_filter')->get()->pluckDistant('debit_filter','account_systems')->pluckDistant('credit_filter','account_systems');       
         return $result;
       }
 
       static public function get_raw_skip_page($skip,$limit,$orderBy,$asc) {
-        $result = AccSettingVoucher::WithRowNumberDb('mysql2',$orderBy,$asc)->skip($skip)->take($limit)->get();  
+        $result = AccSettingVoucher::WithRowNumberDb(env('CONNECTION_DB_ACC'),$orderBy,$asc)->skip($skip)->take($limit)->get();  
         return $result;
       }
 
       static public function get_raw_skip_filter_page($skip,$limit,$orderBy,$asc,$filter) {
-        $result = AccSettingVoucher::WithRowNumberWhereRawColumnDb('mysql2',$filter,$orderBy,$asc)->skip($skip)->take($limit)->get();  
+        $result = AccSettingVoucher::WithRowNumberWhereRawColumnDb(env('CONNECTION_DB_ACC'),$filter,$orderBy,$asc)->skip($skip)->take($limit)->get();  
         return $result;
       }
 
@@ -43,7 +43,7 @@ class AccSettingVoucher extends Model
         if (str_contains($select, $check) == true || str_contains($select, $check1) == true) {
           $select = str_replace('t.'.$check.",","",$select);
           $select = str_replace('t.'.$check1.",","",$select);
-          $result =  AccSettingVoucher::WithRowNumberDb('mysql2')->orderBy('row_number','asc')->with([$check => function ($q) {
+          $result =  AccSettingVoucher::WithRowNumberDb(env('CONNECTION_DB_ACC'))->orderBy('row_number','asc')->with([$check => function ($q) {
             $q->select('account_systems_filter.*','account_systems.id','account_systems.code');
             $q->join('account_systems', 'account_systems.id', '=', 'account_systems_filter.account_systems');
           }])
@@ -68,7 +68,7 @@ class AccSettingVoucher extends Model
           });
 
         }else{
-          $result = AccSettingVoucher::WithRowNumberDb('mysql2')->orderBy('row_number','asc')->skip($skip)->take($limit)
+          $result = AccSettingVoucher::WithRowNumberDb(env('CONNECTION_DB_ACC'))->orderBy('row_number','asc')->skip($skip)->take($limit)
         ->leftJoin('account_systems as a', 't.debit', '=', 'a.id')
         ->leftJoin('account_systems as b', 't.credit', '=', 'b.id')
         ->leftJoin($env.'.menu as c', 't.menu_id', '=', 'c.id')

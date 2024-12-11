@@ -9,8 +9,7 @@ use App\Http\Model\Message;
 use App\Http\Model\Timeline;
 use App\Http\Traits\ScopesTraits;
 use App\Http\Traits\BootedTraits;
-use Illuminate\Support\Facades\Cache;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class AccUser extends Authenticatable
 {

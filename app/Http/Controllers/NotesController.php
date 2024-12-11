@@ -11,6 +11,7 @@ use App\Http\Model\HistoryAction;
 use App\Http\Model\Menu;
 use App\Http\Model\Error;
 use Exception;
+use Illuminate\Support\Facades\DB;
 
 class NotesController extends Controller
 {
@@ -72,6 +73,7 @@ class NotesController extends Controller
       public function save(Request $request) {
         $type = 0;
            try{
+            DB::beginTransaction();
              $permission = $request->session()->get('per');
              $arr = json_decode($request->data);
               if($arr){
@@ -95,6 +97,7 @@ class NotesController extends Controller
                   // Lấy ID và và phân loại Thêm
                   $arr->id = $data->id;
                   $arr->type = $type;
+                  DB::commit();  
                   broadcast(new \App\Events\DataSend($arr));
                   return response()->json(['status'=>true,'message'=> trans('messages.update_success')]);
                 }else if($permission['e'] == true && $arr->id){
@@ -115,6 +118,7 @@ class NotesController extends Controller
                   $data->save();
                   // Phân loại Sửa
                   $arr->type = $type;
+                  DB::commit();  
                   broadcast(new \App\Events\DataSend($arr));
                   return response()->json(['status'=>true,'message'=> trans('messages.update_success')]);
                 }else{
@@ -124,6 +128,7 @@ class NotesController extends Controller
                 return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
               }
            }catch(Exception $e){
+            DB::rollBack();
              // Lưu lỗi
              $err = new Error();
              $err ->create([
@@ -140,6 +145,7 @@ class NotesController extends Controller
       public function delete(Request $request) {
         $type = 4;
            try{
+            DB::beginTransaction();
              $permission = $request->session()->get('per');
              $arr = json_decode($request->data);
              if($arr){
@@ -155,6 +161,7 @@ class NotesController extends Controller
                    'dataz' => \json_encode($data)]);
                  //
                  $data->delete();
+                 DB::commit();
                  broadcast(new \App\Events\DataSend($arr));
                  return response()->json(['status'=>true,'message'=> trans('messages.delete_success')]);
                }else{
@@ -164,6 +171,7 @@ class NotesController extends Controller
               return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
             }
            }catch(Exception $e){
+            DB::rollBack();
              // Lưu lỗi
              $err = new Error();
              $err ->create([

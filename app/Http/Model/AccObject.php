@@ -5,10 +5,8 @@ namespace App\Http\Model;
 use Illuminate\Database\Eloquent\Model;
 use App\Http\Traits\ScopesTraits;
 use App\Http\Traits\BootedTraits;
-//use App\Http\Traits\OrderTraits;
-use App\Traits\OrderTraits as TraitsOrderTraits;
 use Illuminate\Database\Eloquent\Builder;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class AccObject extends Model
 {
@@ -33,16 +31,16 @@ class AccObject extends Model
       }
 
       static public function get_raw() {
-        $result = AccObject::WithRowNumberDb('mysql2')->orderBy('row_number','desc')->with('object_type')->get()->pluckDistant('object_type', 'object_type');       
+        $result = AccObject::WithRowNumberDb(env('CONNECTION_DB_ACC'))->orderBy('row_number','desc')->with('object_type')->get()->pluckDistant('object_type', 'object_type');       
         return $result;
       }
       static public function get_raw_skip_page($skip,$limit,$orderBy,$asc) {
-        $result = AccObject::WithRowNumberDb('mysql2',$orderBy,$asc)->skip($skip)->take($limit)->with('object_type')->get()->pluckDistant('object_type', 'object_type');       
+        $result = AccObject::WithRowNumberDb(env('CONNECTION_DB_ACC'),$orderBy,$asc)->skip($skip)->take($limit)->with('object_type')->get()->pluckDistant('object_type', 'object_type');       
         return $result;
       }
     
       static public function get_raw_skip_filter_page($skip,$limit,$orderBy,$asc,$filter) {
-        $result = AccObject::WithRowNumberWhereRawColumnDb('mysql2',$filter,$orderBy,$asc)->skip($skip)->take($limit)->with('object_type')->get()->pluckDistant('object_type', 'object_type');
+        $result = AccObject::WithRowNumberWhereRawColumnDb(env('CONNECTION_DB_ACC'),$filter,$orderBy,$asc)->skip($skip)->take($limit)->with('object_type')->get()->pluckDistant('object_type', 'object_type');
         return $result;
       }
 
@@ -51,7 +49,7 @@ class AccObject extends Model
         $check = 'object_type';
         if (str_contains($select, $check) == true) {
           $select = str_replace('t.'.$check.",","",$select);
-          $result = AccObject::WithRowNumberDb('mysql2')->orderBy('row_number','asc')->skip($skip)->take($limit)
+          $result = AccObject::WithRowNumberDb(env('CONNECTION_DB_ACC'))->orderBy('row_number','asc')->skip($skip)->take($limit)
           ->with([$check => function ($q) {
             $q->select('object_filter_object_type.*','object_type.id','object_type.code');
             $q->join('object_type', 'object_type.id', '=', 'object_filter_object_type.object_type');
@@ -70,7 +68,7 @@ class AccObject extends Model
             $r->unsetRelation($check);
           });    
         }else{
-          $result = AccObject::WithRowNumberDb('mysql2')->orderBy('row_number','asc')->skip($skip)->take($limit)
+          $result = AccObject::WithRowNumberDb(env('CONNECTION_DB_ACC'))->orderBy('row_number','asc')->skip($skip)->take($limit)
           ->leftJoin('object_group as a', 't.object_group', '=', 'a.id')
           ->leftJoin('department as c', 't.department', '=', 'c.id')
           ->leftJoin($env.'.regions as m', 't.regions', '=', 'm.id')
