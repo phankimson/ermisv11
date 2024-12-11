@@ -1746,6 +1746,44 @@ var ErmisKendoDroplistTemplate = function(elem, filter) {
     });
 };
 
+var ErmisKendoDroplistPageTemplate = function(elem,template,TextField,ValueField,url_virtual,url_read,field) {
+    jQuery(elem).kendoDropDownList({
+        template: template,
+        dataTextField: TextField,
+        dataValueField: ValueField,
+        filter: "contains",
+        virtual: {
+            itemHeight: 26,
+            valueMapper: function(options) {
+                $.ajax({
+                    url: url_virtual,
+                    type: "GET",
+                    dataType: "jsonp",
+                    data: convertValues(options.value),
+                    success: function (data) {
+                        options.success(data);
+                    }
+                })
+            }
+        },
+        height: 520,
+        dataSource: {
+            type: "odata",
+            transport: {
+                read: url_read
+            },
+            schema: {
+                model: {
+                    fields: field
+                }
+            },
+            pageSize: 80,
+            serverPaging: true,
+            serverFiltering: true
+        }
+    });    
+};
+
 var ErmisKendoDroplistTemplate1 = function(elem, filter, onChange) {
     jQuery(elem).kendoDropDownList({
         filter: filter,

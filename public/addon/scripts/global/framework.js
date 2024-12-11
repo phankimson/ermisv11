@@ -1708,3 +1708,15 @@ function calculatePriceAggregateDiscount(decimal) {
     
     return words;
 };
+
+function convertValues(value) {
+  var data = {};
+
+  value = $.isArray(value) ? value : [value];
+
+  for (var idx = 0; idx < value.length; idx++) {
+      data["values[" + idx + "]"] = value[idx];
+  }
+
+  return data;
+}
