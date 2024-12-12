@@ -21,11 +21,7 @@
     <table>
       <tr>
           <td class="row-label"><label>@lang('regions.country')</label></td>
-          <td><select class="droplist large" data-position="1" data-title="@lang('regions.country')" data-template="#= FormatDropList(country,'country') #" data-type="number" data-width="200px" name="country">
-                  <option readonly selected value="0">--Select--</option>
-                    @foreach($country as $c)
-                      <option value="{{ $c->id }}">{{ $c->code }} - {{ $c->name }}</option>
-                    @endforeach
+          <td><select class="droplist_read large" data-position="1" data-title="@lang('regions.country')" data-template="#= FormatDropListRead(country,'country') #" data-type="number" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/country'}}" name="country">              
               </select>
           </td>
       </tr>

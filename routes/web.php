@@ -59,6 +59,15 @@ Route::prefix('manage')->group(function () {
   Route::post('/load-history-action', 'loadHistoryAction' );
   });
 
+  // DropDownList
+  Route::group([
+    'as' => 'dropdownlist',
+    'controller' => DropDownListController::class
+  ],function () {
+  Route::get(env('URL_DROPDOWN').'/country', 'country_dropdown_list');
+  });
+
+
   // Setting
   Route::group([
     'as' => 'setting',

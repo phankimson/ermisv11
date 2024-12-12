@@ -863,7 +863,7 @@ var ErmisKendoGridTemplate2 = function($kGrid, dataSource, onChange, selectable,
     });
 };
 
-var ErmisKendoGridTemplate1 = function(elem, data, pagesize, field, aggregate, height, edittable, change, pageable) {
+var ErmisKendoGridTemplate1 = function($kGrid, data, pagesize, field, aggregate, height, edittable, change, pageable) {
     dataSource = new kendo.data.DataSource({
         data: data,
         batch: false,
@@ -1744,6 +1744,26 @@ var ErmisKendoDroplistTemplate = function(elem, filter) {
         filter: filter,
         autoBind: false,
     });
+};
+
+var ErmisKendoDroplistReadTemplate = function(elem,filter) {
+    var text = jQuery(elem).attr('data-text-field');
+    var value = jQuery(elem).attr('data-value-field');
+    var url = jQuery(elem).attr('data-read-url');
+    jQuery(elem).kendoDropDownList({
+        dataTextField: text,
+        dataValueField: value,       
+        dataSource: {
+            transport: {
+                read: {
+                    dataType: "jsonp",
+                    url: url,
+                }
+            }
+        },
+        filter: filter,
+        autoBind: true,
+    });   
 };
 
 var ErmisKendoDroplistPageTemplate = function(elem,template,TextField,ValueField,url_virtual,url_read,field) {

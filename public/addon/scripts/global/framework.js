@@ -1120,6 +1120,14 @@ function FormatDropList(container,column) {
   return result;
 }
 
+function FormatDropListRead(container,column) {
+  var result = "";
+  if(container != null && container != ""){
+    result = jQuery("select[name='" + column + "']").data("kendoDropDownList").dataSource.view().find(x=>x.value === container).text;
+  }
+  return result;
+}
+
 function FormatRadio(container, column) {
     var id = jQuery("input[name='" + column + "'][value=" + container + "]").attr("id");
     var result = jQuery("label[for='" + id + "'").text();
