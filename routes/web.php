@@ -62,9 +62,10 @@ Route::prefix('manage')->group(function () {
   // DropDownList
   Route::group([
     'as' => 'dropdownlist',
-    'controller' => DropDownListController::class
+   'controller' => DropDownListController::class
   ],function () {
   Route::get(env('URL_DROPDOWN').'/country', 'country_dropdown_list');
+  //Route::get(env('URL_DROPDOWN').'/menu', 'menu_dropdown_list');
   });
 
 

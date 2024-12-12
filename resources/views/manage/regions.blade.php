@@ -74,5 +74,5 @@
   </script>
 @endsection
 @section('scripts_end')
-<script src="{{ url('addon/scripts/ermis/ermis-form-1-scrolldf.js') }}"></script>
+<script src="{{ url('addon/scripts/ermis/ermis-form-1-read.js') }}"></script>
 @endsection

@@ -31,7 +31,10 @@ var Ermis = function () {
       ErmisKendoContextMenuTemplate("#context-menu", ".md-card-content");
       // KendoUploadTemplate
       ErmisKendoUploadTemplate("#files", false);
-      // KendoDroplistTemplate
+      //KendoDroplistTemplate
+      jQuery('.droplist_read').each(function() {
+        ErmisKendoDroplistReadTemplate(this, "contains");
+      }); 
       ErmisKendoDroplistTemplate(".droplist", "contains");     
       ErmisKendoDroplistTemplate1(".database", "contains",initKendoUiChangeDB);
       // KendoTimePickerTemplate
@@ -74,7 +77,7 @@ var Ermis = function () {
             jQuery('.save,.cancel').addClass('disabled');
             jQuery('.save,.cancel').off('click');
             jQuery('input,textarea').not('.header_main_search_input').not('#content_message').not('#files').not('.k-filter-menu input').addClass('disabled');
-            jQuery(".droplist").not("#action-event").not(".not_disabled").addClass('disabled');
+            jQuery(".droplist,.droplist_read").not("#action-event").not(".not_disabled").addClass('disabled');
             jQuery('input:checkbox').parent().addClass('disabled');
             jQuery('.k-select').addClass('disabled');
             jQuery('.multiselect').addClass('disabled');
@@ -112,7 +115,7 @@ var Ermis = function () {
             jQuery('input,textarea').removeClass('disabled');
             jQuery('.k-button').removeClass('disabled');
             jQuery('.multiselect').removeClass('disabled');
-            jQuery(".droplist").removeClass('disabled');
+            jQuery(".droplist,.droplist_read").removeClass('disabled');
             jQuery('input:checkbox').parent().removeClass('disabled');
             jQuery('input').not('[type=radio]').val("");
             jQuery('textarea').val("");
@@ -161,7 +164,7 @@ var Ermis = function () {
             jQuery('.save,.cancel').addClass('disabled');
             jQuery('.save,.cancel').off('click');
             jQuery('input,textarea').not('.header_main_search_input').not('#files').not('.k-filter-menu input').addClass('disabled');
-            jQuery(".droplist").not("#action-event").not(".not_disabled").addClass('disabled');
+            jQuery(".droplist,.droplist_read").not("#action-event").not(".not_disabled").addClass('disabled');
             jQuery('input:checkbox').parent().addClass('disabled');
             $kGridExtra.find('input:checkbox').parent().removeClass('disabled');
             jQuery('.add,.copy,.edit,.delete,.import,.export,.export_extra,.connect_database').removeClass('disabled');
@@ -187,14 +190,14 @@ var Ermis = function () {
       ErmisTemplateAjaxPost1(e,"#form_select",Ermis.link+'-change-database',
           function(result){
             // Load data droplist ".load_droplist"
-            if(jQuery(".droplist").hasClass("load_droplist") == true ){
+            if(jQuery(".droplist_read").hasClass("load_droplist") == true ){
               jQuery.each(data.columns, function (k, v) {
                   if (v.addoption === "true") {
                     var parent = jQuery('select[name="' + v.field + '"]').parents('td');
                     var id = jQuery('select[name="' + v.field + '"]').attr('id');
                     jQuery('#'+id).data('kendoDropDownList').destroy();
                     parent.empty();
-                    parent.append('<select id="'+ id+'" class="droplist load_droplist large" data-width="200px" name="'+id+'">');
+                    parent.append('<select id="'+ id+'" class="droplist_read load_droplist large" data-width="200px" name="'+id+'">');
                   jQuery('#'+ id).kendoDropDownList({
                        dataTextField: "text",
                        dataValueField: "value",

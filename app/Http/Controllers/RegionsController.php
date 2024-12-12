@@ -37,6 +37,7 @@ class RegionsController extends Controller
 
   public function show(){
     $count = Regions::count();
+    //$country = Country::active()->get();
     $sys_page = Systems::get_systems($this->page_system);
     $paging = $count>$sys_page->value?1:0; 
     return view('manage.regions',['paging' => $paging, 'key' => $this->key]);

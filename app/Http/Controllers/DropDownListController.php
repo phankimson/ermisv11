@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Resources\LangDropDownResource;
 use App\Http\Model\Country;
-
+use App\Http\Model\Menu;
 
 class DropDownListController extends Controller
 {
@@ -17,6 +17,13 @@ class DropDownListController extends Controller
         $data = $default->merge($data)->values();
         return response()->json($data)->withCallback($request->input('callback'));;
    }
+
+   public function menu_dropdown_list(Request $request){
+    $default = collect([['value' => 0,'text' => "--Select--"]]);
+    $data = LangDropDownResource::collection(Menu::get());
+    $data = $default->merge($data)->values();
+    return response()->json($data)->withCallback($request->input('callback'));;
+}
 
   // public function cost_code_dropdown_list(Request $request){
   //     $mysql2 = $request->session()->get('mysql2');

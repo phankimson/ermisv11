@@ -38,7 +38,7 @@ var Ermis = function () {
       ErmisKendoContextMenuTemplate("#context-menu", ".md-card-content");
       // KendoUploadTemplate
       ErmisKendoUploadTemplate("#files", false);
-      // KendoDroplistTemplat
+      // KendoDroplistTemplate
       ErmisKendoDroplistTemplate(".droplist", "contains");
       ErmisKendoDroplistTemplate1(".database", "contains",initKendoUiChangeDB);
       // KendoTimePickerTemplate
@@ -93,7 +93,7 @@ var Ermis = function () {
             jQuery('.save,.cancel').addClass('disabled');
             jQuery('.save,.cancel').off('click');
             jQuery('input,textarea').not('.header_main_search_input').not('#content_message').not('#files').not('.k-filter-menu input').addClass('disabled');
-            jQuery(".droplist").not("#action-event").not(".not_disabled").addClass('disabled');
+            jQuery(".droplist,.droplist_read").not("#action-event").not(".not_disabled").addClass('disabled');
             jQuery('input:checkbox').parent().addClass('disabled');
             jQuery('.k-select').addClass('disabled');
             jQuery('.multiselect').addClass('disabled');
@@ -131,7 +131,7 @@ var Ermis = function () {
             jQuery('input,textarea').removeClass('disabled');
             jQuery('.k-button').removeClass('disabled');
             jQuery('.multiselect').removeClass('disabled');
-            jQuery(".droplist").removeClass('disabled');
+            jQuery(".droplist,.droplist_read").removeClass('disabled');
             jQuery('input:checkbox').parent().removeClass('disabled');
             jQuery('input').not('[type=radio]').val("");
             jQuery('textarea').val("");
@@ -161,7 +161,7 @@ var Ermis = function () {
             jQuery('.add,.copy,.edit,.delete,.import,.export,.export_extra').off('click');
             jQuery('input,textarea').removeClass('disabled');
             jQuery('.k-button').removeClass('disabled');
-            jQuery(".droplist").removeClass('disabled');
+            jQuery(".droplist,.droplist_read").removeClass('disabled');
             jQuery('input:checkbox').parent().removeClass('disabled');
             jQuery.each(data.columns, function (k, v) {
               if (v.addoption === "true") {
@@ -188,7 +188,7 @@ var Ermis = function () {
             jQuery('.save,.cancel').addClass('disabled');
             jQuery('.save,.cancel').off('click');
             jQuery('input,textarea').not('.header_main_search_input').not('#files').not('.k-filter-menu input').addClass('disabled');
-            jQuery(".droplist").not("#action-event").not(".not_disabled").addClass('disabled');
+            jQuery(".droplist,.droplist_read").not("#action-event").not(".not_disabled").addClass('disabled');
             jQuery('input:checkbox').parent().addClass('disabled');
             $kGridExtra.find('input:checkbox').parent().removeClass('disabled');
             jQuery('.add,.copy,.edit,.delete,.import,.export,.export_extra,.connect_database').removeClass('disabled');
