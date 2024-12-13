@@ -10,10 +10,7 @@ use App\Http\Model\HistoryAction;
 use App\Http\Model\Menu;
 use App\Http\Model\License;
 use App\Http\Model\Systems;
-use App\Http\Model\Company;
-use App\Http\Model\Software;
 use App\Http\Model\Error;
-use App\Http\Resources\DropDownListResource;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Model\Imports\LicenseImport;
 use App\Http\Model\Exports\LicenseExport;
@@ -40,12 +37,12 @@ class LicenseController extends Controller
 
   public function show(){
     //$data = License::get_raw();
-    $company_use = collect(DropDownListResource::collection(Company::active()->get()));
-    $software_use = collect(DropDownListResource::collection(Software::active()->get()));
+    //$company_use = collect(DropDownListResource::collection(Company::active()->get()));
+    //$software_use = collect(DropDownListResource::collection(Software::active()->get()));
     $count = License::count();
     $sys_page = Systems::get_systems($this->page_system);
     $paging = $count>$sys_page->value?1:0; 
-    return view('manage.license',['paging' => $paging, 'key' => $this->key ,'company_use' => $company_use,'software_use' => $software_use]);
+    return view('manage.license',['paging' => $paging, 'key' => $this->key ]);
   }
 
 

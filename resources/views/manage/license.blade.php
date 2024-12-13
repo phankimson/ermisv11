@@ -38,21 +38,13 @@
         </tr>
         <tr>
             <td class="row-label"><label>@lang('license.company_use')</label></td>
-            <td><select class="droplist large" data-position="1" data-title="@lang('license.company_use')" data-template="#= FormatDropList(company_use,'company_use') #" data-type="number" data-width="200px" name="company_use">
-                    <option readonly selected value="0">--Select--</option>
-                      @foreach($company_use as $c)
-                        <option value="{{ $c->id }}">{{ $c->code }} - {{ $c->name }}</option>
-                      @endforeach
+            <td><select class="droplist_read large" data-position="1" data-title="@lang('license.company_use')" data-template="#= FormatDropListRead(company_use,'company_use') #" data-type="number" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/company'}}" name="company_use">
                 </select>
             </td>
         </tr>
         <tr>
             <td class="row-label"><label>@lang('license.software_use')</label></td>
-            <td><select class="droplist large" data-position="1" data-title="@lang('license.software_use')" data-template="#= FormatDropList(software_use,'software_use') #" data-type="number" data-width="200px" name="software_use">
-                    <option readonly selected value="0">--Select--</option>
-                      @foreach($software_use as $c)
-                        <option value="{{ $c->id }}">{{ $c->code }} - {{ $c->name }}</option>
-                      @endforeach
+            <td><select class="droplist_read large" data-position="1" data-title="@lang('license.software_use')" data-template="#= FormatDropListRead(software_use,'software_use') #" data-type="number" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/software'}}"  name="software_use">
                 </select>
             </td>
         </tr>
@@ -94,5 +86,5 @@
   </script>
 @endsection
 @section('scripts_end')
-<script src="{{ url('addon/scripts/ermis/ermis-form-1-scroll.js') }}"></script>
+<script src="{{ url('addon/scripts/ermis/ermis-form-1-read.js') }}"></script>
 @endsection

@@ -40,14 +40,14 @@ class CompanyController extends Controller
 
   public function show(){
     //$data = Company::get_raw();
-    $regions = collect(DropDownListResource::collection(Regions::active()->get()));
-    $area = collect(DropDownListResource::collection(Area::active()->get()));
-    $distric = collect(DropDownListResource::collection(Distric::active()->get()));
-    $country = Country::all();
+    //$regions = collect(DropDownListResource::collection(Regions::active()->get()));
+    //$area = collect(DropDownListResource::collection(Area::active()->get()));
+    //$distric = collect(DropDownListResource::collection(Distric::active()->get()));
+    //$country = Country::all();
     $count = Company::count();
     $sys_page = Systems::get_systems($this->page_system);
     $paging = $count>$sys_page->value?1:0; 
-    return view('manage.company',['paging' => $paging, 'key' => $this->key , 'regions'=>$regions , 'area'=>$area , 'distric'=>$distric , 'country'=>$country]);
+    return view('manage.company',['paging' => $paging, 'key' => $this->key ]);
   }
 
 

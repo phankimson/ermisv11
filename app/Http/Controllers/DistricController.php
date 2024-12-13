@@ -10,9 +10,7 @@ use App\Http\Model\HistoryAction;
 use App\Http\Model\Systems;
 use App\Http\Model\Menu;
 use App\Http\Model\Distric;
-use App\Http\Model\Area;
 use App\Http\Model\Error;
-use App\Http\Resources\DropDownListResource;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Model\Imports\DistricImport;
 use App\Http\Model\Exports\DistricExport;
@@ -37,11 +35,11 @@ class DistricController extends Controller
 
   public function show(){
     //$data = Distric::get_raw();
-    $area = collect(DropDownListResource::collection(Area::active()->get()));
+    //$area = collect(DropDownListResource::collection(Area::active()->get()));
     $count = Distric::count();
     $sys_page = Systems::get_systems($this->page_system);
     $paging = $count>$sys_page->value?1:0; 
-    return view('manage.distric',['paging' => $paging, 'key' => $this->key ,'area' =>$area ]);
+    return view('manage.distric',['paging' => $paging, 'key' => $this->key  ]);
   }
 
 

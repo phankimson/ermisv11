@@ -1,7 +1,9 @@
-// Scroll Default Droplist use Read url data
+// Ermis Page Default Droplist Read Url
 var Ermis = function () {
     var $kGrid = jQuery('#grid');
     var $kGridExtra = jQuery('#grid_extra');
+    var myWindow = jQuery("#form-action");
+    var $kWindow = '';
     var key = '';
     var data = [];
     var dataId = '';
@@ -9,8 +11,8 @@ var Ermis = function () {
     var $export = ''; var $import = '';
     var $export_page_value = 0;var $total_export_page = 0;
     var $extra_page = jQuery("#list_extra_page");
-    var myWindow = jQuery("#form-window-extra");
-    var $kWindow = '';
+    var myWindow_extra = jQuery("#form-window-extra");
+    var $kWindow_extra = '';
 
     var initGetShortKey = function(){
         return key = Ermis.short_key;
@@ -29,13 +31,14 @@ var Ermis = function () {
       ErmisKendoDatePickerTemplate(".date", "dd/MM/yyyy");
       // KendoContextMenuTemplate
       ErmisKendoContextMenuTemplate("#context-menu", ".md-card-content");
+      ErmisKendoContextMenuTemplate("#context-menu", "#form-action");
       // KendoUploadTemplate
       ErmisKendoUploadTemplate("#files", false);
-      //KendoDroplistTemplate
+      // KendoDroplistTemplate
       jQuery('.droplist_read').each(function() {
         ErmisKendoDroplistReadTemplate(this, "contains");
       }); 
-      ErmisKendoDroplistTemplate(".droplist", "contains");     
+      ErmisKendoDroplistTemplate(".droplist", "contains");
       ErmisKendoDroplistTemplate1(".database", "contains",initKendoUiChangeDB);
       // KendoTimePickerTemplate
       ErmisKendoTimePickerTemplate("#start_time","#end_time");
@@ -45,20 +48,29 @@ var Ermis = function () {
       ErmisKendoNumbericTemplate(".number", "n"+Ermis.decimal, null, null, null, 1);
       ErmisKendoNumbericTemplate(".number-price", "n"+Ermis.decimal, null, null, null, 1000);
       // KendoColorPickerTemplate
-      ErmisKendoColorPickerTemplate(".color",false,"#FFFFFF");   
+      ErmisKendoColorPickerTemplate(".color",false,"#FFFFFF");
       // TooltipMaxlenght
       ErmisTooltipMaxlenght('[maxlength]');
+      ErmisKendoEditorFullTemplate(".editor");
       // ChangeInputArr
       ErmisChangeInputArr();
       //Window Extra
-      $kWindow = ErmisKendoWindowTemplate(myWindow, "600px", "");
-      $kWindow.title("Extra");
-      //KendoGridTemplate0
+      $kWindow_extra = ErmisKendoWindowTemplate(myWindow_extra, "600px", "");
+      $kWindow_extra.title("Extra");    
+      // KendoGridTemplateDefault
       if(Ermis.paging == 1){
-      ErmisKendoGridTemplateDefaultPageApi($kGrid,  Ermis.page_size, Ermis.link+'-data', onChange, "row", jQuery(window).height() * 0.75, {numeric: false, previousNext: false}, data.fields, data.columns);
-      }else{
-      ErmisKendoGridTemplateDefaultApi($kGrid,  Ermis.page_size, Ermis.link+'-data', onChange, "row", jQuery(window).height() * 0.75, {numeric: false, previousNext: false}, data.fields, data.columns);
-      }
+        ErmisKendoGridTemplateDefaultPageApi($kGrid,  Ermis.page_size, Ermis.link+'-data', onChange, "row", jQuery(window).height() * 0.75, {
+          refresh: true,
+          pageSizes: true,
+          buttonCount: 5
+      }, data.fields, data.columns);
+        }else{
+          ErmisKendoGridTemplateDefaultApi($kGrid,  Ermis.page_size, Ermis.link+'-data', onChange, "row", jQuery(window).height() * 0.75, {
+            refresh: true,
+            pageSizes: true,
+            buttonCount: 5
+        }, data.fields, data.columns);
+        }
     }
 
     var initStatus = function (flag) {
@@ -71,7 +83,6 @@ var Ermis = function () {
         shortcut.remove(key + "I");
         shortcut.remove(key + "Q");
         shortcut.remove(key + "L");
-        shortcut.remove(key + "W");
         jQuery('.add,.copy,.cancel,.edit,.save,.delete,.import,.export,.load,.export_extra').off('click');
         if (flag === 1) {//DEFAULT
             jQuery('.save,.cancel').addClass('disabled');
@@ -80,7 +91,6 @@ var Ermis = function () {
             jQuery(".droplist,.droplist_read").not("#action-event").not(".not_disabled").addClass('disabled');
             jQuery('input:checkbox').parent().addClass('disabled');
             jQuery('.k-select,.k-datepicker').addClass('disabled');
-            jQuery('.multiselect').addClass('disabled');
             jQuery('.add,.copy,.edit,.delete,.import,.export,.load,.export_extra,.connect_database').removeClass('disabled');
             jQuery('.add').on('click', initAdd);
             jQuery('.copy').on('click', initCopy);
@@ -97,13 +107,14 @@ var Ermis = function () {
             shortcut.add(key + "D", function (e) { initDelete(e); });
             shortcut.add(key + "I", function (e) { initImport(e); });
             shortcut.add(key + "Q", function (e) { initExport(e); });
-            shortcut.add(key + "W", function (e) { initExportExtra(e); });
             shortcut.add(key + "L", function (e) { altair_main_header.search_show();});
         } else if (flag === 2) {//ADD
+            $kWindow.center().open();
             $kGrid.addClass('disabled');
             $kGrid.find('tr.k-state-selected').removeClass('k-state-selected');
             jQuery('.save,.cancel,.load').removeClass('disabled');
             jQuery('.k-select,.k-datepicker').removeClass('disabled');
+            jQuery(".droplist,.droplist_read").removeClass('disabled');
             jQuery('.number-price,.number').removeClass('disabled');
             jQuery('.cancel').on('click', initCancel);
             jQuery('.save').on('click', initSave);
@@ -114,8 +125,6 @@ var Ermis = function () {
             jQuery('.add,.copy,.edit,.delete,.import,.export,.export_extra').off('click');
             jQuery('input,textarea').removeClass('disabled');
             jQuery('.k-button').removeClass('disabled');
-            jQuery('.multiselect').removeClass('disabled');
-            jQuery(".droplist,.droplist_read").removeClass('disabled');
             jQuery('input:checkbox').parent().removeClass('disabled');
             jQuery('input').not('[type=radio]').val("");
             jQuery('textarea').val("");
@@ -127,21 +136,21 @@ var Ermis = function () {
               }
           });
         } else if (flag === 3) {//Edit , COpy
+            $kWindow.center().open();
             $kGrid.addClass('disabled');
             jQuery('.save,.cancel,.load').removeClass('disabled');
             jQuery('.k-select,.k-datepicker').removeClass('disabled');
-            jQuery('.multiselect').removeClass('disabled');
             jQuery('.number-price,.number').removeClass('disabled');
+            jQuery(".droplist,.droplist_read").removeClass('disabled');
             jQuery('.cancel').on('click', initCancel);
             jQuery('.save').on('click', initSave);
             jQuery('.load').on('click', initLoadInput);
             shortcut.add(key + "S", function (e) { initSave(e); });
             shortcut.add(key + "C", function (e) { initCancel(e); });
             jQuery('.add,.copy,.edit,.delete,.import,.export,.export_extra,.connect_database').addClass('disabled');
-            jQuery('.add,.copy,.edit,.delete,.import,.export,.export_extra').off('click');
+            jQuery('.add,.copy,.edit,.delete,.import,.export').off('click');
             jQuery('input,textarea').removeClass('disabled');
             jQuery('.k-button').removeClass('disabled');
-            jQuery(".droplist,.droplist_read").removeClass('disabled');
             jQuery('input:checkbox').parent().removeClass('disabled');
             jQuery.each(data.columns, function (k, v) {
               if (v.addoption === "true") {
@@ -153,13 +162,12 @@ var Ermis = function () {
               }
           });
         } else if (flag === 4) {//Cancel, Save
-            $kGrid.find('tr.k-state-selected').removeClass('k-state-selected');
             $kGrid.removeClass('disabled');
+            $kGrid.find('tr.k-state-selected').removeClass('k-state-selected');
             jQuery('input').not('[type=radio]').val("");
             jQuery('textarea').val("");
             SetDataDefault(data.columns);
             jQuery('.k-select,.k-datepicker').addClass('disabled');
-            jQuery('.multiselect').addClass('disabled');
             jQuery('.number-price,.number').addClass('disabled');
             jQuery('.save,.cancel').addClass('disabled');
             jQuery('.save,.cancel').off('click');
@@ -181,7 +189,6 @@ var Ermis = function () {
             shortcut.add(key + "D", function (e) { initDelete(e); });
             shortcut.add(key + "I", function (e) { initImport(e); });
             shortcut.add(key + "Q", function (e) { initExport(e); });
-            shortcut.add(key + "W", function (e) { initExportExtra(e); });
             shortcut.add(key + "L", function (e) { altair_main_header.search_show();});
         }
     };
@@ -214,7 +221,7 @@ var Ermis = function () {
             jQuery('title').html(result.com_name+' - '+title);
             // Change Grid
             var grid = $kGrid.data("kendoGrid");
-            var ds = new kendo.data.DataSource({ data: result.data , pageSize :   Ermis.page_size});
+            var ds = new kendo.data.DataSource({ data: result.data , pageSize : Ermis.page_size});
             grid.setDataSource(ds);
             initStatus(4);
           },
@@ -241,7 +248,6 @@ var Ermis = function () {
          function(){},
          function(){},
          function(results){
-           //fix
            kendo.alert(results.message);
          });
         }
@@ -276,6 +282,7 @@ var Ermis = function () {
         }
 
     };
+
     var initLoadInputCrit = function(){
         function multiselect_change(e) {
           if($kGrid.find('tr.k-state-selected').length == 0){
@@ -288,7 +295,7 @@ var Ermis = function () {
               pd = value;
             }
             if(value.length>0){
-              var postdata = { data: pd };
+              var postdata = { data: JSON.stringify(pd) };
               ErmisTemplateAjaxPost0(e,postdata, Ermis.link+'-load',
               function(result){
                 if(!result.data.number){
@@ -316,14 +323,16 @@ var Ermis = function () {
     var initLoadInput = function(){
           if(Ermis.fieldload_crit){
             var value = jQuery("#"+Ermis.fieldload_crit).val();
-              if(value != "0"){
-                if(value.search(",")>0){
+              if(value != "0" && value != null ){
+                if(Array.isArray(value) && value.length > 0){
+                  pd = value[0];
+                }else if(value.search(",")>0){
                   value = value.split(",");
                   pd = value[0];
                 }else{
                   pd = value;
                 }
-                var postdata = { data: pd };
+                var postdata = { data: JSON.stringify(pd) };
                 ErmisTemplateAjaxPost0(null,postdata, Ermis.link+'-load',
                 function(result){
                   if(!result.data.number){
@@ -347,7 +356,7 @@ var Ermis = function () {
                });
             }
       }
-     
+
 
     var initKendoUiSearchbox = function () {
         jQuery(".header_main_search_input").on("keypress blur change", function (e) {
@@ -384,7 +393,7 @@ var Ermis = function () {
 
     var initSaveComplete = function(rd){
       var grid = $kGrid.data("kendoGrid");
-      if (rd.t === 2) {          
+      if (rd.t === 2) {
           initAddGrid(rd,grid);
           jQuery.each(data.columns, function (k, v) {
               if (v.addoption === "true") {
@@ -408,19 +417,20 @@ var Ermis = function () {
       arr.key = Ermis.link;
       ErmisTemplateAjaxPostAdd4(e, null , data, Ermis.link+'-save', arr ,dataId,
         function(result){
-          jQuery('#notification').EPosMessage('success', result.message);
+          kendo.alert(result.message);
+          myWindow.data("kendoWindow").close();
           initStatus(4);
         },
         function(result){
           if(result.error){
             ValidationErrorMessages(result.error);
           };
-          jQuery('#notification').EPosMessage('error', result.message);
+          kendo.alert(result.message);
         },
         function(){
         },
         function(){
-          jQuery('#notification').EPosMessage('error', Lang.get('messages.please_fill_field'));
+          kendo.alert(Lang.get('messages.please_fill_field'));
         });
     };
 
@@ -428,6 +438,7 @@ var Ermis = function () {
       ErmisTemplateEvent0(e, Ermis.per.a,
          function () {
              dataId = null;
+             $kWindow.title(Lang.get('action.add'));
              initStatus(2);
          },
          function () {
@@ -440,6 +451,7 @@ var Ermis = function () {
          function () {
              if ($kGrid.find('tr.k-state-selected').length > 0) {
                  dataId = null;
+                 $kWindow.title(Lang.get('action.copy'));
                  initStatus(3);
              } else {
                  kendo.alert(Lang.get('messages.please_select_line_copy'));
@@ -454,6 +466,7 @@ var Ermis = function () {
       ErmisTemplateEvent0(e, Ermis.per.e,
      function () {
          if ($kGrid.find('tr.k-state-selected').length > 0) {
+             $kWindow.title(Lang.get('action.edit'));
              initStatus(3);
          } else {
              kendo.alert(Lang.get('messages.please_select_line_edit'));
@@ -465,14 +478,16 @@ var Ermis = function () {
     };
 
     var initCancel = function (e) {
-      ErmisTemplateEvent1(e, function () {
+        ErmisTemplateEvent1(e, function () {
             $.when(KendoUiConfirm(Lang.get('messages.are_you_sure'), Lang.get('global.message'))).then(function (confirmed) {
-              if (confirmed) {
-                  initStatus(4);
-              }
-          });
-      });
+                if (confirmed) {
+                    myWindow.data("kendoWindow").close();
+                    initStatus(4);
+                }
+            });
+        });
     };
+
 
     var initDelete = function (e) {
       ErmisTemplateEvent0(e, Ermis.per.d,
@@ -488,18 +503,21 @@ var Ermis = function () {
                             var postdata = { data: JSON.stringify(arr) };
                             ErmisTemplateAjaxPost0(e,postdata,Ermis.link+'-delete',
                                 function (result) {
-                                    jQuery('#notification').EPosMessage('success', result.message);
-                                    initStatus(4);
+                                  myWindow.data("kendoWindow").close();
+                                  kendo.alert(result.message);
+                                  initStatus(4);
+                                  jQuery.each(data.columns, function (k, v) {
+                                    if (v.addoption === "true" ) {
+                                      initRemoveSelect(arr.id,v.field);  
+                                    }
+                                }); 
                                 },
                                 function (result) {
-                                    jQuery('#notification').EPosMessage('error', result.message);
-                                    initStatus(4);
+                                  myWindow.data("kendoWindow").close();
+                                  kendo.alert(result.message);
+                                  initStatus(4);
                                 });
-                                jQuery.each(data.columns, function (k, v) {
-                                  if (v.addoption === "true" ) {
-                                    initRemoveSelect(arr.id,v.field);  
-                                  }
-                              }); 
+                                
                         }
                     });
                 } else {
@@ -510,6 +528,36 @@ var Ermis = function () {
                 kendo.alert(Lang.get('messages.you_not_permission_delete'));
             });
     };
+
+
+    // Filter
+    var initFilterMultiSelect = function(){
+      jQuery.each(data.columns, function (k, v) {
+          if (v.filter === "true") {
+            jQuery('select[name="' + v.field + '"]').on("change", function (e){
+              var a = jQuery(this).val();
+              initFilterMultiSelectContent(a,v.field,v.type);
+            });
+          }
+      });
+    }
+
+    var initFilterMultiSelectLoad = function(arr){
+      jQuery.each(data.columns, function (k, v) {
+          if (v.filter === "true") {
+              if(arr[v.field] != null){
+                if(v.type == "arr"){
+                var a = arr[v.field];
+                }else{
+                var a = arr[v.field].split(",");                
+                };
+                initFilterMultiSelectContent(a,v.field,v.type);         
+              }
+          }
+      });
+    }
+    ////////
+
 
     // Window Extra Export
 
@@ -528,15 +576,16 @@ var Ermis = function () {
 
     var initExportExtra = function (e) {
           initAddPageExportExtra();
-          $kWindow.open();
+          $kWindow_extra.open();
     };
 
     var initKendoGridExtra = function () {
           function onChange(arg) {
               extra_data = this.selectedKeyNames().join(", ");
-              //console.log(this.selectedKeyNames())
-          }
-          ErmisKendoGridCheckboxTemplate1($kGridExtra ,Ermis.data_expend ,jQuery(window).height() * 0.5 , 10 ,Ermis.columns_expend , onChange ,"", 'field');
+            //  console.log(this.selectedKeyNames().join(", "));
+          };
+             ErmisKendoGridCheckboxTemplate1($kGridExtra ,Ermis.data_expend ,jQuery(window).height() * 0.5 , 10 ,Ermis.columns_expend , onChange , "", 'field');
+
        //ErmisKendoGridCheckboxTemplate($kGridExtra, { data: data.columns }, jQuery(window).height() * 0.5, 6, "extra", Ermis.columns_expend , $kWindow, function (checked) {
       //     var array = $.map(checked, function (value, index) {
       //         return [value.voucher];
@@ -559,7 +608,7 @@ var Ermis = function () {
               $export_page_value = 0;
             };
             $extra_page.data("kendoDropDownList").select($export_page_value);
-            $kWindow.close();
+            $kWindow_extra.close();
          },
          function (result) {
              jQuery('#notification').EPosMessage('error', result.message);
@@ -570,8 +619,8 @@ var Ermis = function () {
        var jQuerylink = jQuery(e.target);
        e.preventDefault();
        if (!jQuerylink.data('lockedAt') || +new Date() - jQuerylink.data('lockedAt') > 300) {
-           if ($kWindow.element.is(":hidden") === false) {
-               $kWindow.close();
+           if ($kWindow_extra.element.is(":hidden") === false) {
+               $kWindow_extra.close();
            }
        }
        jQuerylink.data('lockedAt', +new Date());
@@ -579,33 +628,41 @@ var Ermis = function () {
 
    // ---------------
 
-    var initImport = function (e) {
-          ErmisTemplateEvent0(e, $import,
-          function () {
-              $import.data("kendoDialog").open();
-          },
-          function () {
-              initKendoUiDialog(2);
-          });
-    };
-
-    var initExport = function (e) {
-          ErmisTemplateEvent0(e, $export,
+   var initImport = function (e) {
+         ErmisTemplateEvent0(e, $import,
          function () {
-             $export.data("kendoDialog").open();
+             $import.data("kendoDialog").open();
          },
          function () {
-             initKendoUiDialog(1);
+             initKendoUiDialog(2);
          });
+   };
+
+   var initExport = function (e) {
+         ErmisTemplateEvent0(e, $export,
+        function () {
+            $export.data("kendoDialog").open();
+        },
+        function () {
+            initKendoUiDialog(1);
+        });
+   };
+
+   var onChange = function () {
+       var grid = this;
+       var dataItem = grid.dataItem(grid.select());
+       dataId = dataItem.id;
+       SetDataAjax(data.columns, dataItem);
+       initFilterMultiSelectLoad(dataItem);
+   };
+
+    var initKendoUiWindow = function () {
+        function onClose() {
+            initStatus(4);
+        }
+        $kWindow = ErmisKendoWindowTemplate1(myWindow, jQuery(window).width() * 0.75, "",onClose);
     };
 
-    var onChange = function () {
-        var grid = this;
-        var dataItem = grid.dataItem(grid.select());
-        dataId = dataItem.id;
-        SetDataAjax(data.columns, dataItem);
-    };
-    
     var initClientReceive = function(){
       Echo.private('data-delete-'+Ermis.link+'-'+Chat.com)
          .listen('DataSend', (rs) => {
@@ -620,11 +677,11 @@ var Ermis = function () {
             var grid = $kGrid.data("kendoGrid");
             jQuery.each(rs.data[0], function (k, v) {
               initAddGrid(v,grid);
-            });        
+            });     
             jQuery.each(data.columns, function (k, v) {
               if (v.addoption === "true") {
                 jQuery.each(rs.data[0], function (l,m) {
-                  initAddSelect(m,v.field);        
+                  initAddSelect(m,v.field);  
                 });
               }
           });
@@ -635,11 +692,13 @@ var Ermis = function () {
 
         init: function () {
             initGetShortKey();
-            initGetColunm();          
+            initStatus(Ermis.flag);    
+            initGetColunm();
             initKendoUiSearchbox();
-            initStatus(Ermis.flag);
+            initKendoUiWindow();
             initClientReceive();
             initKendoGridExtra();
+            initFilterMultiSelect();
             initGlobalRegister();
             initLoadInputCrit();
         }

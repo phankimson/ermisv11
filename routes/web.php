@@ -65,7 +65,11 @@ Route::prefix('manage')->group(function () {
    'controller' => DropDownListController::class
   ],function () {
   Route::get(env('URL_DROPDOWN').'/country', 'country_dropdown_list');
-  //Route::get(env('URL_DROPDOWN').'/menu', 'menu_dropdown_list');
+  Route::get(env('URL_DROPDOWN').'/regions', 'regions_dropdown_list');
+  Route::get(env('URL_DROPDOWN').'/area', 'area_dropdown_list');
+  Route::get(env('URL_DROPDOWN').'/distric', 'distric_dropdown_list');
+  Route::get(env('URL_DROPDOWN').'/software', 'software_dropdown_list');
+  Route::get(env('URL_DROPDOWN').'/company', 'company_dropdown_list');
   });
 
 

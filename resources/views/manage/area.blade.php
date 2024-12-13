@@ -20,11 +20,7 @@
     <table>
       <tr>
           <td class="row-label"><label>@lang('area.regions')</label></td>
-          <td><select class="droplist large" data-position="1" data-title="@lang('area.regions')" data-template="#= FormatDropList(regions,'regions') #" data-type="number" data-width="200px" name="regions">
-                  <option readonly selected value="0">--Select--</option>
-                    @foreach($regions as $c)
-                      <option value="{{ $c->id }}">{{ $c->code }} - {{ $c->name }}</option>
-                    @endforeach
+          <td><select class="droplist_read large" data-position="1" data-title="@lang('area.regions')" data-template="#= FormatDropListRead(regions,'regions') #" data-type="number" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/regions'}}" name="regions">
               </select>
           </td>
       </tr>
@@ -77,5 +73,5 @@
   </script>
 @endsection
 @section('scripts_end')
-<script src="{{ url('addon/scripts/ermis/ermis-form-1-scrolldf.js') }}"></script>
+<script src="{{ url('addon/scripts/ermis/ermis-form-1-read.js') }}"></script>
 @endsection

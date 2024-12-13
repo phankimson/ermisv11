@@ -110,7 +110,7 @@ var Ermis = function () {
             jQuery('input,textarea').not('.header_main_search_input').not('#content_message').not('#files').not('.k-filter-menu input').addClass('disabled');
             jQuery(".droplist").not("#action-event").not(".not_disabled").addClass('disabled');
             jQuery('input:checkbox').parent().addClass('disabled');
-            jQuery('.k-select').addClass('disabled');
+            jQuery('.k-select,.k-datepicker').addClass('disabled');
             jQuery('.add,.copy,.edit,.delete,.import,.export,.load,.export_extra,.connect_database').removeClass('disabled');
             jQuery('.add').on('click', initAdd);
             jQuery('.copy').on('click', initCopy);
@@ -135,13 +135,12 @@ var Ermis = function () {
             $kGrid.addClass('disabled');
             $kGrid.find('tr.k-state-selected').removeClass('k-state-selected');
             jQuery('.save,.cancel,.load').removeClass('disabled');
-            jQuery('.k-select').removeClass('disabled');
+            jQuery('.k-select,.k-datepicker').removeClass('disabled');
             jQuery(".droplist").removeClass('disabled');
             jQuery('.number-price,.number').removeClass('disabled');
             jQuery('.cancel').on('click', initCancel);
             jQuery('.save').on('click', initSave);
             jQuery('.load').on('click', initLoadInput);
-            jQuery('.k-datepicker').removeClass('disabled');
             shortcut.add(key + "S", function (e) { initSave(e); });
             shortcut.add(key + "C", function (e) { initCancel(e); });
             jQuery('.add,.copy,.edit,.delete,.import,.export,.export_extra,.connect_database').addClass('disabled');
@@ -162,13 +161,12 @@ var Ermis = function () {
             $kWindow.center().open();
             $kGrid.addClass('disabled');
             jQuery('.save,.cancel,.load').removeClass('disabled');
-            jQuery('.k-select').removeClass('disabled');
+            jQuery('.k-select,.k-datepicker').removeClass('disabled');
             jQuery('.number-price,.number').removeClass('disabled');
             jQuery(".droplist").removeClass('disabled');
             jQuery('.cancel').on('click', initCancel);
             jQuery('.save').on('click', initSave);
             jQuery('.load').on('click', initLoadInput);
-            jQuery('.k-datepicker').removeClass('disabled');
             shortcut.add(key + "S", function (e) { initSave(e); });
             shortcut.add(key + "C", function (e) { initCancel(e); });
             jQuery('.add,.copy,.edit,.delete,.import,.export,.export_extra,.connect_database').addClass('disabled');
@@ -191,7 +189,7 @@ var Ermis = function () {
             jQuery('input').not('[type=radio]').val("");
             jQuery('textarea').val("");
             SetDataDefault(data.columns);
-            jQuery('.k-select').addClass('disabled');
+            jQuery('.k-select,.k-datepicker').addClass('disabled');
             jQuery('.number-price,.number').addClass('disabled');
             jQuery('.save,.cancel').addClass('disabled');
             jQuery('.save,.cancel').off('click');
@@ -234,7 +232,7 @@ var Ermis = function () {
                        dataValueField: "value",
                        dataSource: result.datatb,
                        filter: "contains",
-                       optionLabel: "Select ..."
+                       optionLabel: "--Select--"
                    });
                   }
               });

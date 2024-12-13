@@ -10,9 +10,7 @@ use App\Http\Model\HistoryAction;
 use App\Http\Model\Systems;
 use App\Http\Model\Menu;
 use App\Http\Model\Area;
-use App\Http\Model\Regions;
 use App\Http\Model\Error;
-use App\Http\Resources\DropDownListResource;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Model\Imports\AreaImport;
 use App\Http\Model\Exports\AreaExport;
@@ -38,11 +36,11 @@ class AreaController extends Controller
 
   public function show(){
     //$data = Area::get_raw();
-    $regions = collect(DropDownListResource::collection(Regions::active()->get()));
+    //$regions = collect(DropDownListResource::collection(Regions::active()->get()));
     $count = Area::count();
     $sys_page = Systems::get_systems($this->page_system);
     $paging = $count>$sys_page->value?1:0; 
-    return view('manage.area',['paging' => $paging, 'key' => $this->key ,'regions' =>$regions ]);
+    return view('manage.area',['paging' => $paging, 'key' => $this->key ]);
   }
 
   public function data(Request $request){    

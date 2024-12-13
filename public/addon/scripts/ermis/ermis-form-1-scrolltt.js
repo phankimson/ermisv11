@@ -76,7 +76,7 @@ var Ermis = function () {
             jQuery('input,textarea').not('.header_main_search_input').not('#content_message').not('#files').not('.k-filter-menu input').addClass('disabled');
             jQuery(".droplist").not("#action-event").not(".not_disabled").addClass('disabled');
             jQuery('input:checkbox').parent().addClass('disabled');
-            jQuery('.k-select').addClass('disabled');
+            jQuery('.k-select,.k-datepicker').addClass('disabled');
             jQuery('.multiselect').addClass('disabled');
             jQuery('.add,.copy,.edit,.delete,.import,.export,.load,.export_extra').removeClass('disabled');
             jQuery('.add').on('click', initAdd);
@@ -100,7 +100,7 @@ var Ermis = function () {
             $kGrid.addClass('disabled');
             $kGrid.find('tr.k-state-selected').removeClass('k-state-selected');
             jQuery('.save,.cancel,.load').removeClass('disabled');
-            jQuery('.k-select').removeClass('disabled');
+            jQuery('.k-select,.k-datepicker').removeClass('disabled');
             jQuery('.number-price,.number').removeClass('disabled');
             jQuery('.cancel').on('click', initCancel);
             jQuery('.save').on('click', initSave);
@@ -126,7 +126,7 @@ var Ermis = function () {
         } else if (flag === 3) {//Edit , COpy
             $kGrid.addClass('disabled');
             jQuery('.save,.cancel,.load').removeClass('disabled');
-            jQuery('.k-select').removeClass('disabled');
+            jQuery('.k-select,.k-datepicker').removeClass('disabled');
             jQuery('.multiselect').removeClass('disabled');
             jQuery('.number-price,.number').removeClass('disabled');
             jQuery('.cancel').on('click', initCancel);
@@ -155,7 +155,7 @@ var Ermis = function () {
             jQuery('input').not('[type=radio]').val("");
             jQuery('textarea').val("");
             SetDataDefault(data.columns);
-            jQuery('.k-select').addClass('disabled');
+            jQuery('.k-select,.k-datepicker').addClass('disabled');
             jQuery('.multiselect').addClass('disabled');
             jQuery('.number-price,.number').addClass('disabled');
             jQuery('.save,.cancel').addClass('disabled');
@@ -200,7 +200,7 @@ var Ermis = function () {
                        dataValueField: "value",
                        dataSource: result.datatb,
                        filter: "contains",
-                       optionLabel: "Select ..."
+                       optionLabel: "--Select--"
                    });
                   }
               });

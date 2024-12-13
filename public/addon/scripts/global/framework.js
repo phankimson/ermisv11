@@ -487,6 +487,7 @@ function PrintForm(elem,data) {
         deferred: $.Deferred().done(function() { console.log('Printing done', arguments); })
 });
 }
+// GET SET DATA 
 
 function SetDataAjax(data, dataItem){
   jQuery.each(data, function (k, col) {
@@ -513,11 +514,12 @@ function SetDataAjax(data, dataItem){
               jQuery('input[name="' + col.field + '"]').val(v);
           }
       } else if (col.key === 'select') {
-            if (v === null && jQuery('select[name="' + col.field + '"]').hasClass("droplist")) {
-                jQuery('select[name="' + col.field + '"]').data('kendoDropDownList').value("0");
+            if ((v === null || v == "") && (jQuery('select[name="' + col.field + '"]').hasClass("droplist") || jQuery('select[name = ' + col.field + ']').hasClass("droplist_read"))) {
+              var classes = jQuery('select[name = ' + col.field + ']').prop('class').split(' ')[0];   
+              jQuery('.'+classes+'[name="' + col.field + '"]').data('kendoDropDownList').value("0");
             } else {
              if(jQuery('select[name="' + col.field + '"]').hasClass("multiselect")){
-               if(v != null || (Array.isArray(v) && v.length == 0)){
+               if( (v != null && v != "") || (Array.isArray(v) && v.length == 0)){
                  if(col.type == "arr"){
                   jQuery('select[name="' + col.field + '"]').data('kendoMultiSelect').value(v);
                  }else{
@@ -557,8 +559,9 @@ function SetDataAjax(data, dataItem){
 
 function SetDataDefault(columns){
   jQuery.each(columns, function (k, col) {
-      if (col.key === 'select' && jQuery('select[name = ' + col.field + ']').hasClass("droplist")) {
-          jQuery('.droplist[name="' + col.field + '"]').data('kendoDropDownList').value("0");
+      if (col.key === 'select' && (jQuery('select[name = ' + col.field + ']').hasClass("droplist")|| jQuery('select[name = ' + col.field + ']').hasClass("droplist_read"))) {
+        var classes = jQuery('select[name = ' + col.field + ']').prop('class').split(' ')[0];  
+        jQuery('.'+classes+'[name="' + col.field + '"]').data('kendoDropDownList').value("0");
       } else if (col.key === 'select' && jQuery('select[name = ' + col.field + ']').hasClass("multiselect")) {
           jQuery('.multiselect[name="' + col.field + '"]').data('kendoMultiSelect').value("");
       } else if (col.key === 'checkbox') {
@@ -606,8 +609,9 @@ function GetDataAjax(data) {
               }
           }
 
-      } else if (col.key === 'select' && jQuery('select[name = ' + col.field + ']').hasClass("droplist")) {
-          obj[col.field] = jQuery('.droplist[name="' + col.field + '"]').data('kendoDropDownList').value();
+      } else if (col.key === 'select' && (jQuery('select[name = ' + col.field + ']').hasClass("droplist") || jQuery('select[name = ' + col.field + ']').hasClass("droplist_read"))) {
+        var classes = jQuery('select[name = ' + col.field + ']').prop('class').split(' ')[0];
+          obj[col.field] = jQuery('.'+classes+'[name="' + col.field + '"]').data('kendoDropDownList').value();
       } else if (col.key === 'select' && jQuery('select[name = ' + col.field + ']').hasClass("multiselect")) {
         if(col.type === 'arr'){
           obj[col.field] = jQuery('.multiselect[name="' + col.field + '"]').data('kendoMultiSelect').value();
@@ -1116,6 +1120,8 @@ function FormatDropList(container,column) {
   var result = "";
   if(container != null && container != ""){
     result = jQuery("select[name='" + column + "']").find('option[value=' + container+ ']').text();
+  }else{
+    result = jQuery("select[name='" + column + "']").find('option[value="0"]').text();
   }
   return result;
 }
@@ -1124,6 +1130,8 @@ function FormatDropListRead(container,column) {
   var result = "";
   if(container != null && container != ""){
     result = jQuery("select[name='" + column + "']").data("kendoDropDownList").dataSource.view().find(x=>x.value === container).text;
+  }else{
+    result = jQuery("select[name='" + column + "']").data("kendoDropDownList").dataSource.view().find(x=>x.value === '0').text;
   }
   return result;
 }
