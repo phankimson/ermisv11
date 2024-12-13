@@ -22,11 +22,7 @@
       <tr>
           <td class="row-label"><label>@lang('group_users.company')</label></td>
           <td>
-          <select class="droplist large" data-position="1" data-title="@lang('group_users.company')" data-template="#= FormatDropList(company_id,'company_id') #" data-type="number" data-width="200px" name="company_id">
-                  <option readonly selected value="0">--Select--</option>
-                    @foreach($company as $c)
-                       <option value="{{ $c->id }}">{{ $c->code }} - {{ $c->name }}</option>
-                    @endforeach
+          <select class="droplist_read large" data-position="1" data-title="@lang('group_users.company')" data-template="#= FormatDropListRead(company_id,'company_id') #" data-type="number" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/company'}}" name="company_id">
               </select>
           </td>
       </tr>
@@ -73,5 +69,5 @@
   </script>
 @endsection
 @section('scripts_end')
-<script src="{{ url('addon/scripts/ermis/ermis-form-1-scrolltt.js') }}"></script>
+<script src="{{ url('addon/scripts/ermis/ermis-form-1-read.js') }}"></script>
 @endsection

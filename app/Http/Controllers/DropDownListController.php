@@ -5,19 +5,21 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Resources\LangDropDownResource;
+use App\Http\Resources\DropDownResource;
 use App\Http\Model\Country;
 use App\Http\Model\Regions;
 use App\Http\Model\Area;
 use App\Http\Model\Distric;
 use App\Http\Model\Software;
 use App\Http\Model\Company;
+use App\Http\Model\GroupUsers;
 
 class DropDownListController extends Controller
 {
 
   public function country_dropdown_list(Request $request){
       $default = collect([['value' => '0','text' => "--Select--"]]);
-      $data = LangDropDownResource::collection(Country::active()->get());
+      $data = DropDownResource::collection(Country::active()->get());
       $data = $default->merge($data)->values();
       return response()->json($data)->withCallback($request->input('callback'));
   }
@@ -53,6 +55,13 @@ class DropDownListController extends Controller
   public function company_dropdown_list(Request $request){
     $default = collect([['value' => '0','text' => "--Select--"]]);
     $data = LangDropDownResource::collection(Company::active()->get());
+    $data = $default->merge($data)->values();
+    return response()->json($data)->withCallback($request->input('callback'));
+  }
+
+  public function group_users_dropdown_list(Request $request){
+    $default = collect([['value' => '0','text' => "--Select--"]]);
+    $data = DropDownResource::collection(GroupUsers::active()->get());
     $data = $default->merge($data)->values();
     return response()->json($data)->withCallback($request->input('callback'));
   }

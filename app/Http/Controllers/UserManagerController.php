@@ -9,12 +9,8 @@ use Illuminate\Support\Str;
 use App\Http\Model\HistoryAction;
 use App\Http\Model\User;
 use App\Http\Model\Menu;
-use App\Http\Model\Company;
-use App\Http\Model\Country;
-use App\Http\Model\GroupUsers;
 use App\Http\Model\Systems;
 use App\Http\Model\Error;
-use App\Http\Resources\DropDownListResource;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Model\Imports\UserImport;
 use App\Http\Model\Exports\UserExport;
@@ -43,13 +39,13 @@ class UserManagerController extends Controller
 
   public function show(){
     //$data = User::all()->makeVisible(['active_code','password']);
-    $group_user = GroupUsers::active()->get();
-    $company_default = collect(DropDownListResource::collection(Company::active()->get()));
-    $country = Country::all();
+    //$group_user = GroupUsers::active()->get();
+    //$company_default = collect(DropDownListResource::collection(Company::active()->get()));
+    //$country = Country::all();
     $count = User::count();
     $sys_page = Systems::get_systems($this->page_system);
     $paging = $count>$sys_page->value?1:0; 
-    return view('manage.users',['paging' => $paging, 'key' => $this->key , 'group_user'=>$group_user ,'company_default' =>$company_default ,'country' =>$country ]);
+    return view('manage.users',['paging' => $paging, 'key' => $this->key ]);
   }
 
   

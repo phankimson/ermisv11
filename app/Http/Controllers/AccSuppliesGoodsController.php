@@ -43,7 +43,6 @@ class AccSuppliesGoodsController extends Controller
   protected $menu;
   protected $page_system;
   protected $path;
-  protected $document;
   protected $revenue;
   protected $cost;
   protected $stock;
@@ -53,8 +52,7 @@ class AccSuppliesGoodsController extends Controller
      $this->key = "supplies-goods";
      $this->menu = Menu::where('code', '=', $this->key)->first();
      $this->page_system = "MAX_COUNT_CHANGE_PAGE";
-     $this->path = "PATH_UPLOAD_SUPPLIES_GOODS";
-     $this->document = "DOCUMENT_TAX";
+     $this->path = "PATH_UPLOAD_SUPPLIES_GOODS";     
      $this->revenue = "DT";
      $this->cost = "CP";
      $this->stock = "KH";
@@ -62,40 +60,40 @@ class AccSuppliesGoodsController extends Controller
 
   public function show(){
     //$data = AccSuppliesGoods::with('discount')->get();
-    $unit = collect(DropDownListResource::collection(AccUnit::active()->get()));
-    $sg_type = collect(DropDownListResource::collection(AccSuppliesGoodsType::active()->get()));
-    $sg_group = collect(DropDownListResource::collection(AccSuppliesGoodsGroup::active()->get()));
-    $w_p= collect(DropDownListResource::collection(AccWarrantyPeriod::active()->get()));
-    $st= collect(DropDownListResource::collection(AccStock::active()->get()));
-    $vat_tax= collect(DropDownListResource::collection(AccVat::active()->get()));
-    $excise_tax = collect(DropDownListResource::collection(AccExcise::active()->get()));
-    $sys = AccSystems::get_systems($this->document);
-    $doc = Document::get_code($sys->value);
-    $setting_revenue = AccSettingAccountGroup::get_code($this->revenue);
-    $account_revenue = collect([]);
-    if($setting_revenue->account_group){
-      $account_revenue = AccAccountSystems::get_code_like($doc->id,$setting_revenue->account_group);
-    }else if($setting_revenue->account_filter){
-      $account_revenue = AccAccountSystems::get_wherein_id($doc->id,$setting_revenue->account_filter->pluck('account_systems'));
-    }
-    $setting_cost = AccSettingAccountGroup::get_code($this->cost);
-    $account_cost = collect([]);
-    if($setting_cost->account_group){
-      $account_cost = AccAccountSystems::get_code_like($doc->id,$setting_cost->account_group);
-    }else if($setting_cost->account_filter){
-      $account_cost = AccAccountSystems::get_wherein_id($doc->id,$setting_cost->account_filter->pluck('account_systems'));
-    }
-    $setting_stock = AccSettingAccountGroup::get_code($this->stock);
-    $account_stock = collect([]);
-    if($setting_stock->account_group){
-      $account_stock = AccAccountSystems::get_code_like($doc->id,$setting_stock->account_group);
-    }else if($setting_stock->account_filter){
-      $account_stock = AccAccountSystems::get_wherein_id($doc->id,$setting_stock->account_filter->pluck('account_systems'));
-    }
+    //$unit = collect(DropDownListResource::collection(AccUnit::active()->get()));
+    //$sg_type = collect(DropDownListResource::collection(AccSuppliesGoodsType::active()->get()));
+    //$sg_group = collect(DropDownListResource::collection(AccSuppliesGoodsGroup::active()->get()));
+    //$w_p= collect(DropDownListResource::collection(AccWarrantyPeriod::active()->get()));
+    //$st= collect(DropDownListResource::collection(AccStock::active()->get()));
+    //$vat_tax= collect(DropDownListResource::collection(AccVat::active()->get()));
+    //$excise_tax = collect(DropDownListResource::collection(AccExcise::active()->get()));
+    //$sys = AccSystems::get_systems($this->document);
+    //$doc = Document::get_code($sys->value);
+    //$setting_revenue = AccSettingAccountGroup::get_code($this->revenue);
+    //$account_revenue = collect([]);
+    //if($setting_revenue->account_group){
+    //  $account_revenue = AccAccountSystems::get_code_like($doc->id,$setting_revenue->account_group);
+    //}else if($setting_revenue->account_filter){
+    //  $account_revenue = AccAccountSystems::get_wherein_id($doc->id,$setting_revenue->account_filter->pluck('account_systems'));
+    //}
+    //$setting_cost = AccSettingAccountGroup::get_code($this->cost);
+    //$account_cost = collect([]);
+    //if($setting_cost->account_group){
+    //  $account_cost = AccAccountSystems::get_code_like($doc->id,$setting_cost->account_group);
+    //}else if($setting_cost->account_filter){
+    //  $account_cost = AccAccountSystems::get_wherein_id($doc->id,$setting_cost->account_filter->pluck('account_systems'));
+    //}
+    //$setting_stock = AccSettingAccountGroup::get_code($this->stock);
+    //$account_stock = collect([]);
+    //if($setting_stock->account_group){
+    //  $account_stock = AccAccountSystems::get_code_like($doc->id,$setting_stock->account_group);
+    //}else if($setting_stock->account_filter){
+    //  $account_stock = AccAccountSystems::get_wherein_id($doc->id,$setting_stock->account_filter->pluck('account_systems'));
+    //}
     $count = AccSuppliesGoods::count();
     $sys_page = AccSystems::get_systems($this->page_system);
     $paging = $count>$sys_page->value?1:0;   
-    return view('acc.supplies_goods',['paging' => $paging, 'key' => $this->key ,'sg_type' =>$sg_type,'sg_group' =>$sg_group,"w_p"=>$w_p,'unit'=>$unit,'st'=>$st,'vat_tax'=>$vat_tax,'excise_tax'=>$excise_tax,'s_a'=>$account_stock,'r_a'=>$account_revenue,'c_a'=>$account_cost ]);
+    return view('acc.supplies_goods',['paging' => $paging, 'key' => $this->key ]);
   }
 
   

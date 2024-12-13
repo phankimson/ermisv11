@@ -514,23 +514,28 @@ function SetDataAjax(data, dataItem){
               jQuery('input[name="' + col.field + '"]').val(v);
           }
       } else if (col.key === 'select') {
-            if ((v === null || v == "") && (jQuery('select[name="' + col.field + '"]').hasClass("droplist") || jQuery('select[name = ' + col.field + ']').hasClass("droplist_read"))) {
-              var classes = jQuery('select[name = ' + col.field + ']').prop('class').split(' ')[0];   
-              jQuery('.'+classes+'[name="' + col.field + '"]').data('kendoDropDownList').value("0");
-            } else {
-             if(jQuery('select[name="' + col.field + '"]').hasClass("multiselect")){
-               if( (v != null && v != "") || (Array.isArray(v) && v.length == 0)){
-                 if(col.type == "arr"){
-                  jQuery('select[name="' + col.field + '"]').data('kendoMultiSelect').value(v);
-                 }else{
-                  jQuery('select[name="' + col.field + '"]').data('kendoMultiSelect').value(v.split(","));
-                 }                  
-               }else{
-                  jQuery('select[name="' + col.field + '"]').data('kendoMultiSelect').value(null);
-               }
+            var classes = jQuery('select[name = ' + col.field + ']').prop('class');
+            hasWhiteSpace(classes) == true ?  classes =  classes.split(' ')[0] :  classes
+            if (classes == 'droplist' || classes == 'droplist_read') {
+              var data = jQuery("select[name='" + col.field + "']").data("kendoDropDownList").dataSource.view();
+              var found = data.some(el => el.value === v);
+              if(found){
+                jQuery('.'+classes+'[name="' + col.field + '"]').data('kendoDropDownList').value(v);
               }else{
-                jQuery('select[name="' + col.field + '"]').data('kendoDropDownList').value(v);
-            }
+                jQuery('.'+classes+'[name="' + col.field + '"]').data('kendoDropDownList').value("0");
+              }
+            } else {
+              if(classes == 'multiselect'){
+                if( (v != null && v != "") || (Array.isArray(v) && v.length == 0)){
+                  if(col.type == "arr"){
+                    jQuery('.'+classes+'name="' + col.field + '"]').data('kendoMultiSelect').value(v);
+                  }else{
+                    jQuery('.'+classes+'[name="' + col.field + '"]').data('kendoMultiSelect').value(v.split(","));
+                  }                  
+                }else{
+                    jQuery('.'+classes+'[name="' + col.field + '"]').data('kendoMultiSelect').value(null);
+                }
+              }
           }
       } else if (col.key === 'checkbox') {
           if (v === "1" || v === true || v === 1) {
@@ -559,11 +564,12 @@ function SetDataAjax(data, dataItem){
 
 function SetDataDefault(columns){
   jQuery.each(columns, function (k, col) {
-      if (col.key === 'select' && (jQuery('select[name = ' + col.field + ']').hasClass("droplist")|| jQuery('select[name = ' + col.field + ']').hasClass("droplist_read"))) {
-        var classes = jQuery('select[name = ' + col.field + ']').prop('class').split(' ')[0];  
+      var classes = jQuery('select[name = ' + col.field + ']').prop('class');
+      hasWhiteSpace(classes) == true ?  classes =  classes.split(' ')[0] :  classes
+      if (col.key === 'select' && (classes == "droplist" || classes == "droplist_read")) {       
         jQuery('.'+classes+'[name="' + col.field + '"]').data('kendoDropDownList').value("0");
-      } else if (col.key === 'select' && jQuery('select[name = ' + col.field + ']').hasClass("multiselect")) {
-          jQuery('.multiselect[name="' + col.field + '"]').data('kendoMultiSelect').value("");
+      } else if (col.key === 'select' && classes == "multiselect") {
+          jQuery('.'+classes+'[name="' + col.field + '"]').data('kendoMultiSelect').value("");
       } else if (col.key === 'checkbox') {
           var a = jQuery('input[name="' + col.field + '"]');
           var value = jQuery('input[name="' + col.field + '"]').attr("data-value");
@@ -1118,7 +1124,8 @@ function FormatCheckBoxBoolean(container) {
 }
 function FormatDropList(container,column) {
   var result = "";
-  if(container != null && container != ""){
+  var found = jQuery("select[name='" + column + "']").find('option[value=' + container+ ']');
+  if(found.length>0){
     result = jQuery("select[name='" + column + "']").find('option[value=' + container+ ']').text();
   }else{
     result = jQuery("select[name='" + column + "']").find('option[value="0"]').text();
@@ -1128,10 +1135,12 @@ function FormatDropList(container,column) {
 
 function FormatDropListRead(container,column) {
   var result = "";
-  if(container != null && container != ""){
-    result = jQuery("select[name='" + column + "']").data("kendoDropDownList").dataSource.view().find(x=>x.value === container).text;
+  var data = jQuery("select[name='" + column + "']").data("kendoDropDownList").dataSource.view();
+  var found = data.some(el => el.value === container);
+  if(found){
+    result = data.find(x=>x.value === container).text;
   }else{
-    result = jQuery("select[name='" + column + "']").data("kendoDropDownList").dataSource.view().find(x=>x.value === '0').text;
+    result = data.find(x=>x.value === '0').text;
   }
   return result;
 }
@@ -1724,6 +1733,10 @@ function calculatePriceAggregateDiscount(decimal) {
     
     return words;
 };
+
+function hasWhiteSpace(s) {
+  return (/\s/).test(s);
+}
 
 function convertValues(value) {
   var data = {};

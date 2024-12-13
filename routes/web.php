@@ -70,6 +70,7 @@ Route::prefix('manage')->group(function () {
   Route::get(env('URL_DROPDOWN').'/distric', 'distric_dropdown_list');
   Route::get(env('URL_DROPDOWN').'/software', 'software_dropdown_list');
   Route::get(env('URL_DROPDOWN').'/company', 'company_dropdown_list');
+  Route::get(env('URL_DROPDOWN').'/group-users', 'group_users_dropdown_list');
   });
 
 
@@ -409,6 +410,22 @@ Route::prefix('acc')->group(function () {
   Route::post('load-chat-user', 'loadChatUser' );
   Route::post('chat', 'doChat' );
   });
+
+   // DropDownList
+   Route::group([
+    'as' => 'dropdownlist',
+   'controller' => AccDropDownListController::class
+  ],function () {
+  Route::get(env('URL_DROPDOWN').'/unit', 'unit_dropdown_list');
+  Route::get(env('URL_DROPDOWN').'/supplies-goods-type', 'supplies_goods_type_dropdown_list');
+  Route::get(env('URL_DROPDOWN').'/supplies-goods-group', 'supplies_goods_group_dropdown_list');
+  Route::get(env('URL_DROPDOWN').'/warranty-period', 'warranty_period_dropdown_list');
+  Route::get(env('URL_DROPDOWN').'/stock', 'stock_dropdown_list');
+  Route::get(env('URL_DROPDOWN').'/vat-tax', 'vat_tax_dropdown_list');
+  Route::get(env('URL_DROPDOWN').'/excise-tax', 'excise_tax_dropdown_list');
+  Route::get(env('URL_DROPDOWN').'/setting-account-group', 'setting_account_group_dropdown_list');
+  });
+
 
   // Permission
   Route::group([

@@ -73,11 +73,7 @@
                <tr>
                    <td class="row-label"><label>@lang('user.country')</label></td>
                    <td>
-                     <select class="droplist large" data-position="8" data-title="@lang('user.country')" add-option="true" data-template="#= FormatDropList(country,'country') #" data-type="string" data-width="200px" name="country">
-                             <option readonly selected value="0">--Select--</option>
-                             @foreach($country as $c)
-                               <option value="{{ $c->id }}">{{ $c->code }} - {{ $c->name }}</option>
-                             @endforeach
+                     <select class="droplist_read large" data-position="8" data-title="@lang('user.country')" add-option="true" data-template="#= FormatDropListRead(country,'country') #" data-type="string" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/country'}}"  name="country">
                          </select>
                    </td>
                </tr>
@@ -99,11 +95,7 @@
              </tr>
              <tr>
                  <td class="row-label"><label>@lang('user.group_user')</label></td>
-                 <td><select class="droplist large" data-position="8" data-title="@lang('user.group_user')" data-template="#= FormatDropList(group_users_id,'group_users_id') #" data-type="number" data-width="200px" name="group_users_id">
-                         <option readonly selected value="0">--Select--</option>
-                           @foreach($group_user as $c)
-                             <option value="{{ $c->id }}">{{ $c->code }} - {{ $c->name }}</option>
-                           @endforeach
+                 <td><select class="droplist_read large" data-position="8" data-title="@lang('user.group_user')" data-template="#= FormatDropListRead(group_users_id,'group_users_id') #" data-type="number"  data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/group-users'}}"  data-width="200px" name="group_users_id">
                      </select>
                  </td>
              </tr>
@@ -119,17 +111,12 @@
                  <td class="row-label"><label>@lang('user.stock_default')</label></td>
                  <td><select class="droplist large" data-position="8" data-title="@lang('user.stock_default')" data-template="#= FormatDropList(stock_default,'stock_default') #" data-type="number" data-width="200px" name="stock_default">
                          <option readonly selected value="0">--Select--</option>
-
                      </select>
                  </td>
              </tr>
              <tr>
                  <td class="row-label"><label>@lang('user.company_default')</label></td>
-                 <td><select class="droplist large" data-position="8" data-title="@lang('user.company_default')" data-template="#= FormatDropList(company_default,'company_default') #" data-type="number" data-width="200px" name="company_default">
-                         <option readonly selected value="0">--Select--</option>
-                         @foreach($company_default as $c)
-                           <option value="{{ $c->id }}">{{ $c->code }} - {{ $c->name }}</option>
-                         @endforeach
+                 <td><select class="droplist_read large" data-position="8" data-title="@lang('user.company_default')" data-template="#= FormatDropListRead(company_default,'company_default') #" data-type="number" data-width="200px"  data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/company'}}"  name="company_default">
                      </select>
                  </td>
              </tr>
@@ -209,5 +196,5 @@
   </script>
 @endsection
 @section('scripts_end')
-<script src="{{ url('addon/scripts/ermis/ermis-form-2-pageup.js') }}"></script>
+<script src="{{ url('addon/scripts/ermis/ermis-form-2-pageupread.js') }}"></script>
 @endsection
