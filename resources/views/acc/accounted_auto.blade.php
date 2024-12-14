@@ -81,19 +81,9 @@
 @endpush
 
 @section('tabs')
-
+<div id="accounted_fast_dropdown_list" class="hidden" data-url="{{env('URL_DROPDOWN').'/accounted-fast'}}" data-json=""></div>
 @endsection
 @section('scripts_up')
-<div id="work_code_dropdown_list" class="hidden" data-json="{{$work_code}}"></div>
-<div id="account_dropdown_list" class="hidden" data-json="{{$account}}"></div>
-<div id="department_dropdown_list" class="hidden" data-json="{{$department}}"></div>
-<div id="bank_account_dropdown_list" class="hidden" data-json="{{$bank_account}}"></div>
-<div id="cost_code_dropdown_list" class="hidden" data-json="{{$cost_code}}"></div>
-<div id="case_code_dropdown_list" class="hidden" data-json="{{$case_code}}"></div>
-<div id="statistical_code_dropdown_list" class="hidden" data-json="{{$statistical_code}}"></div>
-<div id="accounted_fast_dropdown_list" class="hidden" data-json="{{$accounted_fast}}"></div>
-<div id="object_dropdown_list" class="hidden" data-json="{{$object}}"></div>
-<div id="object_dropdown_list" class="hidden" data-json="{{$object}}"></div>
 <script>
   jQuery(document).ready(function () {
       Ermis.per = <?= json_encode($per);?>;
@@ -116,18 +106,19 @@
                            {field : "active", column:  "@lang('action.active')" }];
      Ermis.hot_field = "accounted_auto_detail";
      Ermis.ArrayColumn = [{data:'id',title:"@lang('global.column_name')", readOnly:true },
-                         {data:'accounted_fast',editor: 'chosen', chosenOptions: {data: jQuery('#accounted_fast_dropdown_list').data('json')} ,key : "afterChange",renderer: customDropdownRenderer, title:"@lang('acc_voucher.accounted_fast')",width : ( 0.1 * $(window).width() )},
+                         //{data:'accounted_fast',editor: 'chosen', chosenOptions: {data: jQuery('#accounted_fast_dropdown_list').data('json')} ,key : "afterChange",renderer: customDropdownRenderer, title:"@lang('acc_voucher.accounted_fast')",width : ( 0.1 * $(window).width() )},
+                         {data:'accounted_fast',editor: 'chosen', chosenOptions: {data: RequestURL("{{env('URL_DROPDOWN').'/accounted-fast'}}")} ,key : "afterChange",renderer: customAjaxDropdownRenderer, title:"@lang('acc_voucher.accounted_fast')",width : ( 0.1 * $(window).width() )},
                          {data:'description',title:"@lang('acc_voucher.description')",width : ( 0.2 * $(window).width() ), set : "1"},
-                         {data:'debit',editor: 'chosen', chosenOptions: {data: jQuery('#account_dropdown_list').data('json')},key : true ,renderer: customDropdownRenderer,title:"@lang('acc_voucher.debt_account')",width : ( 0.1 * $(window).width() ) , set : "2"},
-                         {data:'credit',editor: 'chosen', chosenOptions: {data: jQuery('#account_dropdown_list').data('json')} ,key : true ,renderer: customDropdownRenderer,title:"@lang('acc_voucher.credit_account')",width : ( 0.1 * $(window).width() ), set : "2"},
-                         {data:'subject_debit',editor: 'chosen', chosenOptions: {data: jQuery('#object_dropdown_list').data('json')} ,renderer: customDropdownRenderer,title:"@lang('acc_accounted_fast.subject_debit')",width : ( 0.1 * $(window).width() ) , set : "2"},
-                         {data:'subject_credit',editor: 'chosen', chosenOptions: {data: jQuery('#object_dropdown_list').data('json')} ,renderer: customDropdownRenderer,title:"@lang('acc_accounted_fast.subject_credit')",width : ( 0.1 * $(window).width() ), set : "2"},
-                         {data:'department',editor: 'chosen', chosenOptions: {data: jQuery('#department_dropdown_list').data('json')} ,renderer: customDropdownRenderer,title:"@lang('acc_voucher.department')",width : ( 0.1 * $(window).width() ), set : "2"},
-                         {data:'bank_account',editor: 'chosen', chosenOptions: {data: jQuery('#bank_account_dropdown_list').data('json')} ,renderer: customDropdownRenderer ,title:"@lang('acc_voucher.bank_account')",width : ( 0.1 * $(window).width() ), set : "2"},
-                         {data:'cost_code',editor: 'chosen', chosenOptions: {data: jQuery('#cost_code_dropdown_list').data('json')} ,renderer: customDropdownRenderer,title:"@lang('acc_voucher.cost_code')",width : ( 0.1 * $(window).width() ), set : "2"},
-                         {data:'case_code',editor: 'chosen', chosenOptions: {data: jQuery('#case_code_dropdown_list').data('json')} ,renderer: customDropdownRenderer, title:"@lang('acc_voucher.case_code')",width : ( 0.1 * $(window).width() ), set : "2"},
-                         {data:'statistical_code',editor: 'chosen', chosenOptions: {data: jQuery('#statistical_code_dropdown_list').data('json')} ,renderer: customDropdownRenderer,title:"@lang('acc_voucher.statistical_code')",width : ( 0.1 * $(window).width() ), set : "2"},
-                         {data:'work_code',editor: 'chosen', chosenOptions: {data: jQuery('#work_code_dropdown_list').data('json')} ,renderer: customDropdownRenderer,title:"@lang('acc_voucher.work_code')",width : ( 0.1 * $(window).width() ), set : "2"}  ];
+                         {data:'debit',editor: 'chosen', chosenOptions: {data: RequestURL("{{env('URL_DROPDOWN').'/account'}}")},key : true ,renderer: customAjaxDropdownRenderer,title:"@lang('acc_voucher.debt_account')",width : ( 0.1 * $(window).width() ) , set : "2"},
+                         {data:'credit',editor: 'chosen', chosenOptions: {data: RequestURL("{{env('URL_DROPDOWN').'/account'}}")} ,key : true ,renderer: customAjaxDropdownRenderer,title:"@lang('acc_voucher.credit_account')",width : ( 0.1 * $(window).width() ), set : "2"},
+                         {data:'subject_debit',editor: 'chosen', chosenOptions: {data: RequestURL("{{env('URL_DROPDOWN').'/object'}}")} ,renderer: customAjaxDropdownRenderer,title:"@lang('acc_accounted_fast.subject_debit')",width : ( 0.1 * $(window).width() ) , set : "2"},
+                         {data:'subject_credit',editor: 'chosen', chosenOptions: {data: RequestURL("{{env('URL_DROPDOWN').'/object'}}")} ,renderer: customAjaxDropdownRenderer,title:"@lang('acc_accounted_fast.subject_credit')",width : ( 0.1 * $(window).width() ), set : "2"},
+                         {data:'department',editor: 'chosen', chosenOptions: {data: RequestURL("{{env('URL_DROPDOWN').'/department'}}")} ,renderer: customAjaxDropdownRenderer,title:"@lang('acc_voucher.department')",width : ( 0.1 * $(window).width() ), set : "2"},
+                         {data:'bank_account',editor: 'chosen', chosenOptions: {data: RequestURL("{{env('URL_DROPDOWN').'/bank-account'}}")} ,renderer: customAjaxDropdownRenderer ,title:"@lang('acc_voucher.bank_account')",width : ( 0.1 * $(window).width() ), set : "2"},
+                         {data:'cost_code',editor: 'chosen', chosenOptions: {data: RequestURL("{{env('URL_DROPDOWN').'/cost-code'}}")} ,renderer: customAjaxDropdownRenderer,title:"@lang('acc_voucher.cost_code')",width : ( 0.1 * $(window).width() ), set : "2"},
+                         {data:'case_code',editor: 'chosen', chosenOptions: {data: RequestURL("{{env('URL_DROPDOWN').'/case-code'}}")} ,renderer: customAjaxDropdownRenderer, title:"@lang('acc_voucher.case_code')",width : ( 0.1 * $(window).width() ), set : "2"},
+                         {data:'statistical_code',editor: 'chosen', chosenOptions: {data: RequestURL("{{env('URL_DROPDOWN').'/statistical-code'}}")} ,renderer: customAjaxDropdownRenderer,title:"@lang('acc_voucher.statistical_code')",width : ( 0.1 * $(window).width() ), set : "2"},
+                         {data:'work_code',editor: 'chosen', chosenOptions: {data: RequestURL("{{env('URL_DROPDOWN').'/work-code'}}")} ,renderer: customAjaxDropdownRenderer,title:"@lang('acc_voucher.work_code')",width : ( 0.1 * $(window).width() ), set : "2"}  ];
   });
   </script>
 @endsection
@@ -138,10 +129,10 @@
 @endif
 <script src="{{ url('library/handsontable/dist/handsontable.full.min.js') }}"></script>
 <script src="{{ url('library/chosen/chosen.jquery.js') }}"></script>
-<script src="{{ url('library/handsontable/dist/handsontable-chosen-editor.js') }}"></script>
+<script src="{{ url('library/handsontable/dist/handsontable-chosen-editor-ajax.js') }}"></script>
 <script src="{{ url('library/handsontable/dist/numbro/languages.min.js') }}"></script>
 @if(app()->getLocale() == 'vi')
 <script src="{{ url('library/handsontable/dist/languages/vi-VI.js') }}"></script>
 @endif
-<script src="{{ url('addon/scripts/ermis/ermis-form-2-pagehot.js') }}"></script>
+<script src="{{ url('addon/scripts/ermis/ermis-form-2-pagehotread.js') }}"></script>
 @endsection

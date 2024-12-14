@@ -10,20 +10,7 @@ use App\Http\Model\AccHistoryAction;
 use App\Http\Model\Menu;
 use App\Http\Model\AccAccountedAuto;
 use App\Http\Model\AccAccountedAutoDetail;
-use App\Http\Model\AccAccountSystems;
-use App\Http\Model\AccCaseCode;
-use App\Http\Model\AccCostCode;
-use App\Http\Model\AccStatisticalCode;
-use App\Http\Model\AccWorkCode;
-use App\Http\Model\AccBankAccount;
-use App\Http\Model\AccDepartment;
-use App\Http\Model\AccObject;
 use App\Http\Model\AccSystems;
-use App\Http\Model\AccAccountedFast;
-use App\Http\Resources\DropDownListResource;
-use App\Http\Resources\LangDropDownListResource;
-use App\Http\Resources\BankAccountDropDownListResource;
-use App\Http\Resources\AccountedFastDropDownListResource;
 use App\Http\Model\CompanySoftware;
 use App\Http\Model\Company;
 use App\Http\Model\AccNumberCode;
@@ -55,21 +42,16 @@ class AccAccountedAutoController extends Controller
     $count = AccAccountedAuto::count();
     $sys_page = AccSystems::get_systems($this->page_system);
     $paging = $count>$sys_page->value?1:0; 
-    $account = json_encode(LangDropDownListResource::collection(AccAccountSystems::active()->OrderBy('code','asc')->doesntHave('account')->get()));
-    $work_code = json_encode(collect(LangDropDownListResource::collection(AccWorkCode::active()->OrderBy('code','asc')->get())));
-    $department = json_encode(collect(LangDropDownListResource::collection(AccDepartment::active()->OrderBy('code','asc')->get())));
-    $bank_account = json_encode(collect(BankAccountDropDownListResource::collection(AccBankAccount::active()->OrderBy('bank_account','asc')->get())));
-    $case_code = json_encode(collect(LangDropDownListResource::collection(AccCaseCode::active()->OrderBy('code','asc')->get())));
-    $cost_code = json_encode(collect(LangDropDownListResource::collection(AccCostCode::active()->OrderBy('code','asc')->get())));
-    $statistical_code = json_encode(collect(LangDropDownListResource::collection(AccStatisticalCode::active()->OrderBy('code','asc')->get())));
-    $accounted_fast = json_encode(collect(AccountedFastDropDownListResource::collection(AccAccountedFast::active()->OrderBy('code','asc')->get())));
-    $object = json_encode(collect(DropDownListResource::collection(AccObject::active()->get())));
-    return view('acc.accounted_auto',['paging' => $paging,
-     'key' => $this->key ,'account' =>$account ,
-     'case_code'=>$case_code,'cost_code'=>$cost_code,
-     'statistical_code'=>$statistical_code,'work_code'=>$work_code,
-     'bank_account'=>$bank_account,'department'=>$department,
-     'accounted_fast'=>$accounted_fast,'object'=>$object]);
+    //$account = json_encode(LangDropDownListResource::collection(AccAccountSystems::active()->OrderBy('code','asc')->doesntHave('account')->get()));
+    //$work_code = json_encode(collect(LangDropDownListResource::collection(AccWorkCode::active()->OrderBy('code','asc')->get())));
+    //$department = json_encode(collect(LangDropDownListResource::collection(AccDepartment::active()->OrderBy('code','asc')->get())));
+    //$bank_account = json_encode(collect(BankAccountDropDownListResource::collection(AccBankAccount::active()->OrderBy('bank_account','asc')->get())));
+    //$case_code = json_encode(collect(LangDropDownListResource::collection(AccCaseCode::active()->OrderBy('code','asc')->get())));
+    //$cost_code = json_encode(collect(LangDropDownListResource::collection(AccCostCode::active()->OrderBy('code','asc')->get())));
+    //$statistical_code = json_encode(collect(LangDropDownListResource::collection(AccStatisticalCode::active()->OrderBy('code','asc')->get())));
+    //$accounted_fast = json_encode(collect(AccountedFastDropDownListResource::collection(AccAccountedFast::active()->OrderBy('code','asc')->get())));
+    //$object = json_encode(collect(DropDownListResource::collection(AccObject::active()->get())));
+    return view('acc.accounted_auto',['paging' => $paging,'key' => $this->key]);
   }
 
 

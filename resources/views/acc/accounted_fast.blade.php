@@ -35,55 +35,39 @@
                <tr>
                    <td class="row-label"><label>@lang('acc_accounted_fast.debit') </label></td>
                    <td>
-                     <select class="droplist large" data-position="7" data-title="@lang('acc_accounted_fast.debit')" data-template="#= FormatDropList(debit,'debit') #" data-type="string" data-width="200px" name="debit">
-                             <option readonly selected value="0">--Select--</option>
-                             @foreach($account as $c)
-                               <option value="{{ $c->id }}">{{ $c->code }} - {{ $c->name }}</option>
-                             @endforeach
+                     <select class="droplist_read large" data-position="7" data-title="@lang('acc_accounted_fast.debit')" data-template="#= FormatDropListRead(debit,'debit') #" data-type="string" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/account'}}" name="debit">
+                             
                      </select>
                    </td>
                </tr>
                <tr>
                    <td class="row-label"><label>@lang('acc_accounted_fast.credit') </label></td>
                    <td>
-                     <select class="droplist large" data-position="7" data-title="@lang('acc_accounted_fast.credit')" data-template="#= FormatDropList(credit,'credit') #" data-type="string" data-width="200px" name="credit">
-                             <option readonly selected value="0">--Select--</option>
-                             @foreach($account as $c)
-                               <option value="{{ $c->id }}">{{ $c->code }} - {{ $c->name }}</option>
-                             @endforeach
+                     <select class="droplist_read large" data-position="7" data-title="@lang('acc_accounted_fast.credit')" data-template="#= FormatDropListRead(credit,'credit') #" data-type="string" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/account'}}" name="credit">
+                          
                          </select>
                    </td>
                </tr>
                <tr>
                    <td class="row-label"><label>@lang('acc_accounted_fast.subject_debit') </label></td>
                    <td>
-                     <select class="droplist large" data-position="7" data-title="@lang('acc_accounted_fast.subject_debit')" data-template="#= FormatDropList(subject_debit,'subject_debit') #" data-type="string" data-width="200px" name="subject_debit">
-                             <option readonly selected value="0">--Select--</option>
-                             @foreach($object as $c)
-                               <option value="{{ $c->id }}">{{ $c->code }} - {{ $c->name }}</option>
-                             @endforeach
+                     <select class="droplist_read large" data-position="7" data-title="@lang('acc_accounted_fast.subject_debit')" data-template="#= FormatDropListRead(subject_debit,'subject_debit') #" data-type="string" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/object'}}" name="subject_debit">
                      </select>
                    </td>
                </tr>
                <tr>
                    <td class="row-label"><label>@lang('acc_accounted_fast.subject_credit') </label></td>
                    <td>
-                     <select class="droplist large" data-position="7" data-title="@lang('acc_accounted_fast.subject_credit')" data-template="#= FormatDropList(subject_credit,'subject_credit') #" data-type="string" data-width="200px" name="subject_credit">
-                             <option readonly selected value="0">--Select--</option>
-                             @foreach($object as $c)
-                               <option value="{{ $c->id }}">{{ $c->code }} - {{ $c->name }}</option>
-                             @endforeach
+                     <select class="droplist_read large" data-position="7" data-title="@lang('acc_accounted_fast.subject_credit')" data-template="#= FormatDropListRead(subject_credit,'subject_credit') #" data-type="string" data-width="200px"  data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/object'}}" name="subject_credit">
+                
                          </select>
                    </td>
                </tr>
                <tr>
                    <td class="row-label"><label>@lang('acc_accounted_fast.case_code') </label></td>
                    <td>
-                     <select class="droplist large" data-position="7" data-title="@lang('acc_accounted_fast.case_code')" data-template="#= FormatDropList(case_code,'case_code') #" data-type="string" data-width="200px" name="case_code">
-                             <option readonly selected value="0">--Select--</option>
-                             @foreach($case_code as $c)
-                               <option value="{{ $c->id }}">{{ $c->code }} - {{ $c->name }}</option>
-                             @endforeach
+                     <select class="droplist_read large" data-position="7" data-title="@lang('acc_accounted_fast.case_code')" data-template="#= FormatDropListRead(case_code,'case_code') #" data-type="string" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/case-code'}}" name="case_code">
+                          
                      </select>
                    </td>
                </tr>
@@ -91,11 +75,8 @@
                <tr>
                    <td class="row-label"><label>@lang('acc_accounted_fast.cost_code')</label></td>
                    <td>
-                     <select class="droplist large" data-position="7" data-title="@lang('acc_accounted_fast.cost_code')" data-template="#= FormatDropList(cost_code,'cost_code') #" data-type="string" data-width="200px" name="cost_code">
-                             <option readonly selected value="0">--Select--</option>
-                             @foreach($cost_code as $c)
-                               <option value="{{ $c->id }}">{{ $c->code }} - {{ $c->name }}</option>
-                             @endforeach
+                     <select class="droplist_read large" data-position="7" data-title="@lang('acc_accounted_fast.cost_code')" data-template="#= FormatDropListRead(cost_code,'cost_code') #" data-type="string" data-width="200px"  data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/cost-code'}}" name="cost_code">
+                       
                      </select>
                    </td>
                </tr>
@@ -103,11 +84,8 @@
                <tr>
                    <td class="row-label"><label>@lang('acc_accounted_fast.statistical_code')</label></td>
                    <td>
-                     <select class="droplist large" data-position="7" data-title="@lang('acc_accounted_fast.statistical_code')" data-template="#= FormatDropList(statistical_code,'statistical_code') #" data-type="string" data-width="200px" name="statistical_code">
-                             <option readonly selected value="0">--Select--</option>
-                             @foreach($statistical_code as $c)
-                               <option value="{{ $c->id }}">{{ $c->code }} - {{ $c->name }}</option>
-                             @endforeach
+                     <select class="droplist_read large" data-position="7" data-title="@lang('acc_accounted_fast.statistical_code')" data-template="#= FormatDropListRead(statistical_code,'statistical_code') #" data-type="string" data-width="200px"  data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/statistical-code'}}"  name="statistical_code">
+                           
                      </select>
                    </td>
                </tr>
@@ -115,11 +93,8 @@
                <tr>
                    <td class="row-label"><label>@lang('acc_accounted_fast.work_code')</label></td>
                    <td>
-                     <select class="droplist large" data-position="7" data-title="@lang('acc_accounted_fast.work_code')" data-template="#= FormatDropList(work_code,'work_code') #" data-type="string" data-width="200px" name="work_code">
-                             <option readonly selected value="0">--Select--</option>
-                             @foreach($work_code as $c)
-                               <option value="{{ $c->id }}">{{ $c->code }} - {{ $c->name }}</option>
-                             @endforeach
+                     <select class="droplist_read large" data-position="7" data-title="@lang('acc_accounted_fast.work_code')" data-template="#= FormatDropListRead(work_code,'work_code') #" data-type="string" data-width="200px"  data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/work-code'}}" name="work_code">
+                             
                      </select>
                    </td>
                </tr>
@@ -127,11 +102,8 @@
                <tr>
                    <td class="row-label"><label>@lang('acc_accounted_fast.department') </label></td>
                    <td>
-                     <select class="droplist large" data-position="7" data-title="@lang('acc_accounted_fast.department')" data-template="#= FormatDropList(department,'department') #" data-type="string" data-width="200px" name="department">
-                             <option readonly selected value="0">--Select--</option>
-                             @foreach($department as $c)
-                               <option value="{{ $c->id }}">{{ $c->code }} - {{ $c->name }}</option>
-                             @endforeach
+                     <select class="droplist_read large" data-position="7" data-title="@lang('acc_accounted_fast.department')" data-template="#= FormatDropListRead(department,'department') #" data-type="string" data-width="200px"  data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/department'}}" name="department">
+                          
                      </select>
                    </td>
                </tr>
@@ -139,11 +111,8 @@
                <tr>
                    <td class="row-label"><label>@lang('acc_accounted_fast.bank_account') </label></td>
                    <td>
-                     <select class="droplist large" data-position="7" data-title="@lang('acc_accounted_fast.bank_account')" data-template="#= FormatDropList(bank_account,'bank_account') #" data-type="string" data-width="200px" name="bank_account">
-                             <option readonly selected value="0">--Select--</option>
-                             @foreach($bank_account as $c)
-                               <option value="{{ $c->id }}">{{ $c->code }} - {{ $c->name }}</option>
-                             @endforeach
+                     <select class="droplist_read large" data-position="7" data-title="@lang('acc_accounted_fast.bank_account')" data-template="#= FormatDropListRead(bank_account,'bank_account') #" data-type="string" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/bank-account'}}" name="bank_account">
+                            
                      </select>
                    </td>
                </tr>
@@ -217,5 +186,5 @@
 <script src="{{ asset('library/kendoui/js/cultures/kendo.culture.de-DE.min.js') }}"></script>
 <script>kendo.culture('de-DE')</script>
 @endif
-<script src="{{ url('addon/scripts/ermis/ermis-form-2-page.js') }}"></script>
+<script src="{{ url('addon/scripts/ermis/ermis-form-2-pageread.js') }}"></script>
 @endsection

@@ -424,6 +424,15 @@ Route::prefix('acc')->group(function () {
   Route::get(env('URL_DROPDOWN').'/vat-tax', 'vat_tax_dropdown_list');
   Route::get(env('URL_DROPDOWN').'/excise-tax', 'excise_tax_dropdown_list');
   Route::get(env('URL_DROPDOWN').'/setting-account-group', 'setting_account_group_dropdown_list');
+  Route::get(env('URL_DROPDOWN').'/case-code', 'case_code_dropdown_list');
+  Route::get(env('URL_DROPDOWN').'/cost-code', 'cost_code_dropdown_list');
+  Route::get(env('URL_DROPDOWN').'/statistical-code', 'statistical_code_dropdown_list');
+  Route::get(env('URL_DROPDOWN').'/work-code', 'work_code_dropdown_list');
+  Route::get(env('URL_DROPDOWN').'/bank-account', 'bank_account_dropdown_list');
+  Route::get(env('URL_DROPDOWN').'/object', 'object_dropdown_list');
+  Route::get(env('URL_DROPDOWN').'/department', 'department_dropdown_list');
+  Route::get(env('URL_DROPDOWN').'/account', 'account_dropdown_list');
+  Route::get(env('URL_DROPDOWN').'/accounted-fast', 'accounted_fast_dropdown_list');
   });
 
 

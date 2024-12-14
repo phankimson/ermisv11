@@ -10,23 +10,13 @@ use App\Http\Model\AccHistoryAction;
 use App\Http\Model\Menu;
 use App\Http\Model\AccSuppliesGoods;
 use App\Http\Model\AccSuppliesGoodsType;
-use App\Http\Model\AccSuppliesGoodsGroup;
 use App\Http\Model\AccSuppliesGoodsDiscount;
 use App\Http\Model\AccHistoryPrice;
-use App\Http\Model\AccUnit;
-use App\Http\Model\AccStock;
-use App\Http\Model\AccVat;
-use App\Http\Model\AccExcise;
 use App\Http\Model\AccSystems;
 use App\Http\Model\AccNumberCode;
 use App\Http\Model\CompanySoftware;
 use App\Http\Model\Company;
-use App\Http\Model\Document;
-use App\Http\Model\AccWarrantyPeriod;
-use App\Http\Model\AccAccountSystems;
-use App\Http\Model\AccSettingAccountGroup;
 use App\Http\Model\Error;
-use App\Http\Resources\DropDownListResource;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Model\Imports\AccSuppliesGoodsImport;
 use App\Http\Model\Exports\AccSuppliesGoodsExport;
@@ -43,9 +33,6 @@ class AccSuppliesGoodsController extends Controller
   protected $menu;
   protected $page_system;
   protected $path;
-  protected $revenue;
-  protected $cost;
-  protected $stock;
   public function __construct(Request $request)
  {
      $this->url =  $request->segment(3);
@@ -53,9 +40,6 @@ class AccSuppliesGoodsController extends Controller
      $this->menu = Menu::where('code', '=', $this->key)->first();
      $this->page_system = "MAX_COUNT_CHANGE_PAGE";
      $this->path = "PATH_UPLOAD_SUPPLIES_GOODS";     
-     $this->revenue = "DT";
-     $this->cost = "CP";
-     $this->stock = "KH";
  }
 
   public function show(){
