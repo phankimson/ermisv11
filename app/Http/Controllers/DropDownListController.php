@@ -12,6 +12,7 @@ use App\Http\Model\Area;
 use App\Http\Model\Distric;
 use App\Http\Model\Software;
 use App\Http\Model\Company;
+use App\Http\Model\DocumentType;
 use App\Http\Model\GroupUsers;
 
 class DropDownListController extends Controller
@@ -62,6 +63,13 @@ class DropDownListController extends Controller
   public function group_users_dropdown_list(Request $request){
     $default = collect([['value' => '0','text' => "--Select--"]]);
     $data = DropDownResource::collection(GroupUsers::active()->get());
+    $data = $default->merge($data)->values();
+    return response()->json($data)->withCallback($request->input('callback'));
+  }
+
+  public function document_type_dropdown_list(Request $request){
+    $default = collect([['value' => '0','text' => "--Select--"]]);
+    $data = LangDropDownResource::collection(DocumentType::active()->get());
     $data = $default->merge($data)->values();
     return response()->json($data)->withCallback($request->input('callback'));
   }

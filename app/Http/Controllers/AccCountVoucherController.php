@@ -6,14 +6,11 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
-use App\Http\Resources\DropDownListResource;
 use App\Http\Model\AccHistoryAction;
 use App\Http\Model\Menu;
 use App\Http\Model\AccCountVoucher;
-use App\Http\Model\AccNumberVoucher;
 use App\Http\Model\CompanySoftware;
 use App\Http\Model\Company;
-use App\Http\Model\Software;
 use App\Http\Model\Error;
 use App\Http\Model\AccSystems;
 use Illuminate\Support\Facades\Storage;
@@ -41,14 +38,14 @@ class AccCountVoucherController extends Controller
  }
 
   public function show(){
-    $type = Software::get_url($this->type);
+    //$type = Software::get_url($this->type);
     //$data = AccCountVoucher::get_raw();
-    $menu = Menu::get_raw_type($type->id);
-    $number_voucher = collect(DropDownListResource::collection(AccNumberVoucher::active()->get()));
+    //$menu = Menu::get_raw_type($type->id);
+    //$number_voucher = collect(DropDownListResource::collection(AccNumberVoucher::active()->get()));
     $count = AccCountVoucher::count();
     $sys_page = AccSystems::get_systems($this->page_system);
     $paging = $count>$sys_page->value?1:0;   
-    return view('acc.count_voucher',['paging' => $paging, 'key' => $this->key ,'menu' => $menu ,'number_voucher' => $number_voucher]);
+    return view('acc.count_voucher',['paging' => $paging, 'key' => $this->key ]);
   }
 
   

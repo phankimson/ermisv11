@@ -21,11 +21,7 @@
                <tr>
                    <td class="row-label"><label>@lang('document.type')</label></td>
                    <td>
-                     <select class="droplist large" data-position="1" data-title="@lang('document.type')" data-template="#= FormatDropList(type,'type') #" data-type="number" data-width="200px" name="type">
-                             <option readonly selected value="0">--Select--</option>
-                               @foreach($type_document as $m)
-                                  <option value="{{ $m->id }}">{{ $m->code }} - {{ $lang == 'vi'? $m->name : $m->name_en }}</option>
-                               @endforeach
+                     <select class="droplist read large" data-position="1" data-title="@lang('document.type')" data-template="#= FormatDropListRead(type,'type') #" data-type="number" data-width="200px"  data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/document-type'}}"  name="type">                             
                      </select>
                    </td>
                </tr>

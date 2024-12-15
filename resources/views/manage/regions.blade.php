@@ -21,7 +21,7 @@
     <table>
       <tr>
           <td class="row-label"><label>@lang('regions.country')</label></td>
-          <td><select class="droplist_read large" data-position="1" data-title="@lang('regions.country')" data-template="#= FormatDropListRead(country,'country') #" data-type="number" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/country'}}" name="country">              
+          <td><select class="droplist read large" data-position="1" data-title="@lang('regions.country')" data-template="#= FormatDropListRead(country,'country') #" data-type="number" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/country'}}" name="country">              
               </select>
           </td>
       </tr>
@@ -74,5 +74,5 @@
   </script>
 @endsection
 @section('scripts_end')
-<script src="{{ url('addon/scripts/ermis/ermis-form-1-read.js') }}"></script>
+<script src="{{ url('addon/scripts/ermis/ermis-form-1-scrolldf.js') }}"></script>
 @endsection

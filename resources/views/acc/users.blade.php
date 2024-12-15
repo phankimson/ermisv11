@@ -76,11 +76,8 @@
                <tr>
                    <td class="row-label"><label>@lang('user.country')</label></td>
                    <td>
-                     <select class="droplist large" data-position="8" data-title="@lang('user.country')" data-template="#= FormatDropList(country,'country') #" data-type="string" data-width="200px" name="country">
-                             <option readonly selected value="0">--Select--</option>
-                             @foreach($country as $c)
-                               <option value="{{ $c->id }}">{{ $c->code }} - {{ $c->name }}</option>
-                             @endforeach
+                     <select class="droplist read large" data-position="8" data-title="@lang('user.country')" data-template="#= FormatDropListRead(country,'country') #" data-type="string" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{url($lang.'/manage/'.env('URL_DROPDOWN').'/country')}}" name="country">
+                         
                          </select>
                    </td>
                </tr>
@@ -112,9 +109,8 @@
              </tr>
              <tr>
                  <td class="row-label"><label>@lang('user.stock_default')</label></td>
-                 <td><select class="droplist large" data-position="8" data-title="@lang('user.stock_default')" data-template="#= FormatDropList(stock_default,'stock_default') #" data-type="number" data-width="200px" name="stock_default">
-                         <option readonly selected value="0">--Select--</option>
-
+                 <td><select class="droplist read large" data-position="8" data-title="@lang('user.stock_default')" data-template="#= FormatDropListRead(stock_default,'stock_default') #" data-type="number" data-width="200px"  data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/stock'}}" name="stock_default">
+                       
                      </select>
                  </td>
              </tr>

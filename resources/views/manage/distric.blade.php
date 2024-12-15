@@ -20,7 +20,7 @@
     <table>
       <tr>
           <td class="row-label"><label>@lang('distric.area')</label></td>
-          <td><select class="droplist_read large" data-position="1" data-title="@lang('distric.area')" data-template="#= FormatDropListRead(area,'area') #" data-type="number" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/area'}}"  name="area">
+          <td><select class="droplist read large" data-position="1" data-title="@lang('distric.area')" data-template="#= FormatDropListRead(area,'area') #" data-type="number" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/area'}}"  name="area">
               </select>
           </td>
       </tr>
@@ -73,5 +73,5 @@
   </script>
 @endsection
 @section('scripts_end')
-<script src="{{ url('addon/scripts/ermis/ermis-form-1-read.js') }}"></script>
+<script src="{{ url('addon/scripts/ermis/ermis-form-1-scrolldf.js') }}"></script>
 @endsection

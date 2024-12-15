@@ -10,9 +10,7 @@ use App\Http\Model\HistoryAction;
 use App\Http\Model\Systems;
 use App\Http\Model\Menu;
 use App\Http\Model\Document;
-use App\Http\Model\DocumentType;
 use App\Http\Model\Error;
-use App\Http\Resources\DropDownListResource;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Model\Imports\DocumentImport;
 use App\Http\Model\Exports\DocumentExport;
@@ -37,11 +35,11 @@ class DocumentController extends Controller
 
   public function show(){
     //$data = Document::all();
-    $type_document = collect(DropDownListResource::collection(DocumentType::active()->get()));
+    //$type_document = collect(DropDownListResource::collection(DocumentType::active()->get()));
     $count = Document::count();
     $sys_page = Systems::get_systems($this->page_system);
     $paging = $count>$sys_page->value?1:0; 
-    return view('manage.document',['paging' => $paging, 'key' => $this->key , 'type_document'=>$type_document ]);
+    return view('manage.document',['paging' => $paging, 'key' => $this->key  ]);
   }
 
   

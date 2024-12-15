@@ -26,14 +26,21 @@ use App\Http\Model\AccWorkCode;
 use App\Http\Model\AccBankAccount;
 use App\Http\Model\AccDepartment;
 use App\Http\Model\AccObject;
+use App\Http\Model\AccObjectGroup;
 use App\Http\Model\AccAccountedFast;
+use App\Http\Model\AccRevenueExpenditure;
+use App\Http\Model\AccNumberVoucher;
+use App\Http\Model\Menu;
+use App\Http\Model\Software;
 
 class AccDropDownListController extends Controller
 {
   protected $document;
-  public function __construct(Request $request)
+  protected $type;
+  public function __construct()
   {
     $this->document = "DOCUMENT_TAX";
+    $this->type = "acc";
   }
   // Đơn vị tính Droplist
   public function unit_dropdown_list(Request $request){
@@ -91,13 +98,13 @@ class AccDropDownListController extends Controller
     $doc = Document::get_code($sys->value);
     $code = $request->input('code',null);
     if($code == null){
-      $account = AccAccountSystems::active()->get();
+      $account = AccAccountSystems::active()->orderBy('code','asc')->doesntHave('account')->get();
     }else{
       $setting = AccSettingAccountGroup::get_code($code);
       $account = collect([]);
-      if($setting->account_group){
+      if($setting && $setting->account_group){
         $account = AccAccountSystems::get_code_like($doc->id,$setting->account_group);
-      }else if($setting->account_filter){
+      }else if($setting && $setting->account_filter){
         $account = AccAccountSystems::get_wherein_id($doc->id,$setting->account_filter->pluck('account_systems'));
       }    
     } 
@@ -117,6 +124,14 @@ class AccDropDownListController extends Controller
    public function cost_code_dropdown_list(Request $request){
     $default = collect([['value' => '0','text' => "--Select--"]]);
     $data = LangDropDownResource::collection(AccCostCode::active()->orderBy('code','asc')->get());
+    $data = $default->merge($data)->values();
+    return response()->json($data)->withCallback($request->input('callback'));
+  }
+
+   // Mục thu chi
+   public function revenue_expenditure_type_dropdown_list(Request $request){
+    $default = collect([['value' => '0','text' => "--Select--"]]);
+    $data = LangDropDownResource::collection(AccRevenueExpenditure::active()->orderBy('code','asc')->get());
     $data = $default->merge($data)->values();
     return response()->json($data)->withCallback($request->input('callback'));
   }
@@ -141,6 +156,14 @@ class AccDropDownListController extends Controller
   public function bank_account_dropdown_list(Request $request){
     $default = collect([['value' => '0','text' => "--Select--"]]);
     $data = BankDropDownResource::collection(AccBankAccount::active()->orderBy('bank_account','asc')->get());
+    $data = $default->merge($data)->values();
+    return response()->json($data)->withCallback($request->input('callback'));
+  }
+
+  // Nhóm đối tượng
+  public function object_group_dropdown_list(Request $request){
+    $default = collect([['value' => '0','text' => "--Select--"]]);
+    $data = LangDropDownResource::collection(AccObjectGroup::active()->orderBy('code','asc')->get());
     $data = $default->merge($data)->values();
     return response()->json($data)->withCallback($request->input('callback'));
   }
@@ -181,7 +204,23 @@ class AccDropDownListController extends Controller
       $data = AccountedFastDropDownResource::collection($arr);
       $data = $default->merge($data)->values(); 
     }  
+    return response()->json($data)->withCallback($request->input('callback'));
+  }
 
+   // Số chứng từ
+   public function number_voucher_dropdown_list(Request $request){
+    $default = collect([['value' => '0','text' => "--Select--"]]);
+    $data = LangDropDownResource::collection(AccNumberVoucher::active()->orderBy('code','asc')->get());
+    $data = $default->merge($data)->values();
+    return response()->json($data)->withCallback($request->input('callback'));
+  }
+
+   // Danh mục ACC
+   public function menu_dropdown_list(Request $request){
+    $type = Software::get_url($this->type);
+    $default = collect([['value' => '0','text' => "--Select--"]]);
+    $data = LangDropDownResource::collection(Menu::get_raw_type($type->id));
+    $data = $default->merge($data)->values();
     return response()->json($data)->withCallback($request->input('callback'));
   }
 

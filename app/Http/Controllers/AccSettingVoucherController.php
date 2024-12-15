@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Model\AccHistoryAction;
-use App\Http\Model\Software;
 use App\Http\Model\Menu;
 use App\Http\Model\AccSettingVoucher;
 use App\Http\Model\AccAccountSystems;
@@ -30,8 +29,7 @@ class AccSettingVoucherController extends Controller
   protected $url;
   protected $key;
   protected $menu;
-  protected $page_system;
-  protected $type;
+  protected $page_system;  
   protected $df_text;
   protected $cf_text;
   public function __construct(Request $request)
@@ -39,21 +37,21 @@ class AccSettingVoucherController extends Controller
      $this->url =  $request->segment(3);
      $this->key = "setting-voucher";
      $this->menu = Menu::where('code', '=', $this->key)->first();
-     $this->type = "acc";
+     //$this->type = "acc";
      $this->df_text = 'AccSettingVoucherDebit';
      $this->cf_text = 'AccSettingVoucherCredit';
      $this->page_system = "MAX_COUNT_CHANGE_PAGE";
  }
 
   public function show(){    
-    $type = Software::get_url($this->type);
+    //$type = Software::get_url($this->type);
     //$data = AccSettingVoucher::get_raw();
-    $account = collect(DropDownListResource::collection(AccAccountSystems::active()->OrderBy('code','asc')->doesntHave('account')->get()));
-    $menu = Menu::get_raw_type($type->id);
+    $account = collect(DropDownListResource::collection(AccAccountSystems::active()->orderBy('code','asc')->doesntHave('account')->get()));
+    //$menu = Menu::get_raw_type($type->id);
     $count = AccSettingVoucher::count();
     $sys_page = AccSystems::get_systems($this->page_system);
     $paging = $count>$sys_page->value?1:0;   
-    return view('acc.setting_voucher',['paging' => $paging, 'key' => $this->key ,'account' =>$account,'menu'=>$menu]);
+    return view('acc.setting_voucher',['paging' => $paging, 'key' => $this->key ,'account' => $account ]);
   }
 
   

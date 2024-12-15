@@ -31,8 +31,11 @@ var Ermis = function () {
       ErmisKendoContextMenuTemplate("#context-menu", ".md-card-content");
       // KendoUploadTemplate
       ErmisKendoUploadTemplate("#files", false);
-      // KendoDroplistTemplat
-      ErmisKendoDroplistTemplate(".droplist", "contains");
+      // KendoDroplistTemplate
+      jQuery('.droplist.read').each(function() {
+        ErmisKendoDroplistReadTemplate(this, "contains");
+      }); 
+      ErmisKendoDroplistTemplate(".droplist:not(.read)", "contains");
       ErmisKendoDroplistTemplate1(".database", "contains",initKendoUiChangeDB);
       // KendoTimePickerTemplate
       ErmisKendoTimePickerTemplate("#start_time","#end_time");
@@ -194,9 +197,11 @@ var Ermis = function () {
                   if (v.addoption === "true") {
                     var parent = jQuery('select[name="' + v.field + '"]').parents('td');
                     var id = jQuery('select[name="' + v.field + '"]').attr('id');
+                    var $class = jQuery('select[name="' + v.field + '"]').prop('class');
+                    var $width = jQuery('select[name="' + v.field + '"]').data('width');
                     jQuery('#'+id).data('kendoDropDownList').destroy();
                     parent.empty();
-                    parent.append('<select id="'+ id+'" class="droplist load_droplist large" data-width="200px" name="'+id+'">');
+                    parent.append('<select id="'+ id+'" class="'+$class+'" data-width="'+$width+'" name="'+id+'">');
                   jQuery('#'+ id).kendoDropDownList({
                        dataTextField: "text",
                        dataValueField: "value",

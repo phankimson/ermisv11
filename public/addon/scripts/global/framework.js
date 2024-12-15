@@ -516,7 +516,7 @@ function SetDataAjax(data, dataItem){
       } else if (col.key === 'select') {
             var classes = jQuery('select[name = ' + col.field + ']').prop('class');
             hasWhiteSpace(classes) == true ?  classes =  classes.split(' ')[0] :  classes
-            if (classes == 'droplist' || classes == 'droplist_read') {
+            if (classes == 'droplist') {
               var data = jQuery("select[name='" + col.field + "']").data("kendoDropDownList").dataSource.view();
               var found = data.some(el => el.value === v);
               if(found){
@@ -528,12 +528,12 @@ function SetDataAjax(data, dataItem){
               if(classes == 'multiselect'){
                 if( (v != null && v != "") || (Array.isArray(v) && v.length == 0)){
                   if(col.type == "arr"){
-                    jQuery('.'+classes+'name="' + col.field + '"]').data('kendoMultiSelect').value(v);
+                    jQuery('.'+classes+'[name="' + col.field + '"]').data('kendoMultiSelect').value(v);
                   }else{
                     jQuery('.'+classes+'[name="' + col.field + '"]').data('kendoMultiSelect').value(v.split(","));
                   }                  
                 }else{
-                    jQuery('.'+classes+'[name="' + col.field + '"]').data('kendoMultiSelect').value(null);
+                    jQuery('.'+classes+'[name="' + col.field + '"]').data('kendoMultiSelect').value("");
                 }
               }
           }
@@ -566,7 +566,7 @@ function SetDataDefault(columns){
   jQuery.each(columns, function (k, col) {
       var classes = jQuery('select[name = ' + col.field + ']').prop('class');
       hasWhiteSpace(classes) == true ?  classes =  classes.split(' ')[0] :  classes
-      if (col.key === 'select' && (classes == "droplist" || classes == "droplist_read")) {       
+      if (col.key === 'select' && classes == "droplist" ) {       
         jQuery('.'+classes+'[name="' + col.field + '"]').data('kendoDropDownList').value("0");
       } else if (col.key === 'select' && classes == "multiselect") {
           jQuery('.'+classes+'[name="' + col.field + '"]').data('kendoMultiSelect').value("");
@@ -615,7 +615,7 @@ function GetDataAjax(data) {
               }
           }
 
-      } else if (col.key === 'select' && (jQuery('select[name = ' + col.field + ']').hasClass("droplist") || jQuery('select[name = ' + col.field + ']').hasClass("droplist_read"))) {
+      } else if (col.key === 'select' && jQuery('select[name = ' + col.field + ']').hasClass("droplist")) {
         var classes = jQuery('select[name = ' + col.field + ']').prop('class').split(' ')[0];
           obj[col.field] = jQuery('.'+classes+'[name="' + col.field + '"]').data('kendoDropDownList').value();
       } else if (col.key === 'select' && jQuery('select[name = ' + col.field + ']').hasClass("multiselect")) {
@@ -837,7 +837,6 @@ function RequestURL(url){
     });
     return data;
 }
-
 
 function RequestURLWaitingGet(url, returnType , postData, callback, displayLoading) {
     var windowWidget = jQuery('body');
@@ -1076,7 +1075,7 @@ function customAjaxDropdownRenderer(instance, td, row, col, prop, value, cellPro
   value = [];
   for (var index = 0; index < optionsList.length; index++) {
 
-      if (values.indexOf(optionsList[index].id + "") > -1) {
+      if (values.indexOf(optionsList[index].value + "") > -1) {
           selectedId = optionsList[index].value;
           value.push(optionsList[index].text);
       }
@@ -1148,6 +1147,7 @@ function FormatCheckBoxBoolean(container) {
 }
 function FormatDropList(container,column) {
   var result = "";
+  container =="" ? container = 0 : container;
   var found = jQuery("select[name='" + column + "']").find('option[value=' + container+ ']');
   if(found.length>0){
     result = jQuery("select[name='" + column + "']").find('option[value=' + container+ ']').text();
@@ -1159,6 +1159,7 @@ function FormatDropList(container,column) {
 
 function FormatDropListRead(container,column) {
   var result = "";
+  container =="" ? container = 0 : container;
   var data = jQuery("select[name='" + column + "']").data("kendoDropDownList").dataSource.view();
   var found = data.some(el => el.value === container);
   if(found){

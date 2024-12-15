@@ -114,28 +114,28 @@
                <tr>
                    <td><label>@lang('company.country')</label></td>
                    <td>
-                       <select class="droplist_read large" data-position="3" data-title="@lang('company.country')" data-template="#= FormatDropListRead(country,'country') #" data-hidden="true" data-type="number" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/country'}}"  name="country">
+                       <select class="droplist read large" data-position="3" data-title="@lang('company.country')" data-template="#= FormatDropListRead(country,'country') #" data-hidden="true" data-type="number" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/country'}}"  name="country">
                        </select>
                    </td>
                </tr>
                <tr>
                    <td><label>@lang('company.regions')</label></td>
                    <td>
-                       <select class="droplist_read large" data-position="3" data-title="@lang('company.regions')" data-template="#= FormatDropListRead(regions,'regions') #" data-hidden="true" data-type="number" data-width="200px"  data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/regions'}}"  name="regions">
+                       <select class="droplist read large" data-position="3" data-title="@lang('company.regions')" data-template="#= FormatDropListRead(regions,'regions') #" data-hidden="true" data-type="number" data-width="200px"  data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/regions'}}"  name="regions">
                        </select>
                    </td>
                </tr>
                <tr>
                    <td><label>@lang('company.area')</label></td>
                    <td>
-                       <select class="droplist_read large" data-position="3" data-title="@langt('company.area')" data-template="#= FormatDropListRead(area,'area') #" data-hidden="true" data-type="number" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/area'}}"  name="area">
+                       <select class="droplist read large" data-position="3" data-title="@langt('company.area')" data-template="#= FormatDropListRead(area,'area') #" data-hidden="true" data-type="number" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/area'}}"  name="area">
                        </select>
                    </td>
                </tr>
                <tr>
                    <td><label>@lang('company.distric')</label></td>
                    <td>
-                       <select class="droplist_read large" data-position="3" data-title="@lang('company.distric')" data-template="#= FormatDropListRead(distric,'distric') #" data-hidden="true" data-type="number" data-width="200px"  data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/distric'}}" name="distric">
+                       <select class="droplist read large" data-position="3" data-title="@lang('company.distric')" data-template="#= FormatDropListRead(distric,'distric') #" data-hidden="true" data-type="number" data-width="200px"  data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/distric'}}" name="distric">
                        </select>
                    </td>
                </tr>
@@ -216,5 +216,5 @@
   </script>
 @endsection
 @section('scripts_end')
-<script src="{{ url('addon/scripts/ermis/ermis-form-2-pageread.js') }}"></script>
+<script src="{{ url('addon/scripts/ermis/ermis-form-2-page.js') }}"></script>
 @endsection

@@ -60,22 +60,16 @@
                <tr>
                    <td class="row-label"><label>@lang('acc_currency.account_bank') *</label></td>
                    <td>
-                     <select class="droplist large" data-position="7" data-title="@lang('acc_currency.account_bank')" data-template="#= FormatDropList(account_bank,'account_bank') #" data-type="string" data-width="200px" name="account_bank">
-                             <option readonly selected value="0">--Select--</option>
-                             @foreach($account as $c)
-                               <option value="{{ $c->id }}">{{ $c->code }} - {{ $c->name }}</option>
-                             @endforeach
+                     <select class="droplist read large" data-position="7" data-title="@lang('acc_currency.account_bank')" data-template="#= FormatDropListRead(account_bank,'account_bank') #" data-type="string" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/setting-account-group?code=CK'}}" name="account_bank">
+                            
                          </select>
                    </td>
                </tr>
                <tr>
                    <td class="row-label"><label>@lang('acc_currency.account_cash') *</label></td>
                    <td>
-                     <select class="droplist large" data-position="7" data-title="@lang('acc_currency.account_cash')" data-template="#= FormatDropList(account_cash,'account_cash') #" data-type="string" data-width="200px" name="account_cash">
-                             <option readonly selected value="0">--Select--</option>
-                             @foreach($account as $c)
-                               <option value="{{ $c->id }}">{{ $c->code }} - {{ $c->name }}</option>
-                             @endforeach
+                     <select class="droplist read large" data-position="7" data-title="@lang('acc_currency.account_cash')" data-template="#= FormatDropListRead(account_cash,'account_cash') #" data-type="string" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/setting-account-group?code=TM'}}" name="account_cash">
+                            
                          </select>
                    </td>
                </tr>

@@ -21,11 +21,7 @@
                <tr>
                    <td class="row-label"><label>@lang('acc_print_template.menu')</label></td>
                    <td>
-                     <select class="droplist large" data-position="1" data-title="@lang('acc_print_template.menu')" data-template="#= FormatDropList(menu,'menu') #" data-type="number" data-width="200px" name="menu">
-                             <option readonly selected value="0">--Select--</option>
-                               @foreach($menu as $m)
-                                  <option value="{{ $m->id }}">{{ $m->code }} - {{ $lang == 'vi'? $m->name : $m->name_en }}</option>
-                               @endforeach
+                     <select class="droplist read large" data-position="1" data-title="@lang('acc_print_template.menu')" data-template="#= FormatDropListRead(menu,'menu') #" data-type="number" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/menu'}}" name="menu">
                      </select>
                    </td>
                </tr>

@@ -27,11 +27,7 @@
              <tr>
              <td class="row-label"><label>@lang('acc_setting_voucher.menu')</label></td>
              <td>
-             <select class="droplist large" data-position="1" data-title="@lang('acc_setting_voucher.menu')" data-template="#= FormatDropList(menu_id,'menu_id') #" data-type="number" data-width="200px" name="menu_id">
-                     <option readonly selected value="0">--Select--</option>
-                       @foreach($menu as $m)
-                          <option value="{{ $m->id }}">{{ $m->code }} - {{ $lang == 'vi'? $m->name : $m->name_en }}</option>
-                       @endforeach
+             <select class="droplist read large" data-position="1" data-title="@lang('acc_setting_voucher.menu')" data-template="#= FormatDropListRead(menu_id,'menu_id') #" data-type="number" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/menu'}}"  name="menu_id">                    
              </select>
              </td>
              </tr>
@@ -46,22 +42,16 @@
                <tr>
                    <td class="row-label"><label>@lang('acc_setting_voucher.debit') </label></td>
                    <td>
-                     <select class="droplist large" data-position="7" data-title="@lang('acc_setting_voucher.debit')" data-template="#= FormatDropList(debit,'debit') #" data-type="string" data-width="200px" name="debit">
-                             <option readonly selected value="0">--Select--</option>
-                             @foreach($account as $c)
-                               <option value="{{ $c->id }}">{{ $c->code }} - {{ $c->name }}</option>
-                             @endforeach
+                     <select class="droplist read large" data-position="7" data-title="@lang('acc_setting_voucher.debit')" data-template="#= FormatDropListRead(debit,'debit') #" data-type="string" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/account'}}" name="debit">
+                           
                      </select>
                    </td>
                </tr>
                <tr>
                    <td class="row-label"><label>@lang('acc_setting_voucher.credit') </label></td>
                    <td>
-                     <select class="droplist large" data-position="7" data-title="@lang('acc_setting_voucher.credit')" data-template="#= FormatDropList(credit,'credit') #" data-type="string" data-width="200px" name="credit">
-                             <option readonly selected value="0">--Select--</option>
-                             @foreach($account as $c)
-                               <option value="{{ $c->id }}">{{ $c->code }} - {{ $c->name }}</option>
-                             @endforeach
+                     <select class="droplist read large" data-position="7" data-title="@lang('acc_setting_voucher.credit')" data-template="#= FormatDropListRead(credit,'credit') #" data-type="string" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/account'}}" name="credit">
+                            
                          </select>
                    </td>
                </tr>
@@ -69,11 +59,8 @@
                <tr>
                    <td class="row-label"><label>@lang('acc_setting_voucher.vat_account') </label></td>
                    <td>
-                     <select class="droplist large" data-position="7" data-title="@lang('acc_setting_voucher.vat_account')" data-template="#= FormatDropList(vat_account,'vat_account') #" data-type="string" data-width="200px" name="vat_account">
-                             <option readonly selected value="0">--Select--</option>
-                             @foreach($account as $c)
-                               <option value="{{ $c->id }}">{{ $c->code }} - {{ $c->name }}</option>
-                             @endforeach
+                     <select class="droplist read large" data-position="7" data-title="@lang('acc_setting_voucher.vat_account')" data-template="#= FormatDropListRead(vat_account,'vat_account') #" data-type="string" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/setting-account-group?code=VAT'}}" name="vat_account">
+                            
                      </select>
                    </td>
                </tr>
@@ -81,11 +68,8 @@
                <tr>
                    <td class="row-label"><label>@lang('acc_setting_voucher.discount_account') *</label></td>
                    <td>
-                     <select class="droplist large" data-position="7" data-title="@lang('acc_setting_voucher.discount_account')" data-template="#= FormatDropList(discount_account,'discount_account') #" data-type="string" data-width="200px" name="discount_account">
-                             <option readonly selected value="0">--Select--</option>
-                             @foreach($account as $c)
-                               <option value="{{ $c->id }}">{{ $c->code }} - {{ $c->name }}</option>
-                             @endforeach
+                     <select class="droplist read large" data-position="7" data-title="@lang('acc_setting_voucher.discount_account')" data-template="#= FormatDropListRead(discount_account,'discount_account') #" data-type="string" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/setting-account-group?code=GG'}}" name="discount_account">
+                           
                      </select>
                    </td>
                </tr>

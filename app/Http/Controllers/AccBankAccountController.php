@@ -9,12 +9,10 @@ use Illuminate\Support\Facades\Validator;
 use App\Http\Model\AccHistoryAction;
 use App\Http\Model\Menu;
 use App\Http\Model\AccBankAccount;
-use App\Http\Model\AccBank;
 use App\Http\Model\CompanySoftware;
 use App\Http\Model\Company;
 use App\Http\Model\Error;
 use App\Http\Model\AccSystems;
-use App\Http\Resources\DropDownListResource;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Model\Imports\AccBankAccountImport;
 use App\Http\Model\Exports\AccBankAccountExport;
@@ -42,8 +40,8 @@ class AccBankAccountController extends Controller
     $count = AccBankAccount::count();
     $sys_page = AccSystems::get_systems($this->page_system);
     $paging = $count>$sys_page->value?1:0;   
-    $bank = collect(DropDownListResource::collection(AccBank::active()->OrderBy('code','asc')->get()));
-    return view('acc.bank_account',['paging' => $paging, 'key' => $this->key ,'bank'=>$bank ]);
+    //$bank = collect(DropDownListResource::collection(AccBank::active()->OrderBy('code','asc')->get()));
+    return view('acc.bank_account',['paging' => $paging, 'key' => $this->key ]);
   }
 
   

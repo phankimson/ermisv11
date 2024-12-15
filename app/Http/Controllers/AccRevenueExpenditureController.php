@@ -43,8 +43,8 @@ class AccRevenueExpenditureController extends Controller
     $count = AccRevenueExpenditure::count();
     $sys_page = AccSystems::get_systems($this->page_system);
     $paging = $count>$sys_page->value?1:0;   
-    $type_revenue = collect(DropDownListResource::collection(AccRevenueExpenditureType::active()->get()));
-    return view('acc.revenue_expenditure',['paging' => $paging, 'key' => $this->key ,'type_revenue' => $type_revenue ]);
+    //$type_revenue = collect(DropDownListResource::collection(AccRevenueExpenditureType::active()->get()));
+    return view('acc.revenue_expenditure',['paging' => $paging, 'key' => $this->key ]);
   }
 
   

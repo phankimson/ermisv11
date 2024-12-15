@@ -28,24 +28,24 @@ class AccNumberCodeController extends Controller
   protected $key;
   protected $menu;
   protected $page_system;
-  protected $type;
+  //protected $type;
   public function __construct(Request $request)
   {
      $this->url =  $request->segment(3);
      $this->key = "number-code";
      $this->menu = Menu::where('code', '=', $this->key)->first();
-     $this->type = "acc";
+     //$this->type = "acc";
      $this->page_system = "MAX_COUNT_CHANGE_PAGE";
  }
 
   public function show(Request $request){    
-    $type = Software::get_url($this->type);
+    //$type = Software::get_url($this->type);
     //$data = AccNumberCode::get_raw();
-    $menu = Menu::get_raw_type($type->id);
+    //$menu = Menu::get_raw_type($type->id);
     $count = AccNumberCode::count();
     $sys_page = AccSystems::get_systems($this->page_system);
     $paging = $count>$sys_page->value?1:0;  
-    return view('acc.number_code',['paging' => $paging, 'key' => $this->key ,'menu' => $menu ]);
+    return view('acc.number_code',['paging' => $paging, 'key' => $this->key ]);
   }
 
   

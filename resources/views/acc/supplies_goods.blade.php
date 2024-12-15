@@ -32,7 +32,7 @@
            <tr>
                  <td class="row-label"><label>@lang('acc_supplies_goods.type')</label></td>
                  <td>
-                 <select class="droplist_read large" id="type" data-position="4" data-title="@lang('acc_supplies_goods.type')" data-template="#= FormatDropListRead(type,'type') #" data-type="number" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/supplies-goods-type'}}" name="type">
+                 <select class="droplist read large" id="type" data-position="4" data-title="@lang('acc_supplies_goods.type')" data-template="#= FormatDropListRead(type,'type') #" data-type="number" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/supplies-goods-type'}}" name="type">
                         
                  </select>
                  </td>
@@ -64,7 +64,7 @@
                  <tr>
                  <td class="row-label"><label>@lang('acc_supplies_goods.unit')</label></td>
                  <td>
-                 <select class="droplist_read large" data-position="4" data-title="@lang('acc_supplies_goods.unit')" data-template="#= FormatDropListRead(unit_id,'unit_id') #" data-type="number" data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/unit'}}" data-width="200px" name="unit_id">
+                 <select class="droplist read large" data-position="4" data-title="@lang('acc_supplies_goods.unit')" data-template="#= FormatDropListRead(unit_id,'unit_id') #" data-type="number" data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/unit'}}" data-width="200px" name="unit_id">
                          
                  </select>
                  </td>
@@ -74,7 +74,7 @@
                  <tr>
                  <td class="row-label"><label>@lang('acc_supplies_goods.group')</label></td>
                  <td>
-                 <select class="droplist_read large" data-position="4" data-title="@lang('acc_supplies_goods.group')" data-template="#= FormatDropListRead(group,'group') #" data-type="number" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/supplies-goods-group'}}" name="group">
+                 <select class="droplist read large" data-position="4" data-title="@lang('acc_supplies_goods.group')" data-template="#= FormatDropListRead(group,'group') #" data-type="number" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/supplies-goods-group'}}" name="group">
                         
                  </select>
                  </td>
@@ -92,7 +92,7 @@
                  <tr>
                  <td class="row-label"><label>@lang('acc_supplies_goods.warranty_period')</label></td>
                  <td>
-                 <select class="droplist_read large" data-position="4" data-title="@lang('acc_supplies_goods.warranty_period')" data-template="#= FormatDropListRead(warranty_period,'warranty_period') #" data-type="number" data-width="200px"  data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/warranty-period'}}"  name="warranty_period">
+                 <select class="droplist read large" data-position="4" data-title="@lang('acc_supplies_goods.warranty_period')" data-template="#= FormatDropListRead(warranty_period,'warranty_period') #" data-type="number" data-width="200px"  data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/warranty-period'}}"  name="warranty_period">
                         
                  </select>
                  </td>
@@ -114,7 +114,7 @@
                  <tr>
                  <td class="row-label"><label>@lang('acc_supplies_goods.stock_default')</label></td>
                  <td>
-                 <select class="droplist_read large" data-position="4" data-title="@lang('acc_supplies_goods.stock_default')" data-template="#= FormatDropListRead(stock_default,'stock_default') #" data-type="number" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/stock'}}"  name="stock_default">
+                 <select class="droplist read large" data-position="4" data-title="@lang('acc_supplies_goods.stock_default')" data-template="#= FormatDropListRead(stock_default,'stock_default') #" data-type="number" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/stock'}}"  name="stock_default">
                         
                  </select>
                  </td>
@@ -146,7 +146,7 @@
                <tr>
                <td class="row-label"><label>@lang('acc_supplies_goods.stock_account')</label></td>
                <td>
-               <select class="droplist_read large" data-position="4" data-title="@lang('acc_supplies_goods.stock_account')" data-template="#= FormatDropListRead(stock_account,'stock_account') #" data-type="number"  data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/setting-account-group?code=KH'}}" data-width="200px" name="stock_account">
+               <select class="droplist read large" data-position="4" data-title="@lang('acc_supplies_goods.stock_account')" data-template="#= FormatDropListRead(stock_account,'stock_account') #" data-type="number"  data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/setting-account-group?code=KH'}}" data-width="200px" name="stock_account">
                        
                </select>
                </td>
@@ -154,7 +154,7 @@
                <tr>
                <td class="row-label"><label>@lang('acc_supplies_goods.revenue_account')</label></td>
                <td>
-               <select class="droplist_read large" data-position="4" data-title="@lang('acc_supplies_goods.revenue_account')" data-template="#= FormatDropListRead(revenue_account,'revenue_account') #" data-type="number" data-width="200px"  data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/setting-account-group?code=DT'}}"  name="revenue_account">
+               <select class="droplist read large" data-position="4" data-title="@lang('acc_supplies_goods.revenue_account')" data-template="#= FormatDropListRead(revenue_account,'revenue_account') #" data-type="number" data-width="200px"  data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/setting-account-group?code=DT'}}"  name="revenue_account">
                      
                </select>
                </td>
@@ -162,7 +162,7 @@
                <tr>
                <td class="row-label"><label>@lang('acc_supplies_goods.cost_account')</label></td>
                <td>
-               <select class="droplist_read large" data-position="4" data-title="@lang('acc_supplies_goods.cost_account')" data-template="#= FormatDropListRead(cost_account,'cost_account') #" data-type="number" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/setting-account-group?code=CP'}}" name="cost_account">
+               <select class="droplist read large" data-position="4" data-title="@lang('acc_supplies_goods.cost_account')" data-template="#= FormatDropListRead(cost_account,'cost_account') #" data-type="number" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/setting-account-group?code=CP'}}" name="cost_account">
                       
                </select>
                </td>
@@ -170,7 +170,7 @@
                <tr>
                <td class="row-label"><label>@lang('acc_supplies_goods.vat_tax')</label></td>
                <td>
-               <select class="droplist_read large" data-position="4" data-title="@lang('acc_supplies_goods.vat_tax')" data-template="#= FormatDropListRead(vat_tax,'vat_tax') #" data-type="number" data-width="200px"  data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/vat-tax'}}"  name="vat_tax">
+               <select class="droplist read large" data-position="4" data-title="@lang('acc_supplies_goods.vat_tax')" data-template="#= FormatDropListRead(vat_tax,'vat_tax') #" data-type="number" data-width="200px"  data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/vat-tax'}}"  name="vat_tax">
                        
                </select>
                </td>
@@ -187,7 +187,7 @@
                <tr>
                <td class="row-label"><label>@lang('acc_supplies_goods.excise_tax')</label></td>
                <td>
-               <select class="droplist_read large" data-position="4" data-title="@lang('acc_supplies_goods.vat_tax')" data-template="#= FormatDropListRead(excise_tax,'excise_tax') #" data-type="number" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/excise-tax'}}"  name="excise_tax">
+               <select class="droplist read large" data-position="4" data-title="@lang('acc_supplies_goods.vat_tax')" data-template="#= FormatDropListRead(excise_tax,'excise_tax') #" data-type="number" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/excise-tax'}}"  name="excise_tax">
                       
                </select>
                </td>
@@ -304,5 +304,5 @@
 @if(app()->getLocale() == 'vi')
 <script src="{{ url('library/handsontable/dist/languages/vi-VI.js') }}"></script>
 @endif
-<script src="{{ url('addon/scripts/ermis/ermis-form-2-pageuphotread.js') }}"></script>
+<script src="{{ url('addon/scripts/ermis/ermis-form-2-pageuphot.js') }}"></script>
 @endsection

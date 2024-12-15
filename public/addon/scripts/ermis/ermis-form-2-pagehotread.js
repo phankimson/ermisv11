@@ -1,4 +1,4 @@
-// Ermis Page TableExcel
+// Ermis Page TableExcel Read Url
 var Ermis = function () {
     var $kGrid = jQuery('#grid');
     var $kGridExtra = jQuery('#grid_extra');
@@ -42,7 +42,7 @@ var Ermis = function () {
           afterChange(changes, src,c.data);
          });
       }
-    }
+    };
 
     var initGlobalRegister = function(){
       // KendoStartPickerTemplate
@@ -55,8 +55,11 @@ var Ermis = function () {
       ErmisKendoContextMenuTemplate("#context-menu", "#form-action");
       // KendoUploadTemplate
       ErmisKendoUploadTemplate("#files", false);
-      // KendoDroplistTemplat
-      ErmisKendoDroplistTemplate(".droplist", "contains");
+      // KendoDroplistTemplate
+      jQuery('.droplist.read').each(function() {
+        ErmisKendoDroplistReadTemplate(this, "contains");
+      }); 
+      ErmisKendoDroplistTemplate(".droplist:not(.read)", "contains");
       ErmisKendoDroplistTemplate1(".database", "contains",initKendoUiChangeDB);
       // KendoTimePickerTemplate
       ErmisKendoTimePickerTemplate("#start_time","#end_time");
@@ -224,9 +227,11 @@ var Ermis = function () {
                   if (v.addoption === "true") {
                     var parent = jQuery('select[name="' + v.field + '"]').parents('td');
                     var id = jQuery('select[name="' + v.field + '"]').attr('id');
+                    var $class = jQuery('select[name="' + v.field + '"]').prop('class');
+                    var $width = jQuery('select[name="' + v.field + '"]').data('width');
                     jQuery('#'+id).data('kendoDropDownList').destroy();
                     parent.empty();
-                    parent.append('<select id="'+ id+'" class="droplist load_droplist large" data-width="200px" name="'+id+'">');
+                    parent.append('<select id="'+ id+'" class="'+$class+'" data-width="'+$width+'" name="'+id+'">');
                   jQuery('#'+ id).kendoDropDownList({
                        dataTextField: "text",
                        dataValueField: "value",
@@ -675,7 +680,6 @@ var Ermis = function () {
        var row = changes[0][0];
        var value = changes[0][3];
        var arr = [];
-       var a = jQuery("#"+field+"_dropdown_list").data("url");
        var dataItem = RequestURL(jQuery("#"+field+"_dropdown_list").data("url")+"?value="+value);
        jQuery.each(Ermis.ArrayColumn, function (i, v) {
            if (v.set === "1") {

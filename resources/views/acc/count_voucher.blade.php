@@ -22,11 +22,8 @@
       <tr>
       <td class="row-label"><label>@lang('acc_count_voucher.number_voucher')</label></td>
       <td>
-      <select class="droplist large" data-position="1" data-title="@lang('acc_count_voucher.number_voucher')" data-template="#= FormatDropList(number_voucher,'number_voucher') #" data-type="number" data-width="200px" name="number_voucher">
-              <option readonly selected value="0">--Select--</option>
-                @foreach($number_voucher as $m)
-                   <option value="{{ $m->id }}">{{ $m->code }} - {{ $lang == 'vi'? $m->name : $m->name_en }}</option>
-                @endforeach
+      <select class="droplist read large" data-position="1" data-title="@lang('acc_count_voucher.number_voucher')" data-template="#= FormatDropListRead(number_voucher,'number_voucher') #" data-type="number" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/number-voucher'}}" name="number_voucher">
+             
       </select>
       </td>
       </tr>

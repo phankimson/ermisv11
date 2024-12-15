@@ -22,11 +22,7 @@
       <tr>
           <td class="row-label"><label>@lang('acc_bank_account.bank')</label></td>
           <td>
-            <select class="droplist large" data-position="1" data-title="@lang('acc_bank_account.bank')" data-template="#= FormatDropList(bank_id,'bank_id') #" data-type="number" data-width="200px" name="bank_id">
-                    <option readonly selected value="0">--Select--</option>
-                      @foreach($bank as $m)
-                         <option value="{{ $m->id }}">{{ $m->code }} - {{ $lang == 'vi'? $m->name : $m->name_en }}</option>
-                      @endforeach
+            <select class="droplist read large" data-position="1" data-title="@lang('acc_bank_account.bank')" data-template="#= FormatDropListRead(bank_id,'bank_id') #" data-type="number" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/bank-account'}}" name="bank_id">                    
             </select>
           </td>
       </tr>

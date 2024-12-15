@@ -39,11 +39,8 @@
              <tr>
              <td class="row-label"><label>@lang('acc_object.object_group')</label></td>
              <td>
-             <select class="droplist large" data-position="1" data-title="@lang('acc_object.object_group')" data-template="#= FormatDropList(object_group,'object_group') #" data-type="number" data-width="200px" name="object_group">
-                     <option readonly selected value="0">--Select--</option>
-                       @foreach($object_group as $m)
-                          <option value="{{ $m->id }}">{{ $m->code }} - {{ $lang == 'vi'? $m->name : $m->name_en }}</option>
-                       @endforeach
+             <select class="droplist read large" data-position="1" data-title="@lang('acc_object.object_group')" data-template="#= FormatDropListRead(object_group,'object_group') #" data-type="number" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/object-group'}}" name="object_group">
+                    
              </select>
              </td>
              </tr>
@@ -107,11 +104,8 @@
                <tr class="object_type_3 hidden filter_tr">
                <td class="row-label"><label>@lang('acc_object.department')</label></td>
                <td>
-               <select class="droplist large" data-position="13" data-title="@lang('acc_object.department')" data-template="#= FormatDropList(department,'department') #" data-type="number" data-width="200px" name="department">
-                       <option readonly selected value="0">--Select--</option>
-                         @foreach($department as $m)
-                            <option value="{{ $m->id }}">{{ $m->code }} - {{ $lang == 'vi'? $m->name : $m->name_en }}</option>
-                         @endforeach
+               <select class="droplist read large" data-position="13" data-title="@lang('acc_object.department')" data-template="#= FormatDropListRead(department,'department') #" data-type="number" data-width="200px"  data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/department'}}" name="department">
+                      
                </select>
                </td>
                </tr>
@@ -174,44 +168,32 @@
                <tr>
                    <td><label>@lang('acc_object.country')</label></td>
                    <td>
-                       <select class="droplist large" data-position="24" data-title="@lang('acc_object.country')" data-template="#= FormatDropList(country,'country') #" data-hidden="true" data-type="number" data-width="200px" name="country">
-                           <option readonly selected value="0">--Select--</option>
-                           @foreach($country as $m)
-                              <option value="{{ $m->id }}">{{ $m->code }} - {{ $lang == 'vi'? $m->name : $m->name_en }}</option>
-                           @endforeach
+                       <select class="droplist read large" data-position="24" data-title="@lang('acc_object.country')" data-template="#= FormatDropListRead(country,'country') #" data-hidden="true" data-type="number" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{url($lang.'/manage/'.env('URL_DROPDOWN').'/country')}}" name="country">
+                          
                        </select>
                    </td>
                </tr>
                <tr>
                    <td><label>@lang('acc_object.regions')</label></td>
                    <td>
-                       <select class="droplist large" data-position="25" data-title="@lang('company.regions')" data-template="#= FormatDropList(regions,'regions') #" data-hidden="true" data-type="number" data-width="200px" name="regions">
-                           <option readonly selected value="0">--Select--</option>
-                           @foreach($regions as $m)
-                              <option value="{{ $m->id }}">{{ $m->code }} - {{ $lang == 'vi'? $m->name : $m->name_en }}</option>
-                           @endforeach
+                       <select class="droplist read large" data-position="25" data-title="@lang('company.regions')" data-template="#= FormatDropListRead(regions,'regions') #" data-hidden="true" data-type="number" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{url($lang.'/manage/'.env('URL_DROPDOWN').'/regions')}}" name="regions">
+                         
                        </select>
                    </td>
                </tr>
                <tr>
                    <td><label>@lang('acc_object.area')</label></td>
                    <td>
-                       <select class="droplist large" data-position="26" data-title="@langt('company.area')" data-template="#= FormatDropList(area,'area') #" data-hidden="true" data-type="number" data-width="200px" name="area">
-                         <option readonly selected value="0">--Select--</option>
-                         @foreach($area as $m)
-                            <option value="{{ $m->id }}">{{ $m->code }} - {{ $lang == 'vi'? $m->name : $m->name_en }}</option>
-                         @endforeach
+                       <select class="droplist read large" data-position="26" data-title="@langt('company.area')" data-template="#= FormatDropListRead(area,'area') #" data-hidden="true" data-type="number" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{url($lang.'/manage/'.env('URL_DROPDOWN').'/area')}}" name="area">
+                       
                        </select>
                    </td>
                </tr>
                <tr>
                    <td><label>@lang('acc_object.distric')</label></td>
                    <td>
-                       <select class="droplist large" data-position="27" data-title="@lang('acc_object.distric')" data-template="#= FormatDropList(distric,'distric') #" data-hidden="true" data-type="number" data-width="200px" name="distric">
-                       <option readonly selected value="0">--Select--</option>
-                         @foreach($distric as $m)
-                            <option value="{{ $m->id }}">{{ $m->code }} - {{ $lang == 'vi'? $m->name : $m->name_en }}</option>
-                         @endforeach
+                       <select class="droplist read large" data-position="27" data-title="@lang('acc_object.distric')" data-template="#= FormatDropListRead(distric,'distric') #" data-hidden="true" data-type="number" data-width="200px" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{url($lang.'/manage/'.env('URL_DROPDOWN').'/distric')}}" name="distric">
+                     
                        </select>
                    </td>
                </tr>
