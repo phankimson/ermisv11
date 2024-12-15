@@ -22,22 +22,16 @@
         <tr>
             <td class="row-label"><label>@lang('company_software.company')</label></td>
             <td>
-            <select class="droplist large" data-position="1" data-title="@lang('company_software.company')" data-template="#= FormatDropList(company_id,'company_id') #" data-type="number" data-width="200px" name="company_id">
-                    <option readonly selected value="0">--Select--</option>
-                      @foreach($company as $c)
-                         <option value="{{ $c->id }}">{{ $c->code }} - {{ $c->name }}</option>
-                      @endforeach
+            <select class="droplist read large" data-position="1" data-title="@lang('company_software.company')" data-template="#= FormatDropListRead(company_id,'company_id') #" data-type="number" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/company'}}"  name="company_id">
+                   
                 </select>
             </td>
         </tr>
         <tr>
             <td class="row-label"><label>@lang('company_software.license') *</label></td>
             <td>
-            <select class="droplist large" data-position="1" data-title="@lang('company_software.license')" data-template="#= FormatDropList(license_id,'license_id') #" data-type="number" data-width="200px" name="license_id">
-                    <option readonly selected value="0">--Select--</option>
-                      @foreach($license as $n)
-                         <option value="{{ $n->id }}">{{ $n->keygen }} - {{ $n->date_end }}</option>
-                      @endforeach
+            <select class="droplist read large" data-position="1" data-title="@lang('company_software.license')" data-template="#= FormatDropListRead(license_id,'license_id') #" data-type="number" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/license'}}" name="license_id">
+                    
                 </select>
             </td>
         </tr>

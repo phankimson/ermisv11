@@ -49,7 +49,7 @@ class AccObjectController extends Controller
   public function show(){
     //$type = 2;
     //$data = AccObject::get_raw();
-    $object_type = collect(ObjectTypeDropDownListResource::collection(AccObjectType::active()->orderBy('code','asc')->get()));
+    //$object_type = collect(ObjectTypeDropDownListResource::collection(AccObjectType::active()->orderBy('code','asc')->get()));
     //$object_group = collect(DropDownListResource::collection(AccObjectGroup::active()->OrderBy('code','asc')->get()));
     //$menu = Menu::get_raw_type($type);
     //$regions = collect(DropDownListResource::collection(Regions::active()->OrderBy('code','asc')->get()));
@@ -60,7 +60,7 @@ class AccObjectController extends Controller
     $count = AccObject::count();
     $sys_page = AccSystems::get_systems($this->page_system);
     $paging = $count>$sys_page->value?1:0;   
-    return view('acc.object',['paging' => $paging, 'key' => $this->key ,'object_type' =>$object_type ]);
+    return view('acc.object',['paging' => $paging, 'key' => $this->key ]);
   }
 
   

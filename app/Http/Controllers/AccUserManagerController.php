@@ -46,12 +46,12 @@ class AccUserManagerController extends Controller
     $com = $request->session()->get('com');
     //$data = AccUser::company($com->id)->get()->makeVisible(['active_code','password']);
     $group_user = AccGroupUsers::activeCompany($com->id)->active()->get();
-    $country = Country::all();
+    //$country = Country::all();
     $prefix_username = substr(Crypt::encryptString($com->id),0,5);
     $count = AccUser::where('company_default',$com->id)->count();
     $sys_page = AccSystems::get_systems($this->page_system);
     $paging = $count>$sys_page->value?1:0;  
-    return view('acc.users',['paging' => $paging, 'key' => $this->key , 'group_user'=>$group_user ,'country' =>$country ,'prefix_username'=>$prefix_username]);
+    return view('acc.users',['paging' => $paging, 'key' => $this->key , 'group_user'=>$group_user  ,'prefix_username'=>$prefix_username]);
   }
 
   public function data(Request $request){  

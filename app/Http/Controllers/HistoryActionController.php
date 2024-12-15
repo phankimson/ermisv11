@@ -38,12 +38,12 @@ class HistoryActionController extends Controller
    public function show(){
       $type = 0;
       //$data = HistoryAction::get_raw_type($type);
-      $menu = collect(DropDownListResource::collection(Menu::all()));
-      $user = collect(UserDropDownListResource::collection(User::all()));
+      //$menu = collect(DropDownListResource::collection(Menu::all()));
+      //$user = collect(UserDropDownListResource::collection(User::all()));
       $count = HistoryAction::count();
       $sys_page = Systems::get_systems($this->page_system);
       $paging = $count>$sys_page->value?1:0; 
-      return view('global.history_action',['paging' => $paging, 'user'=>$user, 'menu'=>$menu, 'key' => $this->key , 'type'=>$type]);
+      return view('global.history_action',['paging' => $paging, 'key' => $this->key , 'type'=>$type]);
    }
 
    

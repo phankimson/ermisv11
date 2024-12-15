@@ -46,12 +46,12 @@ class AccSettingVoucherController extends Controller
   public function show(){    
     //$type = Software::get_url($this->type);
     //$data = AccSettingVoucher::get_raw();
-    $account = collect(DropDownListResource::collection(AccAccountSystems::active()->orderBy('code','asc')->doesntHave('account')->get()));
+    //$account = collect(DropDownListResource::collection(AccAccountSystems::active()->orderBy('code','asc')->doesntHave('account')->get()));
     //$menu = Menu::get_raw_type($type->id);
     $count = AccSettingVoucher::count();
     $sys_page = AccSystems::get_systems($this->page_system);
     $paging = $count>$sys_page->value?1:0;   
-    return view('acc.setting_voucher',['paging' => $paging, 'key' => $this->key ,'account' => $account ]);
+    return view('acc.setting_voucher',['paging' => $paging, 'key' => $this->key  ]);
   }
 
   

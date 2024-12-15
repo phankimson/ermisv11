@@ -28,11 +28,8 @@
              <tr>
              <td class="row-label"><label>@lang('acc_excise.parent')</label></td>
              <td>
-             <select class="droplist large load_droplist"  id="parent_id"  add-option="true" data-position="2" data-title="@lang('acc_excise.parent')" data-template="#= FormatDropList(parent_id,'parent_id') #" data-type="number" data-nullable ="true" data-width="200px" name="parent_id">
-                     <option readonly selected value="0">--Select--</option>
-                       @foreach($parent as $m)
-                          <option value="{{ $m->id }}">{{ $m->code }} - {{ $lang == 'vi'? $m->name : $m->name_en }}</option>
-                       @endforeach
+             <select class="droplist read large load_droplist"  id="parent_id"  add-option="true" data-position="2" data-title="@lang('acc_excise.parent')" data-template="#= FormatDropListRead(parent_id,'parent_id') #" data-type="number" data-nullable ="true" data-width="200px"  data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/excise-tax'}}" name="parent_id">
+                 
              </select>
              </td>
              </tr>
@@ -56,11 +53,8 @@
                <tr>
                <td class="row-label"><label>@lang('acc_excise.unit')</label></td>
                <td>
-               <select class="droplist load_droplist large"  data-position="6" data-title="@lang('acc_excise.unit')" data-hidden="true"  data-template="#= FormatDropList(unit_id,'unit_id') #" data-type="number" data-width="200px" name="unit_id">
-                       <option readonly selected value="0">--Select--</option>
-                         @foreach($unit as $m)
-                            <option value="{{ $m->id }}">{{ $m->code }} - {{ $lang == 'vi'? $m->name : $m->name_en }}</option>
-                         @endforeach
+               <select class="droplist read load_droplist large"  data-position="6" data-title="@lang('acc_excise.unit')" data-hidden="true"  data-template="#= FormatDropListRead(unit_id,'unit_id') #" data-type="number" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/unit'}}" name="unit_id">
+                    
                </select>
                </td>
                </tr>

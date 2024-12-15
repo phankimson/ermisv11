@@ -40,7 +40,10 @@ var Ermis = function () {
       // KendoTimePickerTemplate
       ErmisKendoTimePickerTemplate("#start_time","#end_time");
       // KendoMultiSelectTemplate
-      ErmisKendoMultiSelectTemplate(".multiselect", false, '<span>#: FormatMultiSelectValueRow(data.text,'+Ermis.row_multiselect+') #</span>');
+      jQuery('.multiselect.read').each(function() {
+        ErmisKendoMultiSelectReadTemplate(this, "contains",false, '<span>#: FormatMultiSelectValueRow(data.text,'+Ermis.row_multiselect+') #</span>');
+      }); 
+      ErmisKendoMultiSelectTemplate(".multiselect:not(.read)", false, '<span>#: FormatMultiSelectValueRow(data.text,'+Ermis.row_multiselect+') #</span>');
       // KendoNumbericTemplate
       ErmisKendoNumbericTemplate(".number", "n"+Ermis.decimal, null, null, null, 1);
       ErmisKendoNumbericTemplate(".number-price", "n"+Ermis.decimal, null, null, null, 1000);

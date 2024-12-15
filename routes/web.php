@@ -72,6 +72,10 @@ Route::prefix('manage')->group(function () {
   Route::get(env('URL_DROPDOWN').'/company', 'company_dropdown_list');
   Route::get(env('URL_DROPDOWN').'/group-users', 'group_users_dropdown_list');
   Route::get(env('URL_DROPDOWN').'/document-type', 'document_type_dropdown_list');
+  Route::get(env('URL_DROPDOWN').'/menu', 'menu_dropdown_list');
+  Route::get(env('URL_DROPDOWN').'/menu-all', 'menu_all_dropdown_list');
+  Route::get(env('URL_DROPDOWN').'/license', 'license_dropdown_list');
+  Route::get(env('URL_DROPDOWN').'/user', 'user_dropdown_list');
   });
 
 
@@ -424,6 +428,7 @@ Route::prefix('acc')->group(function () {
   Route::get(env('URL_DROPDOWN').'/stock', 'stock_dropdown_list');
   Route::get(env('URL_DROPDOWN').'/vat-tax', 'vat_tax_dropdown_list');
   Route::get(env('URL_DROPDOWN').'/excise-tax', 'excise_tax_dropdown_list');
+  Route::get(env('URL_DROPDOWN').'/natural-resources', 'natural_resources_dropdown_list');
   Route::get(env('URL_DROPDOWN').'/setting-account-group', 'setting_account_group_dropdown_list');
   Route::get(env('URL_DROPDOWN').'/case-code', 'case_code_dropdown_list');
   Route::get(env('URL_DROPDOWN').'/cost-code', 'cost_code_dropdown_list');
@@ -432,12 +437,22 @@ Route::prefix('acc')->group(function () {
   Route::get(env('URL_DROPDOWN').'/bank-account', 'bank_account_dropdown_list');
   Route::get(env('URL_DROPDOWN').'/object', 'object_dropdown_list');
   Route::get(env('URL_DROPDOWN').'/object-group', 'object_group_dropdown_list');
+  Route::get(env('URL_DROPDOWN').'/object-type', 'object_type_dropdown_list');
   Route::get(env('URL_DROPDOWN').'/menu', 'menu_dropdown_list');
   Route::get(env('URL_DROPDOWN').'/number-voucher', 'number_voucher_dropdown_list');
   Route::get(env('URL_DROPDOWN').'/department', 'department_dropdown_list');
   Route::get(env('URL_DROPDOWN').'/account', 'account_dropdown_list');
+  Route::get(env('URL_DROPDOWN').'/account-multi', 'account_multi_dropdown_list');
+  Route::get(env('URL_DROPDOWN').'/account-type', 'account_type_dropdown_list');
+  Route::get(env('URL_DROPDOWN').'/account-nature', 'account_nature_dropdown_list');
   Route::get(env('URL_DROPDOWN').'/accounted-fast', 'accounted_fast_dropdown_list');
   Route::get(env('URL_DROPDOWN').'/revenue-expenditure-type', 'revenue_expenditure_type_dropdown_list');
+  Route::get(env('URL_DROPDOWN').'/document', 'document_dropdown_list');
+  Route::get(env('URL_DROPDOWN').'/country', 'country_dropdown_list');
+  Route::get(env('URL_DROPDOWN').'/regions', 'regions_dropdown_list');
+  Route::get(env('URL_DROPDOWN').'/area', 'area_dropdown_list');
+  Route::get(env('URL_DROPDOWN').'/distric', 'distric_dropdown_list');
+  Route::get(env('URL_DROPDOWN').'/group-user', 'group_user_dropdown_list');
   });
 
 

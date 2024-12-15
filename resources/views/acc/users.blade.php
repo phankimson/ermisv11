@@ -76,7 +76,7 @@
                <tr>
                    <td class="row-label"><label>@lang('user.country')</label></td>
                    <td>
-                     <select class="droplist read large" data-position="8" data-title="@lang('user.country')" data-template="#= FormatDropListRead(country,'country') #" data-type="string" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{url($lang.'/manage/'.env('URL_DROPDOWN').'/country')}}" name="country">
+                     <select class="droplist read large" data-position="8" data-title="@lang('user.country')" data-template="#= FormatDropListRead(country,'country') #" data-type="string" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/country'}}" name="country">
                          
                          </select>
                    </td>
@@ -95,11 +95,8 @@
              </tr>
              <tr>
                  <td class="row-label"><label>@lang('user.group_user')</label></td>
-                 <td><select class="droplist large" data-position="8" data-title="@lang('user.group_user')" data-template="#= FormatDropList(group_users_id,'group_users_id') #" data-type="number" data-width="200px" name="group_users_id">
-                         <option readonly selected value="0">--Select--</option>
-                           @foreach($group_user as $c)
-                             <option value="{{ $c->id }}">{{ $c->code }} - {{ $c->name }}</option>
-                           @endforeach
+                 <td><select class="droplist read large" data-position="8" data-title="@lang('user.group_user')" data-template="#= FormatDropListRead(group_users_id,'group_users_id') #" data-type="number" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/group-user'}}" name="group_users_id">
+                         
                      </select>
                  </td>
              </tr>

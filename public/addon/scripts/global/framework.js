@@ -1152,7 +1152,7 @@ function FormatDropList(container,column) {
   if(found.length>0){
     result = jQuery("select[name='" + column + "']").find('option[value=' + container+ ']').text();
   }else{
-    result = jQuery("select[name='" + column + "']").find('option[value="0"]').text();
+    result = "--Select--";
   }
   return result;
 }
@@ -1165,7 +1165,7 @@ function FormatDropListRead(container,column) {
   if(found){
     result = data.find(x=>x.value === container).text;
   }else{
-    result = data.find(x=>x.value === '0').text;
+    result = "--Select--";
   }
   return result;
 }

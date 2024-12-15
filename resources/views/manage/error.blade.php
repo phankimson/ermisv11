@@ -27,22 +27,16 @@
         <tr>
             <td class="row-label"><label>@lang('error.user')</label></td>
             <td>
-            <select class="droplist large" data-position="1" data-title="@lang('error.user')" data-template="#= FormatDropList(user_id,'user_id') #" data-type="number" data-width="200px" name="user_id">
-                    <option readonly selected value="0">--Select--</option>
-                      @foreach($user as $u)
-                        <option value="{{ $u->id }}">{{ $u->fullname }} - {{ $u->username }}</option>
-                      @endforeach
+            <select class="droplist read large" data-position="1" data-title="@lang('error.user')" data-template="#= FormatDropListRead(user_id,'user_id') #" data-type="number" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/user'}}" name="user_id">
+                    
                 </select>
             </td>
         </tr>
         <tr>
             <td class="row-label"><label>@lang('error.menu')</label></td>
             <td>
-            <select class="droplist large" data-position="2" data-title="@lang('error.menu')" data-template="#= FormatDropList(menu_id,'menu_id') #" data-type="number" data-width="200px" name="menu_id">
-                    <option readonly selected value="0">--Select--</option>
-                       @foreach($menu as $m)
-                        <option value="{{ $m->id }}">{{ $m->code }} - {{ $lang == 'vi'? $m->name : $m->name_en }}</option>
-                       @endforeach
+            <select class="droplist read large" data-position="2" data-title="@lang('error.menu')" data-template="#= FormatDropListRead(menu_id,'menu_id') #" data-type="number" data-width="200px"  data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/menu-all'}}" name="menu_id">
+                    
                 </select>
             </td>
         </tr>

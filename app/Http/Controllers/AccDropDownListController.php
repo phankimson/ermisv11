@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Resources\LangDropDownResource;
 use App\Http\Resources\BankDropDownResource;
 use App\Http\Resources\AccountedFastDropDownResource;
+use App\Http\Resources\ObjectTypeDropDownResource;
 use App\Http\Resources\DropDownResource;
 use App\Http\Model\AccUnit;
 use App\Http\Model\AccSuppliesGoodsType;
@@ -28,10 +29,19 @@ use App\Http\Model\AccDepartment;
 use App\Http\Model\AccObject;
 use App\Http\Model\AccObjectGroup;
 use App\Http\Model\AccAccountedFast;
+use App\Http\Model\AccAccountType;
+use App\Http\Model\AccAccountNature;
+use App\Http\Model\AccNaturalResources;
 use App\Http\Model\AccRevenueExpenditure;
 use App\Http\Model\AccNumberVoucher;
+use App\Http\Model\AccObjectType;
 use App\Http\Model\Menu;
 use App\Http\Model\Software;
+use App\Http\Model\Country;
+use App\Http\Model\Regions;
+use App\Http\Model\Area;
+use App\Http\Model\Distric;
+use App\Http\Model\GroupUsers;
 
 class AccDropDownListController extends Controller
 {
@@ -42,6 +52,34 @@ class AccDropDownListController extends Controller
     $this->document = "DOCUMENT_TAX";
     $this->type = "acc";
   }
+  public function country_dropdown_list(Request $request){
+    $default = collect([['value' => '0','text' => "--Select--"]]);
+    $data = DropDownResource::collection(Country::active()->get());
+    $data = $default->merge($data)->values();
+    return response()->json($data)->withCallback($request->input('callback'));
+  }
+
+  public function regions_dropdown_list(Request $request){
+    $default = collect([['value' => '0','text' => "--Select--"]]);
+    $data = LangDropDownResource::collection(Regions::active()->get());
+    $data = $default->merge($data)->values();
+    return response()->json($data)->withCallback($request->input('callback'));
+  }
+
+  public function area_dropdown_list(Request $request){
+    $default = collect([['value' => '0','text' => "--Select--"]]);
+    $data = LangDropDownResource::collection(Area::active()->get());
+    $data = $default->merge($data)->values();
+    return response()->json($data)->withCallback($request->input('callback'));
+  }
+
+  public function distric_dropdown_list(Request $request){
+    $default = collect([['value' => '0','text' => "--Select--"]]);
+    $data = LangDropDownResource::collection(Distric::active()->get());
+    $data = $default->merge($data)->values();
+    return response()->json($data)->withCallback($request->input('callback'));
+  }
+
   // Đơn vị tính Droplist
   public function unit_dropdown_list(Request $request){
       $default = collect([['value' => '0','text' => "--Select--"]]);
@@ -88,6 +126,13 @@ class AccDropDownListController extends Controller
   public function excise_tax_dropdown_list(Request $request){
     $default = collect([['value' => '0','text' => "--Select--"]]);
     $data = LangDropDownResource::collection(AccExcise::active()->orderBy('code','asc')->get());
+    $data = $default->merge($data)->values();
+    return response()->json($data)->withCallback($request->input('callback'));
+  }
+  // Thuế Tài nguyên
+  public function natural_resources_dropdown_list(Request $request){
+    $default = collect([['value' => '0','text' => "--Select--"]]);
+    $data = LangDropDownResource::collection(AccNaturalResources::active()->orderBy('code','asc')->get());
     $data = $default->merge($data)->values();
     return response()->json($data)->withCallback($request->input('callback'));
   }
@@ -168,6 +213,12 @@ class AccDropDownListController extends Controller
     return response()->json($data)->withCallback($request->input('callback'));
   }
 
+  // Loại đối tượng
+  public function object_type_dropdown_list(Request $request){
+    $data = ObjectTypeDropDownResource::collection(AccObjectType::active()->orderBy('code','asc')->get());
+    return response()->json($data)->withCallback($request->input('callback'));
+  }
+
    // Đối tượng
    public function object_dropdown_list(Request $request){
     $default = collect([['value' => '0','text' => "--Select--"]]);
@@ -184,10 +235,40 @@ class AccDropDownListController extends Controller
     return response()->json($data)->withCallback($request->input('callback'));
   }
 
+  // Loại Tài khoản
+  public function account_type_dropdown_list(Request $request){
+    $default = collect([['value' => '0','text' => "--Select--"]]);
+    $data = LangDropDownResource::collection(AccAccountType::active()->orderBy('code','asc')->get());
+    $data = $default->merge($data)->values();
+    return response()->json($data)->withCallback($request->input('callback'));
+  }
+
+   // Tính chất Tài khoản
+   public function account_nature_dropdown_list(Request $request){
+    $default = collect([['value' => '0','text' => "--Select--"]]);
+    $data = LangDropDownResource::collection(AccAccountNature::active()->orderBy('code','asc')->get());
+    $data = $default->merge($data)->values();
+    return response()->json($data)->withCallback($request->input('callback'));
+  }
+
   // Tài khoản
   public function account_dropdown_list(Request $request){
     $default = collect([['value' => '0','text' => "--Select--"]]);
     $data = LangDropDownResource::collection(AccAccountSystems::active()->orderBy('code','asc')->doesntHave('account')->get());
+    $data = $default->merge($data)->values();
+    return response()->json($data)->withCallback($request->input('callback'));
+  }
+
+  // Tài khoản multi
+  public function account_multi_dropdown_list(Request $request){
+    $data = LangDropDownResource::collection(AccAccountSystems::active()->orderBy('code','asc')->doesntHave('account')->get());
+    return response()->json($data)->withCallback($request->input('callback'));
+  }
+
+  // Group User
+  public function group_user_dropdown_list(Request $request){
+    $default = collect([['value' => '0','text' => "--Select--"]]);
+    $data = LangDropDownResource::collection(GroupUsers::active()->orderBy('code','asc')->get());
     $data = $default->merge($data)->values();
     return response()->json($data)->withCallback($request->input('callback'));
   }
@@ -220,6 +301,14 @@ class AccDropDownListController extends Controller
     $type = Software::get_url($this->type);
     $default = collect([['value' => '0','text' => "--Select--"]]);
     $data = LangDropDownResource::collection(Menu::get_raw_type($type->id));
+    $data = $default->merge($data)->values();
+    return response()->json($data)->withCallback($request->input('callback'));
+  }
+
+   // Tài liệu
+   public function document_dropdown_list(Request $request){
+    $default = collect([['value' => '0','text' => "--Select--"]]);
+    $data = LangDropDownResource::collection(Document::active()->orderBy('code','asc')->get());
     $data = $default->merge($data)->values();
     return response()->json($data)->withCallback($request->input('callback'));
   }

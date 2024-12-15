@@ -41,12 +41,12 @@ class AccAccountSystemsController extends Controller
  }
 
   public function show(){
-    $type_account = collect(DropDownListResource::collection(AccAccountType::active()->orderBy('code','asc')->get()));
-    $nature = collect(DropDownListResource::collection(AccAccountNature::active()->orderBy('code','asc')->get()));
-    $document_type = DocumentType::get_code($this->code_type);
-    $document = collect(DropDownListResource::collection(Document::get_type($document_type->id)));
-    $parent = collect(DropDownListResource::collection(AccAccountSystems::active()->orderBy('code','asc')->get()));
-    return view('acc.account_systems',[ 'key' => $this->key , 'parent'=>$parent , 'type_account'=>$type_account,'nature' => $nature,'document'=>$document ]);
+    //$type_account = collect(DropDownListResource::collection(AccAccountType::active()->orderBy('code','asc')->get()));
+    //$nature = collect(DropDownListResource::collection(AccAccountNature::active()->orderBy('code','asc')->get()));
+    //$document_type = DocumentType::get_code($this->code_type);
+    //$document = collect(DropDownListResource::collection(Document::get_type($document_type->id)));
+    //$parent = collect(DropDownListResource::collection(AccAccountSystems::active()->orderBy('code','asc')->get()));
+    return view('acc.account_systems',[ 'key' => $this->key ]);
   }
 
   

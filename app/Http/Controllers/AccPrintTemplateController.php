@@ -40,13 +40,13 @@ class AccPrintTemplateController extends Controller
  }
 
   public function show(){    
-    $type = Software::get_url($this->type);
+    //$type = Software::get_url($this->type);
     //$data = AccPrintTemplate::get_raw();
-    $menu = Menu::get_raw_type($type->id);
+    //$menu = Menu::get_raw_type($type->id);
     $count = AccPrintTemplate::count();
     $sys_page = AccSystems::get_systems($this->page_system);
     $paging = $count>$sys_page->value?1:0;   
-    return view('acc.print_template',['paging' => $paging, 'key' => $this->key ,'menu'=>$menu]);
+    return view('acc.print_template',['paging' => $paging, 'key' => $this->key ]);
   }
 
   

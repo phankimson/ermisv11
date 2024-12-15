@@ -22,11 +22,8 @@
         <tr>
             <td class="row-label"><label>@lang('menu.parent')</label></td>
             <td>
-            <select id="parent_id" class="droplist load_droplist large" data-position="1" data-title="@lang('menu.parent')" add-option="true" data-template="#= FormatDropList(parent_id,'parent_id') #" data-type="number" data-width="200px" name="parent_id">
-                    <option readonly selected value="0">--Select--</option>
-                      @foreach($data as $m)
-                         <option value="{{ $m->id }}">{{ $m->code }} - {{ $lang == 'vi'? $m->name : $m->name_en }}</option>
-                      @endforeach
+            <select id="parent_id" class="droplist read load_droplist large" data-position="1" data-title="@lang('menu.parent')" add-option="true" data-template="#= FormatDropListRead(parent_id,'parent_id') #" data-type="number" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/menu'}}"  name="parent_id">
+
             </select>
             </td>
         </tr>

@@ -38,12 +38,12 @@ class ErrorController extends Controller
    public function show(){
       $type = 0;
       //$data = Error::get_raw_type($type);
-      $menu = collect(DropDownListResource::collection(Menu::all()));
-      $user = collect(UserDropDownListResource::collection(User::all()));
+      //$menu = collect(DropDownListResource::collection(Menu::all()));
+      //$user = collect(UserDropDownListResource::collection(User::all()));
       $count = Error::count();
       $sys_page = Systems::get_systems($this->page_system);
       $paging = $count>$sys_page->value?1:0; 
-      return view('manage.error',['paging' => $paging, 'user'=>$user, 'menu'=>$menu, 'key' => $this->key , 'type'=>$type]);
+      return view('manage.error',['paging' => $paging, 'key' => $this->key , 'type'=>$type]);
    }
 
    

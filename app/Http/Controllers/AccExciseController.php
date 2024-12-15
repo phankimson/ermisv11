@@ -9,12 +9,10 @@ use Illuminate\Support\Facades\Validator;
 use App\Http\Model\AccHistoryAction;
 use App\Http\Model\Menu;
 use App\Http\Model\AccExcise;
-use App\Http\Model\AccUnit;
 use App\Http\Model\CompanySoftware;
 use App\Http\Model\Company;
 use App\Http\Model\AccNumberCode;
 use App\Http\Model\Error;
-use App\Http\Resources\DropDownListResource;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Model\Imports\AccExciseImport;
 use App\Http\Model\Exports\AccExciseExport;
@@ -36,10 +34,10 @@ class AccExciseController extends Controller
  }
 
   public function show(){    
-    $unit = collect(DropDownListResource::collection(AccUnit::active()->orderBy('code','asc')->get()));
-    $parent = collect(DropDownListResource::collection(AccExcise::active()->orderBy('code','asc')->get()));
+    //$unit = collect(DropDownListResource::collection(AccUnit::active()->orderBy('code','asc')->get()));
+    //$parent = collect(DropDownListResource::collection(AccExcise::active()->orderBy('code','asc')->get()));
     //$data = AccExcise::get_raw();
-    return view('acc.excise',[ 'key' => $this->key , 'parent'=>$parent ,'unit'=>$unit]);
+    return view('acc.excise',[ 'key' => $this->key ]);
   }
 
   

@@ -36,12 +36,12 @@ class MenuController extends Controller
 
    public function show(){
       $type = Software::first();
-      $data = Menu::get_raw_type($type->id);
+      //$data = Menu::get_raw_type($type->id);
       $software = collect(DropDownListResource::collection(SoftWare::all()));
       $count = Menu::count();
       $sys_page = Systems::get_systems($this->page_system);
       $paging = $count>$sys_page->value?1:0; 
-      return view('manage.menu',['paging' => $paging,'data' => $data, 'key' => $this->key , 'type' => $type->id ,'software' => $software]);
+      return view('manage.menu',['paging' => $paging, 'key' => $this->key , 'type' => $type->id ,'software' => $software]);
    }
    
   public function data(Request $request){    

@@ -44,8 +44,8 @@ class AccSettingAccountGroupController extends Controller
     $count = AccSettingAccountGroup::count();
     $sys_page = AccSystems::get_systems($this->page_system);
     $paging = $count>$sys_page->value?1:0;  
-    $account = collect(DropDownListResource::collection(AccAccountSystems::active()->OrderBy('code','asc')->doesntHave('account')->get()));
-    return view('acc.setting_account_group',['paging' => $paging, 'key' => $this->key ,'account' =>$account]);
+    //$account = collect(DropDownListResource::collection(AccAccountSystems::active()->OrderBy('code','asc')->doesntHave('account')->get()));
+    return view('acc.setting_account_group',['paging' => $paging, 'key' => $this->key ]);
   }
 
 

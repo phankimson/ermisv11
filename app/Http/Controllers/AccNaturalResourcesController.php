@@ -9,11 +9,9 @@ use Illuminate\Support\Facades\Validator;
 use App\Http\Model\AccHistoryAction;
 use App\Http\Model\Menu;
 use App\Http\Model\AccNaturalResources;
-use App\Http\Model\AccUnit;
 use App\Http\Model\CompanySoftware;
 use App\Http\Model\Company;
 use App\Http\Model\AccNumberCode;
-use App\Http\Resources\DropDownListResource;
 use App\Http\Model\Error;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Model\Imports\AccNaturalResourcesImport;
@@ -36,9 +34,9 @@ class AccNaturalResourcesController extends Controller
  }
 
   public function show(){    
-    $unit = collect(DropDownListResource::collection(AccUnit::active()->orderBy('code','asc')->get()));
-    $parent = collect(DropDownListResource::collection(AccNaturalResources::active()->orderBy('code','asc')->get()));
-    return view('acc.natural_resources',[ 'key' => $this->key , 'parent'=>$parent ,'unit'=>$unit]);
+    //$unit = collect(DropDownListResource::collection(AccUnit::active()->orderBy('code','asc')->get()));
+    //$parent = collect(DropDownListResource::collection(AccNaturalResources::active()->orderBy('code','asc')->get()));
+    return view('acc.natural_resources',[ 'key' => $this->key ]);
   }
 
   public function data(){   

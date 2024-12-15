@@ -34,11 +34,8 @@
       <tr>
           <td class="row-label"><label>@lang('acc_setting_account_group.account_filter') </label></td>
           <td>
-           <select class="multiselect large" data-position="7" data-hidden="true" name="account_filter" data-type="arr" multiple="multiple" data-placeholder="Select">
-                    @foreach($account as $c)
-                      <option value="{{ $c->id }}">{{ $c->code }} - {{ $c->name }}</option>
-                    @endforeach
-                </select>
+           <select class="multiselect read large" data-position="7" data-hidden="true" name="account_filter" data-type="arr" multiple="multiple" data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/account-multi'}}"  data-placeholder="Select">
+           </select>     
           </td>
       </tr>
       <tr>

@@ -2119,6 +2119,28 @@ var ErmisKendoMultiSelectTemplate = function(elem, autoClose, tagTemplate) {
     });
 };
 
+var ErmisKendoMultiSelectReadTemplate = function(elem,filter,autoClose,tagTemplate) {
+    var text = jQuery(elem).attr('data-text-field');
+    var value = jQuery(elem).attr('data-value-field');
+    var url = jQuery(elem).attr('data-read-url');
+    jQuery(elem).kendoMultiSelect({
+        dataTextField: text,
+        dataValueField: value,       
+        dataSource: {
+            transport: {
+                read: {
+                    dataType: "jsonp",
+                    url: url,
+                }
+            }
+        },
+        filter: filter,
+        autoBind: true,
+        autoClose: autoClose,
+        tagTemplate: (tagTemplate),
+    });   
+};
+
 var ErmisKendoNumbericTemplate = function(elem, format, decimals, min, max, step) {
     jQuery(elem).kendoNumericTextBox({
         format: format,

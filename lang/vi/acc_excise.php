@@ -17,6 +17,6 @@ return [
     "name_en" => "Tên tiếng anh",
     "excise_tax" => "Thuế suất",
     "parent" => "Nhóm cha",
-    "unit" => "Đơn vị tí",
+    "unit" => "Đơn vị tính",
     "info"=>"Thông tin chung",
 ];
