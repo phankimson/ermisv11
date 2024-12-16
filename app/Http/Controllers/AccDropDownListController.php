@@ -253,15 +253,14 @@ class AccDropDownListController extends Controller
 
   // Tài khoản
   public function account_dropdown_list(Request $request){
+    $multiple = $request->input('multiple',null);
+    if($multiple == null){
     $default = collect([['value' => '0','text' => "--Select--"]]);
     $data = LangDropDownResource::collection(AccAccountSystems::active()->orderBy('code','asc')->doesntHave('account')->get());
     $data = $default->merge($data)->values();
-    return response()->json($data)->withCallback($request->input('callback'));
-  }
-
-  // Tài khoản multi
-  public function account_multi_dropdown_list(Request $request){
-    $data = LangDropDownResource::collection(AccAccountSystems::active()->orderBy('code','asc')->doesntHave('account')->get());
+    }else{
+     $data = LangDropDownResource::collection(AccAccountSystems::active()->orderBy('code','asc')->doesntHave('account')->get());
+    }    
     return response()->json($data)->withCallback($request->input('callback'));
   }
 

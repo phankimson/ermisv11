@@ -77,7 +77,7 @@
                <tr>
                    <td class="row-label"><label>@lang('acc_setting_voucher.debit_filter') </label></td>
                    <td>
-                     <select class="multiselect read large" data-position="7" data-type="arr" data-hidden="true" name="debit_filter" multiple="multiple" data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/account-multi'}}" data-placeholder="Select">
+                     <select class="multiselect read large" data-position="7" data-type="arr" data-hidden="true" name="debit_filter" multiple="multiple" data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/account?multiple=true'}}" data-placeholder="Select">
                            
                       </select>
                    </td>
@@ -85,7 +85,7 @@
                <tr>
                    <td class="row-label"><label>@lang('acc_setting_voucher.credit_filter') </label></td>
                    <td>
-                    <select class="multiselect read large" data-position="7" data-type="arr"  data-hidden="true" name="credit_filter" multiple="multiple" data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/account-multi'}}" data-placeholder="Select">
+                    <select class="multiselect read large" data-position="7" data-type="arr"  data-hidden="true" name="credit_filter" multiple="multiple" data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/account?multiple=true'}}" data-placeholder="Select">
                            
                          </select>
                    </td>
