@@ -146,9 +146,9 @@
 
 
         Ermis.columns    = [{"field" :"id", hidden : true},
-                            { "field" : "accounted_fast","title" :"@lang('acc_voucher.accounted_fast')" ,editor: ItemsDropDownEditor , "select" : "OnchangeCancel" ,template : "#=getDataItemName(accounted_fast,'accounted_fast')#","width" : "150px" ,"set" : "5" },
+                            { "field" : "accounted_fast","title" :"@lang('acc_voucher.accounted_fast')","url" : "{{env('URL_DROPDOWN').'/accounted-fast'}}" ,editor: ItemsReadDropDownEditor , "select" : "OnchangeCancel" ,template : "#=getUrlAjaxItemName(accounted_fast)#","width" : "150px" ,"set" : "5" },
                             { "field" : "description","title" : "@lang('acc_voucher.description')" ,"width" : "200px" ,aggregates: ['count'], footerTemplate: "<p>Total Count: #=count#</p>","set" : "6"  },
-                            { "field" : "debit","title" :"@lang('acc_voucher.debt_account')" ,editor: ItemsDropDownEditor , "select" : "OnchangeItem" ,template : "#=getDataItemName(debit,'debit')#" ,"width" : "150px" ,"set" : "2" , "key" :true },
+                            { "field" : "debit","title" :"@lang('acc_voucher.debt_account')" ,"url" : "{{env('URL_DROPDOWN').'/account'}}",editor: ItemsReadDropDownEditor , "select" : "OnchangeItem" ,template : "#=getUrlAjaxItemName(debit)#" ,"width" : "150px" ,"set" : "2" , "key" :true },
                             { "field" : "credit","title" :"@lang('acc_voucher.credit_account')" ,editor: ItemsDropDownEditor , "select" : "OnchangeItem" ,template : "#=getDataItemName(credit,'credit')#" ,"width" : "150px","set" : "2" , "key" :true},
                             { "field" : "amount","title" : "@lang('acc_voucher.amount')" ,"width" : "200px",format: "{0:n{{$decimal}}}",decimals: {{$decimal}} ,aggregates: ['sum'],footerTemplate: "<p id='amount_total'>#=FormatNumberDecimal(sum,{{$decimal}})#</p>" },
                             { "field" : "rate","title" :"@lang('acc_voucher.rate')",format: "{0:n{{$decimal}}}",decimals: {{$decimal}},"width" : "150px"  },

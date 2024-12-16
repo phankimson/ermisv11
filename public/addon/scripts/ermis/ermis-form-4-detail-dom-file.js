@@ -1249,13 +1249,20 @@ var Ermis = function() {
                 data[v.field] = dataItem[v.field] ? dataItem[v.field] : 0;
             } else if (v.set === "2" || v.set === "5") {
                 if (dataItem[v.field] !== null) {
-                  var f = findObjectByKey(a[v.field],"id",dataItem[v.field]);
+                    dataTextField = "code";
+                    dataValueField = "id";
+                    var f = findObjectByKey(a[v.field],dataValueField,dataItem[v.field]);
+                    if(v.url){
+                    dataTextField = "text";
+                    dataValueField = "value";   
+                    var f = RequestURL(url+"?value="+dataItem[v.field]);
+                    }
                   if(f != undefined || f != null){
-                    data[v.field].id = dataItem[v.field];
-                    data[v.field].code = f.code;
+                    data[v.field][dataValueField] = dataItem[v.field];
+                    data[v.field][dataTextField] = f[dataTextField];
                   }else{
-                    data[v.field].code =  '---SELECT---';
-                    data[v.field].id = 0;
+                    data[v.field][dataTextField] =  '---SELECT---';
+                    data[v.field][dataValueField] = 0;
                   }
                 }
             } else if (v.set === "3") {

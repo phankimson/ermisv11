@@ -1540,6 +1540,44 @@ function calculatePriceAggregateDiscount(decimal) {
           })
    }
 
+   ItemsReadDropDownEditor = function (container, options) {
+    var c  = findObjectByKey($kGridTab_column,"field",options.field);
+    jQuery('<input required id="' + options.field + '" class="dropdown-list-ajax" name="' + options.field + '"/>')
+           .appendTo(container)
+           .kendoDropDownList({
+             filter: "contains",
+             dataTextField: "text",
+             dataValueField: "value",
+             select: eval(c.select), // PriItems :Onchange , SleItems : OnchangeCancel , Items : OnchangeItem , Group : OnchangeGroup
+             filter: "contains",
+              virtual: {
+                  itemHeight: 26,
+                  valueMapper: function(options) {
+                      $.ajax({
+                          url: "https://demos.telerik.com/kendo-ui/service/Orders/ValueMapper",
+                          type: "GET",
+                          dataType: "jsonp",
+                          data: convertValues(options.value),
+                          success: function (data) {
+                              options.success(data);
+                          }
+                      })
+                  }
+              },
+              pageSize: 80,
+              serverPaging: true,
+              serverFiltering: true,
+              dataSource: {
+                        transport: {
+                            dataType: 'jsonp',
+                            read: {
+                                url:  c.url,
+                            }
+                        }
+                }
+         })
+  }
+
 
       getDataItemName = function(model, field) {
           var value = "";
@@ -1559,22 +1597,10 @@ function calculatePriceAggregateDiscount(decimal) {
       };
 
 
-      getUrlAjaxItemName = function(model, field) {
-        var url = UrlString("api/"+field+"_dropdown_list?api_token="+api_token);
+      getUrlAjaxItemName = function(model) {
         var value = "";
-        if (model.id > 0 || model.id != "") {
-              $.ajax({
-              url: url,
-              async: false,
-              success:function(rs) {
-                var result = findObjectByKey(rs,"id",model.id);
-                if (result != null) {
-                    value = result.code;
-                }else{
-                  value = '---SELECT---';
-                }
-              }
-           });
+        if (model.value  !== undefined) {
+          value = model.text;
          } else {
            value = '---SELECT---';
          }
