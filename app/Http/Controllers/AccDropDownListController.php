@@ -42,6 +42,7 @@ use App\Http\Model\Regions;
 use App\Http\Model\Area;
 use App\Http\Model\Distric;
 use App\Http\Model\GroupUsers;
+use App\Http\Model\AccSettingVoucher;
 
 class AccDropDownListController extends Controller
 {
@@ -253,16 +254,61 @@ class AccDropDownListController extends Controller
 
   // Tài khoản
   public function account_dropdown_list(Request $request){
-    $multiple = $request->input('multiple',null);
-    if($multiple == null){
-    $default = collect([['value' => '0','text' => "--Select--"]]);
-    $data = LangDropDownResource::collection(AccAccountSystems::active()->orderBy('code','asc')->doesntHave('account')->get());
-    $data = $default->merge($data)->values();
-    }else{
-     $data = LangDropDownResource::collection(AccAccountSystems::active()->orderBy('code','asc')->doesntHave('account')->get());
+    $multiple = $request->input('multiple',null);    
+      if($multiple){
+      $default = collect([['value' => '0','text' => "--Select--"]]);
+      $data = LangDropDownResource::collection(AccAccountSystems::active()->orderBy('code','asc')->doesntHave('account')->get());
+      $data = $default->merge($data)->values();
+      }else{
+       $data = LangDropDownResource::collection(AccAccountSystems::active()->orderBy('code','asc')->doesntHave('account')->get());
+      }  
+    return response()->json($data)->withCallback($request->input('callback'));
+  }
+
+  // Tài khoản mặc định
+  public function account_voucher_default_dropdown_list(Request $request){
+     $menu = $request->input('menu',null);
+     $type = $request->input('type',null);
+     $default = collect(['value' => '0','text' => "--Select--"]);
+     $setting_voucher = AccSettingVoucher::get_menu($menu);
+     $data = [];
+     if($type == 1){ // Mặc định debit
+        if($setting_voucher->credit == 0){
+          $debt_default =  $default;
+        }else{
+          $debt_default = new LangDropDownResource(AccAccountSystems::find($setting_voucher->debit));
+        }   
+        $data =  $debt_default;
+     }else if ($type == 2){ // Mặc định credit
+        if($setting_voucher->credit == 0){
+          $credit_default =  $default;
+        }else{
+          $credit_default = new LangDropDownResource(AccAccountSystems::find($setting_voucher->credit));
+        } 
+        $data = $credit_default;
+     }
+     return response()->json($data)->withCallback($request->input('callback'));
+  }
+
+  // Tài khoản nhóm
+  public function account_voucher_filter_dropdown_list(Request $request){
+    $menu = $request->input('menu',null);
+    $type = $request->input('type',null);
+    $setting_voucher = AccSettingVoucher::get_menu($menu);
+    $sys = AccSystems::get_systems($this->document);
+    $document = Document::get_code($sys->value);
+    $data = [];
+    if($type == 1){ // Def
+      $debt_account = LangDropDownResource::collection(AccAccountSystems::get_wherein_id($document->id,$setting_voucher->debit_filter));
+      $data = $debt_account;
+    }else if ($type == 2){
+      $credit_account = LangDropDownResource::collection(AccAccountSystems::get_wherein_id($document->id,$setting_voucher->credit_filter));
+      $data = $credit_account;
     }    
     return response()->json($data)->withCallback($request->input('callback'));
   }
+
+  // Tài khoản mặc định
 
   // Group User
   public function group_user_dropdown_list(Request $request){

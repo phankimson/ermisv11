@@ -72,18 +72,18 @@ class AccCashReceiptsVoucherController extends Controller
   public function show(Request $request){
     $ot = AccObjectType::get_filter($this->type_object);
     $voucher = AccNumberVoucher::get_menu($this->menu->id);
-    $setting_voucher = AccSettingVoucher::get_menu($this->menu->id);
-    $debt_default = new AccountSystemsDropDownListResource(AccAccountSystems::find($setting_voucher->debit));
-    if($setting_voucher->credit == 0){
-      $credit_default = collect(['id' => 0 ,'code' => '---SELECT---','name' => '---SELECT---']);
-    }else{
-      $credit_default = new AccountSystemsDropDownListResource(AccAccountSystems::find($setting_voucher->credit));
-    };
-    $work_code = json_encode(LangDropDownListResource::collection(AccWorkCode::active()->orderBy('code','asc')->get()));
-    $sys = AccSystems::get_systems($this->document);
-    $document = Document::get_code($sys->value);
-    $debt_account = json_encode(AccountSystemsDropDownListResource::collection(AccAccountSystems::get_wherein_id($document->id,$setting_voucher->debit_filter)));
-    $credit_account = json_encode(AccountSystemsDropDownListResource::collection(AccAccountSystems::get_wherein_id($document->id,$setting_voucher->credit_filter)));
+    //$setting_voucher = AccSettingVoucher::get_menu($this->menu->id);
+    //$debt_default = new AccountSystemsDropDownListResource(AccAccountSystems::find($setting_voucher->debit));
+    //if($setting_voucher->credit == 0){
+    //  $credit_default = collect(['id' => 0 ,'code' => '---SELECT---','name' => '---SELECT---']);
+    //}else{
+    //  $credit_default = new AccountSystemsDropDownListResource(AccAccountSystems::find($setting_voucher->credit));
+    //};
+    //$work_code = json_encode(LangDropDownListResource::collection(AccWorkCode::active()->orderBy('code','asc')->get()));
+    //$sys = AccSystems::get_systems($this->document);
+    //$document = Document::get_code($sys->value);
+    //$debt_account = json_encode(AccountSystemsDropDownListResource::collection(AccAccountSystems::get_wherein_id($document->id,$setting_voucher->debit_filter)));
+    //$credit_account = json_encode(AccountSystemsDropDownListResource::collection(AccAccountSystems::get_wherein_id($document->id,$setting_voucher->credit_filter)));
     $department = json_encode(LangDropDownListResource::collection(AccDepartment::active()->orderBy('code','asc')->get()));
     $bank_account = json_encode(BankAccountDropDownListResource::collection(AccBankAccount::active()->orderBy('bank_account','asc')->get()));
     $case_code = json_encode(LangDropDownListResource::collection(AccCaseCode::active()->orderBy('code','asc')->get()));
@@ -94,12 +94,10 @@ class AccCashReceiptsVoucherController extends Controller
     $subject_code = json_encode(ObjectDropDownListResource::collection(AccObject::active()->orderBy('code','asc')->get()));
     $voucher_list = AccNumberVoucher::all();
     $print = AccPrintTemplate::get_code($this->print);
-    return view('acc.receipt_cash_voucher',[ 'key' => $this->key , 'voucher' => $voucher,
-                                        'debt_default' => $debt_default,'credit_default' => $credit_default->toArray(),
+    return view('acc.receipt_cash_voucher',[ 'key' => $this->key , 'voucher' => $voucher, 'menu'=>$this->menu->id,                                       
                                         'bank_account'=>$bank_account,'case_code'=>$case_code,
                                         'cost_code'=>$cost_code,'statistical_code'=>$statistical_code,
-                                        'department'=>$department,'debt_account'=>$debt_account,
-                                        'credit_account'=>$credit_account,'work_code'=>$work_code ,
+                                        'department'=>$department,
                                         'accounted_fast' => $accounted_fast,'voucher_list' => $voucher_list ,
                                         'subject_code' => $subject_code,
                                         'ot' => $ot,

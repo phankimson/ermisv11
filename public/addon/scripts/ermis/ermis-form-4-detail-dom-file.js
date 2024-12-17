@@ -1250,16 +1250,19 @@ var Ermis = function() {
             } else if (v.set === "2" || v.set === "5") {
                 if (dataItem[v.field] !== null) {
                     dataTextField = "code";
-                    dataValueField = "id";
-                    var f = findObjectByKey(a[v.field],dataValueField,dataItem[v.field]);
+                    dataValueField = "id";                    
                     if(v.url){
                     dataTextField = "text";
                     dataValueField = "value";   
-                    var f = RequestURL(url+"?value="+dataItem[v.field]);
+                    var f = RequestURL(v.url+"?value="+dataItem[v.field]);
+                    }else{
+                    var f = findObjectByKey(a[v.field],dataValueField,dataItem[v.field]);
                     }
-                  if(f != undefined || f != null){
-                    data[v.field][dataValueField] = dataItem[v.field];
-                    data[v.field][dataTextField] = f[dataTextField];
+                  if(f != undefined || f != null ){
+                    if(f.length>0){
+                        data[v.field][dataValueField] = dataItem[v.field];
+                        data[v.field][dataTextField] = f[dataTextField];
+                    }                
                   }else{
                     data[v.field][dataTextField] =  '---SELECT---';
                     data[v.field][dataValueField] = 0;

@@ -442,6 +442,8 @@ Route::prefix('acc')->group(function () {
   Route::get(env('URL_DROPDOWN').'/number-voucher', 'number_voucher_dropdown_list');
   Route::get(env('URL_DROPDOWN').'/department', 'department_dropdown_list');
   Route::get(env('URL_DROPDOWN').'/account', 'account_dropdown_list');
+  Route::get(env('URL_DROPDOWN').'/account-voucher-default', 'account_voucher_default_dropdown_list');
+  Route::get(env('URL_DROPDOWN').'/account-voucher-filter', 'account_voucher_filter_dropdown_list');
   Route::get(env('URL_DROPDOWN').'/account-type', 'account_type_dropdown_list');
   Route::get(env('URL_DROPDOWN').'/account-nature', 'account_nature_dropdown_list');
   Route::get(env('URL_DROPDOWN').'/accounted-fast', 'accounted_fast_dropdown_list');

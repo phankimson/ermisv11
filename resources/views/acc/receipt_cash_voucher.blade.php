@@ -82,15 +82,11 @@
 @endpush
 
 @section('scripts_up')
-<div id="work_code_dropdown_list" class="hidden" data-json="{{$work_code}}"></div>
-<div id="debit_dropdown_list" class="hidden" data-json="{{$debt_account}}"></div>
-<div id="credit_dropdown_list" class="hidden" data-json="{{$credit_account}}"></div>
 <div id="department_dropdown_list" class="hidden" data-json="{{$department}}"></div>
 <div id="bank_account_dropdown_list" class="hidden" data-json="{{$bank_account}}"></div>
 <div id="cost_code_dropdown_list" class="hidden" data-json="{{$cost_code}}"></div>
 <div id="case_code_dropdown_list" class="hidden" data-json="{{$case_code}}"></div>
 <div id="statistical_code_dropdown_list" class="hidden" data-json="{{$statistical_code}}"></div>
-<div id="accounted_fast_dropdown_list" class="hidden" data-json="{{$accounted_fast}}"></div>
 <div id="tax_dropdown_list" class="hidden" data-json="{{$vat}}"></div>
 <div id="subject_code_dropdown_list" class="hidden" data-json="{{$subject_code}}"></div>
 <script>
@@ -140,19 +136,19 @@
                             { "field" : "address","title" : "@lang('acc_voucher.address')"  ,width : '150px'},
                             { "field" : "description","title" : "@lang('acc_voucher.description')",width : '200px'  },
                             { "field" : "vat_type","title" : "@lang('acc_voucher.vat_type')",width : '200px'  },
-                            { "field" : "amount","title" : "@lang('acc_voucher.amount')" ,type:"number",format: "{0:n{{$decimal}}}",decimals: {{$decimal}} ,aggregates: ['sum'],footerTemplate: "<p id='amount_total_tax'>#=FormatNumberDecimal(sum,{{$decimal}})#</p>" ,width : '150px'},
+                            { "field" : "amount","title" : "@lang('acc_voucher.amount')" ,type:"number",format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" ,aggregates: ['sum'],footerTemplate: "<p id='amount_total_tax'>#=FormatNumberDecimal(sum,{{$decimal}})#</p>" ,width : '150px'},
                             { "field" : "tax","title" : "@lang('acc_voucher.tax')" ,editor: ItemsDropDownEditor , "select" : "OnchangeItem" ,template : "#=getDataItemName(tax,'tax')#"  ,"width" : "150px"},
-                            { "field" : "total_amount","title" : "@lang('acc_voucher.total_amount')" ,format: "{0:n{{$decimal}}}",decimals: {{$decimal}} ,aggregates: ['sum'] , template: "#=calculateAmountTax(amount, tax.code, {{$decimal}} )#" ,footerTemplate: "<p id='total_amount'>#=calculateTotalVatAggregate({{$decimal}})#</p>" ,width : '150px'}];
+                            { "field" : "total_amount","title" : "@lang('acc_voucher.total_amount')" ,format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" ,aggregates: ['sum'] , template: "#=calculateAmountTax(amount, tax.code, {{$decimal}} )#" ,footerTemplate: "<p id='total_amount'>#=calculateTotalVatAggregate({{$decimal}})#</p>" ,width : '150px'}];
 
 
         Ermis.columns    = [{"field" :"id", hidden : true},
                             { "field" : "accounted_fast","title" :"@lang('acc_voucher.accounted_fast')","url" : "{{env('URL_DROPDOWN').'/accounted-fast'}}" ,editor: ItemsReadDropDownEditor , "select" : "OnchangeCancel" ,template : "#=getUrlAjaxItemName(accounted_fast)#","width" : "150px" ,"set" : "5" },
                             { "field" : "description","title" : "@lang('acc_voucher.description')" ,"width" : "200px" ,aggregates: ['count'], footerTemplate: "<p>Total Count: #=count#</p>","set" : "6"  },
-                            { "field" : "debit","title" :"@lang('acc_voucher.debt_account')" ,"url" : "{{env('URL_DROPDOWN').'/account'}}",editor: ItemsReadDropDownEditor , "select" : "OnchangeItem" ,template : "#=getUrlAjaxItemName(debit)#" ,"width" : "150px" ,"set" : "2" , "key" :true },
-                            { "field" : "credit","title" :"@lang('acc_voucher.credit_account')" ,editor: ItemsDropDownEditor , "select" : "OnchangeItem" ,template : "#=getDataItemName(credit,'credit')#" ,"width" : "150px","set" : "2" , "key" :true},
-                            { "field" : "amount","title" : "@lang('acc_voucher.amount')" ,"width" : "200px",format: "{0:n{{$decimal}}}",decimals: {{$decimal}} ,aggregates: ['sum'],footerTemplate: "<p id='amount_total'>#=FormatNumberDecimal(sum,{{$decimal}})#</p>" },
-                            { "field" : "rate","title" :"@lang('acc_voucher.rate')",format: "{0:n{{$decimal}}}",decimals: {{$decimal}},"width" : "150px"  },
-                            { "field" : "amount_rate","title" : "@lang('acc_voucher.amount_rate')" ,"width" : "200px",format: "{0:n{{$decimal}}}",decimals: {{$decimal}} ,aggregates: ['sum'] , template: "#=calculateAmountRate(amount, rate, {{$decimal}} )#" ,footerTemplate: "<p id='amount_rate_total'>#=calculateTotalRateAggregate({{$decimal}})#</p>" },
+                            { "field" : "debit","title" :"@lang('acc_voucher.debt_account')" ,"url" : "{{env('URL_DROPDOWN').'/account-voucher-filter?'.'menu='.$menu.'&type=1'}}",editor: ItemsReadDropDownEditor , "select" : "OnchangeItem" ,template : "#=getUrlAjaxItemName(debit)#" ,"width" : "150px" ,"set" : "2" , "key" :true },
+                            { "field" : "credit","title" :"@lang('acc_voucher.credit_account')" ,"url" : "{{env('URL_DROPDOWN').'/account-voucher-filter?'.'menu='.$menu.'&type=2'}}",editor: ItemsReadDropDownEditor , "select" : "OnchangeItem" ,template : "#=getUrlAjaxItemName(credit)#" ,"width" : "150px","set" : "2" , "key" :true},
+                            { "field" : "amount","title" : "@lang('acc_voucher.amount')" ,"width" : "200px",format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" ,aggregates: ['sum'],footerTemplate: "<p id='amount_total'>#=FormatNumberDecimal(sum,{{$decimal}})#</p>" },
+                            { "field" : "rate","title" :"@lang('acc_voucher.rate')",format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}","width" : "150px"  },
+                            { "field" : "amount_rate","title" : "@lang('acc_voucher.amount_rate')" ,"width" : "200px",format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" ,aggregates: ['sum'] , template: "#=calculateAmountRate(amount, rate, {{$decimal}} )#" ,footerTemplate: "<p id='amount_rate_total'>#=calculateTotalRateAggregate({{$decimal}})#</p>" },
                             { "field" : "subject_id", hidden: true ,"set" : "6" },
                             { "field" : "subject_code","title" : "@lang('acc_voucher.subject_code')"  ,width : '150px',editor: ItemsDropDownEditor , "select" : "OnchangeGroup" ,template : "#=getDataItemName(subject_code,'subject_code')#" ,"set" : "2" , "group" : "1" },
                             { "field" : "subject_name","title" : "@lang('acc_voucher.subject_name')"  ,width : '150px',"set" : "6" ,  "group" : "1"},
@@ -161,7 +157,7 @@
                             { "field" : "cost_code","title" :"@lang('acc_voucher.cost_code')",editor: ItemsDropDownEditor , "select" : "OnchangeItem" ,template : "#=getDataItemName(cost_code,'cost_code')#","width" : "150px" ,"set" : "2" },
                             { "field" : "case_code","title" :"@lang('acc_voucher.case_code')",editor: ItemsDropDownEditor , "select" : "OnchangeItem" ,template : "#=getDataItemName(case_code,'case_code')#","width" : "150px" ,"set" : "2" },
                             { "field" : "statistical_code","title" :"@lang('acc_voucher.statistical_code')",editor: ItemsDropDownEditor , "select" : "OnchangeItem" ,template : "#=getDataItemName(statistical_code,'statistical_code')#" ,"width" : "150px" ,"set" : "2" },
-                            { "field" : "work_code","title" :"@lang('acc_voucher.work_code')",editor: ItemsDropDownEditor , "select" : "OnchangeItem" ,template : "#=getDataItemName(work_code,'work_code')#" ,"width" : "150px"  ,"set" : "2"},
+                            { "field" : "work_code","title" :"@lang('acc_voucher.work_code')","url" : "{{env('URL_DROPDOWN').'/work-code'}}",editor: ItemsReadDropDownEditor , "select" : "OnchangeItem" ,template : "#=getUrlAjaxItemName(work_code)#" ,"width" : "150px"  ,"set" : "2"},
                             { "field" : "lot_number","title" : "@lang('acc_voucher.lot_number')" ,"width" : "150px" },
                             { "field" : "contract","title" : "@lang('acc_voucher.contract')" ,"width" : "150px" },
                             { "field" : "order","title" : "@lang('acc_voucher.order')" ,"width" : "200px"} ];
@@ -180,7 +176,7 @@
             work_code: { field : "work_code", defaultValue: {id: 0 , code: "---SELECT---", name: "---SELECT---"} },
             department: { field : "department", defaultValue: {id: 0 , code: "---SELECT---", name: "---SELECT---"} },
             bank_account: { field : "bank_account", defaultValue: {id: 0 , code: "---SELECT---", name: "---SELECT---"} },
-            debit: { field : "debit", defaultValue: {id: "{{$debt_default->id}}", code: "{{$debt_default->code}}", name: "{{$debt_default->code}}" }, validation: { min: 1 ,required: true }},
+            debit: { field : "debit", defaultValue: {id: "{{$debt_default->id}}", code: "{{$debt_default->code}}", name: "{{$debt_default->name}}" }, validation: { min: 1 ,required: true }},
             credit: { field : "credit", defaultValue:{id: "{{$credit_default['id']}}" , code: "{{$credit_default['code']}}" , name: "{{$credit_default['name']}}"}, validation: { min: 1, required: true }},
             accounted_fast: { field : "accounted_fast", defaultValue: {id: 0 , code: "---SELECT---", name: "---SELECT---"} },
             lot_number:     {field : "lot_number"},
