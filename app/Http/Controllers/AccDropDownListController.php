@@ -192,9 +192,19 @@ class AccDropDownListController extends Controller
 
   // Mã công việc
   public function work_code_dropdown_list(Request $request){
-    $default = collect([['value' => '0','text' => "--Select--"]]);
-    $data = LangDropDownResource::collection(AccWorkCode::active()->orderBy('code','asc')->get());
-    $data = $default->merge($data)->values();
+    $val = $request->input('value',null); 
+    if($val){
+      $rs = AccWorkCode::find($val);
+      if(!$rs){
+        $data = collect(['value' => '0','text' => "--Select--"]);
+      }else{
+        $data = new LangDropDownResource($rs);
+      }      
+  }else{
+      $default = collect([['value' => '0','text' => "--Select--"]]);
+      $data = LangDropDownResource::collection(AccWorkCode::active()->orderBy('code','asc')->get());
+      $data = $default->merge($data)->values();
+    }  
     return response()->json($data)->withCallback($request->input('callback'));
   }
 
@@ -252,7 +262,7 @@ class AccDropDownListController extends Controller
     return response()->json($data)->withCallback($request->input('callback'));
   }
 
-  // Tài khoản
+  // List tài khoản
   public function account_dropdown_list(Request $request){
     $multiple = $request->input('multiple',null);    
       if($multiple){
@@ -268,25 +278,26 @@ class AccDropDownListController extends Controller
   // Tài khoản mặc định
   public function account_voucher_default_dropdown_list(Request $request){
      $menu = $request->input('menu',null);
-     $type = $request->input('type',null);
-     $default = collect(['value' => '0','text' => "--Select--"]);
-     $setting_voucher = AccSettingVoucher::get_menu($menu);
-     $data = [];
-     if($type == 1){ // Mặc định debit
-        if($setting_voucher->credit == 0){
-          $debt_default =  $default;
-        }else{
-          $debt_default = new LangDropDownResource(AccAccountSystems::find($setting_voucher->debit));
-        }   
-        $data =  $debt_default;
-     }else if ($type == 2){ // Mặc định credit
-        if($setting_voucher->credit == 0){
-          $credit_default =  $default;
-        }else{
-          $credit_default = new LangDropDownResource(AccAccountSystems::find($setting_voucher->credit));
-        } 
-        $data = $credit_default;
-     }
+     $type = $request->input('type',null);    
+      $default = collect(['value' => '0','text' => "--Select--"]);
+      $setting_voucher = AccSettingVoucher::get_menu($menu);
+      $data = [];
+      if($type == 1){ // Mặc định debit
+         if($setting_voucher->credit == 0){
+           $debt_default =  $default;
+         }else{
+           $debt_default = new LangDropDownResource(AccAccountSystems::find($setting_voucher->debit));
+         }   
+         $data =  $debt_default;
+      }else if ($type == 2){ // Mặc định credit
+         if($setting_voucher->credit == 0){
+           $credit_default =  $default;
+         }else{
+           $credit_default = new LangDropDownResource(AccAccountSystems::find($setting_voucher->credit));
+         } 
+         $data = $credit_default;
+      }      
+     
      return response()->json($data)->withCallback($request->input('callback'));
   }
 
@@ -294,21 +305,29 @@ class AccDropDownListController extends Controller
   public function account_voucher_filter_dropdown_list(Request $request){
     $menu = $request->input('menu',null);
     $type = $request->input('type',null);
-    $setting_voucher = AccSettingVoucher::get_menu($menu);
-    $sys = AccSystems::get_systems($this->document);
-    $document = Document::get_code($sys->value);
-    $data = [];
-    if($type == 1){ // Def
-      $debt_account = LangDropDownResource::collection(AccAccountSystems::get_wherein_id($document->id,$setting_voucher->debit_filter));
-      $data = $debt_account;
-    }else if ($type == 2){
-      $credit_account = LangDropDownResource::collection(AccAccountSystems::get_wherein_id($document->id,$setting_voucher->credit_filter));
-      $data = $credit_account;
-    }    
+    $val = $request->input('value',null);   
+        if($val){
+            $rs = AccAccountSystems::find($val);
+            if(!$rs){
+              $data = collect(['value' => '0','text' => "--Select--"]);
+            }else{
+              $data = new LangDropDownResource($rs);
+            }      
+        }else{
+        $setting_voucher = AccSettingVoucher::get_menu($menu);
+        $sys = AccSystems::get_systems($this->document);
+        $document = Document::get_code($sys->value);
+        $data = [];
+        if($type == 1){ // Def
+          $debt_account = LangDropDownResource::collection(AccAccountSystems::get_wherein_id($document->id,$setting_voucher->debit_filter));
+          $data = $debt_account;
+        }else if ($type == 2){
+          $credit_account = LangDropDownResource::collection(AccAccountSystems::get_wherein_id($document->id,$setting_voucher->credit_filter));
+          $data = $credit_account;
+        }    
+      }
     return response()->json($data)->withCallback($request->input('callback'));
-  }
-
-  // Tài khoản mặc định
+  }  
 
   // Group User
   public function group_user_dropdown_list(Request $request){
@@ -322,7 +341,7 @@ class AccDropDownListController extends Controller
   public function accounted_fast_dropdown_list(Request $request){    
     $val = $request->input('value',null);
     if($val){
-      $arr = AccAccountedFast::findOrFail($val);   
+      $arr = AccAccountedFast::find($val);   
       $data = new AccountedFastDropDownResource($arr);
     }else{
       $default = collect([['value' => '0','text' => "--Select--"]]);

@@ -142,10 +142,10 @@
 
 
         Ermis.columns    = [{"field" :"id", hidden : true},
-                            { "field" : "accounted_fast","title" :"@lang('acc_voucher.accounted_fast')","url" : "{{env('URL_DROPDOWN').'/accounted-fast'}}" ,editor: ItemsReadDropDownEditor , "select" : "OnchangeCancel" ,template : "#=getUrlAjaxItemName(accounted_fast)#","width" : "150px" ,"set" : "5" },
+                            { "field" : "accounted_fast","title" :"@lang('acc_voucher.accounted_fast')","url" : "{{env('URL_DROPDOWN').'/accounted-fast'}}" ,editor: ItemsReadDropDownEditor , "select" : "OnchangeCancel" ,template : "#=getUrlAjaxItemName(accounted_fast,'accounted_fast','{{env('URL_DROPDOWN').'/accounted-fast'}}')#","width" : "150px" ,"set" : "5" },
                             { "field" : "description","title" : "@lang('acc_voucher.description')" ,"width" : "200px" ,aggregates: ['count'], footerTemplate: "<p>Total Count: #=count#</p>","set" : "6"  },
-                            { "field" : "debit","title" :"@lang('acc_voucher.debt_account')" ,"url" : "{{env('URL_DROPDOWN').'/account-voucher-filter?'.'menu='.$menu.'&type=1'}}",editor: ItemsReadDropDownEditor , "select" : "OnchangeItem" ,template : "#=getUrlAjaxItemName(debit)#" ,"width" : "150px" ,"set" : "2" , "key" :true },
-                            { "field" : "credit","title" :"@lang('acc_voucher.credit_account')" ,"url" : "{{env('URL_DROPDOWN').'/account-voucher-filter?'.'menu='.$menu.'&type=2'}}",editor: ItemsReadDropDownEditor , "select" : "OnchangeItem" ,template : "#=getUrlAjaxItemName(credit)#" ,"width" : "150px","set" : "2" , "key" :true},
+                            { "field" : "debit","title" :"@lang('acc_voucher.debt_account')" ,"url" : "{!!env('URL_DROPDOWN').'/account-voucher-filter?'.'menu='.$menu.'&type=1'!!}",editor: ItemsReadDropDownEditor , "select" : "OnchangeItem" ,template : "#=getUrlAjaxItemName(debit,'debit','{{env('URL_DROPDOWN').'/account-voucher-filter'}}')#" ,"width" : "150px" ,"set" : "2" , "key" :true },
+                            { "field" : "credit","title" :"@lang('acc_voucher.credit_account')" ,"url" : "{!!env('URL_DROPDOWN').'/account-voucher-filter?'.'menu='.$menu.'&type=2'!!}",editor: ItemsReadDropDownEditor , "select" : "OnchangeItem" ,template : "#=getUrlAjaxItemName(credit,'credit','{{env('URL_DROPDOWN').'/account-voucher-filter'}}')#" ,"width" : "150px","set" : "2" , "key" :true},
                             { "field" : "amount","title" : "@lang('acc_voucher.amount')" ,"width" : "200px",format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" ,aggregates: ['sum'],footerTemplate: "<p id='amount_total'>#=FormatNumberDecimal(sum,{{$decimal}})#</p>" },
                             { "field" : "rate","title" :"@lang('acc_voucher.rate')",format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}","width" : "150px"  },
                             { "field" : "amount_rate","title" : "@lang('acc_voucher.amount_rate')" ,"width" : "200px",format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" ,aggregates: ['sum'] , template: "#=calculateAmountRate(amount, rate, {{$decimal}} )#" ,footerTemplate: "<p id='amount_rate_total'>#=calculateTotalRateAggregate({{$decimal}})#</p>" },
@@ -157,7 +157,7 @@
                             { "field" : "cost_code","title" :"@lang('acc_voucher.cost_code')",editor: ItemsDropDownEditor , "select" : "OnchangeItem" ,template : "#=getDataItemName(cost_code,'cost_code')#","width" : "150px" ,"set" : "2" },
                             { "field" : "case_code","title" :"@lang('acc_voucher.case_code')",editor: ItemsDropDownEditor , "select" : "OnchangeItem" ,template : "#=getDataItemName(case_code,'case_code')#","width" : "150px" ,"set" : "2" },
                             { "field" : "statistical_code","title" :"@lang('acc_voucher.statistical_code')",editor: ItemsDropDownEditor , "select" : "OnchangeItem" ,template : "#=getDataItemName(statistical_code,'statistical_code')#" ,"width" : "150px" ,"set" : "2" },
-                            { "field" : "work_code","title" :"@lang('acc_voucher.work_code')","url" : "{{env('URL_DROPDOWN').'/work-code'}}",editor: ItemsReadDropDownEditor , "select" : "OnchangeItem" ,template : "#=getUrlAjaxItemName(work_code)#" ,"width" : "150px"  ,"set" : "2"},
+                            { "field" : "work_code","title" :"@lang('acc_voucher.work_code')","url" : "{{env('URL_DROPDOWN').'/work-code'}}",editor: ItemsReadDropDownEditor , "select" : "OnchangeItem" ,template : "#=getUrlAjaxItemName(work_code,'work_code','{{env('URL_DROPDOWN').'/work-code'}}')#" ,"width" : "150px"  ,"set" : "2"},
                             { "field" : "lot_number","title" : "@lang('acc_voucher.lot_number')" ,"width" : "150px" },
                             { "field" : "contract","title" : "@lang('acc_voucher.contract')" ,"width" : "150px" },
                             { "field" : "order","title" : "@lang('acc_voucher.order')" ,"width" : "200px"} ];
@@ -173,12 +173,12 @@
             cost_code: { field : "cost_code", defaultValue: {id: 0 , code: "---SELECT---", name: "---SELECT---"} },
             statistical_code: { field : "statistical_code", defaultValue: {id: 0 , code: "---SELECT---", name: "---SELECT---"} },
             subject_code: { field : "subject_code", defaultValue: {id: 0 , code: "---SELECT---", name: "---SELECT---"} },
-            work_code: { field : "work_code", defaultValue: {id: 0 , code: "---SELECT---", name: "---SELECT---"} },
+            work_code: { field : "work_code" ,defaultValue: {value: 0 , text: "---Select---"}},
             department: { field : "department", defaultValue: {id: 0 , code: "---SELECT---", name: "---SELECT---"} },
             bank_account: { field : "bank_account", defaultValue: {id: 0 , code: "---SELECT---", name: "---SELECT---"} },
-            debit: { field : "debit", defaultValue: RequestURL("{{env('URL_DROPDOWN').'/account-voucher-default?'.'menu='.$menu.'&type=1'}}"), validation: { min: 1 ,required: true }},
-            credit: { field : "credit", defaultValue: RequestURL("{{env('URL_DROPDOWN').'/account-voucher-default?'.'menu='.$menu.'&type=1'}}"), validation: { min: 1, required: true }},
-            accounted_fast: { field : "accounted_fast", defaultValue: {id: 0 , code: "---SELECT---", name: "---SELECT---"} },
+            debit: { field : "debit", defaultValue: RequestURL("{!!env('URL_DROPDOWN').'/account-voucher-default?'.'menu='.$menu.'&type=1'!!}"), validation: { min: 1 ,required: true }},
+            credit: { field : "credit", defaultValue: RequestURL("{!!env('URL_DROPDOWN').'/account-voucher-default?'.'menu='.$menu.'&type=1'!!}"), validation: { min: 1, required: true }},
+            accounted_fast: { field : "accounted_fast",defaultValue: {value: 0 , text: "--Select--"}},
             lot_number:     {field : "lot_number"},
             contract:     {field : "contract"},
             order:     {field : "order"},
@@ -212,8 +212,8 @@
 @endsection
 @section('scripts_end')
 @if($decimal_symbol === ".")
-document.write('<script src="{{ asset('library/kendoui/js/cultures/kendo.culture.de-DE.min.js') }}"></script>')
-document.write('<script>kendo.culture('de-DE')</script>')
+<script src="{{ asset('library/kendoui/js/cultures/kendo.culture.de-DE.min.js') }}"></script>
+<script>kendo.culture('de-DE')</script>
 @endif
 <script src="{{ url('addon/scripts/ermis/ermis-form-global-detail.js') }}"></script>
 <script src="{{ url('addon/scripts/ermis/ermis-form-4-detail-dom-file.js') }}"></script>

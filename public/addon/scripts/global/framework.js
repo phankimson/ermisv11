@@ -322,8 +322,8 @@ var initGetDefaultKeyArray = function(array){
   var data = Object.keys(array);
   jQuery.each(data, function (k, col) {
     var a = array[col];
-    if(array[col].hasOwnProperty("defaultValue")){
-      obj[col] = array[col].defaultValue
+    if(a.hasOwnProperty("defaultValue")){
+      obj[col] = a.defaultValue
     }else{
       if(array[col].type == "number"){
         obj[col] = 0;
@@ -836,6 +836,16 @@ function RequestURL(url){
       }
     });
     return data;
+}
+
+function RequestURLcallback(url,callback){
+    $.ajax({
+    url: url,
+    type : 'GET',
+    success:function(rs) {
+      callback(rs);
+    }
+  });
 }
 
 function RequestURLWaitingGet(url, returnType , postData, callback, displayLoading) {
@@ -1597,14 +1607,24 @@ function calculatePriceAggregateDiscount(decimal) {
       };
 
 
-      getUrlAjaxItemName = function(model) {
-        var value = "";
-        if (model.value  !== undefined) {
-          value = model.text;
-         } else {
-           value = '---SELECT---';
-         }
-         return value;
+      getUrlAjaxItemName = function(model,field,url) {
+        b = field;
+        var active = jQuery("#"+b).data("role");
+        if(active){
+          var value = "";  
+          if (model.value != "0" && model.value != "") {
+            var result = RequestURL(url+"?value="+model.value);
+                if (result != null) {
+                    value = result.text;
+                }else{
+                  value = '---SELECT---';
+                }
+           } else {
+             value = model.text;      
+           }
+           return value;
+        }    
+        return model.text;       
       }
 
 
