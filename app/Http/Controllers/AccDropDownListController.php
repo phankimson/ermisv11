@@ -306,26 +306,22 @@ class AccDropDownListController extends Controller
     $menu = $request->input('menu',null);
     $type = $request->input('type',null);
     $val = $request->input('value',null);   
-        if($val){
-            $rs = AccAccountSystems::find($val);
-            if(!$rs){
-              $data = collect(['value' => '0','text' => "--Select--"]);
-            }else{
-              $data = new LangDropDownResource($rs);
-            }      
-        }else{
-        $setting_voucher = AccSettingVoucher::get_menu($menu);
-        $sys = AccSystems::get_systems($this->document);
-        $document = Document::get_code($sys->value);
-        $data = [];
-        if($type == 1){ // Def
-          $debt_account = LangDropDownResource::collection(AccAccountSystems::get_wherein_id($document->id,$setting_voucher->debit_filter));
-          $data = $debt_account;
-        }else if ($type == 2){
-          $credit_account = LangDropDownResource::collection(AccAccountSystems::get_wherein_id($document->id,$setting_voucher->credit_filter));
-          $data = $credit_account;
-        }    
-      }
+    $setting_voucher = AccSettingVoucher::get_menu($menu);
+    $sys = AccSystems::get_systems($this->document);
+    $document = Document::get_code($sys->value);
+    $data = [];
+    if($type == 1){ // Def
+      $debt_account = LangDropDownResource::collection(AccAccountSystems::get_wherein_id($document->id,$setting_voucher->debit_filter));
+      $data = $debt_account;
+    }else if ($type == 2){
+      $credit_account = LangDropDownResource::collection(AccAccountSystems::get_wherein_id($document->id,$setting_voucher->credit_filter));
+      $data = $credit_account;
+    }  
+    if($val){
+      $data = $data->filter(function ($item) use ($val) {
+        return $item->id == $val;
+     })->first();
+    }
     return response()->json($data)->withCallback($request->input('callback'));
   }  
 

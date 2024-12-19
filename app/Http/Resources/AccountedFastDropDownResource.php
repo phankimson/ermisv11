@@ -2,7 +2,9 @@
 
 namespace App\Http\Resources;
 
+use App\Http\Model\User;
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Model\AccObject;
 
 class AccountedFastDropDownResource extends JsonResource
 {
@@ -15,20 +17,23 @@ class AccountedFastDropDownResource extends JsonResource
     public function toArray($request)
     {
       $type_object = $request->session()->get('type_object');
+      $subject_code = $type_object == $type_object ? $this->subject_debit : $this->subject_credit;
+      $subject_name = AccObject::find($subject_code);
       return (object)[
           'value' => $this->id,
           'text' => $this->name?$this->name:$this->description,
           'description' => $this->name?$this->name:$this->description,
           'debit' => $this->debit,
           'credit' => $this->credit,
-          'subject_code' => $type_object == $type_object ? $this->subject_debit : $this->subject_credit,
+          'subject_code' => $subject_code,
+          'subject_name'=>$subject_name ? $subject_name->name : "",
           'case_code' => $this->case_code,
           'cost_code' => $this->cost_code,
           'statistical_code' => $this->statistical_code,
           'work_code' => $this->work_code,
           'department' => $this->department,
           'bank_account' => $this->bank_account,
-          'accounted_fast' => $this->accounted_fast,
+          'accounted_fast' => $this->id,
       ];
     }
 }

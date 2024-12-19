@@ -22,7 +22,7 @@ class AccObject extends Model
       {
           static::BootedBaseTrait();
       }
-
+      
       static public function get_type($type){
         $result = AccObject::whereHas('object_type', function (Builder $query) use ($type) {
           $query->where('object_type', $type);

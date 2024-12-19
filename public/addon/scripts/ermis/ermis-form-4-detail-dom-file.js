@@ -1243,40 +1243,44 @@ var Ermis = function() {
         });
     };
 
-    var initLoadDropdownGrid = function(data,dataItem,field,dataValueField,dataTextField,rs){
+    var initLoadDropdownGrid = function(data,field,dataValueField,dataTextField,rs){
         if(rs != null){
-            if(rs[dataTextField] != undefined){
-                data[field][dataValueField] = dataItem[field];
-                data[field][dataTextField] = rs[dataTextField];   
+            if(rs[dataValueField] != undefined){
+                data[field][dataValueField] = rs[dataValueField];
+                data[field][dataTextField] = rs[dataTextField];               
             }else{
                 data[field][dataTextField] =  '--Select--';
                 data[field][dataValueField] = 0;
             }                                                
-            }else{
-                data[field][dataTextField] =  '--Select--';
-                data[field][dataValueField] = 0;
-            }
+        }else{
+            data[field][dataTextField] =  '--Select--';
+            data[field][dataValueField] = 0;
+        }
+        $kGridTab.data("kendoGrid").refresh();        
     }
 
     var initLoadColumn = function(data, dataItem) {
-        jQuery.each($kGridTab_column, function(i, v) {
+        jQuery.each($kGridTab_column, function(i, v) {          
             if (v.set === "1") {
                 data[v.field] = dataItem[v.field] ? dataItem[v.field] : 0;
-            } else if (v.set === "2" || v.set === "5") {  
-                if (dataItem[v.field] !== null ) {                                      
+            } else if (v.set === "2" || v.set === "5") {         
+                if(v.url){
+                    dataTextField = "text";
+                    dataValueField = "value"; 
+                }else{
+                    dataTextField = "code";
+                    dataValueField = "id"; 
+                } 
+                if (dataItem[v.field] !== null && dataItem[v.field] != data[v.field][dataValueField]) {                                      
                     if(v.url){
-                        dataTextField = "text";
-                        dataValueField = "value";  
-                        RequestURLcallback(v.url+"?value="+dataItem[v.field],function(rs) {
-                        initLoadDropdownGrid(data,dataItem,v.field,dataValueField,dataTextField,rs);
-                        });
+                        var sytax =  v.url.includes("?") ? "&" : "?"; 
+                         RequestURLcallback(v.url+sytax+"value="+dataItem[v.field],function(rs){
+                            initLoadDropdownGrid(data,v.field,dataValueField,dataTextField,rs);   
+                        });                                          
                     }else{
-                        dataTextField = "code";
-                        dataValueField = "id"; 
-                        var f = findObjectByKey(a[v.field],dataValueField,dataItem[v.field]);
-                        initLoadDropdownGrid(data,dataItem,v.field,dataValueField,dataTextField,f);
-                    }
-                  
+                        var f = findObjectByKey(a[v.field],dataValueField,dataItem[v.field]);    
+                        initLoadDropdownGrid(data,v.field,dataValueField,dataTextField,f);                      
+                    }                                  
                 }
             } else if (v.set === "3") {
                 data[v.field] = dataItem[v.field] ? FormatNumber(parseInt(dataItem[v.field])) : 0;
@@ -1285,7 +1289,9 @@ var Ermis = function() {
             } else if (v.set === "6") {
                 data[v.field] = dataItem[v.field];
             }
-        });
+           
+        }); 
+              
     }
 
     var initLoadGroupColumn = function(data, dataItem,group) {
@@ -1319,8 +1325,8 @@ var Ermis = function() {
             $kGridTab.data("kendoGrid").refresh();
         } else {
             var grid = $kGridTab.data("kendoGrid");
-            var data = grid.dataSource.data()[row];          
-            initLoadColumn(data, dataItem);          
+            var data = grid.dataSource.data()[row];      
+            initLoadColumn(data, dataItem);
             initFixScrollGrid();
         }
    

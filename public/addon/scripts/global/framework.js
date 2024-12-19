@@ -1319,8 +1319,6 @@ function getAtIndex(i,storedarrId) {
 }
 
 function checkboxClicked(element,$kGrid) {
-    var isChecked = element.checked;
-    var field = jQuery(element).attr('name');
     cell = $(element).parent(); /* you have to find cell containing check box*/
     grid = $kGrid.data("kendoGrid");
     grid.editCell(1);
@@ -1552,27 +1550,42 @@ function calculatePriceAggregateDiscount(decimal) {
 
    ItemsReadDropDownEditor = function (container, options) {
     var c  = findObjectByKey($kGridTab_column,"field",options.field);
-    jQuery('<input required id="' + options.field + '" class="dropdown-list-ajax" name="' + options.field + '"/>')
+    jQuery('<input required id="' + options.field + '" data-url="'+c.url+'"  class="dropdown-list-ajax" name="' + options.field + '"/>')
            .appendTo(container)
            .kendoDropDownList({
              filter: "contains",
              dataTextField: "text",
              dataValueField: "value",
+             autoBind: false,
+             select: eval(c.select), // PriItems :Onchange , SleItems : OnchangeCancel , Items : OnchangeItem , Group : OnchangeGroup
+             filter: "contains",            
+              dataSource: {
+                        transport: {
+                            dataType: 'jsonp',
+                            read: {
+                                url:  c.url,
+                            }
+                        }
+                }
+         })
+  }
+
+  ItemsReadPageDropDownEditor = function (container, options) {
+    var c  = findObjectByKey($kGridTab_column,"field",options.field);
+    jQuery('<input required id="' + options.field + '" data-url="'+c.url+'" class="dropdown-list-ajax" name="' + options.field + '"/>')
+           .appendTo(container)
+           .kendoDropDownList({
+             filter: "contains",
+             dataTextField: "text",
+             dataValueField: "value",
+             autoBind: false,
              select: eval(c.select), // PriItems :Onchange , SleItems : OnchangeCancel , Items : OnchangeItem , Group : OnchangeGroup
              filter: "contains",
-              virtual: {
-                  itemHeight: 26,
-                  valueMapper: function(options) {
-                      $.ajax({
-                          url: "https://demos.telerik.com/kendo-ui/service/Orders/ValueMapper",
-                          type: "GET",
-                          dataType: "jsonp",
-                          data: convertValues(options.value),
-                          success: function (data) {
-                              options.success(data);
-                          }
-                      })
-                  }
+             virtual: {
+              itemHeight: 26,
+              valueMapper: function(options) {
+                    options.success([options.value || 0]); //return the value <-> item index mapping;
+               }
               },
               pageSize: 80,
               serverPaging: true,
@@ -1795,7 +1808,6 @@ function calculatePriceAggregateDiscount(decimal) {
   }
 
   String.prototype.replaceAll = function(obj) {
-    let finalString = ''; 
     let words = this.toString();   
     for (const o in obj){          
             const value = obj[o];
