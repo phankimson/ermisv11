@@ -19,6 +19,7 @@ class AccCurrencyComposer
     protected $data;
     protected $default;
     protected $rate;
+    protected $currency_default;
 
     /**
      * Create a new profile composer.

@@ -13,6 +13,7 @@ class AccObjectTypeComposer
      * @var UserRepository
      */
     /**protected $users;*/
+    protected $type;
 
     /**
      * Create a new profile composer.

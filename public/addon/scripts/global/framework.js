@@ -1558,13 +1558,14 @@ function calculatePriceAggregateDiscount(decimal) {
              dataValueField: "value",
              autoBind: false,
              select: eval(c.select), // PriItems :Onchange , SleItems : OnchangeCancel , Items : OnchangeItem , Group : OnchangeGroup
-             filter: "contains",            
+             filter: "contains",  
+             dataBound: OnDataBoundDropDownEditor,         
               dataSource: {
                         transport: {
                             dataType: 'jsonp',
                             read: {
                                 url:  c.url,
-                            }
+                            }                          
                         }
                 }
          })
@@ -1620,18 +1621,23 @@ function calculatePriceAggregateDiscount(decimal) {
       };
 
 
-      getUrlAjaxItemName = function(model,field,url) {
+      getUrlAjaxItemName = function(model,field) {
         b = field;
         var active = jQuery("#"+b).data("role");
+        var url = jQuery("#"+b).data("url");
         if(active){
           var value = "";  
           if (model.value != "0" && model.value != "") {
-            var result = RequestURL(url+"?value="+model.value);
-                if (result != null) {
-                    value = result.text;
-                }else{
-                  value = '---SELECT---';
-                }
+            if(a[b] != undefined){
+              var result = findObjectByKey(a[b],"value",model.value);
+            }else{
+              var result = RequestURL(url+"?value="+model.value);
+            }            
+            if (result != null) {
+                value = result.text;
+            }else{
+              value = '---SELECT---';
+            }
            } else {
              value = model.text;      
            }

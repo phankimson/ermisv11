@@ -11,6 +11,9 @@ use View;
 
 class Localization
 {
+  protected $app;
+  protected $redirector;
+  protected $request;
   public function __construct(Application $app, Redirector $redirector, Request $request) {
      $this->app = $app;
      $this->redirector = $redirector;

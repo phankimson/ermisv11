@@ -69,11 +69,11 @@ class RouteServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    protected function mapApiRoutes()
+    protected function mapApiRoutes($locale)
     {
-        Route::prefix('api')
-             ->middleware('api')
+        Route::middleware('api')
              ->namespace($this->namespace)
+             ->prefix($locale.'/'.env('URL_API','api'))
              ->group(base_path('routes/api.php'));
     }
 }

@@ -17,6 +17,9 @@ use Artisan;
 
 class CheckPermission
 {
+  protected $app;
+  protected $redirector;
+  protected $request;
   public function __construct(Application $app, Redirector $redirector, Request $request) {
      $this->app = $app;
      $this->redirector = $redirector;
@@ -42,9 +45,9 @@ class CheckPermission
       $st = 0;
       foreach ($software as $value){
         $a = $value->url;
-        if(strpos($link,$value->url) > 0){
-          $manage = $value->url;
-          $st = strlen($link) - strpos($link,$value->url) - strlen($value->url);
+        if(strpos($link,$a) > 0){
+          $manage = $a;
+          $st = strlen($link) - strpos($link,$a) - strlen($a);
           $type = $value->id;
           break;
       }

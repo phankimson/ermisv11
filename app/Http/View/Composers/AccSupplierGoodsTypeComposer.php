@@ -13,7 +13,7 @@ class AccSupplierGoodsTypeComposer
      * @var UserRepository
      */
     /**protected $users;*/
-
+    protected $type;
     /**
      * Create a new profile composer.
      *

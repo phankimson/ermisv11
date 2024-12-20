@@ -244,6 +244,7 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
         //'Debugbar' => Barryvdh\Debugbar\Facade::class,
+        //'AppHelpers' => App\Helpers\AppHelpers::class,
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
     ],
 

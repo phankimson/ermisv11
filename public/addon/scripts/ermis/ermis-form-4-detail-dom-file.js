@@ -1272,7 +1272,7 @@ var Ermis = function() {
                     dataValueField = "id"; 
                 } 
                 if (dataItem[v.field] !== null && dataItem[v.field] != data[v.field][dataValueField]) {                                      
-                    if(v.url){
+                    if(v.url && a[v.field] == undefined){
                         var sytax =  v.url.includes("?") ? "&" : "?"; 
                          RequestURLcallback(v.url+sytax+"value="+dataItem[v.field],function(rs){
                             initLoadDropdownGrid(data,v.field,dataValueField,dataTextField,rs);   
@@ -1305,6 +1305,11 @@ var Ermis = function() {
 
             }
         });
+    }
+
+    OnDataBoundDropDownEditor = function(e){
+        var b = jQuery(e.sender.element).prop("id");
+        a[b] = e.sender.dataSource.data();
     }
 
     Onchange = function(e) {

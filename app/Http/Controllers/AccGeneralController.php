@@ -34,8 +34,8 @@ class AccGeneralController extends Controller
   public function __construct(Request $request)
  {
    $this->url =  $request->segment(3);
-   $key = explode("/",$request->headers->get('referer'));
-   $this->key = $key[5];
+   $a = explode("/",$request->headers->get('referer'));
+   $this->key = $a[5];
    $this->menu = Menu::where('code', '=', $this->key)->first();
  }
 
