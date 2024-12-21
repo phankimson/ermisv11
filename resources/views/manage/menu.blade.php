@@ -22,7 +22,7 @@
         <tr>
             <td class="row-label"><label>@lang('menu.parent')</label></td>
             <td>
-            <select id="parent_id" class="droplist read load_droplist large" data-position="1" data-title="@lang('menu.parent')" add-option="true" data-template="#= FormatDropListRead(parent_id,'parent_id') #" data-type="number" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/menu'}}"  name="parent_id">
+            <select id="parent_id" class="droplist read load_droplist large" data-position="1" data-title="@lang('menu.parent')" add-option="true" data-template="#= FormatDropListRead(parent_id,'parent_id') #" data-type="number" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{route(env('URL_API').'.manage.'.env('URL_DROPDOWN').'.menu')}}"  name="parent_id">
 
             </select>
             </td>

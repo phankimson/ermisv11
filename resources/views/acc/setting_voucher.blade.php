@@ -27,7 +27,7 @@
              <tr>
              <td class="row-label"><label>@lang('acc_setting_voucher.menu')</label></td>
              <td>
-             <select class="droplist read large" data-position="1" data-title="@lang('acc_setting_voucher.menu')" data-template="#= FormatDropListRead(menu_id,'menu_id') #" data-type="number" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/menu'}}"  name="menu_id">                    
+             <select class="droplist read large" data-position="1" data-title="@lang('acc_setting_voucher.menu')" data-template="#= FormatDropListRead(menu_id,'menu_id') #" data-type="number" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.menu')}}"  name="menu_id">                    
              </select>
              </td>
              </tr>
@@ -42,7 +42,7 @@
                <tr>
                    <td class="row-label"><label>@lang('acc_setting_voucher.debit') </label></td>
                    <td>
-                     <select class="droplist read large" data-position="7" data-title="@lang('acc_setting_voucher.debit')" data-template="#= FormatDropListRead(debit,'debit') #" data-type="string" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/account'}}" name="debit">
+                     <select class="droplist read large" data-position="7" data-title="@lang('acc_setting_voucher.debit')" data-template="#= FormatDropListRead(debit,'debit') #" data-type="string" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.account')}}" name="debit">
                            
                      </select>
                    </td>
@@ -50,7 +50,7 @@
                <tr>
                    <td class="row-label"><label>@lang('acc_setting_voucher.credit') </label></td>
                    <td>
-                     <select class="droplist read large" data-position="7" data-title="@lang('acc_setting_voucher.credit')" data-template="#= FormatDropListRead(credit,'credit') #" data-type="string" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/account'}}" name="credit">
+                     <select class="droplist read large" data-position="7" data-title="@lang('acc_setting_voucher.credit')" data-template="#= FormatDropListRead(credit,'credit') #" data-type="string" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.account')}}" name="credit">
                             
                          </select>
                    </td>
@@ -59,7 +59,7 @@
                <tr>
                    <td class="row-label"><label>@lang('acc_setting_voucher.vat_account') </label></td>
                    <td>
-                     <select class="droplist read large" data-position="7" data-title="@lang('acc_setting_voucher.vat_account')" data-template="#= FormatDropListRead(vat_account,'vat_account') #" data-type="string" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/setting-account-group?code=VAT'}}" name="vat_account">
+                     <select class="droplist read large" data-position="7" data-title="@lang('acc_setting_voucher.vat_account')" data-template="#= FormatDropListRead(vat_account,'vat_account') #" data-type="string" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.setting-account-group').'?code=VAT'}}" name="vat_account">
                             
                      </select>
                    </td>
@@ -68,7 +68,7 @@
                <tr>
                    <td class="row-label"><label>@lang('acc_setting_voucher.discount_account') *</label></td>
                    <td>
-                     <select class="droplist read large" data-position="7" data-title="@lang('acc_setting_voucher.discount_account')" data-template="#= FormatDropListRead(discount_account,'discount_account') #" data-type="string" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/setting-account-group?code=GG'}}" name="discount_account">
+                     <select class="droplist read large" data-position="7" data-title="@lang('acc_setting_voucher.discount_account')" data-template="#= FormatDropListRead(discount_account,'discount_account') #" data-type="string" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.setting-account-group').'?code=GG'}}" name="discount_account">
                            
                      </select>
                    </td>
@@ -77,7 +77,7 @@
                <tr>
                    <td class="row-label"><label>@lang('acc_setting_voucher.debit_filter') </label></td>
                    <td>
-                     <select class="multiselect read large" data-position="7" data-type="arr" data-hidden="true" name="debit_filter" multiple="multiple" data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/account?multiple=true'}}" data-placeholder="Select">
+                     <select class="multiselect read large" data-position="7" data-type="arr" data-hidden="true" name="debit_filter" multiple="multiple" data-value-field="value" data-text-field="text" data-read-url="{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.account').'?multiple=true'}}" data-placeholder="Select">
                            
                       </select>
                    </td>
@@ -85,7 +85,7 @@
                <tr>
                    <td class="row-label"><label>@lang('acc_setting_voucher.credit_filter') </label></td>
                    <td>
-                    <select class="multiselect read large" data-position="7" data-type="arr"  data-hidden="true" name="credit_filter" multiple="multiple" data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/account?multiple=true'}}" data-placeholder="Select">
+                    <select class="multiselect read large" data-position="7" data-type="arr"  data-hidden="true" name="credit_filter" multiple="multiple" data-value-field="value" data-text-field="text" data-read-url="{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.account').'?multiple=true'}}" data-placeholder="Select">
                            
                          </select>
                    </td>

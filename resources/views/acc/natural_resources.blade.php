@@ -28,7 +28,7 @@
              <tr>
              <td class="row-label"><label>@lang('acc_natural_resources.parent')</label></td>
              <td>
-             <select class="droplist read large load_droplist"  id="parent_id" add-option="true" data-position="2" data-title="@lang('acc_natural_resources.parent')" data-template="#= FormatDropListRead(parent_id,'parent_id') #" data-type="number" data-nullable ="true" data-width="200px"  data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/natural-resources'}}" name="parent_id">
+             <select class="droplist read large load_droplist"  id="parent_id" add-option="true" data-position="2" data-title="@lang('acc_natural_resources.parent')" data-template="#= FormatDropListRead(parent_id,'parent_id') #" data-type="number" data-nullable ="true" data-width="200px"  data-value-field="value" data-text-field="text" data-read-url="{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.natural-resources')}}" name="parent_id">
 
              </select>
              </td>
@@ -53,7 +53,7 @@
                <tr>
                <td class="row-label"><label>@lang('acc_natural_resources.unit')</label></td>
                <td>
-               <select class="droplist read load_droplist large"  data-position="6" data-title="@lang('acc_natural_resources.unit')" data-hidden="true"  data-template="#= FormatDropListRead(unit_id,'unit_id') #" data-type="number" data-width="200px"  data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/unit'}}"  name="unit_id">
+               <select class="droplist read load_droplist large"  data-position="6" data-title="@lang('acc_natural_resources.unit')" data-hidden="true"  data-template="#= FormatDropListRead(unit_id,'unit_id') #" data-type="number" data-width="200px"  data-value-field="value" data-text-field="text" data-read-url="{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.unit')}}"  name="unit_id">
                       
                </select>
                </td>

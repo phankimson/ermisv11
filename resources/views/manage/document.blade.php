@@ -21,7 +21,7 @@
                <tr>
                    <td class="row-label"><label>@lang('document.type')</label></td>
                    <td>
-                     <select class="droplist read large" data-position="1" data-title="@lang('document.type')" data-template="#= FormatDropListRead(type,'type') #" data-type="number" data-width="200px"  data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/document-type'}}"  name="type">                             
+                     <select class="droplist read large" data-position="1" data-title="@lang('document.type')" data-template="#= FormatDropListRead(type,'type') #" data-type="number" data-width="200px"  data-value-field="value" data-text-field="text" data-read-url="{{route(env('URL_API').'.manage.'.env('URL_DROPDOWN').'.document-type')}}"  name="type">                             
                      </select>
                    </td>
                </tr>

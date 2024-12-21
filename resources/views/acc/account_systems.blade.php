@@ -29,7 +29,7 @@
              <tr>
              <td class="row-label"><label>@lang('acc_account_systems.type')</label></td>
              <td>
-             <select class="droplist read large" data-position="2" data-title="@lang('acc_account_systems.type')" data-template="#= FormatDropListRead(type,'type') #" data-type="number" data-width="200px"  data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/account-type'}}"  name="type">
+             <select class="droplist read large" data-position="2" data-title="@lang('acc_account_systems.type')" data-template="#= FormatDropListRead(type,'type') #" data-type="number" data-width="200px"  data-value-field="value" data-text-field="text" data-read-url="{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.account-type')}}"  name="type">
                     
              </select>
              </td>
@@ -49,7 +49,7 @@
                <tr>
                <td class="row-label"><label>@lang('acc_account_systems.parent')</label></td>
                <td>
-               <select class="droplist read load_droplist large"  id="parent_id"  data-position="6" data-title="@lang('acc_account_systems.parent')" data-hidden="true"  add-option="true" data-template="#= FormatDropListRead(parent_id,'parent_id') #" data-type="number" data-nullable ="true"  data-width="200px"  data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/account'}}"  name="parent_id">
+               <select class="droplist read load_droplist large"  id="parent_id"  data-position="6" data-title="@lang('acc_account_systems.parent')" data-hidden="true"  add-option="true" data-template="#= FormatDropListRead(parent_id,'parent_id') #" data-type="number" data-nullable ="true"  data-width="200px"  data-value-field="value" data-text-field="text" data-read-url="{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.account')}}"  name="parent_id">
                       
                </select>
                </td>
@@ -57,7 +57,7 @@
                <tr>
                <td class="row-label"><label>@lang('acc_account_systems.nature')</label></td>
                <td>
-               <select class="droplist read large" data-position="7" data-title="@lang('acc_account_systems.nature')" data-template="#= FormatDropListRead(nature,'nature') #" data-type="number" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/account-nature'}}" name="nature">
+               <select class="droplist read large" data-position="7" data-title="@lang('acc_account_systems.nature')" data-template="#= FormatDropListRead(nature,'nature') #" data-type="number" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.account-nature')}}" name="nature">
                       
                </select>
                </td>
@@ -131,7 +131,7 @@
            <tr>
            <td class="row-label"><label>@lang('acc_account_systems.document')</label></td>
            <td>
-           <select class="droplist read large" data-position="7" data-title="@lang('acc_account_systems.document')" data-template="#= FormatDropListRead(document_id,'document_id') #" data-type="number" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/document'}}"  name="document_id">
+           <select class="droplist read large" data-position="7" data-title="@lang('acc_account_systems.document')" data-template="#= FormatDropListRead(document_id,'document_id') #" data-type="number" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.document')}}"  name="document_id">
                  
            </select>
            </td>

@@ -22,7 +22,7 @@
       <tr>
       <td class="row-label"><label>@lang('acc_revenue_expenditure.type')</label></td>
       <td>
-      <select class="droplist read large" data-position="2" data-title="@lang('acc_revenue_expenditure.type')" data-template="#= FormatDropListRead(type,'type') #" data-type="number" data-width="200px"  data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/revenue-expenditure-type'}}"  name="type">
+      <select class="droplist read large" data-position="2" data-title="@lang('acc_revenue_expenditure.type')" data-template="#= FormatDropListRead(type,'type') #" data-type="number" data-width="200px"  data-value-field="value" data-text-field="text" data-read-url="{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.revenue-expenditure-type')}}"  name="type">
 
       </select>
       </td>

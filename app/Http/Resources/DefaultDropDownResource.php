@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class DefaultCodeDropDownListResource extends JsonResource
+class DefaultDropDownResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -15,9 +15,8 @@ class DefaultCodeDropDownListResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'id' => 0,
-            'code' => 0,
-            'name' => '---SELECT---',
+            'value' => 0,
+            'text' => '--Select--',
         ];
     }
 }

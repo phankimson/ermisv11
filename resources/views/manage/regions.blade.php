@@ -21,7 +21,7 @@
     <table>
       <tr>
           <td class="row-label"><label>@lang('regions.country')</label></td>
-          <td><select class="droplist read large" data-position="1" data-title="@lang('regions.country')" data-template="#= FormatDropListRead(country,'country') #" data-type="number" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/country'}}" name="country">              
+          <td><select class="droplist read large" data-position="1" data-title="@lang('regions.country')" data-template="#= FormatDropListRead(country,'country') #" data-type="number" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{route(env('URL_API').'.manage.'.env('URL_DROPDOWN').'.country')}}" name="country">              
               </select>
           </td>
       </tr>

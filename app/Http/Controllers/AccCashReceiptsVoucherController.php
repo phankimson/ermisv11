@@ -84,25 +84,21 @@ class AccCashReceiptsVoucherController extends Controller
     //$document = Document::get_code($sys->value);
     //$debt_account = json_encode(AccountSystemsDropDownListResource::collection(AccAccountSystems::get_wherein_id($document->id,$setting_voucher->debit_filter)));
     //$credit_account = json_encode(AccountSystemsDropDownListResource::collection(AccAccountSystems::get_wherein_id($document->id,$setting_voucher->credit_filter)));
-    $department = json_encode(LangDropDownListResource::collection(AccDepartment::active()->orderBy('code','asc')->get()));
-    $bank_account = json_encode(BankAccountDropDownListResource::collection(AccBankAccount::active()->orderBy('bank_account','asc')->get()));
-    $case_code = json_encode(LangDropDownListResource::collection(AccCaseCode::active()->orderBy('code','asc')->get()));
-    $cost_code = json_encode(LangDropDownListResource::collection(AccCostCode::active()->orderBy('code','asc')->get()));
-    $statistical_code = json_encode(LangDropDownListResource::collection(AccStatisticalCode::active()->orderBy('code','asc')->get()));
-    $accounted_fast = json_encode(AccountedFastDropDownListResource::collection(AccAccountedFast::active()->orderBy('code','asc')->get()));
-    $vat = json_encode(LangTaxDropDownListResource::collection(AccVat::active()->orderBy('code','asc')->get()));
-    $subject_code = json_encode(ObjectDropDownListResource::collection(AccObject::active()->orderBy('code','asc')->get()));
+    //$department = json_encode(LangDropDownListResource::collection(AccDepartment::active()->orderBy('code','asc')->get()));
+    //$bank_account = json_encode(BankAccountDropDownListResource::collection(AccBankAccount::active()->orderBy('bank_account','asc')->get()));
+    //$case_code = json_encode(LangDropDownListResource::collection(AccCaseCode::active()->orderBy('code','asc')->get()));
+    //$cost_code = json_encode(LangDropDownListResource::collection(AccCostCode::active()->orderBy('code','asc')->get()));
+    //$statistical_code = json_encode(LangDropDownListResource::collection(AccStatisticalCode::active()->orderBy('code','asc')->get()));
+    //$accounted_fast = json_encode(AccountedFastDropDownListResource::collection(AccAccountedFast::active()->orderBy('code','asc')->get()));
+    //$vat = json_encode(LangTaxDropDownListResource::collection(AccVat::active()->orderBy('code','asc')->get()));
+    //$subject_code = json_encode(ObjectDropDownListResource::collection(AccObject::active()->orderBy('code','asc')->get()));
     $voucher_list = AccNumberVoucher::all();
     $print = AccPrintTemplate::get_code($this->print);
     return view('acc.receipt_cash_voucher',[ 'key' => $this->key , 'voucher' => $voucher, 'menu'=>$this->menu->id,                                       
-                                        'bank_account'=>$bank_account,'case_code'=>$case_code,
-                                        'cost_code'=>$cost_code,'statistical_code'=>$statistical_code,
-                                        'department'=>$department,
-                                        'accounted_fast' => $accounted_fast,'voucher_list' => $voucher_list ,
-                                        'subject_code' => $subject_code,
+                                        'voucher_list' => $voucher_list ,
                                         'ot' => $ot,
                                         'sg' => $ot,
-                                        'vat' => $vat ,'print' => $print]);
+                                        'print' => $print]);
   }
 
 
@@ -116,7 +112,6 @@ class AccCashReceiptsVoucherController extends Controller
          $period = AccPeriod::get_date(Carbon::parse($arr->accounting_date)->format('Y-m'),1);
         if(!$period){
           $general = [];
-          $status = 0;
           $removeId = [];
           $removeId_v = [];
           $permission = $request->session()->get('per');
@@ -179,7 +174,7 @@ class AccCashReceiptsVoucherController extends Controller
           $general->status = 1;
           $general->active = 1;
           $general->save();
-
+          
           // Tham chiếu / Reference
           // Ktra dòng dư tham chiếu
           if(collect($arr->reference_by)->count()>0){
@@ -214,36 +209,37 @@ class AccCashReceiptsVoucherController extends Controller
              }
              $detail->general_id = $general->id;
              $detail->description = $d->description;
-             $detail->debit = $d->debit->id;
-             $detail->credit = $d->credit->id;
+             $detail->debit = $d->debit->value;  // Đổi từ id value dạng read
+             $detail->credit = $d->credit->value;  // Đổi từ id value dạng read
              $detail->amount = $d->amount;
              $detail->rate = $d->rate;
              $detail->amount_rate = $d->amount * $d->rate;
-             $detail->accounted_fast = $d->accounted_fast->id;
-             $detail->department = $d->department->id;
-             $detail->bank_account = $d->bank_account->id;
-             $detail->case_code = $d->case_code->id;
-             $detail->cost_code = $d->cost_code->id;
-             $detail->statistical_code = $d->statistical_code->id;
-             $detail->work_code = $d->work_code->id;
+             $detail->accounted_fast = $d->accounted_fast->value;  // Đổi từ id value dạng read
+             $detail->department = $d->department->id; // Đổi từ id value dạng read
+             $detail->bank_account = $d->bank_account->id;  // Đổi từ id value dạng read
+             $detail->case_code = $d->case_code->id;  // Đổi từ id value dạng read
+             $detail->cost_code = $d->cost_code->id;  // Đổi từ id value dạng read
+             $detail->statistical_code = $d->statistical_code->id;  // Đổi từ id value dạng read
+             $detail->work_code = $d->work_code->value;  // Đổi từ id value dạng read
              $detail->lot_number = $d->lot_number;
              $detail->contract = $d->contract;
              $detail->order = $d->order;
              $detail->subject_id_credit = $d->subject_code->id;
              $detail->subject_name_credit = $d->subject_code->name;
              $detail->save();
+       
              array_push($removeId,$detail->id);
              $arr->detail[$k]->id = $detail->id;
 
              // Lưu số tồn tiền bên Nợ
-             if($d->debit->code == '11*'){
-               $balance = AccCurrencyCheck::get_type_first($d->debit->id,$arr->currency,null);
+             if($d->debit->text == '11*'){
+               $balance = AccCurrencyCheck::get_type_first($d->debit->value,$arr->currency,null);
                if($balance){
                  $balance->amount = $balance->amount + ($d->amount * $d->rate);
                  $balance->save();
                }else{
                  $balance = new AccCurrencyCheck();
-                 $balance->type = $d->debit->id;
+                 $balance->type = $d->debit->value;
                  $balance->currency = $arr->currency;
                  $balance->bank_account = null;
                  $balance->amount = $d->amount * $d->rate;
@@ -253,27 +249,27 @@ class AccCashReceiptsVoucherController extends Controller
                // End
 
                // Lưu số tồn tiền bên Có
-               if($d->credit->code == '111*' || $d->credit->code == '113*'){
-                 $balance = AccCurrencyCheck::get_type_first($d->credit->id,$arr->currency,null);
+               if($d->credit->text == '111*' || $d->credit->text == '113*'){
+                 $balance = AccCurrencyCheck::get_type_first($d->credit->value,$arr->currency,null);
                  if($balance){
                    $balance->amount = $balance->amount - ($d->amount * $d->rate);
                    $balance->save();
                  }else{
                    $balance = new AccCurrencyCheck();
-                   $balance->type = $d->credit->id;
+                   $balance->type = $d->credit->value;
                    $balance->currency = $arr->currency;
                    $balance->bank_account = null;
                    $balance->amount = 0 - ($d->amount * $d->rate);
                    $balance->save();
                  }
-               }else if($d->credit->code == '112*'){
+               }else if($d->credit->text == '112*'){
                  $balance = AccCurrencyCheck::get_type_first($d->credit->id,$arr->currency,$d->bank_account);
                  if($balance){
                    $balance->amount = $balance->amount - ($d->amount * $d->rate);
                    $balance->save();
                  }else{
                    $balance = new AccCurrencyCheck();
-                   $balance->type = $d->credit->id;
+                   $balance->type = $d->credit->value;
                    $balance->currency = $arr->currency;
                    $balance->bank_account = $d->bank_account;
                    $balance->amount = 0 - ($d->amount * $d->rate);
@@ -330,7 +326,7 @@ class AccCashReceiptsVoucherController extends Controller
                if(!File::isDirectory($path)){
                File::makeDirectory($path, 0777, true, true);
                }
-               $upload_success = $files->move($path, $filename);
+               $files->move($path, $filename);
                // Lưu lại hình ảnh
                $attach = new AccAttach();
                $attach->general_id = $general->id;
@@ -366,6 +362,7 @@ class AccCashReceiptsVoucherController extends Controller
          'user_id' => Auth::id(),
          'menu_id' => $this->menu->id,
          'error' => $e->getMessage(),
+         'url'  => $this->url,
          'check' => 0 ]);
        return response()->json(['status'=>false,'message'=> trans('messages.error').' '.$e->getMessage()]);
      }
@@ -383,7 +380,7 @@ class AccCashReceiptsVoucherController extends Controller
                 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,'.
                 'application/vnd.ms-excel',
       ]);
-        $rs = json_decode($request->data);
+        //$rs = json_decode($request->data);
   
         $file = $request->file;
         // Đổi dữ liệu Excel sang collect

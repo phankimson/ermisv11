@@ -38,13 +38,13 @@
         </tr>
         <tr>
             <td class="row-label"><label>@lang('license.company_use')</label></td>
-            <td><select class="droplist read large" data-position="1" data-title="@lang('license.company_use')" data-template="#= FormatDropListRead(company_use,'company_use') #" data-type="number" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/company'}}" name="company_use">
+            <td><select class="droplist read large" data-position="1" data-title="@lang('license.company_use')" data-template="#= FormatDropListRead(company_use,'company_use') #" data-type="number" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{route(env('URL_API').'.manage.'.env('URL_DROPDOWN').'.company')}}" name="company_use">
                 </select>
             </td>
         </tr>
         <tr>
             <td class="row-label"><label>@lang('license.software_use')</label></td>
-            <td><select class="droplist read large" data-position="1" data-title="@lang('license.software_use')" data-template="#= FormatDropListRead(software_use,'software_use') #" data-type="number" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/software'}}"  name="software_use">
+            <td><select class="droplist read large" data-position="1" data-title="@lang('license.software_use')" data-template="#= FormatDropListRead(software_use,'software_use') #" data-type="number" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{route(env('URL_API').'.manage.'.env('URL_DROPDOWN').'.software')}}"  name="software_use">
                 </select>
             </td>
         </tr>

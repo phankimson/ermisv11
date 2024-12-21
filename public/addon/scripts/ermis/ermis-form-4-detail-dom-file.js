@@ -42,6 +42,7 @@ var Ermis = function() {
         }, jQuery(window).height() * 0.5, Ermis.columns);
         initKendoGridChange();
     }
+   
 
     var initLoadData = function(dataId) {
         var postdata = {
@@ -63,7 +64,7 @@ var Ermis = function() {
                     initStatus(7);
                 }
             },
-            function(result) {
+            function() {
                 initStatus(7);
             });
     };

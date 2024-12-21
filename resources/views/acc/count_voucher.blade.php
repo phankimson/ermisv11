@@ -22,7 +22,7 @@
       <tr>
       <td class="row-label"><label>@lang('acc_count_voucher.number_voucher')</label></td>
       <td>
-      <select class="droplist read large" data-position="1" data-title="@lang('acc_count_voucher.number_voucher')" data-template="#= FormatDropListRead(number_voucher,'number_voucher') #" data-type="number" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/number-voucher'}}" name="number_voucher">
+      <select class="droplist read large" data-position="1" data-title="@lang('acc_count_voucher.number_voucher')" data-template="#= FormatDropListRead(number_voucher,'number_voucher') #" data-type="number" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.number-voucher')}}" name="number_voucher">
              
       </select>
       </td>

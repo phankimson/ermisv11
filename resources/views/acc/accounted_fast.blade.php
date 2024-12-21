@@ -35,7 +35,7 @@
                <tr>
                    <td class="row-label"><label>@lang('acc_accounted_fast.debit') </label></td>
                    <td>
-                     <select class="droplist read large" data-position="7" data-title="@lang('acc_accounted_fast.debit')" data-template="#= FormatDropListRead(debit,'debit') #" data-type="string" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/account'}}" name="debit">
+                     <select class="droplist read large" data-position="7" data-title="@lang('acc_accounted_fast.debit')" data-template="#= FormatDropListRead(debit,'debit') #" data-type="string" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.account')}}" name="debit">
                              
                      </select>
                    </td>
@@ -43,7 +43,7 @@
                <tr>
                    <td class="row-label"><label>@lang('acc_accounted_fast.credit') </label></td>
                    <td>
-                     <select class="droplist read large" data-position="7" data-title="@lang('acc_accounted_fast.credit')" data-template="#= FormatDropListRead(credit,'credit') #" data-type="string" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/account'}}" name="credit">
+                     <select class="droplist read large" data-position="7" data-title="@lang('acc_accounted_fast.credit')" data-template="#= FormatDropListRead(credit,'credit') #" data-type="string" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.account')}}" name="credit">
                           
                          </select>
                    </td>
@@ -51,14 +51,14 @@
                <tr>
                    <td class="row-label"><label>@lang('acc_accounted_fast.subject_debit') </label></td>
                    <td>
-                     <select class="droplist read large" data-position="7" data-title="@lang('acc_accounted_fast.subject_debit')" data-template="#= FormatDropListRead(subject_debit,'subject_debit') #" data-type="string" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/object'}}" name="subject_debit">
+                     <select class="droplist read large" data-position="7" data-title="@lang('acc_accounted_fast.subject_debit')" data-template="#= FormatDropListRead(subject_debit,'subject_debit') #" data-type="string" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.object')}}" name="subject_debit">
                      </select>
                    </td>
                </tr>
                <tr>
                    <td class="row-label"><label>@lang('acc_accounted_fast.subject_credit') </label></td>
                    <td>
-                     <select class="droplist read large" data-position="7" data-title="@lang('acc_accounted_fast.subject_credit')" data-template="#= FormatDropListRead(subject_credit,'subject_credit') #" data-type="string" data-width="200px"  data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/object'}}" name="subject_credit">
+                     <select class="droplist read large" data-position="7" data-title="@lang('acc_accounted_fast.subject_credit')" data-template="#= FormatDropListRead(subject_credit,'subject_credit') #" data-type="string" data-width="200px"  data-value-field="value" data-text-field="text" data-read-url="{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.object')}}" name="subject_credit">
                 
                          </select>
                    </td>
@@ -66,7 +66,7 @@
                <tr>
                    <td class="row-label"><label>@lang('acc_accounted_fast.case_code') </label></td>
                    <td>
-                     <select class="droplist read large" data-position="7" data-title="@lang('acc_accounted_fast.case_code')" data-template="#= FormatDropListRead(case_code,'case_code') #" data-type="string" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/case-code'}}" name="case_code">
+                     <select class="droplist read large" data-position="7" data-title="@lang('acc_accounted_fast.case_code')" data-template="#= FormatDropListRead(case_code,'case_code') #" data-type="string" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.case-code')}}" name="case_code">
                           
                      </select>
                    </td>
@@ -75,7 +75,7 @@
                <tr>
                    <td class="row-label"><label>@lang('acc_accounted_fast.cost_code')</label></td>
                    <td>
-                     <select class="droplist read large" data-position="7" data-title="@lang('acc_accounted_fast.cost_code')" data-template="#= FormatDropListRead(cost_code,'cost_code') #" data-type="string" data-width="200px"  data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/cost-code'}}" name="cost_code">
+                     <select class="droplist read large" data-position="7" data-title="@lang('acc_accounted_fast.cost_code')" data-template="#= FormatDropListRead(cost_code,'cost_code') #" data-type="string" data-width="200px"  data-value-field="value" data-text-field="text" data-read-url="{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.cost-code')}}" name="cost_code">
                        
                      </select>
                    </td>
@@ -84,7 +84,7 @@
                <tr>
                    <td class="row-label"><label>@lang('acc_accounted_fast.statistical_code')</label></td>
                    <td>
-                     <select class="droplist read large" data-position="7" data-title="@lang('acc_accounted_fast.statistical_code')" data-template="#= FormatDropListRead(statistical_code,'statistical_code') #" data-type="string" data-width="200px"  data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/statistical-code'}}"  name="statistical_code">
+                     <select class="droplist read large" data-position="7" data-title="@lang('acc_accounted_fast.statistical_code')" data-template="#= FormatDropListRead(statistical_code,'statistical_code') #" data-type="string" data-width="200px"  data-value-field="value" data-text-field="text" data-read-url="{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.statistical-code')}}"  name="statistical_code">
                            
                      </select>
                    </td>
@@ -93,7 +93,7 @@
                <tr>
                    <td class="row-label"><label>@lang('acc_accounted_fast.work_code')</label></td>
                    <td>
-                     <select class="droplist read large" data-position="7" data-title="@lang('acc_accounted_fast.work_code')" data-template="#= FormatDropListRead(work_code,'work_code') #" data-type="string" data-width="200px"  data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/work-code'}}" name="work_code">
+                     <select class="droplist read large" data-position="7" data-title="@lang('acc_accounted_fast.work_code')" data-template="#= FormatDropListRead(work_code,'work_code') #" data-type="string" data-width="200px"  data-value-field="value" data-text-field="text" data-read-url="{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.work-code')}}" name="work_code">
                              
                      </select>
                    </td>
@@ -102,7 +102,7 @@
                <tr>
                    <td class="row-label"><label>@lang('acc_accounted_fast.department') </label></td>
                    <td>
-                     <select class="droplist read large" data-position="7" data-title="@lang('acc_accounted_fast.department')" data-template="#= FormatDropListRead(department,'department') #" data-type="string" data-width="200px"  data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/department'}}" name="department">
+                     <select class="droplist read large" data-position="7" data-title="@lang('acc_accounted_fast.department')" data-template="#= FormatDropListRead(department,'department') #" data-type="string" data-width="200px"  data-value-field="value" data-text-field="text" data-read-url="{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.department')}}" name="department">
                           
                      </select>
                    </td>
@@ -111,7 +111,7 @@
                <tr>
                    <td class="row-label"><label>@lang('acc_accounted_fast.bank_account') </label></td>
                    <td>
-                     <select class="droplist read large" data-position="7" data-title="@lang('acc_accounted_fast.bank_account')" data-template="#= FormatDropListRead(bank_account,'bank_account') #" data-type="string" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/bank-account'}}" name="bank_account">
+                     <select class="droplist read large" data-position="7" data-title="@lang('acc_accounted_fast.bank_account')" data-template="#= FormatDropListRead(bank_account,'bank_account') #" data-type="string" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.bank-account')}}" name="bank_account">
                             
                      </select>
                    </td>

@@ -76,7 +76,7 @@
                <tr>
                    <td class="row-label"><label>@lang('user.country')</label></td>
                    <td>
-                     <select class="droplist read large" data-position="8" data-title="@lang('user.country')" data-template="#= FormatDropListRead(country,'country') #" data-type="string" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/country'}}" name="country">
+                     <select class="droplist read large" data-position="8" data-title="@lang('user.country')" data-template="#= FormatDropListRead(country,'country') #" data-type="string" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.country')}}" name="country">
                          
                          </select>
                    </td>
@@ -95,7 +95,7 @@
              </tr>
              <tr>
                  <td class="row-label"><label>@lang('user.group_user')</label></td>
-                 <td><select class="droplist read large" data-position="8" data-title="@lang('user.group_user')" data-template="#= FormatDropListRead(group_users_id,'group_users_id') #" data-type="number" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/group-user'}}" name="group_users_id">
+                 <td><select class="droplist read large" data-position="8" data-title="@lang('user.group_user')" data-template="#= FormatDropListRead(group_users_id,'group_users_id') #" data-type="number" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.group-user')}}" name="group_users_id">
                          
                      </select>
                  </td>
@@ -106,7 +106,7 @@
              </tr>
              <tr>
                  <td class="row-label"><label>@lang('user.stock_default')</label></td>
-                 <td><select class="droplist read large" data-position="8" data-title="@lang('user.stock_default')" data-template="#= FormatDropListRead(stock_default,'stock_default') #" data-type="number" data-width="200px"  data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/stock'}}" name="stock_default">
+                 <td><select class="droplist read large" data-position="8" data-title="@lang('user.stock_default')" data-template="#= FormatDropListRead(stock_default,'stock_default') #" data-type="number" data-width="200px"  data-value-field="value" data-text-field="text" data-read-url="{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.stock')}}" name="stock_default">
                        
                      </select>
                  </td>

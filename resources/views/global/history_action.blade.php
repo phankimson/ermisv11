@@ -27,7 +27,7 @@
         <tr>
             <td class="row-label"><label>@lang('history_action.user')</label></td>
             <td>
-            <select class="droplist read large" data-position="1" data-title="@lang('history_action.user')" data-template="#= FormatDropListRead(user,'user') #" data-type="number" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/user'}}" name="user">
+            <select class="droplist read large" data-position="1" data-title="@lang('history_action.user')" data-template="#= FormatDropListRead(user,'user') #" data-type="number" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{route(env('URL_API').'.manage.'.env('URL_DROPDOWN').'.user')}}" name="user">
                  
                 </select>
             </td>
@@ -35,7 +35,7 @@
         <tr>
             <td class="row-label"><label>@lang('history_action.menu')</label></td>
             <td>
-            <select class="droplist read large" data-position="2" data-title="@lang('history_action.menu')" data-template="#= FormatDropListRead(menu,'menu') #" data-type="number" data-width="200px"  data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/menu-all'}}" name="menu">                    
+            <select class="droplist read large" data-position="2" data-title="@lang('history_action.menu')" data-template="#= FormatDropListRead(menu,'menu') #" data-type="number" data-width="200px"  data-value-field="value" data-text-field="text" data-read-url="{{route(env('URL_API').'.manage.'.env('URL_DROPDOWN').'.menu-all')}}" name="menu">                    
                     
                 </select>
             </td>

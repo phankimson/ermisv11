@@ -22,7 +22,7 @@
       <tr>
       <td class="row-label"><label>@lang('acc_number_code.menu')</label></td>
       <td>
-      <select class="droplist read large" data-position="1" data-title="@lang('acc_number_code.menu')" data-template="#= FormatDropListRead(menu_id,'menu_id') #" data-type="number" data-width="200px"  data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/menu'}}"  name="menu_id">
+      <select class="droplist read large" data-position="1" data-title="@lang('acc_number_code.menu')" data-template="#= FormatDropListRead(menu_id,'menu_id') #" data-type="number" data-width="200px"  data-value-field="value" data-text-field="text" data-read-url="{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.menu')}}"  name="menu_id">
               
       </select>
       </td>

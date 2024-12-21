@@ -29,14 +29,14 @@
              <tr>
              <td class="row-label"><label>@lang('acc_object.object_type') *</label></td>
              <td>
-               <select class="multiselect read large" id="object_type" data-position="1" data-hidden="true" data-type="arr" data-filter="true" name="object_type" multiple="multiple" data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/object-type'}}" data-placeholder="Select">
+               <select class="multiselect read large" id="object_type" data-position="1" data-hidden="true" data-type="arr" data-filter="true" name="object_type" multiple="multiple" data-value-field="value" data-text-field="text" data-read-url="{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.object-type')}}" data-placeholder="Select">
                 </select>
              </td>
              </tr>
              <tr>
              <td class="row-label"><label>@lang('acc_object.object_group')</label></td>
              <td>
-             <select class="droplist read large" data-position="1" data-title="@lang('acc_object.object_group')" data-template="#= FormatDropListRead(object_group,'object_group') #" data-type="number" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/object-group'}}" name="object_group">
+             <select class="droplist read large" data-position="1" data-title="@lang('acc_object.object_group')" data-template="#= FormatDropListRead(object_group,'object_group') #" data-type="number" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.object-group')}}" name="object_group">
                     
              </select>
              </td>
@@ -101,7 +101,7 @@
                <tr class="object_type_3 hidden filter_tr">
                <td class="row-label"><label>@lang('acc_object.department')</label></td>
                <td>
-               <select class="droplist read large" data-position="13" data-title="@lang('acc_object.department')" data-template="#= FormatDropListRead(department,'department') #" data-type="number" data-width="200px"  data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/department'}}" name="department">
+               <select class="droplist read large" data-position="13" data-title="@lang('acc_object.department')" data-template="#= FormatDropListRead(department,'department') #" data-type="number" data-width="200px"  data-value-field="value" data-text-field="text" data-read-url="{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.department')}}" name="department">
                       
                </select>
                </td>
@@ -165,7 +165,7 @@
                <tr>
                    <td><label>@lang('acc_object.country')</label></td>
                    <td>
-                       <select class="droplist read large" data-position="24" data-title="@lang('acc_object.country')" data-template="#= FormatDropListRead(country,'country') #" data-hidden="true" data-type="number" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/country'}}" name="country">
+                       <select class="droplist read large" data-position="24" data-title="@lang('acc_object.country')" data-template="#= FormatDropListRead(country,'country') #" data-hidden="true" data-type="number" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.country')}}" name="country">
                           
                        </select>
                    </td>
@@ -173,7 +173,7 @@
                <tr>
                    <td><label>@lang('acc_object.regions')</label></td>
                    <td>
-                       <select class="droplist read large" data-position="25" data-title="@lang('company.regions')" data-template="#= FormatDropListRead(regions,'regions') #" data-hidden="true" data-type="number" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/regions'}}" name="regions">
+                       <select class="droplist read large" data-position="25" data-title="@lang('company.regions')" data-template="#= FormatDropListRead(regions,'regions') #" data-hidden="true" data-type="number" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.regions')}}" name="regions">
                          
                        </select>
                    </td>
@@ -181,7 +181,7 @@
                <tr>
                    <td><label>@lang('acc_object.area')</label></td>
                    <td>
-                       <select class="droplist read large" data-position="26" data-title="@langt('company.area')" data-template="#= FormatDropListRead(area,'area') #" data-hidden="true" data-type="number" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/area'}}" name="area">
+                       <select class="droplist read large" data-position="26" data-title="@langt('company.area')" data-template="#= FormatDropListRead(area,'area') #" data-hidden="true" data-type="number" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.area')}}" name="area">
                        
                        </select>
                    </td>
@@ -189,7 +189,7 @@
                <tr>
                    <td><label>@lang('acc_object.distric')</label></td>
                    <td>
-                       <select class="droplist read large" data-position="27" data-title="@lang('acc_object.distric')" data-template="#= FormatDropListRead(distric,'distric') #" data-hidden="true" data-type="number" data-width="200px" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/distric'}}" name="distric">
+                       <select class="droplist read large" data-position="27" data-title="@lang('acc_object.distric')" data-template="#= FormatDropListRead(distric,'distric') #" data-hidden="true" data-type="number" data-width="200px" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.distric')}}" name="distric">
                      
                        </select>
                    </td>

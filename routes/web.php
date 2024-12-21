@@ -21,27 +21,30 @@ Route::post('/test-get','get');
 });
 
 Route::controller(HomeController::class)->group(function () {
-Route::get('/','index');
+Route::get('/','index')->name('index');
 Route::get('/index','index');
-Route::get('welcome/{name}','welcome');
-Route::get('register','register');
+Route::get('welcome/{name}','welcome')->name('welcome');
+Route::get('register','register')->name('register');
 });
 
 Route::controller(UserController::class)->group(function () {
-Route::get('logout','doLogout');
+Route::get('logout','doLogout')->name('logout');
 Route::post('register', 'doRegister');
 Route::post('check-register', 'checkRegister');
 });
 // Manage
-Route::prefix('manage')->group(function () {
+Route::group([
+  'prefix'=>'manage',
+  'as' => 'manage.'
+],function () {
 
   // Globals
   Route::controller(HomeController::class)->group(function () {
   Route::get('/index', 'show');
-  Route::get('/block','block' );
-  Route::get('/profile','profile' );
-  Route::get('/', 'show');
-  Route::get('login', 'login' );
+  Route::get('/block','block' )->name('block');
+  Route::get('/profile','profile' )->name('profile');
+  Route::get('/', 'show')->name('index');
+  Route::get('login', 'login' )->name('login');
   });
 
   Route::controller(ChatTimelineController::class)->group(function () {
@@ -74,7 +77,7 @@ Route::prefix('manage')->group(function () {
     'controller' => QueryController::class
   ],function () {
   Route::get('/query','show')->name('');
-  Route::post('/query','query')->name('');
+  Route::post('/query','query')->name('-run');
   Route::post('/query-change-database','ChangeDatabase')->name('-change-database');
   });
 
@@ -368,15 +371,18 @@ Route::prefix('manage')->group(function () {
   });
 
 });
-Route::prefix('acc')->group(function () {
+Route::group([
+  'prefix'=>'acc',
+  'as' => 'acc.'
+],function () {
   Route::controller(AccHomeController::class)->group(function () {
   Route::get('/index', 'show' );
-  Route::get('/', 'show');
-  Route::get('/profile','profile' );
+  Route::get('/', 'show')->name('index');
+  Route::get('/profile','profile' )->name('profile');
   });
 
   Route::controller(HomeController::class)->group(function () {
-  Route::get('login', 'login' );
+  Route::get('login', 'login' )->name('login');
   });
 
   Route::controller(AccUserController::class)->group(function () {
@@ -1075,11 +1081,14 @@ Route::prefix('acc')->group(function () {
 });
 
 
-Route::prefix('pos')->group(function () {
+Route::group([
+  'prefix'=>'pos',
+  'as' => 'pos.'
+],function () {
   Route::controller(HomeController::class)->group(function () {
   Route::get('/index', 'show');
-  Route::get('/', 'show');
-  Route::get('login', 'login');
+  Route::get('/', 'show')->name('index');
+  Route::get('login', 'login')->name('login');
   Route::post('login', 'doLogin');
   });
 });

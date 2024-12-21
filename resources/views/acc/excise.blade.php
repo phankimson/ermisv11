@@ -28,7 +28,7 @@
              <tr>
              <td class="row-label"><label>@lang('acc_excise.parent')</label></td>
              <td>
-             <select class="droplist read large load_droplist"  id="parent_id"  add-option="true" data-position="2" data-title="@lang('acc_excise.parent')" data-template="#= FormatDropListRead(parent_id,'parent_id') #" data-type="number" data-nullable ="true" data-width="200px"  data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/excise-tax'}}" name="parent_id">
+             <select class="droplist read large load_droplist"  id="parent_id"  add-option="true" data-position="2" data-title="@lang('acc_excise.parent')" data-template="#= FormatDropListRead(parent_id,'parent_id') #" data-type="number" data-nullable ="true" data-width="200px"  data-value-field="value" data-text-field="text" data-read-url="{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.excise-tax')}}" name="parent_id">
                  
              </select>
              </td>

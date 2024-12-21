@@ -287,6 +287,17 @@ var initEditHotDefault = function(rd,grid,columns){
 });
 }
 
+var initDropDownListAjaxLoad = function(key,url){
+  data = [];
+  if(Ermis.data[key] == undefined){
+    data = RequestURL(url);
+    Ermis.data[key] = data;
+  }else{
+    data = Ermis.data[key];
+  }
+  return data;
+}
+
 var initEditSelect = function(rd,field){
   var ddl = jQuery('select[name="' + field + '"]');
   var index = parseInt(ddl.find('option[value=' + rd.id + ']').index());
@@ -393,12 +404,23 @@ var initValidationGridColumnKey = function(data,arr_column){
       if(col.key == true){
         var mes = '';
         var tex;
-        var r  = jQuery('#'+col.field+"_dropdown_list").data("json");
+        var dataValueField = 'id';
+        var r = [];
+        if(col.url){
+          dataValueField = "value";
+          if(a[col.field] == undefined){
+            r = RequestURL(col.url);
+          }else{
+            r = a[col.field];
+          }          
+        }else{
+            r  = jQuery('#'+col.field+"_dropdown_list").data("json");
+        }        
         jQuery.each(data, function (l, p) {
-            var d = findObjectByKey(r,'id',p[col.field].id);
+            var d = findObjectByKey(r,dataValueField,p[col.field][dataValueField]);
             if(d != null){
               jQuery.each(d, function (m, n) {
-                if(m != "id" && m != "code" && m != "name"){
+                if(m != "id" && m != "code" && m != "name"&& m != "value" && m != "text"){
                   if(m == 'object'){
                     m = jQuery("input[data-get='object.code']").attr("data-find");
                   }
@@ -409,7 +431,7 @@ var initValidationGridColumnKey = function(data,arr_column){
                     }else{
                       tex = /[a-z]/;
                     };
-                    if(n == 1 && (tex.test(p[m].id)) != true){
+                    if(n == 1 && (tex.test(p[m][dataValueField])) != true){
                       var h = ret.findIndex(i => i.key === m);
                       if(h < 0){
                         var c = [];
@@ -423,6 +445,9 @@ var initValidationGridColumnKey = function(data,arr_column){
                   }
                 }
               });
+            }else{
+              mes = Lang.get('validation.required', { attribute: Lang.get('acc_voucher.'+col.field).toLowerCase() });
+              ret.push({"key" : col.field , "mes" : mes, "arr" : ""});
             }
         });
       }
@@ -1476,6 +1501,13 @@ function calculatePriceAggregateDiscount(decimal) {
       return kendo.toString(total, 'n'+decimal);
 };
 
+function DefaultReadValueField(){
+  return {value: 0 , text: "--Select--"};
+}
+
+function DefaultValueField(){
+  return {id: 0 , code: "--Select--", name:"--Select--"};
+}
 
    ItemsDropDownEditor = function (container, options) {
        var c  = findObjectByKey($kGridTab_column,"field",options.field);
