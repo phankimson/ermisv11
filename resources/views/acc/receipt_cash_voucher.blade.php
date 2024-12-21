@@ -152,6 +152,7 @@
                             { "field" : "case_code","title" :"@lang('acc_voucher.case_code')","url" : "{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.case-code')}}",editor: ItemsReadDropDownEditor , "select" : "OnchangeItem" ,template : "#=getUrlAjaxItemName(case_code,'case_code')#","width" : "150px" ,"set" : "2" },
                             { "field" : "statistical_code","title" :"@lang('acc_voucher.statistical_code')", "url" : "{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.statistical-code')}}" ,editor: ItemsReadDropDownEditor , "select" : "OnchangeItem" ,template : "#=getUrlAjaxItemName(statistical_code,'statistical_code')#" ,"width" : "150px" ,"set" : "2" },
                             { "field" : "work_code","title" :"@lang('acc_voucher.work_code')","url" : "{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.work-code')}}",editor: ItemsReadDropDownEditor , "select" : "OnchangeItem" ,template : "#=getUrlAjaxItemName(work_code,'work_code')#" ,"width" : "150px"  ,"set" : "2"},
+                            //{ "field" : "work_code","title" :"@lang('acc_voucher.work_code')",editor: ItemsDropDownEditor , "select" : "OnchangeItem" ,template : "#=getUrlItemName(work_code,'work_code')#" ,"width" : "150px"  ,"set" : "2"},
                             { "field" : "lot_number","title" : "@lang('acc_voucher.lot_number')" ,"width" : "150px" },
                             { "field" : "contract","title" : "@lang('acc_voucher.contract')" ,"width" : "150px" },
                             { "field" : "order","title" : "@lang('acc_voucher.order')" ,"width" : "200px"} ];
@@ -167,6 +168,7 @@
             cost_code: { field : "cost_code", defaultValue: DefaultReadValueField() },
             statistical_code: { field : "statistical_code", defaultValue: DefaultReadValueField() },
             subject_code: { field : "subject_code", defaultValue: DefaultReadValueField() },
+            //work_code: { field : "work_code" ,defaultValue: DefaultValueField() },
             work_code: { field : "work_code" ,defaultValue: DefaultReadValueField() },
             department: { field : "department", defaultValue: DefaultReadValueField()  },
             bank_account: { field : "bank_account", defaultValue: DefaultReadValueField()  },

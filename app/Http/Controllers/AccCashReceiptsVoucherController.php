@@ -215,16 +215,16 @@ class AccCashReceiptsVoucherController extends Controller
              $detail->rate = $d->rate;
              $detail->amount_rate = $d->amount * $d->rate;
              $detail->accounted_fast = $d->accounted_fast->value;  // Đổi từ id value dạng read
-             $detail->department = $d->department->id; // Đổi từ id value dạng read
-             $detail->bank_account = $d->bank_account->id;  // Đổi từ id value dạng read
-             $detail->case_code = $d->case_code->id;  // Đổi từ id value dạng read
-             $detail->cost_code = $d->cost_code->id;  // Đổi từ id value dạng read
-             $detail->statistical_code = $d->statistical_code->id;  // Đổi từ id value dạng read
+             $detail->department = $d->department->value; // Đổi từ id value dạng read
+             $detail->bank_account = $d->bank_account->value;  // Đổi từ id value dạng read
+             $detail->case_code = $d->case_code->value;  // Đổi từ id value dạng read
+             $detail->cost_code = $d->cost_code->value;  // Đổi từ id value dạng read
+             $detail->statistical_code = $d->statistical_code->value;  // Đổi từ id value dạng read
              $detail->work_code = $d->work_code->value;  // Đổi từ id value dạng read
              $detail->lot_number = $d->lot_number;
              $detail->contract = $d->contract;
              $detail->order = $d->order;
-             $detail->subject_id_credit = $d->subject_code->id;
+             $detail->subject_id_credit = $d->subject_code->value;// Đổi từ id value dạng read
              $detail->subject_name_credit = $d->subject_code->name;
              $detail->save();
        
