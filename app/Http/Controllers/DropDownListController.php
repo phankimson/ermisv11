@@ -23,72 +23,77 @@ use App\Http\Model\User;
 
 class DropDownListController extends Controller
 {
+  protected $default;
+  public function __construct()
+  {
+    $this->default = ['value' => '0','text' => "--Select--"];
+  }
 
   public function country_dropdown_list(Request $request){
-      $default = collect([['value' => '0','text' => "--Select--"]]);
+      $default = collect([$this->default]);
       $data = DropDownResource::collection(Country::active()->get());
       $data = $default->merge($data)->values();
       return response()->json($data)->withCallback($request->input('callback'));
   }
 
    public function regions_dropdown_list(Request $request){
-    $default = collect([['value' => '0','text' => "--Select--"]]);
+    $default = collect([$this->default]);
     $data = LangDropDownResource::collection(Regions::active()->get());
     $data = $default->merge($data)->values();
     return response()->json($data)->withCallback($request->input('callback'));
 }
 
   public function area_dropdown_list(Request $request){
-    $default = collect([['value' => '0','text' => "--Select--"]]);
+    $default = collect([$this->default]);
     $data = LangDropDownResource::collection(Area::active()->get());
     $data = $default->merge($data)->values();
     return response()->json($data)->withCallback($request->input('callback'));
   }
 
   public function distric_dropdown_list(Request $request){
-    $default = collect([['value' => '0','text' => "--Select--"]]);
+    $default = collect([$this->default]);
     $data = LangDropDownResource::collection(Distric::active()->get());
     $data = $default->merge($data)->values();
     return response()->json($data)->withCallback($request->input('callback'));
   }
 
   public function software_dropdown_list(Request $request){
-    $default = collect([['value' => '0','text' => "--Select--"]]);
+    $default = collect([$this->default]);
     $data = SoftwareDropDownResource::collection(Software::active()->get());
     $data = $default->merge($data)->values();
     return response()->json($data)->withCallback($request->input('callback'));
   }
 
   public function company_dropdown_list(Request $request){
-    $default = collect([['value' => '0','text' => "--Select--"]]);
+    $default = collect([$this->default]);
     $data = DropDownResource::collection(Company::active()->get());
     $data = $default->merge($data)->values();
     return response()->json($data)->withCallback($request->input('callback'));
   }
 
   public function group_users_dropdown_list(Request $request){
-    $default = collect([['value' => '0','text' => "--Select--"]]);
+    $default = collect([$this->default]);
     $data = DropDownResource::collection(GroupUsers::active()->get());
     $data = $default->merge($data)->values();
     return response()->json($data)->withCallback($request->input('callback'));
   }
 
   public function user_dropdown_list(Request $request){
-    $default = collect([['value' => '0','text' => "--Select--"]]);
+    $default = collect([$this->default]);
     $data = UsersDropDownResource::collection(User::active()->get());
     $data = $default->merge($data)->values();
     return response()->json($data)->withCallback($request->input('callback'));
   }
 
   public function document_type_dropdown_list(Request $request){
-    $default = collect([['value' => '0','text' => "--Select--"]]);
+    $default = collect([$this->default]);
     $data = LangDropDownResource::collection(DocumentType::active()->get());
     $data = $default->merge($data)->values();
     return response()->json($data)->withCallback($request->input('callback'));
   }
 
   public function menu_dropdown_list(Request $request){
-    $default = collect([['value' => '0','text' => "--Select--"]]);
+    $default = collect([$this->default]);
     $type = Software::first();
     $data = LangDropDownResource::collection(Menu::get_raw_type($type->id));
     $data = $default->merge($data)->values();
@@ -96,14 +101,14 @@ class DropDownListController extends Controller
   }
 
   public function menu_all_dropdown_list(Request $request){
-    $default = collect([['value' => '0','text' => "--Select--"]]);
+    $default = collect([$this->default]);
     $data = LangDropDownResource::collection(Menu::active()->get());
     $data = $default->merge($data)->values();
     return response()->json($data)->withCallback($request->input('callback'));
   }
 
   public function license_dropdown_list(Request $request){
-    $default = collect([['value' => '0','text' => "--Select--"]]);
+    $default = collect([$this->default]);
     $data = LicenseDropDownResource::collection(License::active()->get());
     $data = $default->merge($data)->values();
     return response()->json($data)->withCallback($request->input('callback'));
