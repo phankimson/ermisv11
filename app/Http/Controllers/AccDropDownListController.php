@@ -9,6 +9,7 @@ use App\Http\Resources\BankDropDownResource;
 use App\Http\Resources\AccountedFastDropDownResource;
 use App\Http\Resources\ObjectTypeDropDownResource;
 use App\Http\Resources\DropDownResource;
+use App\Http\Resources\TaxDropDownResource;
 use App\Http\Resources\DefaultDropDownResource;
 use App\Http\Model\AccUnit;
 use App\Http\Model\AccSuppliesGoodsType;
@@ -122,10 +123,16 @@ class AccDropDownListController extends Controller
   // Thuế VAT Droplist
   public function vat_tax_dropdown_list(Request $request){
     $default = collect([$this->default]);
-    $data = LangDropDownResource::collection(AccVat::active()->orderBy('code','asc')->get());
+    $type = $request->input('type',null); 
+    if($type){
+      $data = LangDropDownResource::collection(AccVat::active()->orderBy('code','asc')->get());
+    }else{
+      $data = TaxDropDownResource::collection(AccVat::active()->orderBy('code','asc')->get());
+    }    
     $data = $default->merge($data)->values();
     return response()->json($data)->withCallback($request->input('callback'));
   }
+
   // Thuế TTDB Droplist
   public function excise_tax_dropdown_list(Request $request){
     $default = collect([$this->default]);

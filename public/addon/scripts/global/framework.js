@@ -1448,7 +1448,8 @@ function calculateTotalVatAggregate(decimal) {
     var data = grid.dataSource.data();
     var total = 0;
     for (var i = 0; i < data.length; i++) {
-      total += data[i].amount * data[i].tax.code / 100;
+      var tax_value = data[i].tax.value != undefined ? data[i].tax.value : data[i].tax.code;
+      total += data[i].amount * tax_value / 100;
     }
       return kendo.toString(total, 'n'+decimal);
 };
@@ -1688,8 +1689,8 @@ function DefaultValueField(){
 
    AddChooseObjectResult = function(dataItem){
      // Check array
-     var arr = jQuery("#subject_code_dropdown_list").data("json");
-     var checkid = arr.find(p => p.id === dataItem['id']);
+     //var arr = jQuery("#subject_code_dropdown_list").data("json");
+     //var checkid = arr.find(p => p.id === dataItem['id']);     
 
     jQuery.each(Ermis.columns_subject, function(i, v) {
      jQuery('#form-action').find('input[name="' + v.field + '"]').val(dataItem[v.field]);
@@ -1702,20 +1703,20 @@ function DefaultValueField(){
        }else{
        key_rs = v.field;
        };
-       if(checkid && key_rs){
+       if(key_rs){
          if(v.field == "code"){
-           dataDefaultGrid.data[key_rs].id = checkid['id'];
-           dataDefaultGrid.data[key_rs].code = checkid['code'];
+           dataDefaultGrid.data[key_rs].id = dataItem['id'];
+           dataDefaultGrid.data[key_rs].code = dataItem['code'];
          }else{
-           dataDefaultGrid.data[key_rs] = checkid[key_rs];
+           dataDefaultGrid.data[key_rs] = dataItem[key_rs];
          }
          jQuery.each(r, function(l, k) {
            //if(!k[key_rs]){
            if(v.field == "code"){
-             k[key_rs].id = checkid['id'];
-             k[key_rs].code = checkid['code'];
+             k[key_rs].id = dataItem['id'];
+             k[key_rs].code = dataItem['code'];
            }else{
-             k[key_rs] = checkid[key_rs];
+             k[key_rs] = dataItem[key_rs];
            }
             //}
          });

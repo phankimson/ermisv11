@@ -131,8 +131,8 @@
                             { "field" : "description","title" : "@lang('acc_voucher.description')",width : '200px'  },
                             { "field" : "vat_type","title" : "@lang('acc_voucher.vat_type')",width : '200px'  },
                             { "field" : "amount","title" : "@lang('acc_voucher.amount')" ,type:"number",format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" ,aggregates: ['sum'],footerTemplate: "<p id='amount_total_tax'>#=FormatNumberDecimal(sum,{{$decimal}})#</p>" ,width : '150px'},
-                            { "field" : "tax","title" : "@lang('acc_voucher.tax')" ,"url" : "{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.vat-tax')}}",editor: ItemsReadDropDownEditor , "select" : "OnchangeItem" ,template : "#=getUrlAjaxItemName(tax,'tax')#"  ,"width" : "150px"},
-                            { "field" : "total_amount","title" : "@lang('acc_voucher.total_amount')" ,format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" ,aggregates: ['sum'] , template: "#=calculateAmountTax(amount, tax.code, {{$decimal}} )#" ,footerTemplate: "<p id='total_amount'>#=calculateTotalVatAggregate({{$decimal}})#</p>" ,width : '150px'}];
+                            { "field" : "tax","title" : "@lang('acc_voucher.tax')" ,"url" : "{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.vat-tax').'?type=1'}}",editor: ItemsReadDropDownEditor , "select" : "OnchangeItem" ,template : "#=getUrlAjaxItemName(tax,'tax')#"  ,"width" : "150px"},
+                            { "field" : "total_amount","title" : "@lang('acc_voucher.total_amount')" ,format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" ,aggregates: ['sum'] , template: "#=calculateAmountTax(amount, tax.value, {{$decimal}} )#" ,footerTemplate: "<p id='total_amount'>#=calculateTotalVatAggregate({{$decimal}})#</p>" ,width : '150px'}];
 
 
         Ermis.columns    = [{"field" :"id", hidden : true},
@@ -194,7 +194,7 @@
             vat_type:     {field : "vat_type"},
             amount:     {field : "amount",type:"number" , defaultValue : 0, validation: { min: 0, required: true }},
             tax:     {field : "tax", defaultValue: DefaultReadValueField() , validation: { required: true }},
-            total_amount:     {field : "total_amount",type:"number" , validation: { min: 0, required: true }},
+            total_amount:     {field : "total_amount",type:"number" , defaultValue : 0, validation: { min: 0, required: true }},
 
         };
         Ermis.aggregate = [ { field: "description", aggregate: "count" },

@@ -275,14 +275,16 @@ var Ermis = function() {
     var initKendoGridVatChange = function() {
         var gridVat = $kGridVat.data("kendoGrid");
         gridVat.dataSource.bind("change", function(e) {
-          var item = e.items[0];
+          var item = e.items[0];         
             // checks to see if the action is a change and the column being changed is what is expected
             if (e.action === "itemchange" && (e.field === "amount" || e.field === "tax")) {
                 // here you can access model items using e.items[0].modelName;
-                item.total_amount = (item.amount * item.tax.code) / 100;
+                var tax_value = (item.tax.value != undefined) ? item.tax.value : item.tax.code;
+                item.total_amount = (item.amount * tax_value) / 100;
             }else if(e.action === "itemchange" && e.field === "total_amount" ){
               // here you can access model items using e.items[0].modelName;
-              item.amount = (item.total_amount / item.tax.code) * 100;
+              var tax_value = (item.tax.value != undefined) ? item.tax.value : item.tax.code;
+              item.amount = (item.total_amount / tax_value) * 100;
             }
             // finally, refresh the grid to show the changes
             gridVat.refresh();
@@ -1149,9 +1151,9 @@ var Ermis = function() {
     };
 
     var initClick = function(e) {
-        jQuery("#page_content_inner").not("#grid").click(function(e) {
+        jQuery("#page_content_inner").not("#grid").not('#grid_vat').click(function(e) {
             $kGridTab.find(" tbody tr").removeClass("k-state-selected");
-            if (jQuery(e.target).closest('#grid').length) {
+            if (jQuery(e.target).closest('#grid').length || jQuery(e.target).closest('#grid_vat').length) {
                 return false;
             } else if (jQuery('.k-grid-edit-row').length > 0) {
                 //$kGrid.data("kendoGrid").cancelChanges(); // CLOSE ALL
