@@ -1,4 +1,4 @@
-<div id="form-window-attach" style="display:none">
+<div id="form-window-attach" style="display:none" aria-hidden="false">
   <table>
     <tr class="hidden">
       <td class="row-label"><a href="javascript;:" >hello</a></td>

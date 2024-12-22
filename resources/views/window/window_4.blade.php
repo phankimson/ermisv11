@@ -1,4 +1,4 @@
-<div id="form-window-voucher" style="display:none">
+<div id="form-window-voucher" style="display:none" aria-hidden="false">
   <div class="uk-width-medium-4-4">
   <select class="not_disabled medium" id="fast_date_a">
     <option value="">@lang('action.choose')</option>

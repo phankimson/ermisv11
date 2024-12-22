@@ -1704,17 +1704,24 @@ function DefaultValueField(){
        key_rs = v.field;
        };
        if(key_rs){
-         if(v.field == "code"){
-           dataDefaultGrid.data[key_rs].id = dataItem['id'];
-           dataDefaultGrid.data[key_rs].code = dataItem['code'];
+        var column = grid.columns.find(p => p.field === key_rs);
+        var dataTextField = "code";
+        var dataValueField = "id";
+        if(column != undefined && column.url != undefined){
+          dataTextField = "text";
+          dataValueField = "value";
+        };
+         if(v.field == "code"){     
+            dataDefaultGrid.data[key_rs][dataValueField] = dataItem['id'];
+            dataDefaultGrid.data[key_rs][dataTextField] = dataItem['code'];        
          }else{
            dataDefaultGrid.data[key_rs] = dataItem[key_rs];
          }
          jQuery.each(r, function(l, k) {
            //if(!k[key_rs]){
            if(v.field == "code"){
-             k[key_rs].id = dataItem['id'];
-             k[key_rs].code = dataItem['code'];
+              k[key_rs][dataValueField] = dataItem['id'];
+              k[key_rs][dataTextField] = dataItem['code'];          
            }else{
              k[key_rs] = dataItem[key_rs];
            }

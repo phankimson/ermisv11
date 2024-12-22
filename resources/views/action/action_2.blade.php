@@ -1,4 +1,4 @@
-  <div class="uk-float-left uk-hidden-small">
+  <div class="uk-float-left uk-hidden-small" aria-hidden="false">
         <a class="query top_menu"><i class="md-24 material-icons" data-uk-tooltip title="@lang('action.query') ({{ config('app.short_key')}}Q)">shutter_speed</i></a>
         <a class="cancel top_menu"><i class="md-24 material-icons" data-uk-tooltip title="@lang('action.cancel') ({{ config('app.short_key')}}C)">cancel</i></a>
   </div>

@@ -1,4 +1,4 @@
-<div id="form-window-barcode" style="display:none">
+<div id="form-window-barcode" style="display:none" aria-hidden="false">
   <div class="uk-width-medium-4-4">
     @foreach($supplier_goods_type as $t)
           <input type="radio" name="filter_nature" id="{{$t->id}}" value="{{$t->id}}" class="k-radio" {{ $t->id == $ot->id ? 'checked' : '' }}>

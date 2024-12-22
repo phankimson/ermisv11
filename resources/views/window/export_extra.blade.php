@@ -1,4 +1,4 @@
-<div id="grid_extra"></div>
+<div id="grid_extra" aria-hidden="false"></div>
 <div class="uk-margin" style="float : left">
     <div>
         <select class="droplist small not_disabled" id="list_extra_page">

@@ -1,4 +1,4 @@
-<div id="form-window-filter" style="display:none">
+<div id="form-window-filter" style="display:none" aria-hidden="false">
   <div class="uk-width-medium-4-4">
     @foreach($object_type as $t)
           <input type="radio" name="filter_type" id="{{$t->id}}" value="{{$t->id}}" class="k-radio" {{ $t->id == $ot->id ? 'checked' : '' }}>

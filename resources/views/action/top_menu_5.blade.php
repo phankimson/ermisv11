@@ -1,4 +1,4 @@
-<div class="uk-float-left uk-hidden-small" id="add-top-menu-general">
+<div class="uk-float-left uk-hidden-small" id="add-top-menu-general" aria-hidden="false">
              <a class="new_item top_menu"><i class="md-24 material-icons" data-uk-tooltip title="@lang('action.new_page')  ({{ config('app.short_key')}}A)">note_add</i></a>
              <a class="view_item top_menu"><i class="md-24 material-icons" data-uk-tooltip title="@lang('action.view') ({{ config('app.short_key')}}V)">remove_red_eye</i></a>
              <a class="delete_item top_menu"><i class="md-24 material-icons" data-uk-tooltip title="@lang('action.delete') ({{ config('app.short_key')}}D)">delete_forever</i></a>

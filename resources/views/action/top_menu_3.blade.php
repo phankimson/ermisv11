@@ -1,4 +1,4 @@
-<div class="uk-float-left uk-hidden-small" id="add-top-menu">
+<div class="uk-float-left uk-hidden-small" id="add-top-menu" aria-hidden="false">
    <a class="show top_menu"><i class="md-24 material-icons" data-uk-tooltip title="@lang('action.show') ({{ config('app.short_key')}}S)">swap_vert</i></a>
    <div class="top_menu uk-float-left uk-hidden-small">
        <div class="uk-button-dropdown" data-uk-dropdown="{mode:'click'}">

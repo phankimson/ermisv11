@@ -22,7 +22,7 @@
         </div>
         <div class="md-card-content">
            <div id="form-action">
-           <div id="import"></div>
+           <div id="import" aria-hidden="false"></div>
               @yield('content_add')
            </div>
         </div>

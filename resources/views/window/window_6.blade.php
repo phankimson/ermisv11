@@ -1,4 +1,4 @@
-<div id="form-window-voucher-change" style="display:none">
+<div id="form-window-voucher-change" style="display:none" aria-hidden="false">
 <table>
     <tr>
         <td class="row-label-responsive"><label>@lang('acc_number_voucher.code')</label></td>

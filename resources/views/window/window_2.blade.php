@@ -1,4 +1,4 @@
-<div id="form-window-reference" style="display:none">
+<div id="form-window-reference" style="display:none" aria-hidden="false">
 <span>@lang('global.name')</span>
     <select class="droplist large" name="filter_voucher">
       @foreach($voucher_list as $x)

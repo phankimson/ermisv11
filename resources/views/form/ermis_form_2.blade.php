@@ -13,11 +13,11 @@
 @section('content')
 <div id="page_content">
 <div id="page_content_inner">
-<div id="export"></div>
-<div id="form-window-extra">
+<div id="export" aria-hidden="false"></div>
+<div id="form-window-extra" aria-hidden="false">
     @stack('export_extra')
 </div>
-    <div id="import"></div>
+    <div id="import" aria-hidden="false"></div>
 
     <div class="md-card uk-margin-medium-bottom">
         <div class="md-card-toolbar">

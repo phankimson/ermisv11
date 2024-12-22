@@ -1,4 +1,4 @@
-<div class="uk-float-left">
+<div class="uk-float-left" aria-hidden="false">
 <a class="add top_menu"><i class="md-24 material-icons" data-uk-tooltip title="@lang('action.add') ({{ config('app.short_key')}}A)">note_add</i></a>
 <a class="copy top_menu"><i class="md-24 material-icons" data-uk-tooltip title="@lang('action.copy') ({{ config('app.short_key')}}X)">content_copy</i></a>
 <a class="edit top_menu"><i class="md-24 material-icons" data-uk-tooltip title="@lang('action.edit') ({{ config('app.short_key')}}E)">edit</i></a>

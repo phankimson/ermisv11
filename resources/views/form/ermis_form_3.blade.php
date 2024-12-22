@@ -21,7 +21,7 @@
             @stack('toolbar_action')
         </div>
         <div class="md-card-content">
-              <div id="import"></div>
+              <div id="import" aria-hidden="false"></div>
               @yield('content_add')
         </div>
     </div>

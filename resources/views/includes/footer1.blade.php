@@ -1,4 +1,4 @@
-<div id="event_content" style="display:none">
+<div id="event_content" style="display:none" aria-hidden="false">
  <div class="uk-margin-bottom">
  <input id="action-event" />
  </div>

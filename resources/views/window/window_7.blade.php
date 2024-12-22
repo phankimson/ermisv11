@@ -1,4 +1,4 @@
-<div id="form-window-voucher" style="display:none">
+<div id="form-window-voucher" style="display:none" aria-hidden="false">
   <div class="uk-width-medium-4-4">
   <span>@lang('acc_count_voucher.day') :</span>
   <input type="text" id="day" class="day" name="day" value="{{date('d')}}" />

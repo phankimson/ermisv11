@@ -1,4 +1,4 @@
-<ul id="context-menu" style="display:none">
+<ul id="context-menu" style="display:none" aria-hidden="false">
     <li>
         <a class="add"><i class="md-icon material-icons" data-uk-tooltip title="@lang('action.add') ({{ config('app.short_key')}}A)">add</i>@lang('action.add')</a>
     </li>

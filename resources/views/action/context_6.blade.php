@@ -1,4 +1,4 @@
-<ul id="context-menu-grid" style="display:none">
+<ul id="context-menu-grid" style="display:none" aria-hidden="false">
  <li>
      <a class="new_row"><i class="md-icon material-icons" data-uk-tooltip title="@lang('action.new_row')  (Enter)">playlist_add</i>@lang('action.new_row')</a>
  </li>

@@ -1,4 +1,4 @@
-<div class="uk-grid" id="form-search">
+<div class="uk-grid" id="form-search" aria-hidden="false">
        <div class="uk-width-medium-4-4 mobile_full_width">
            <select class="medium" id="fast_date">
                <option value="">@lang('action.choose')</option>
