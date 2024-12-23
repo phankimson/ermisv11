@@ -10,7 +10,6 @@
 .env.production
 .phpunit.result.cache
 Homestead.json
-laravel-echo-server.json
 laravel-echo-server.lock
 echo-pm2.json
 Homestead.yaml
@@ -20,3 +19,4 @@ yarn-error.log
 /.fleet
 /.idea
 /.vscode
+laravel-echo-server.json

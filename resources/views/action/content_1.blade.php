@@ -32,7 +32,7 @@
 
         <td class="row-label-responsive"></td>
         <td><label>@lang('acc_voucher.rate')</label></td>
-        <td colspan="2"><input type="text" class="k-textbox number rate" value="{{$currency_rate}}" name="rate" /></td>
+        <td colspan="2"><input type="text" class="k-textbox number fix rate" value="{{$currency_rate}}" name="rate" /></td>
     </tr>
     <tr>
         <td><label>@lang('acc_voucher.description')</label></td>

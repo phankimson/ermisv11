@@ -822,7 +822,7 @@ var Ermis = function() {
             };
             ErmisTemplateAjaxPost0(e, postdata, Ermis.link + '-currency',
                 function(result) {
-                    jQuery('#form-action').find("input[name='rate']").val(result.data);
+                    $rate.data("kendoNumericTextBox").value(result.data);
                 },
                 function() {
 
@@ -832,12 +832,14 @@ var Ermis = function() {
 
         function OnChangeRate(e) {
             var value = this.value;
-            var dataItem = $kGrid.data("kendoGrid").dataSource.data();
-            jQuery.each(dataItem, function(i, v) {
-                v["rate"] = value;
-                v["amount_rate"] = v.amount * value;               
-            })
-            $kGrid.data('kendoGrid').refresh(); 
+            var grid = $kGrid.data("kendoGrid");
+            var r = grid.dataSource.data();
+            dataDefaultGrid.data["rate"] = value; 
+            jQuery.each(r, function(l, k) {
+                  k["rate"] = value;
+                  k["amount_rate"] = value*k["amount"];
+              });
+              grid.refresh();   
         }
         $currency.bind("change", OnChangeCurrency);
         $rate.on("change", OnChangeRate);

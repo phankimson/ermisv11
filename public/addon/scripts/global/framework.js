@@ -1357,14 +1357,17 @@ function calculateAmount(quantity, price, decimal) {
 
 function calculateAmountRate(amount, rate, decimal ) {
       var amount_rate = 0;
-      if(rate > 0){
+      if(rate > 0 && rate != ""){
         amount_rate = amount * rate;
       };
     return kendo.toString(amount_rate, 'n'+decimal);
 };
 
 function calculateAmountTax(amount, tax, decimal ) {
-    var amount_tax = (amount * tax)/100;
+  var amount_tax = 0;
+  if(tax > 0 && tax != ""){
+    amount_tax = (amount * tax)/100;
+  }else
     return kendo.toString(amount_tax, 'n'+decimal);
 };
 

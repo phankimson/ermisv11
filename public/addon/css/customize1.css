@@ -294,6 +294,12 @@
 .number-price .k-select{
   width: 0.9em!important;
 }
+.fix .k-i-arrow-60-down {
+  bottom: none!important;
+}
+.fix .k-i-arrow-60-up {
+  top: none!important;
+}
 .img-thumbnail{
   max-width:150px;
   max-height:150px;

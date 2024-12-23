@@ -162,7 +162,7 @@
             id : {field :"id" ,defaultValue: 0},
             description:     {field : "description"},
             amount:     {field : "amount",type:"number" , defaultValue : 0 , validation: { min: 1, required: true }},
-            rate:     {field : "rate",type:"number", defaultValue : jQuery(".rate").val() , validation: { min: 0, required: true }},
+            rate:     {field : "rate",type:"number", defaultValue : parseInt(jQuery(".rate").val()) , validation: { min: 0, required: true }},
             amount_rate:     {field : "amount_rate",type:"number" , defaultValue : 0 , validation: { min: 1, required: true }},
             case_code: { field : "case_code", defaultValue: DefaultReadValueField() },
             cost_code: { field : "cost_code", defaultValue: DefaultReadValueField() },

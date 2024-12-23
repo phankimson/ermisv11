@@ -1,5 +1,5 @@
 {
-	"authHost": "http://localhost/",
+	"authHost": "http://ermis.top",
 	"authEndpoint": "/broadcasting/auth",
 	"clients": [
 		{
@@ -35,5 +35,6 @@
      "allowOrigin": "*",
      "allowMethods": "GET, POST",
      "allowHeaders": "Origin, Content-Type, X-Auth-Token, X-Requested-With, Accept, Authorization, X-CSRF-TOKEN, X-Socket-Id"
-	}
+	},
+	"type":"json"
 }
