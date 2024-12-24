@@ -1592,7 +1592,7 @@ function DefaultValueField(){
              filter: "contains",
              dataTextField: "text",
              dataValueField: "value",
-             autoBind: false,
+             autoBind: true,
              select: eval(c.select), // PriItems :Onchange , SleItems : OnchangeCancel , Items : OnchangeItem , Group : OnchangeGroup
              filter: "contains",  
              dataBound: OnDataBoundDropDownEditor,         
@@ -1678,8 +1678,9 @@ function DefaultValueField(){
              value = model.text;      
            }
            return value;
-        }    
-        return model.text;       
+        }
+        value = model.text; 
+        return value;       
       }
 
 

@@ -20,6 +20,7 @@ use App\Http\Model\AccPrintTemplate;
 use App\Http\Model\Error;
 use App\Classes\Convert;
 use App\Http\Model\AccObjectType;
+use App\Http\Resources\CashReceiptGeneralReadResource;
 use App\Http\Model\Imports\AccCashReceiptGeneralImport;
 use App\Http\Model\Imports\AccCashReceiptVoucherImport;
 use Carbon\Carbon;
@@ -207,7 +208,7 @@ class AccCashReceiptsVoucherController extends Controller
              $detail->contract = $d->contract;
              $detail->order = $d->order;
              $detail->subject_id_credit = $d->subject_code->value;// Đổi từ id value dạng read
-             $detail->subject_name_credit = $d->subject_code->name;
+             $detail->subject_name_credit = $d->subject_code->text;// Đổi từ name text dạng read
              $detail->save();
        
              array_push($removeId,$detail->id);
@@ -349,6 +350,33 @@ class AccCashReceiptsVoucherController extends Controller
        return response()->json(['status'=>false,'message'=> trans('messages.error').' '.$e->getMessage()]);
      }
   }
+
+
+  
+  public function bind(Request $request){
+    $type = 10;
+    try{
+      $req = json_decode($request->data);
+      $data = new CashReceiptGeneralReadResource(AccGeneral::get_data_load_all($req));
+      if($req && $data->count()>0 ){
+        return response()->json(['status'=>true,'data'=> $data]);
+      }else{
+        return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
+      }
+     }catch(Exception $e){
+        // Lưu lỗi
+        $err = new Error();
+        $err ->create([
+          'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
+          'user_id' => Auth::id(),
+          'menu_id' => $this->menu->id,
+          'error' => $e->getMessage(),
+          'url'  => $this->url,
+          'check' => 0 ]);
+        return response()->json(['status'=>false,'message'=> trans('messages.error').' '.$e->getMessage()]);
+      }
+  }
+
 
   public function import(Request $request) {
    $type = 5;

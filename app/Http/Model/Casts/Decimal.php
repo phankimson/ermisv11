@@ -16,6 +16,8 @@ class Decimal implements CastsAttributes
      * @param  array  $attributes
      * @return array
      */
+    protected $decimal;
+    protected $decimal_symbol;
      public function __construct()
      {
        $this->decimal = session('decimal');

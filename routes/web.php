@@ -1061,7 +1061,6 @@ Route::group([
     'controller' => AccVoucherController::class
   ],function () {
   Route::post('/cash-receipts-voucher-get', 'get' )->name('-get');
-  Route::post('/cash-receipts-voucher-bind', 'bind' )->name('-bind');
   Route::post('/cash-receipts-voucher-auto', 'auto' )->name('-auto');
   Route::post('/cash-receipts-voucher-ai', 'ai' )->name('-ai');
   Route::post('/cash-receipts-voucher-currency', 'currency' )->name('-currency');
@@ -1077,6 +1076,7 @@ Route::group([
   ],function () {
   Route::get('/cash-receipts-voucher', 'show' )->name('');
   Route::post('/cash-receipts-voucher-save', 'save' )->name('-save');
+  Route::post('/cash-receipts-voucher-bind', 'bind' )->name('-bind');
   });
 });
 

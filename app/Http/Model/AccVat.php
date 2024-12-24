@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Http\Traits\ScopesTraits;
 use App\Http\Traits\BootedTraits;
 use Illuminate\Support\Facades\DB;
+use App\Http\Model\Casts\Decimal;
 
 class AccVat extends Model
 {
@@ -19,6 +20,12 @@ class AccVat extends Model
       {
           static::BootedBaseTrait();
       }
+
+      protected $casts = [
+        'amount'=> Decimal::class,   
+        'total_amount'=> Decimal::class,   
+    ];
+
    
       static public function get_raw() {
         $result = AccVat::WithRowNumberDb(env('CONNECTION_DB_ACC'))->orderBy('row_number','desc')->get();       

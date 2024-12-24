@@ -37,7 +37,9 @@ class AccDetail extends Model
       }
 
       protected $casts = [
-          'amount'=> Decimal::class,        
+          'amount'=> Decimal::class,   
+          'amount_rate'=> Decimal::class,   
+          'rate'=> Decimal::class,    
           'active' => 'boolean',
       ];
 

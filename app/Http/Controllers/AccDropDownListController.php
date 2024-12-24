@@ -8,6 +8,7 @@ use App\Http\Resources\LangDropDownResource;
 use App\Http\Resources\BankDropDownResource;
 use App\Http\Resources\AccountedFastDropDownResource;
 use App\Http\Resources\ObjectTypeDropDownResource;
+use App\Http\Resources\ObjectDropDownResource;
 use App\Http\Resources\DropDownResource;
 use App\Http\Resources\TaxDropDownResource;
 use App\Http\Resources\DefaultDropDownResource;
@@ -293,7 +294,7 @@ class AccDropDownListController extends Controller
    // Đối tượng
    public function object_dropdown_list(Request $request){
     $default = collect([$this->default]);
-    $data = LangDropDownResource::collection(AccObject::active()->orderBy('code','asc')->get());
+    $data = ObjectDropDownResource::collection(AccObject::active()->orderBy('code','asc')->get());
     $data = $default->merge($data)->values();
     return response()->json($data)->withCallback($request->input('callback'));
   }

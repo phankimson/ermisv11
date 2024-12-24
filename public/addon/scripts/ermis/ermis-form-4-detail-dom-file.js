@@ -1251,8 +1251,16 @@ var Ermis = function() {
     var initLoadDropdownGrid = function(data,field,dataValueField,dataTextField,rs){
         if(rs != null){
             if(rs[dataValueField] != undefined){
-                data[field][dataValueField] = rs[dataValueField];
-                data[field][dataTextField] = rs[dataTextField];               
+                //if(data[field] != null){
+                    data[field][dataValueField] = rs[dataValueField];
+                    data[field][dataTextField] = rs[dataTextField];   
+                //}else{
+                //    var array  = [];
+                //    array[dataValueField] = rs[dataValueField];
+                //    array[dataTextField] = rs[dataTextField];
+                //    data[field] = array;
+               // }
+                           
             }else{
                 data[field][dataTextField] =  '--Select--';
                 data[field][dataValueField] = 0;
@@ -1275,8 +1283,9 @@ var Ermis = function() {
                 }else{
                     dataTextField = "code";
                     dataValueField = "id"; 
-                } 
-                if (dataItem[v.field] !== null && dataItem[v.field] != data[v.field][dataValueField]) {                                      
+                }
+                data_check =  data[v.field] == null ? data[v.field] :  data[v.field][dataValueField];
+                if (dataItem[v.field] !== null && dataItem[v.field] != data_check) {                                      
                     if(v.url && a[v.field] == undefined){
                         var sytax =  v.url.includes("?") ? "&" : "?"; 
                          RequestURLcallback(v.url+sytax+"value="+dataItem[v.field],function(rs){
@@ -1320,7 +1329,7 @@ var Ermis = function() {
     Onchange = function(e) {
         var dataItem = this.dataItem(e.item);
         var row = e.sender.element.closest("tr").index();
-        //var col = e.sender.element.closest("td");
+        //var col = e.sender.element.closest("td");        
         var grid = $kGridTab.data("kendoGrid");
         var data = grid.dataSource.data()[row];
         initLoadColumn(data, dataItem);
@@ -1330,7 +1339,7 @@ var Ermis = function() {
     OnchangeCancel = function(e) {        
         var dataItem = this.dataItem(e.item);
         var row = e.sender.element.closest("tr").index();
-        //var col = e.sender.element.closest("td");
+        //var col = e.sender.element.closest("td");        
         if (dataItem == undefined) {
             $kGridTab.data("kendoGrid").refresh();
         } else {
@@ -1343,7 +1352,7 @@ var Ermis = function() {
     };
 
     OnchangeItem = function(e){
-         var select = this.dataItem(e.item);
+         var select = this.dataItem(e.item);            
          initFixScrollGrid();
          if (select == undefined) {
          $kGridTab.data("kendoGrid").refresh();
@@ -1358,8 +1367,7 @@ var Ermis = function() {
 
     OnchangeGroup = function(e) {
         var dataItem = this.dataItem(e.item);
-        var row = e.sender.element.closest("tr").index();
-        //var col = e.sender.element.closest("td");
+        var row = e.sender.element.closest("tr").index();     
         var grid = $kGridTab.data("kendoGrid");
         var a = grid.columns
         var columnTitle = e.sender.element.attr("id");
@@ -1381,7 +1389,7 @@ var Ermis = function() {
             initTabsTrip();
             initGlobalRegister();
             initStatus(status);
-            initClick();
+            //initClick();
             initBackTo();
             initKeyCode();
             initChangeAuto();

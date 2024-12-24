@@ -15,9 +15,10 @@ class ObjectDropDownListResource extends JsonResource
     public function toArray($request)
     {
       // Make sure current locale exists.
-      $locale = $request->segment(1);
         return [
             'id' => $this->id,
+            'value' => $this->id,
+            'text' => $this->code.' - '. $this->name,
             'subject_id' => $this->id,
             'subject_code' => $this->code,
             'subject_name' => $this->name,

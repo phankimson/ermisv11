@@ -37,7 +37,6 @@ class AccGeneral extends Model
           'rate'=> Decimal::class,
           'total_amount_rate'=> Decimal::class,
           'active' => 'boolean',
-
       ];
 
   //    public function getTotalAmountAttribute($value)
