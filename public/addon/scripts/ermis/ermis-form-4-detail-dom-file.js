@@ -400,10 +400,10 @@ var Ermis = function() {
             }else if(e.action === "itemchange" && e.field === "amount_rate" ){
                 // here you can access model items using e.items[0].modelName;
                 item.amount_rate = item.amount * item.rate;
-            }
-            // finally, refresh the grid to show the changes
-            grid.refresh();
+            }           
         });
+         // finally, refresh the grid to show the changes
+         grid.refresh();
     }
 
     var initKendoUiContextMenuGrid = function() {
