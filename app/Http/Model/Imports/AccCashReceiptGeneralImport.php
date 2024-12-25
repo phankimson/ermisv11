@@ -18,6 +18,13 @@ use App\Classes\Convert;
 
 class AccCashReceiptGeneralImport implements  WithHeadingRow, WithMultipleSheets, WithBatchInserts, WithLimit
 {
+  protected $menu;
+  public function  __construct($menu)
+  {
+      $this->menu= $menu;
+  }
+
+
   public function sheets(): array
     {
         return [
@@ -70,7 +77,7 @@ class FirstSheetImport implements WithMappedCells, ToModel, HasReferencesToOther
           $format = $voucher->format;
           $prefix = $voucher->prefix;
           if($voucher->change_voucher == 1){
-            $val = Convert::dateformatArr($format,$row->accounting_date);
+            $val = Convert::dateformatArr($format,$row['accounting_date']);
             $voucher = AccCountVoucher::get_count_voucher($voucher_id,$format,$val['day_format'],$val['month_format'],$val['year_format']);              
             if(!$voucher){
               $voucher = new AccCountVoucher();

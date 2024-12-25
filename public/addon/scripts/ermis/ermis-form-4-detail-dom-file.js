@@ -692,6 +692,7 @@ var Ermis = function() {
             $kGrid.data('kendoGrid').dataSource.data([]);
             $kGridVat.data('kendoGrid').dataSource.data([]);
         }else if (flag === 8) { // Copy
+          sessionStorage.removeItem("dataId");
           jQuery('.cancel,.save,.filter,.reference,.advance_teacher,.advance_employee').removeClass('disabled');
           jQuery('.cancel').on('click', initCancel);
           jQuery('.save').on('click', initSave);
@@ -720,9 +721,10 @@ var Ermis = function() {
               initDeleteRowAll(e);
           });
             jQuery(".date-picker,.end,.start").val(kendo.toString(kendo.parseDate(new Date()), 'dd/MM/yyyy'));
-            jQuery(".voucher").val(voucher);
             jQuery(".no_copy").val("");
+            jQuery(".voucher").val(voucher);           
             jQuery(".no_copy_value").val(0);
+            initDefaultIdGrid();
             reference_by =[];
         }
     };
@@ -753,6 +755,24 @@ var Ermis = function() {
             jQuery('.unwrite_item').addClass('disabled');
             jQuery('.unwrite_item').off('click');
         }
+    }
+
+    var initDefaultIdGrid = function(){
+        var grid = $kGrid.data("kendoGrid");
+        var r = grid.dataSource.data();
+        dataDefaultGrid.data["id"] = ""; 
+        var grid_vat = $kGridVat.data("kendoGrid");
+        var rv = grid_vat.dataSource.data();
+        dataDefaultGrid.data["id"] = ""; 
+        dataDefaultGrid.vat["id"] = ""; 
+        jQuery.each(r, function(l, k) {
+              k["id"] = "";
+          });
+          grid.refresh();   
+          jQuery.each(rv, function(l, k) {
+            k["id"] = "";
+        });
+        grid_vat.refresh();           
     }
 
     var initChangeAuto = function() {
@@ -822,7 +842,10 @@ var Ermis = function() {
             };
             ErmisTemplateAjaxPost0(e, postdata, Ermis.link + '-currency',
                 function(result) {
+                    setTimeout(function(){
                     $rate.data("kendoNumericTextBox").value(result.data);
+                    $rate.trigger("change");
+                }, 0)
                 },
                 function() {
 

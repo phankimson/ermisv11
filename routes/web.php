@@ -1077,6 +1077,8 @@ Route::group([
   Route::get('/cash-receipts-voucher', 'show' )->name('');
   Route::post('/cash-receipts-voucher-save', 'save' )->name('-save');
   Route::post('/cash-receipts-voucher-bind', 'bind' )->name('-bind');
+  Route::get('/cash-receipts-voucher-DownloadExcel', 'DownloadExcel' )->name('-DownloadExcel');
+  Route::any('/cash-receipts-voucher-import', 'import')->name('-import');
   });
 });
 

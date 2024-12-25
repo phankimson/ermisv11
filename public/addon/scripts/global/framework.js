@@ -517,9 +517,9 @@ function PrintForm(elem,data) {
 function SetDataAjax(data, dataItem){
   jQuery.each(data, function (k, col) {
       var v = '';
-      if(col.get){
+      if(col.get && dataItem[col.get] != undefined){
       v = eval('dataItem.'+col.get);
-      }else{
+      }else if(dataItem[col.field] != null){
       v = dataItem[col.field];
       }
       if (col.key === 'text' || col.key === 'password' || col.key === 'number') {

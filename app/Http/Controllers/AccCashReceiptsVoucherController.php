@@ -29,6 +29,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class AccCashReceiptsVoucherController extends Controller
 {
@@ -52,7 +53,7 @@ class AccCashReceiptsVoucherController extends Controller
      $this->document = 'DOCUMENT_TAX';
  }
 
-  public function show(Request $request){
+  public function show(){
     $ot = AccObjectType::get_filter($this->type_object);
     $voucher = AccNumberVoucher::get_menu($this->menu->id);
     //$setting_voucher = AccSettingVoucher::get_menu($this->menu->id);
@@ -377,6 +378,10 @@ class AccCashReceiptsVoucherController extends Controller
       }
   }
 
+  public function DownloadExcel(){
+    return Storage::download('public/downloadFile/AccCashReceiptsVoucher.xlsx');
+  }
+
 
   public function import(Request $request) {
    $type = 5;
@@ -394,9 +399,9 @@ class AccCashReceiptsVoucherController extends Controller
   
         $file = $request->file;
         // Đổi dữ liệu Excel sang collect
-        $data = Excel::toCollection(new AccCashReceiptGeneralImport, $file); 
+        $data = Excel::toCollection(new AccCashReceiptGeneralImport($this->menu), $file); 
         $detail = Excel::toCollection(new AccCashReceiptVoucherImport($data->id), $file); 
-        $merged = collect($data)->push($detail->getData());
+        $merged = collect($data)->push($detail->getData());        
       // Lưu lịch sử
       $h = new AccHistoryAction();
       $h ->create([
