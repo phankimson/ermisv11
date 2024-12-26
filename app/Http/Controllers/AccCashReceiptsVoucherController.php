@@ -399,7 +399,9 @@ class AccCashReceiptsVoucherController extends Controller
   
         $file = $request->file;
         // Đổi dữ liệu Excel sang collect
-        $data = Excel::toCollection(new AccCashReceiptGeneralImport($this->menu), $file); 
+       
+        $data = Excel::toArray(new AccCashReceiptGeneralImport($this->menu), $file); 
+        dd($data);
         $detail = Excel::toCollection(new AccCashReceiptVoucherImport($data->id), $file); 
         $merged = collect($data)->push($detail->getData());        
       // Lưu lịch sử

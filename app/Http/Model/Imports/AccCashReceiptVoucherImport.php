@@ -76,6 +76,10 @@ class FirstSheetImport implements ToModel, HasReferencesToOtherSheets, WithHeadi
          'active'    => $row['active'] == null ? 1 : $row['active'],
      ]);
     }
+    public function headingRow(): int
+    {
+        return 9;
+    }
 
     public function startRow(): int
     {
@@ -107,6 +111,10 @@ class FirstSheetImport implements ToModel, HasReferencesToOtherSheets, WithHeadi
            'active'    => $row['active'] == null ? 1 : $row['active'],
        ]);
       }
+      public function headingRow(): int
+    {
+        return 9;
+    }
       public function startRow(): int
     {
         return 10;
