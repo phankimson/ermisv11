@@ -4,6 +4,7 @@ namespace App\Http\Model\Imports;
 
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithMappedCells;
+use Maatwebsite\Excel\Concerns\Importable;
 use Illuminate\Support\Str;
 use App\Http\Model\AccGeneral;
 use App\Http\Model\AccNumberVoucher;
@@ -13,6 +14,7 @@ use App\Classes\Convert;
 
 class AccCashReceiptGeneralImport implements WithMappedCells,ToModel
 {
+  use Importable;
   protected $menu;
   public function  __construct($menu)
   {
