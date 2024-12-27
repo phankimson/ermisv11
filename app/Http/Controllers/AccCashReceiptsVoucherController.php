@@ -403,8 +403,8 @@ class AccCashReceiptsVoucherController extends Controller
         Excel::import($data , $file);
         $detail = new AccCashReceiptVoucherImport;
         Excel::import($detail, $file); 
-        $merged = collect($data->getData())->push($detail->getData());    
-      return response()->json(['status'=>true,'message'=> trans('messages.success_import'),'data'=>$merged]);
+        $merged = collect($data->getData())->push($detail->getData());            
+        return response()->json(['status'=>true,'message'=> trans('messages.success_import'),'data'=>$merged]);
       }else{
         return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
       }

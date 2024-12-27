@@ -821,7 +821,8 @@ var Ermis = function() {
           arr.key = Ermis.link;
           ErmisTemplateAjaxPostAdd3(e,'#import-form',Ermis.link+'-import',arr,
         function(results){
-           kendo.alert(results.message);
+            SetDataAjax(data.columns, results.data);    
+            initLoadGrid(results.data[0]);   
           },
          function(){},
          function(results){
