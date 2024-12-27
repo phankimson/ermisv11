@@ -386,7 +386,6 @@ class AccCashReceiptsVoucherController extends Controller
   public function import(Request $request) {
    $type = 5;
     try{
-      DB::connection(env('CONNECTION_DB_ACC'))->beginTransaction();
     $permission = $request->session()->get('per');
     if($permission['a'] && $request->hasFile('file')){
       //Check
@@ -399,21 +398,13 @@ class AccCashReceiptsVoucherController extends Controller
   
         $file = $request->file;
         // Đổi dữ liệu Excel sang collect
-       
-        $data = Excel::toArray(new AccCashReceiptGeneralImport($this->menu), $file); 
-        dd($data);
-        $detail = Excel::toCollection(new AccCashReceiptVoucherImport($data->id), $file); 
-        $merged = collect($data)->push($detail->getData());        
-      // Lưu lịch sử
-      $h = new AccHistoryAction();
-      $h ->create([
-        'type' => $type, // Add : 2 , Edit : 3 , Delete : 4, Import : 5
-        'user' => Auth::id(),
-        'menu' => $this->menu->id,
-        'url'  => $this->url,
-        'dataz' => \json_encode($merged)]);
-        DB::connection(env('CONNECTION_DB_ACC'))->commit();
-      return response()->json(['status'=>true,'message'=> trans('messages.success_import'),'data'=>$data]);
+        config(['excel.imports.read_only' => false]);
+        $data = new AccCashReceiptGeneralImport($this->menu);
+        Excel::import($data , $file);
+        $detail = new AccCashReceiptVoucherImport;
+        Excel::import($detail, $file); 
+        $merged = collect($data->getData())->push($detail->getData());    
+      return response()->json(['status'=>true,'message'=> trans('messages.success_import'),'data'=>$merged]);
       }else{
         return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
       }

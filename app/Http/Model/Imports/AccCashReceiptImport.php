@@ -63,7 +63,11 @@ class AccCashReceiptImport implements  WithHeadingRow, WithBatchInserts, WithLim
      }  
      public function getData()
     {
-       return array_merge(self::$first,self::$second,self::$third);
+       $data['general'] = self::$first;
+       $data['detail'] = self::$second;
+       $data['tax'] = self::$second;
+       return $data;
+       //return array_merge(self::$first,self::$second,self::$third);
     }   
 }
 

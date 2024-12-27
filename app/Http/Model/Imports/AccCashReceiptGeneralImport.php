@@ -4,23 +4,20 @@ namespace App\Http\Model\Imports;
 
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithMappedCells;
-use Maatwebsite\Excel\Concerns\Importable;
-use Illuminate\Support\Str;
 use App\Http\Model\AccGeneral;
 use App\Http\Model\AccNumberVoucher;
-use App\Http\Model\AccCountVoucher;
 use App\Http\Model\AccObject;
+use App\Http\Model\AccCountVoucher;
 use App\Classes\Convert;
 
 class AccCashReceiptGeneralImport implements WithMappedCells,ToModel
 {
-  use Importable;
   protected $menu;
-  public function  __construct($menu)
+  public static $data = array();
+  public function __construct($menu)
   {
-      $this->menu= $menu;
+      $this->menu = $menu;
   }
-
   public function mapping(): array
   {
       return [
@@ -32,20 +29,28 @@ class AccCashReceiptGeneralImport implements WithMappedCells,ToModel
               'voucher' => 'K5'
         ];
     
-  }    
+  } 
+
+  public function setData($arr)
+  {
+    array_push(self::$data,$arr);
+  }   
+  
+  public function getData()
+  {
+     return self::$data[0];
+  }   
 
   public function model(array $row)
   {             
     $subject = AccObject::WhereDefault('code',$row['subject'])->first();
     $code_check = AccGeneral::WhereCheck('voucher',$row['voucher'],'id',null)->first();
-    $type = 1; // 1 Receipt Cash
-    $currency = 1;
-    $active = 1;
-    $status = 1;
+    $row['accounting_date'] = $row['accounting_date'] ? $row['accounting_date'] : date("Y-m-d");
+    $row['voucher_date'] = $row['voucher_date'] ? $row['voucher_date'] : date("Y-m-d");
     if($code_check == null){
-      if($row['voucher']){
+      if(!$row['voucher']){        
         // Lưu số nhảy
-        $voucher = AccNumberVoucher::get_menu($this->menu->id);
+        $voucher = AccNumberVoucher::get_menu($this->menu->id);        
         // Thay đổi số nhảy theo yêu cầu DD MM YY
         $voucher_id = $voucher->id;
         $voucher_length_number = $voucher->length_number;
@@ -64,35 +69,22 @@ class AccCashReceiptGeneralImport implements WithMappedCells,ToModel
             $voucher->length_number = $voucher_length_number;
             $voucher->active = 1;
           }
-        }                
-        // Load Phiếu tự động / Load AutoNumber
-          $v = Convert::VoucherMasker1($voucher,$prefix);
-              
-          $number = $voucher->number + 1;
-          $length_number = $voucher->length_number;
-          if(strlen($number."") > $voucher->length_number){
-            $voucher->number = 1;
-            $voucher->length_number = $length_number + 1;
-          }else{
-            $voucher->number = $number;
-          }
-          $voucher->save();
+        }  
+           // Load Phiếu tự động / Load AutoNumber
+           $row['voucher'] = Convert::VoucherMasker1($voucher,$prefix);           
         }
-      }        
-
-  return [
-       'id'     => Str::uuid()->toString(),
-       'type'   => $type,
-       'voucher'    => $row['voucher'],
-       'description'    => $row['description'],
-       'voucher_date'    => $row['voucher_date'],
-       'accounting_date'    => $row['accounting_date'],
-       'currency'    => $currency,
-       'traders'    => $row['traders'],
-       'subject'    => $subject == null ? 0 : $subject->id,     
-       'status'    => $status, 
-       'active'    => $active,
-   ];
+      }  
+      $arr =  [
+        'voucher'    => $row['voucher'],
+        'description'    => $row['description'],
+        'voucher_date'    => $row['voucher_date'],
+        'accounting_date'    => $row['accounting_date'],
+        'traders'    => $row['traders'],
+        'subject'    => $subject == null ? 0 : $subject->id,  
+      ]; 
+ 
+      AccCashReceiptGeneralImport::setData($arr);      
+      return ;
    }
 
 }
