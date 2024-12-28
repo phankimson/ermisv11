@@ -23,7 +23,7 @@ return [
     "conversion_rate_vi" => "Tỷ lệ quy đổi tiếng việt",
     "conversion_rate_en" => "Tỷ lệ quy đổi tiếng anh",
     "currency_1_vi" => "Tên tiền tệ 1 tiếng việt",
-    "currency_1_en" => "Tên tiền tệ 2 tiếng anh",
+    "currency_1_en" => "Tên tiền tệ 1 tiếng anh",
     "currency_2_vi" => "Dấu thập phân tiếng việt",
     "currency_2_en" => "Dấu thập phân tiếng anh",
     "currency_3_vi" => "Tên tiền tệ 2 tiếng việt",

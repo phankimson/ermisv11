@@ -27,7 +27,7 @@ class DocumentType extends Model
   }
 
   static public function get_raw_skip_page($skip,$limit,$orderBy,$asc) {
-    $result = DocumentType::WithRowNumber($orderBy,$asc)->skip($skip)->take($limit)->get();  
+    $result = DocumentType::WithRowNumber($orderBy,$asc)->orderBy('row_number','desc')->skip($skip)->take($limit)->get();  
     return $result;
   }
 

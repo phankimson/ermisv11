@@ -8,8 +8,9 @@ use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithBatchInserts;
 use Maatwebsite\Excel\Concerns\WithLimit;
+use Maatwebsite\Excel\Concerns\WithStartRow;
 
-class AccVatImport implements ToModel, WithHeadingRow, WithBatchInserts, WithLimit
+class AccVatImport implements ToModel, WithHeadingRow, WithBatchInserts, WithLimit, WithStartRow
 {
   private static $result = array();
   public function sheets(): array
@@ -62,5 +63,13 @@ class AccVatImport implements ToModel, WithHeadingRow, WithBatchInserts, WithLim
      public function limit(): int
      {
       return env("IMPORT_LIMIT",200);
+     }
+     public function headingRow(): int
+     {
+         return env("HEADING_ROW",1);
+     }
+       public function startRow(): int
+     {
+         return env("START_ROW",2);
      }
 }

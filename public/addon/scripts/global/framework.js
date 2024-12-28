@@ -217,9 +217,10 @@ var initErmisCheckSession = function(){
 }
 // Grid Action Kendo
 var initAddGrid = function(rd,grid){
-  var dataItem = grid.dataItem("tbody tr:eq(0)");
-  if(dataItem != undefined){
-    rd['row_number'] = dataItem['row_number']+1;
+  //var dataItem = grid.dataItem("tbody tr:eq(0)");
+  var count = grid.dataSource.total();
+  if(count != undefined){
+    rd['row_number'] = count+1;
   }else{
     rd['row_number'] = 1;
   }
@@ -517,7 +518,7 @@ function PrintForm(elem,data) {
 function SetDataAjax(data, dataItem){
   jQuery.each(data, function (k, col) {
       var v = '';
-      if(col.get && dataItem[col.get] != undefined){
+      if(col.get && eval('dataItem.'+col.get) != undefined){
       v = eval('dataItem.'+col.get);
       }else if(dataItem[col.field] != null){
       v = dataItem[col.field];

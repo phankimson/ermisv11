@@ -16,9 +16,10 @@ use App\Http\Model\AccObject;
 use App\Http\Model\AccAccountSystems;
 use App\Http\Model\AccDepartment;
 use App\Http\Model\AccBankAccount;
+use Maatwebsite\Excel\Concerns\WithStartRow;
 
 
-class AccCashReceiptImport implements  WithHeadingRow, WithBatchInserts, WithLimit, WithMultipleSheets
+class AccCashReceiptImport implements  WithHeadingRow, WithMultipleSheets
 { 
   public static $first = array();
   public static $second = array();
@@ -38,16 +39,7 @@ class AccCashReceiptImport implements  WithHeadingRow, WithBatchInserts, WithLim
     * @return \Illuminate\Database\Eloquent\Model|null    */
 
 
-    public function batchSize(): int
-    {
-      return env("IMPORT_SIZE",100);
-    }   
   
-     public function limit(): int
-     {
-      return env("IMPORT_LIMIT",200);
-     }
-     
    public function setDataFirst($arr)
    {
        array_push(self::$first,$arr);
@@ -72,7 +64,7 @@ class AccCashReceiptImport implements  WithHeadingRow, WithBatchInserts, WithLim
 }
 
 
-class FirstSheetImport implements ToModel, HasReferencesToOtherSheets, WithHeadingRow
+class FirstSheetImport implements ToModel, HasReferencesToOtherSheets, WithHeadingRow, WithBatchInserts, WithLimit, WithStartRow
 {   
 
 
@@ -102,10 +94,28 @@ class FirstSheetImport implements ToModel, HasReferencesToOtherSheets, WithHeadi
           $data->setDataFirst($arr);
           return new AccGeneral($arr);
       }
-    }    
+    } 
+    public function batchSize(): int
+    {
+      return env("IMPORT_SIZE",100);
+    }   
+  
+     public function limit(): int
+     {
+      return env("IMPORT_LIMIT",200);
+     }
+        
+    public function headingRow(): int
+    {
+        return env("HEADING_ROW",1);
+    }
+      public function startRow(): int
+    {
+        return env("START_ROW",2);
+    }
 }
 
-class SecondSheetImport implements ToModel, HasReferencesToOtherSheets, WithHeadingRow
+class SecondSheetImport implements ToModel, HasReferencesToOtherSheets, WithHeadingRow, WithBatchInserts, WithLimit, WithStartRow
 {
     public function model(array $row)
     {
@@ -134,9 +144,28 @@ class SecondSheetImport implements ToModel, HasReferencesToOtherSheets, WithHead
       $data->setDataSecond($arr);
       return new AccDetail($arr);          
     }
+
+    public function batchSize(): int
+    {
+      return env("IMPORT_SIZE",100);
+    }   
+  
+     public function limit(): int
+     {
+      return env("IMPORT_LIMIT",200);
+     }
+        
+    public function headingRow(): int
+    {
+        return env("HEADING_ROW",1);
+    }
+      public function startRow(): int
+    {
+        return env("START_ROW",2);
+    }
   }
 
-  class ThirdSheetImport implements ToModel, HasReferencesToOtherSheets, WithHeadingRow
+  class ThirdSheetImport implements ToModel, HasReferencesToOtherSheets, WithHeadingRow, WithBatchInserts, WithLimit, WithStartRow
   {
       public function model(array $row)
       {
@@ -164,5 +193,23 @@ class SecondSheetImport implements ToModel, HasReferencesToOtherSheets, WithHead
         $data->setDataThird($arr);
         return new AccVatDetail($arr);
       }
+      public function batchSize(): int
+    {
+      return env("IMPORT_SIZE",100);
+    }   
+  
+     public function limit(): int
+     {
+      return env("IMPORT_LIMIT",200);
+     }
+        
+    public function headingRow(): int
+    {
+        return env("HEADING_ROW",1);
+    }
+      public function startRow(): int
+    {
+        return env("START_ROW",2);
+    }
   }
 

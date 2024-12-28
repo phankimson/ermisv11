@@ -28,7 +28,7 @@ class HistoryAction extends Model
 
     
     static public function get_raw_skip_page($skip,$limit,$orderBy,$asc,$type) {
-      $result = HistoryAction::WithRowNumber($orderBy,$asc)->where('type',$type)->skip($skip)->take($limit)->get();  
+      $result = HistoryAction::WithRowNumber($orderBy,$asc)->orderBy('row_number','desc')->where('type',$type)->skip($skip)->take($limit)->get();  
       return $result;
     }
 

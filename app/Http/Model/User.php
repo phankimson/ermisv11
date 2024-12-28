@@ -82,7 +82,7 @@ class User extends Authenticatable
 
    
   static public function get_raw_skip_page($skip,$limit,$orderBy,$asc) {
-    $result = User::WithRowNumber($orderBy,$asc)->skip($skip)->take($limit)->get()->makeVisible(['active_code','password']);
+    $result = User::WithRowNumber($orderBy,$asc)->orderBy('row_number','desc')->skip($skip)->take($limit)->get()->makeVisible(['active_code','password']);
     return $result;
   }
 

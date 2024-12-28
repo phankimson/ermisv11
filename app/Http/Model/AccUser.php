@@ -91,7 +91,7 @@ class AccUser extends Authenticatable
 
 
     static public function get_raw_skip_page($skip,$limit,$orderBy,$asc,$company) {
-      $result = User::WithRowNumber($orderBy,$asc)->where('company_default',$company)->skip($skip)->take($limit)->get()->makeVisible(['active_code','password']);
+      $result = User::WithRowNumber($orderBy,$asc)->where('company_default',$company)->orderBy('row_number','desc')->skip($skip)->take($limit)->get()->makeVisible(['active_code','password']);
       return $result;
     }
 

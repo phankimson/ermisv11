@@ -11,8 +11,9 @@ use Maatwebsite\Excel\Row;
 use Maatwebsite\Excel\Concerns\OnEachRow;
 use Illuminate\Support\Arr;
 use Maatwebsite\Excel\Concerns\WithLimit;
+use Maatwebsite\Excel\Concerns\WithStartRow;
 
-class AccSettingAccountGroupImport implements OnEachRow, WithHeadingRow, WithBatchInserts, WithLimit
+class AccSettingAccountGroupImport implements OnEachRow, WithHeadingRow, WithBatchInserts, WithLimit, WithStartRow
 {
   private static $result = array();
   public function sheets(): array
@@ -89,6 +90,14 @@ class AccSettingAccountGroupImport implements OnEachRow, WithHeadingRow, WithBat
      public function limit(): int
      {
       return env("IMPORT_LIMIT",200);
+     }
+     public function headingRow(): int
+     {
+         return env("HEADING_ROW",1);
+     }
+       public function startRow(): int
+     {
+         return env("START_ROW",2);
      }
 
 }

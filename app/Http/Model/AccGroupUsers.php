@@ -25,7 +25,7 @@ class AccGroupUsers extends Model
       }
 
       static public function get_raw_skip_page($skip,$limit,$orderBy,$asc,$company) {
-        $result = AccGroupUsers::WithRowNumber($orderBy,$asc)->where('company_id',$company)->skip($skip)->take($limit)->get();  
+        $result = AccGroupUsers::WithRowNumber($orderBy,$asc)->where('company_id',$company)->orderBy('row_number','desc')->skip($skip)->take($limit)->get();  
         return $result;
       }
 

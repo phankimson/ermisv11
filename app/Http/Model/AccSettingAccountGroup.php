@@ -32,7 +32,7 @@ class AccSettingAccountGroup extends Model
       }
 
       static public function get_raw_skip_page($skip,$limit,$orderBy,$asc) {
-        $result = AccSettingAccountGroup::WithRowNumberDb(env('CONNECTION_DB_ACC'),$orderBy,$asc)->with('account_filter')->skip($skip)->take($limit)->get()->pluckDistant('account_filter', 'account_systems'); 
+        $result = AccSettingAccountGroup::WithRowNumberDb(env('CONNECTION_DB_ACC'),$orderBy,$asc)->with('account_filter')->orderBy('row_number','desc')->skip($skip)->take($limit)->get()->pluckDistant('account_filter', 'account_systems'); 
         return $result;
       }
 

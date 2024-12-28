@@ -39,7 +39,7 @@ class AccSuppliesGoods extends Model
       }
 
       static public function get_raw_skip_page($skip,$limit,$orderBy,$asc) {
-        $result = AccSuppliesGoods::WithRowNumberDb(env('CONNECTION_DB_ACC'),$orderBy,$asc)->skip($skip)->take($limit)->with('discount')->get();  
+        $result = AccSuppliesGoods::WithRowNumberDb(env('CONNECTION_DB_ACC'),$orderBy,$asc)->orderBy('row_number','desc')->skip($skip)->take($limit)->with('discount')->get();  
         return $result;
       }
 

@@ -29,7 +29,7 @@ class AccAccountedAuto extends Model
       }
 
       static public function get_raw_skip_page($skip,$limit,$orderBy,$asc) {
-        $result = AccAccountedAuto::WithRowNumberDb(env('CONNECTION_DB_ACC'),$orderBy,$asc)->skip($skip)->take($limit)->with('accounted_auto_detail')->get();  
+        $result = AccAccountedAuto::WithRowNumberDb(env('CONNECTION_DB_ACC'),$orderBy,$asc)->orderBy('row_number','desc')->skip($skip)->take($limit)->with('accounted_auto_detail')->get();  
         return $result;
       }
 

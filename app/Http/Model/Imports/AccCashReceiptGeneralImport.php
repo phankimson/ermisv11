@@ -9,6 +9,7 @@ use App\Http\Model\AccNumberVoucher;
 use App\Http\Model\AccObject;
 use App\Http\Model\AccCountVoucher;
 use App\Classes\Convert;
+use App\Http\Resources\ObjectDropDownListResource;
 
 class AccCashReceiptGeneralImport implements WithMappedCells,ToModel
 {
@@ -80,7 +81,8 @@ class AccCashReceiptGeneralImport implements WithMappedCells,ToModel
         'voucher_date'    => $row['voucher_date'],
         'accounting_date'    => $row['accounting_date'],
         'traders'    => $row['traders'],
-        'subject'    => $subject == null ? 0 : $subject->id,  
+        'subject_id'    => $subject == null ? 0 : $subject->id,  
+        'object' => new ObjectDropDownListResource($subject),
       ]; 
  
       AccCashReceiptGeneralImport::setData($arr);      

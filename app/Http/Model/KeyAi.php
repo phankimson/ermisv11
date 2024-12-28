@@ -26,7 +26,7 @@ class KeyAi extends Model
   }
 
   static public function get_raw_skip_page($skip,$limit,$orderBy,$asc) {
-    $result = KeyAi::WithRowNumber($orderBy,$asc)->skip($skip)->take($limit)->get();  
+    $result = KeyAi::WithRowNumber($orderBy,$asc)->orderBy('row_number','desc')->skip($skip)->take($limit)->get();  
     return $result;
   }
 

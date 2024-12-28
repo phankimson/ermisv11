@@ -28,7 +28,7 @@ class Country extends Model
       }
 
       static public function get_raw_skip_page($skip,$limit,$orderBy,$asc) {
-        $result = Country::WithRowNumber($orderBy,$asc)->skip($skip)->take($limit)->get();  
+        $result = Country::WithRowNumber($orderBy,$asc)->orderBy('row_number','desc')->skip($skip)->take($limit)->get();  
         return $result;
       }
     

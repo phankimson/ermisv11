@@ -35,7 +35,7 @@ class AccObject extends Model
         return $result;
       }
       static public function get_raw_skip_page($skip,$limit,$orderBy,$asc) {
-        $result = AccObject::WithRowNumberDb(env('CONNECTION_DB_ACC'),$orderBy,$asc)->skip($skip)->take($limit)->with('object_type')->get()->pluckDistant('object_type', 'object_type');       
+        $result = AccObject::WithRowNumberDb(env('CONNECTION_DB_ACC'),$orderBy,$asc)->orderBy('row_number','desc')->skip($skip)->take($limit)->with('object_type')->get()->pluckDistant('object_type', 'object_type');       
         return $result;
       }
     

@@ -21,8 +21,9 @@ use App\Http\Model\AccStatisticalCode;
 use App\Http\Model\AccWorkCode;
 use Illuminate\Support\Arr;
 use Maatwebsite\Excel\Concerns\WithLimit;
+use Maatwebsite\Excel\Concerns\WithStartRow;
 
-class AccAccountedAutoImport implements  WithHeadingRow, WithBatchInserts, WithMultipleSheets, WithLimit
+class AccAccountedAutoImport implements  WithHeadingRow,  WithMultipleSheets
 {
   public static $first = array();
   public static $second = array();
@@ -62,23 +63,12 @@ class AccAccountedAutoImport implements  WithHeadingRow, WithBatchInserts, WithM
     * @param array $row
     *
     * @return \Illuminate\Database\Eloquent\Model|null    */
-
-
-    public function batchSize(): int
-    {
-      return env("IMPORT_SIZE",100);
-    }   
-  
-     public function limit(): int
-     {
-      return env("IMPORT_LIMIT",200);
-     }
-  
+   
 
 }
 
 
-class FirstSheetImport implements ToModel, HasReferencesToOtherSheets, WithHeadingRow
+class FirstSheetImport implements ToModel, HasReferencesToOtherSheets, WithBatchInserts,WithHeadingRow , WithLimit, WithStartRow 
 {
     public function model(array $row)
     {
@@ -101,11 +91,30 @@ class FirstSheetImport implements ToModel, HasReferencesToOtherSheets, WithHeadi
         $data->setDataFirst($arr);
      }
     }
+
+    public function batchSize(): int
+    {
+      return env("IMPORT_SIZE",100);
+    }   
+  
+     public function limit(): int
+     {
+      return env("IMPORT_LIMIT",200);
+     }
+     public function headingRow(): int
+     {
+         return env("HEADING_ROW",1);
+     }
+       public function startRow(): int
+     {
+         return env("START_ROW",2);
+     }
+  
 }
 
 
 
-class SecondSheetImport implements ToModel, HasReferencesToOtherSheets, WithHeadingRow
+class SecondSheetImport implements ToModel, HasReferencesToOtherSheets, WithBatchInserts, WithHeadingRow , WithLimit, WithStartRow
 {
     public function model(array $row)
     {
@@ -142,4 +151,23 @@ class SecondSheetImport implements ToModel, HasReferencesToOtherSheets, WithHead
       $data->setDataSecond($arr);
       return new AccAccountedAutoDetail($arr);
     }
+    
+    public function batchSize(): int
+    {
+      return env("IMPORT_SIZE",100);
+    }   
+  
+     public function limit(): int
+     {
+      return env("IMPORT_LIMIT",200);
+     }
+     public function headingRow(): int
+     {
+         return env("HEADING_ROW",1);
+     }
+       public function startRow(): int
+     {
+         return env("START_ROW",2);
+     }
+  
   }

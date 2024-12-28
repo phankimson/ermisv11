@@ -823,6 +823,7 @@ var Ermis = function() {
         function(results){
             SetDataAjax(data.columns, results.data);    
             initLoadGrid(results.data[0]);   
+            AddChooseObjectResult(results.data['object']);
           },
          function(){},
          function(results){
