@@ -25,6 +25,11 @@ class Menu extends Model
         return $result;
       }
 
+      static public function get_menu_like_code($code) {
+        $result = Menu::where('code','like',$code)->orWhere('code','=',$code)->where('active',1)->orderBy('created_at', 'asc')->get();
+        return $result;
+      }
+
       static public function get_raw_type($type) {
         $result = Menu::WithRowNumberWhereColumn('type',$type)->orderBy('row_number','desc')->get();
         return $result;

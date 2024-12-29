@@ -1080,7 +1080,17 @@ Route::group([
   Route::get('/cash-receipts-voucher-DownloadExcel', 'DownloadExcel' )->name('-DownloadExcel');
   Route::any('/cash-receipts-voucher-import', 'import')->name('-import');
   });
+
+  // Receipt Cash Detail By Invoice
+Route::group([
+  'as' => 'cash-receipts-voucher-by-invoice',
+  'controller' => AccCashReceiptsVoucherByInvoiceController::class
+],function () {
+Route::get('/cash-receipts-voucher-by-invoice', 'show' )->name('');
 });
+});
+
+
 
 
 Route::group([

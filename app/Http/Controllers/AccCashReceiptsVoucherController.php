@@ -56,6 +56,7 @@ class AccCashReceiptsVoucherController extends Controller
   public function show(){
     $ot = AccObjectType::get_filter($this->type_object);
     $voucher = AccNumberVoucher::get_menu($this->menu->id);
+    $menu_tab =  Menu::get_menu_like_code($this->key.'%');
     //$setting_voucher = AccSettingVoucher::get_menu($this->menu->id);
     //$debt_default = new AccountSystemsDropDownListResource(AccAccountSystems::find($setting_voucher->debit));
     //if($setting_voucher->credit == 0){
@@ -78,7 +79,7 @@ class AccCashReceiptsVoucherController extends Controller
     //$subject_code = json_encode(ObjectDropDownListResource::collection(AccObject::active()->orderBy('code','asc')->get()));
     $voucher_list = AccNumberVoucher::all();
     $print = AccPrintTemplate::get_code($this->print);
-    return view('acc.receipt_cash_voucher',[ 'key' => $this->key , 'voucher' => $voucher, 'menu'=>$this->menu->id,                                       
+    return view('acc.receipt_cash_voucher',[ 'key' => $this->key , 'voucher' => $voucher, 'menu'=>$this->menu->id, 'menu_tab' => $menu_tab,                                    
                                         'voucher_list' => $voucher_list ,
                                         'ot' => $ot,
                                         'sg' => $ot,

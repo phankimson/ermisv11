@@ -20,16 +20,17 @@
             </div>
             @stack('toolbar_action')
         </div>
-        <div class="md-card-content">
-           <div id="form-action">
-           <div id="import" aria-hidden="false"></div>
-              @yield('content_add')
-           </div>
+                @yield('uktab')         
+            <div class="md-card-content">
+            <div id="form-action">
+            <div id="import" aria-hidden="false"></div>
+                @yield('content_add')
+            </div>
+            </div>
+            <div class="md-card-content">
+                @yield('tabs')
+            </div>           
         </div>
-        <div class="md-card-content">
-             @yield('tabs')
-        </div>
-    </div>
   </div>
   </div>
     @stack('context_action')

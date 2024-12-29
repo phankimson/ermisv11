@@ -27,8 +27,7 @@
 <div class="uk-grid uk-tab uk-width-1-1">
     @foreach($menu_tab as $m)
     <li class={{($m->id== $menu )? 'uk-active' : ''}}><a href="{{url($lang.'/'.$m->link)}}">{{ $lang=='vi'? $m->name : $m->name_en}}</a></li>
-    @endforeach
-   
+    @endforeach   
     <li class="uk-disabled"><a href="#">@lang('global.expand')</a></li>
 </div>      
 @endsection
