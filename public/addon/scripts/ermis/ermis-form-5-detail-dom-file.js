@@ -13,32 +13,16 @@ var Ermis = function() {
         ErmisKendoStartEndDroplistTemplate("#start_a","#end_a","dd/MM/yyyy","#fast_date_a","contains");
         //DroplistTemplate
         jQuery('.droplist.read').each(function() {
-            ErmisKendoDroplistReadTemplate(this, "contains");
-          }); 
-          ErmisKendoDroplistTemplate(".droplist:not(.read)", "contains");
+        ErmisKendoDroplistReadTemplate(this, "contains");
+        }); 
+        ErmisKendoDroplistTemplate(".droplist:not(.read)", "contains");
         //DatePickerTemplate
         ErmisKendoDatePickerTemplate(".date-picker","dd/MM/yyyy");
         //ContextMenu
         ErmisKendoContextMenuTemplate("#context-menu", "#form-action");
-        // NumbericTemplate
-        ErmisKendoNumbericTemplate(".number", "n" + Ermis.decimal, null, null, null, 1);
-        ErmisKendoNumbericTemplate(".number-price", "n" + Ermis.decimal, null, null, null, 1000);
         // KendoWindowTemplate
-        $kWindow = ErmisKendoWindowTemplate(myWindow, "600px", "");
-        $kWindow1 = ErmisKendoWindowTemplate(myWindow1, "800px", "");
-        $kWindow2 = ErmisKendoWindowTemplate(myWindow2, "1000px", "");
-        $kWindow3 = ErmisKendoWindowTemplate(myWindow3, "1000px", "");
-        $kWindow4 = ErmisKendoWindowTemplate(myWindow4, "400px", "");
-        $kWindow5 = ErmisKendoWindowTemplate(myWindow5, "800px", "");
-        $kWindow.title(Lang.get('acc_voucher.search_for_object'));
-        $kWindow1.title(Lang.get('acc_voucher.search_for_goods'));
-        $kWindow2.title(Lang.get('acc_voucher.reference'));
-        $kWindow3.title(Lang.get('acc_voucher.search_for_voucher'));
-        $kWindow4.title(Lang.get('acc_voucher.attach'));
-        $kWindow5.title(Lang.get('acc_voucher.change_voucher'));
-        // Grid Vat
-        ErmisKendoGridTemplate3($kGridVat, Ermis.data, Ermis.aggregate, Ermis.field_tax, Ermis.page_size , true, jQuery(window).height() * 0.5, Ermis.column_grid);
-        initKendoGridVatChange();
+        $kWindow = ErmisKendoWindowTemplate(myWindow, "600px", "");        
+        $kWindow.title(Lang.get('acc_voucher.search_for_object'));        
         // Grid
         ErmisKendoGridTemplate3($kGrid, Ermis.data, Ermis.aggregate, Ermis.field, Ermis.page_size , {
             confirmation: false
@@ -875,18 +859,6 @@ var Ermis = function() {
 
     var initFilterForm = function() {
         $kWindow.open();
-    };
-    var initBarcodeForm = function() {
-        $kWindow1.open();
-    };
-    var initReferenceForm = function() {
-        $kWindow2.open();
-    };
-    var initVoucherForm = function() {
-        $kWindow3.open();
-    };
-    var initAttachForm = function() {
-        $kWindow4.open();
     };
     var initVoucherChangeForm = function() {
         if(Ermis.voucher.change_voucher == 1){
