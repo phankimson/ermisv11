@@ -747,6 +747,29 @@ var ErmisKendoGridCheckboxTemplate1 = function($kGrid, data, height, pageSize, c
     grid.thead.on("click", ".k-checkbox", onClick);
 
 }
+
+var ErmisKendoGridCheckboxTemplate2 = function($kGrid, data, height, pageSize, column, onChange, onDataBound, get) {
+    $kGrid.kendoGrid({
+        dataSource: {
+            pageSize: pageSize,
+            data: data,
+            schema: {
+                model: {
+                    id: get
+                }
+            }
+        },
+        dataBound: onDataBound,
+        pageable: false,
+        scrollable: true,
+        persistSelection: true,
+        sortable: true,
+        height: height,
+        change: onChange,
+        columns: column
+    });
+
+}
 var ErmisKendoGridTemplate5 = function($kGrid, height, dataSource, scrollable, sortable, pageable, columns) {
     var grid = $kGrid.kendoGrid({
         height: height,

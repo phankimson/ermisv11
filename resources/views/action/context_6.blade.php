@@ -3,9 +3,6 @@
      <a class="new_row"><i class="md-icon material-icons" data-uk-tooltip title="@lang('action.new_row')  (Enter)">playlist_add</i>@lang('action.new_row')</a>
  </li>
  <li>
-     <a class="copy_row"><i class="md-icon material-icons" data-uk-tooltip title="@lang('action.copy_row')  (Ins)">playlist_add_check</i>@lang('action.copy_row')</a>
- </li>
- <li>
      <a class="close_row"><i class="md-icon material-icons" data-uk-tooltip title="@lang('action.close_row') (Esc)">playlist_play</i>@lang('action.close_row')</a>
  </li>
  <li>

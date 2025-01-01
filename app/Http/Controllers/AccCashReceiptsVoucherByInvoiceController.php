@@ -13,6 +13,7 @@ class AccCashReceiptsVoucherByInvoiceController extends Controller
 {
   protected $url;
   protected $key;
+  protected $menu_invoice;
   protected $menu;
   protected $type;
   protected $print;
@@ -25,7 +26,8 @@ class AccCashReceiptsVoucherByInvoiceController extends Controller
      $this->type = 1; // 1 Thu tiền mặt theo hóa đơn
      $this->type_object = 2; // 2 Khách hàng (VD : 2,3 nếu nhiều đối tượng)
      $this->key = "cash-receipts-voucher";
-     $this->menu = Menu::where('code', '=', $this->key."-by-invoice")->first();
+     $this->menu_invoice = Menu::where('code', '=', $this->key."-by-invoice")->first();
+     $this->menu = Menu::where('code', '=', $this->key)->first();
      $this->print = 'PT%';
      $this->document = 'DOCUMENT_TAX';
  }
@@ -36,7 +38,7 @@ class AccCashReceiptsVoucherByInvoiceController extends Controller
     $menu_tab =  Menu::get_menu_like_code($this->key.'%');   
     $voucher_list = AccNumberVoucher::all();
     $print = AccPrintTemplate::get_code($this->print);
-    return view('acc.receipt_cash_voucher_by_invoice',[ 'key' => $this->key , 'voucher' => $voucher, 'menu'=>$this->menu->id,  'menu_tab' => $menu_tab,                                        
+    return view('acc.receipt_cash_voucher_by_invoice',[ 'key' => $this->key , 'voucher' => $voucher, 'menu'=>$this->menu_invoice->id,  'menu_tab' => $menu_tab,                                        
                                         'voucher_list' => $voucher_list ,
                                         'ot' => $ot,
                                         'sg' => $ot,

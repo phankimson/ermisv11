@@ -137,15 +137,16 @@
                             { "field" : "invoice_form","title" : "@lang('acc_voucher.invoice_form')"  ,width : '150px'},
                             { "field" : "invoice_symbol","title" : "@lang('acc_voucher.invoice_symbol')"  ,width : '150px'},
                             { "field" : "invoice","title" : "@lang('acc_voucher.invoice')"  ,width : '150px'},
+                            { "field" : "subject_id",hidden: true },
                             { "field" : "subject_code","title" : "@lang('acc_voucher.subject_code')"  ,width : '150px'},
                             { "field" : "subject_name","title" : "@lang('acc_voucher.subject_name')"  ,width : '150px'},
                             { "field" : "tax_code","title" : "@lang('acc_voucher.tax_code')"  ,width : '150px'},
                             { "field" : "address","title" : "@lang('acc_voucher.address')"  ,width : '150px'},
                             { "field" : "description","title" : "@lang('acc_voucher.description')",width : '200px'  },
-                            { "field" : "vat_type","title" : "@lang('acc_voucher.vat_type')",width : '200px'  },
+                            { "field" : "vat_type","title" : "@lang('acc_voucher.vat_type')",width : '200px',"url" : "{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.vat-tax').'?type=1'}}",editor: ItemsReadDropDownEditor , "select" : "OnchangeItem" ,template : "#=getUrlAjaxItemName(vat_type,'vat_type')#" },
                             { "field" : "amount","title" : "@lang('acc_voucher.amount')" ,type:"number",format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" ,aggregates: ['sum'],footerTemplate: "<p id='amount_total_tax'>#=FormatNumberDecimal(sum,{{$decimal}})#</p>" ,width : '150px'},
-                            { "field" : "tax","title" : "@lang('acc_voucher.tax')" ,"url" : "{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.vat-tax').'?type=1'}}",editor: ItemsReadDropDownEditor , "select" : "OnchangeItem" ,template : "#=getUrlAjaxItemName(tax,'tax')#"  ,"width" : "150px"},
-                            { "field" : "total_amount","title" : "@lang('acc_voucher.total_amount')" ,format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" ,aggregates: ['sum'] , template: "#=calculateAmountTax(amount, tax.value, {{$decimal}} )#" ,footerTemplate: "<p id='total_amount'>#=calculateTotalVatAggregate({{$decimal}})#</p>" ,width : '150px'}];
+                            { "field" : "tax","title" : "@lang('acc_voucher.tax')" ,type:"number",format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" ,aggregates: ['sum'],footerTemplate: "<p id='total_tax'>#=FormatNumberDecimal(sum,{{$decimal}})#</p>" ,width : '150px'},
+                            { "field" : "total_amount","title" : "@lang('acc_voucher.total_amount')" ,format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" ,aggregates: ['sum'] , template: "#=calculateAmountTax(amount, tax, {{$decimal}} )#" ,footerTemplate: "<p id='total_amount'>#=calculateTotalVatAggregate({{$decimal}})#</p>" ,width : '150px'}];
 
 
         Ermis.columns    = [{"field" :"id", hidden : true},
@@ -156,7 +157,7 @@
                             { "field" : "amount","title" : "@lang('acc_voucher.amount')" ,"width" : "200px",format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" ,aggregates: ['sum'],footerTemplate: "<p id='amount_total'>#=FormatNumberDecimal(sum,{{$decimal}})#</p>" },
                             { "field" : "rate","title" :"@lang('acc_voucher.rate')",format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}","width" : "150px"  },
                             { "field" : "amount_rate","title" : "@lang('acc_voucher.amount_rate')" ,"width" : "200px",format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" ,aggregates: ['sum'] , template: "#=calculateAmountRate(amount, rate, {{$decimal}} )#" ,footerTemplate: "<p id='amount_rate_total'>#=calculateTotalRateAggregate({{$decimal}})#</p>" },
-                            { "field" : "subject_id", hidden: true ,"set" : "6" },
+                            { "field" : "subject_id", hidden: true ,"set" : "6" , "group" : "1"},
                             { "field" : "subject_code","title" : "@lang('acc_voucher.subject_code')"  ,"url" : "{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.object')}}" ,width : '150px',editor: ItemsReadDropDownEditor , "select" : "OnchangeGroup" ,template : "#=getUrlAjaxItemName(subject_code,'subject_code')#" ,"set" : "2" , "group" : "1" },
                             { "field" : "subject_name","title" : "@lang('acc_voucher.subject_name')"  ,width : '150px',"set" : "6" ,  "group" : "1"},
                             { "field" : "department","title" :"@lang('acc_voucher.department')", "url" : "{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.department')}}" ,editor: ItemsReadDropDownEditor , "select" : "OnchangeItem" ,template : "#=getUrlAjaxItemName(department,'department')#"  ,"width" : "150px" ,"set" : "2" },
@@ -204,15 +205,16 @@
             tax_code:     {field : "tax_code"},
             address:     {field : "address"},
             description:     {field : "description"},
-            vat_type:     {field : "vat_type"},
+            vat_type:     {field : "vat_type", defaultValue: DefaultReadValueField(), validation: { required: true }},
             amount:     {field : "amount",type:"number" , defaultValue : 0, validation: { min: 0, required: true }},
-            tax:     {field : "tax", defaultValue: DefaultReadValueField() , validation: { required: true }},
+            tax:     {field : "tax" ,type:"number"},
             total_amount:     {field : "total_amount",type:"number" , defaultValue : 0, validation: { min: 0, required: true }},
 
         };
         Ermis.aggregate = [ { field: "description", aggregate: "count" },
                             { field: "amount", aggregate: "sum" },
                             { field: "amount_rate", aggregate: "sum" },
+                            { field: "tax", aggregate: "sum" },
                             { field: "total_amount", aggregate: "sum" }];
     });
 </script>

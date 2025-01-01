@@ -83,7 +83,6 @@
 @endpush
 
 @push('context_action_grid')
-@include('action.context_6')
 @endpush
 
 @section('scripts_up')
@@ -108,31 +107,21 @@
                                 {"field" : "invoice_symbol", hidden: true},]
 
       
-        Ermis.columns    = [{"field" :"id", hidden : true},
+        Ermis.columns    = [{title: 'Select All',headerTemplate: '<input type="checkbox" id="header-chb-reference" class="k-checkbox reference"><label class="k-checkbox-label" for="header-chb-reference"></label>',template: function(dataItem){return '<input type="checkbox" id="'+ dataItem.id+'" class="k-checkbox reference"><label class="k-checkbox-label" for="'+ dataItem.id +'"></label>'},width: 50},
+                            {"field" :"id", hidden : true},
                             { "field" : "invoice","title" : "@lang('acc_voucher.invoice')"  ,width : '150px'},
-                            { "field" : "description","title" : "@lang('acc_voucher.description')",width : '200px'  },
-                            { "field" : "total_amount","title" : "@lang('acc_voucher.total_amount')" ,format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" ,aggregates: ['sum'] , template: "#=calculateAmountTax(amount, tax.value, {{$decimal}} )#" ,footerTemplate: "<p id='total_amount'>#=calculateTotalVatAggregate({{$decimal}})#</p>" ,width : '150px'}];
+                            { "field" : "date_invoice","title" : "@lang('acc_voucher.date_invoice')",width : '150px'  },
+                            { "field" : "description","title" : "@lang('acc_voucher.description')",width : '200px'  },                           
+                            { "field" : "total_amount","title" : "@lang('acc_voucher.total_amount')" ,format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" ,aggregates: ['sum'] ,footerTemplate: "<p id='total_amount'>#={{$decimal}}#</p>" ,width : '150px'},
+                            { "field" : "payment","title" : "@lang('acc_voucher.payment')" ,format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" ,aggregates: ['sum'] ,footerTemplate: "<p id='total_payment'>#={{$decimal}}#</p>" ,width : '150px'}];
                       
         Ermis.field = {
-            id : {field :"id" ,defaultValue: 0},
-            description:     {field : "description"},
-            amount:     {field : "amount",type:"number" , defaultValue : 0 , validation: { min: 1, required: true }},
-            rate:     {field : "rate",type:"number", defaultValue : parseInt(jQuery(".rate").val()) , validation: { min: 0, required: true }},
-            amount_rate:     {field : "amount_rate",type:"number" , defaultValue : 0 , validation: { min: 1, required: true }},
-            case_code: { field : "case_code", defaultValue: DefaultReadValueField() },
-            cost_code: { field : "cost_code", defaultValue: DefaultReadValueField() },
-            statistical_code: { field : "statistical_code", defaultValue: DefaultReadValueField() },
-            subject_code: { field : "subject_code", defaultValue: DefaultReadValueField() },
-            //work_code: { field : "work_code" ,defaultValue: DefaultValueField() },
-            work_code: { field : "work_code" ,defaultValue: DefaultReadValueField() },
-            department: { field : "department", defaultValue: DefaultReadValueField()  },
-            bank_account: { field : "bank_account", defaultValue: DefaultReadValueField()  },
-            debit: { field : "debit", defaultValue: RequestURL("{!!route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.account-voucher-default').'?menu='.$menu.'&type=1'!!}"), validation: { min: 1 ,required: true }},
-            credit: { field : "credit", defaultValue: RequestURL("{!!route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.account-voucher-default').'?menu='.$menu.'&type=2'!!}"), validation: { min: 1, required: true }},
-            accounted_fast: { field : "accounted_fast",defaultValue: DefaultReadValueField() },
-            lot_number:     {field : "lot_number"},
-            contract:     {field : "contract"},
-            order:     {field : "order"},
+            id : {field :"id" ,defaultValue: 0,editable: false},
+            invoice:     {field : "invoice",editable: false},
+            date_invoice:     {field : "date_invoice",editable: false},
+            description:     {field : "description",editable: false},
+            total_amount:     {field : "total_amount",type:"number" , defaultValue : 0 , validation: { min: 1, required: true },editable: false},
+            payment:     {field : "payment",type:"number" , defaultValue : 0 , validation: { min: 1, required: true }},           
         };
 
         Ermis.aggregate = [ { field: "description", aggregate: "count" },

@@ -280,6 +280,7 @@ class AccCashReceiptsVoucherController extends Controller
              $tax->invoice_form = $x->invoice_form;
              $tax->invoice_symbol = $x->invoice_symbol;
              $tax->invoice = $x->invoice;
+             $tax->subject_id = $x->subject_id;
              $tax->subject_code = $x->subject_code;
              $tax->subject_name = $x->subject_name;
              $tax->tax_code = $x->tax_code;

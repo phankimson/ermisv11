@@ -24,9 +24,7 @@ var Ermis = function() {
         $kWindow = ErmisKendoWindowTemplate(myWindow, "600px", "");        
         $kWindow.title(Lang.get('acc_voucher.search_for_object'));        
         // Grid
-        ErmisKendoGridTemplate3($kGrid, Ermis.data, Ermis.aggregate, Ermis.field, Ermis.page_size , {
-            confirmation: false
-        }, jQuery(window).height() * 0.5, Ermis.columns);
+        ErmisKendoGridCheckboxTemplate2($kGrid, Ermis.data,jQuery(window).height() * 0.5,Ermis.page_size,Ermis.columns,function(){},function(){},'id')     
         initKendoGridChange();
     }
    
@@ -43,7 +41,6 @@ var Ermis = function() {
                     SetDataAjax(data.columns, result.data);
                     initLoadGrid(result.data);
                     sessionStorage.dataId = result.data.id;
-                    initKendoGridVatChange();
                     initKendoGridChange();
                     //$kGrid.addClass('disabled');
                     //calculatePriceBind(result.data.detail);
@@ -58,7 +55,6 @@ var Ermis = function() {
 
     var initLoadGrid = function(dataLoad){
           var grid = $kGrid.data("kendoGrid");
-          var grid_vat = $kGridVat.data("kendoGrid");
           ds = new kendo.data.DataSource({
               data: dataLoad.detail,
               schema: {
@@ -69,18 +65,7 @@ var Ermis = function() {
               },
               aggregate: Ermis.aggregate
           });
-          grid.setDataSource(ds);
-          dataSource = new kendo.data.DataSource({
-              data: dataLoad.tax,
-              schema: {
-                  model: {
-                      fields: Ermis.field_tax,
-                      id: "id"
-                  }
-              },
-              aggregate: Ermis.aggregate
-          });
-          grid_vat.setDataSource(dataSource);
+          grid.setDataSource(ds);          
     }
 
     var initBindData = function() {
@@ -112,16 +97,6 @@ var Ermis = function() {
     };
 
 
-    var initKendoGridVoucher = function() {
-        ErmisKendoGridVoucherTemplate($kGridVoucher, {
-            data: []
-        }, "row", jQuery(window).height() * 0.5, true, Ermis.columns_voucher);
-
-        $kGridVoucher.dblclick(function(e) {
-            initChooseVoucher(e);
-        });
-
-    };
 
     var initChooseVoucher = function(e) {
         ErmisTemplateEvent1(e, function() {
@@ -220,10 +195,7 @@ var Ermis = function() {
       if (type == 0) {
           $kGridTab = $kGrid;
           $kGridTab_column = Ermis.columns;
-      } else {
-          $kGridTab = $kGridVat;
-          $kGridTab_column = Ermis.column_grid;
-      };
+      }
     }
 
     var initScanBarcode = function(e) {
@@ -259,123 +231,6 @@ var Ermis = function() {
         }
     }
 
-    var initKendoGridVatChange = function() {
-        var gridVat = $kGridVat.data("kendoGrid");
-        gridVat.dataSource.bind("change", function(e) {
-          var item = e.items[0];         
-            // checks to see if the action is a change and the column being changed is what is expected
-            if (e.action === "itemchange" && (e.field === "amount" || e.field === "tax")) {
-                // here you can access model items using e.items[0].modelName;
-                var tax_value = (item.tax.value != undefined) ? item.tax.value : item.tax.code;
-                item.total_amount = (item.amount * tax_value) / 100;
-            }else if(e.action === "itemchange" && e.field === "total_amount" ){
-              // here you can access model items using e.items[0].modelName;
-              var tax_value = (item.tax.value != undefined) ? item.tax.value : item.tax.code;
-              item.amount = (item.total_amount / tax_value) * 100;
-            }
-            // finally, refresh the grid to show the changes
-            gridVat.refresh();
-        });
-
-        jQuery("input[name='description']").on("change", function(e) {
-            AddChangeDescriptionResult(jQuery(e.target).val());
-        });
-    }
-
-    var initKendoGridBarcode = function() {
-        var grid = $kGridBarcode.kendoGrid({
-            dataSource: {
-                data: []
-            },
-            selectable: "multiple, row",
-            height: jQuery(window).height() * 0.5,
-            sortable: true,
-            pageable: true,
-            filterable: true,
-            columns: Ermis.columns_barcode
-        }).data("kendoGrid");
-        grid.thead.kendoTooltip({
-            filter: "th",
-            content: function(e) {
-                var target = e.target; // element for which the tooltip is shown
-                return $(target).text();
-            }
-        });
-
-        grid.table.on("click", ".k-checkbox", selectRow);
-        //bind click event to the checkbox
-        //grid.table.on("click", ".k-checkbox" , selectRow);
-        jQuery('#header-chb-b').change(function(ev) {
-            var checked = ev.target.checked;
-            $kGridBarcode.find('.k-checkbox').not("#header-chb-b").each(function(idx, item) {
-                  if (checked) {
-                      if (!$(item).is(':checked')) {
-                          $(item).click();
-                      }
-                  } else {
-                      if ($(item).is(':checked')) {
-                          $(item).click();
-                      }
-                  }
-            });
-
-        });
-
-        jQuery(".choose_barcode").bind("click", function() {
-            var checked = [];
-            for (var i of checkedData) {
-                var grid = $kGrid.data("kendoGrid");
-                var dataItem = grid.dataSource.get(i.id);
-                if (dataItem) {
-                    var row = grid.tbody.find("tr[data-uid='" + dataItem.uid + "']");
-                    var selectedItem = grid.dataItem(row);
-                    selectedItem.set("quantity", dataItem.quantity + 1);
-                } else {
-                    i.quantity = 1;
-                    grid.dataSource.insert(0, i);
-                    $kGridBarcode.find('.k-checkbox[id="' + i.id + '"]').click();
-                }
-            }
-            $kWindow1.close();
-            checkedData = [];
-        });
-        var checkedData = [];
-
-        //on click of the checkbox:
-        function selectRow() {
-            var checked = this.checked,
-                row = $(this).closest("tr"),
-                grid = $kGridBarcode.data("kendoGrid"),
-                dataItem = grid.dataItem(row);
-            if (checked) {
-                checkedData.push(dataItem)
-                //-select the row
-                row.addClass("k-state-selected");
-            } else {
-                checkedData = checkedData.filter(x => x.id != dataItem.id)
-                //-remove selection
-                row.removeClass("k-state-selected");
-            }
-        }
-        jQuery("#barcode").on("blur", initScanBarcode)
-
-    };
-
-    var initKendoGridReference = function() {
-        var array = [];
-        ErmisKendoGridCheckboxTemplate($kGridReference, [] , jQuery(window).height() * 0.5,Ermis.page_size_1, "multiple, row", "reference","id", Ermis.columns_reference, function(checkedIds) {
-            reference_by = [];
-            array = $.map(checkedIds, function(value, index) {
-                reference_by[index] = value.id;
-                return [value.voucher];
-            });
-            jQuery("input[name='reference']").val(array);
-            $kWindow2.close();
-        });
-
-    };
-
-
     var initKendoGridChange = function() {
         var grid = $kGrid.data("kendoGrid");
         grid.dataSource.bind("change", function(e) {
@@ -393,63 +248,7 @@ var Ermis = function() {
          grid.refresh();
     }
 
-    var initKendoUiContextMenuGrid = function() {
-        jQuery("#context-menu-grid").kendoContextMenu({
-            target: "#grid,#grid_vat",
-            select: function(e) {
-                var $this = e;
-                var grid = $kGridTab.data("kendoGrid");
-                var row = $kGridTab.find('tr.k-state-selected');
-                var dataItem = $kGridTab.data("kendoGrid").dataSource.data()[0];
-                if (type == 0) {
-                    var dataGrid = dataDefaultGrid.data;
-                } else {
-                    var dataGrid = dataDefaultGrid.vat;
-                };
-                if (jQuery($this.item).children().hasClass('remove_row')) {
-                    $.when(KendoUiConfirm(Lang.get('messages.are_you_sure'), Lang.get('global.message'))).then(function(confirmed) {
-                        if (confirmed) {
-                            grid.removeRow(row);
-                        }
-                    });
-                } else if (jQuery($this.item).children().hasClass('copy_row')) {
-                    if (dataItem) {
-                        grid.dataSource.add(dataItem.toJSON());
-                    } else {
-                        kendo.alert(Lang.get('messages.no_row'));
-                    }
-                } else if (jQuery($this.item).children().hasClass('new_row')) {
-                  if(dataGrid.hasOwnProperty("description") || dataGrid.hasOwnProperty("subject_code")){
-                     grid.dataSource.add(dataGrid);
-                  }else{
-                     grid.addRow();
-                  }
-                } else if (jQuery($this.item).children().hasClass('close_row')) {
-                    grid.cancelRow();
-                } else if (jQuery($this.item).children().hasClass('remove_all_row')) {
-                    $.when(KendoUiConfirm(Lang.get('messages.are_you_sure'), Lang.get('global.message'))).then(function(confirmed) {
-                        if (confirmed) {
-                            grid.cancelChanges(); // CLOSE ALL
-                        }
-                    });
-                }
-            }
-        });
-        $kGrid.on("mousedown", "tr[role='row']", function(e) {
-            if (e.which === 3) {
-                $kGrid.find(" tbody tr").removeClass("k-state-selected");
-                jQuery(this).addClass("k-state-selected");
-            }
-        });
-        $kGridVat.on("mousedown", "tr[role='row']", function(e) {
-            if (e.which === 3) {
-                $kGridVat.find(" tbody tr").removeClass("k-state-selected");
-                jQuery(this).addClass("k-state-selected");
-            }
-        });
-    };
-
-
+    
     var initStatus = function(flag) {
         shortcut.remove(key + "A");
         shortcut.remove(key + "X");
@@ -473,9 +272,7 @@ var Ermis = function() {
             initChooseVoucher(e);
         });
         $kGrid.addClass('disabled');
-        $kGridVat.addClass('disabled');
         dataDefaultGrid.data = initGetDefaultKeyArray(Ermis.field);
-        dataDefaultGrid.vat = initGetDefaultKeyArray(Ermis.field_tax);
         if (flag === 1) { //ADD
             sessionStorage.removeItem("dataId");
             jQuery('.cancel,.save,.choose,.cancel-window,.filter,.reference,.import,.advance_teacher,.advance_employee').removeClass('disabled');
@@ -484,20 +281,13 @@ var Ermis = function() {
             jQuery('.choose').on('click', initChoose);
             jQuery('.cancel-window').on('click', initClose);
             jQuery('.filter').on('click', initFilterForm);
-            jQuery('.barcode').on('click', initBarcodeForm);
-            jQuery('.reference').on('click', initReferenceForm);
-            jQuery('.attach').on('click', initAttachForm);
             jQuery('.voucher-change').on('click', initVoucherChangeForm);
-            jQuery('.import').on('click', initImport);
             shortcut.add(key + "S", function(e) {
                 initSave(e);
             });
             shortcut.add(key + "C", function(e) {
                 initCancel(e);
-            });
-            shortcut.add(key + "I", function(e) {
-                initImport(e);
-            });
+            });           
             jQuery('input,textarea').removeClass('disabled');
             jQuery('.k-button').removeClass('disabled');
             jQuery(".droplist").removeClass('disabled');
@@ -511,10 +301,6 @@ var Ermis = function() {
             jQuery(".voucher").val(voucher);
             $kGrid.data('kendoGrid').dataSource.data([]);
             $kGrid.removeClass('disabled');
-            $kGridVat.data('kendoGrid').dataSource.data([]);
-            $kGridVat.removeClass('disabled');
-            $kGridReference.data('kendoGrid').dataSource.data([]);
-            $kGridBarcode.data('kendoGrid').dataSource.data([]);
             shortcut.add(key + "T", function(e) {
                 initDeleteRowAll(e);
             });
@@ -543,16 +329,12 @@ var Ermis = function() {
             jQuery('.forward').on('click', initForward);
             jQuery('.delete').on('click', initDelete);
             $kGrid.addClass('disabled');
-            $kGridVat.addClass('disabled');
             shortcut.remove(key + "T");
         } else if (flag === 3) { //EDIT
             jQuery('.cancel,.save,.filter,.reference,.advance_teacher,.advance_employee').removeClass('disabled');
             jQuery('.cancel').on('click', initCancel);
             jQuery('.save').on('click', initSave);
             jQuery('.filter').on('click', initFilterForm);
-            jQuery('.barcode').on('click', initBarcodeForm);
-            jQuery('.reference').on('click', initReferenceForm);
-            jQuery('.attach').on('click', initAttachForm);
             jQuery('.voucher-change').on('click', initVoucherChangeForm);
             jQuery('.cancel-window').on('click', initClose);
             shortcut.add(key + "S", function(e) {
@@ -569,7 +351,6 @@ var Ermis = function() {
             jQuery('input:checkbox').parent().removeClass('disabled');
             jQuery('.date-picker,.month-picker').removeClass('disabled');
             $kGrid.removeClass('disabled');
-            $kGridVat.removeClass('disabled');
             shortcut.add(key + "T", function(e) {
                 initDeleteRowAll(e);
             });
@@ -608,8 +389,6 @@ var Ermis = function() {
             jQuery('input').not('[type=radio]').not(".date-picker,.start,.end,.month-picker,.voucher,.fast_date,.rate,.no_clear").val("");
             $kGrid.data('kendoGrid').dataSource.data([]);
             $kGrid.addClass('disabled');
-            $kGridVat.data('kendoGrid').dataSource.data([]);
-            $kGridVat.addClass('disabled');
             shortcut.remove(key + "R");
             shortcut.remove(key + "T");
         } else if (flag === 5) { //BIND
@@ -677,16 +456,12 @@ var Ermis = function() {
             jQuery(".date-picker,.date-value").val(kendo.toString(kendo.parseDate(new Date()), 'dd/MM/yyyy'));
             jQuery(".voucher").val(voucher);
             $kGrid.data('kendoGrid').dataSource.data([]);
-            $kGridVat.data('kendoGrid').dataSource.data([]);
         }else if (flag === 8) { // Copy
           sessionStorage.removeItem("dataId");
           jQuery('.cancel,.save,.filter,.reference,.advance_teacher,.advance_employee').removeClass('disabled');
           jQuery('.cancel').on('click', initCancel);
           jQuery('.save').on('click', initSave);
           jQuery('.filter').on('click', initFilterForm);
-          jQuery('.barcode').on('click', initBarcodeForm);
-          jQuery('.reference').on('click', initReferenceForm);
-          jQuery('.attach').on('click', initAttachForm);
           jQuery('.voucher-change').on('click', initVoucherChangeForm);
           jQuery('.cancel-window').on('click', initClose);
           shortcut.add(key + "S", function(e) {
@@ -703,7 +478,6 @@ var Ermis = function() {
           jQuery('input:checkbox').parent().removeClass('disabled');
           jQuery('.date-picker,.month-picker').removeClass('disabled');
           $kGrid.removeClass('disabled');
-          $kGridVat.removeClass('disabled');
           shortcut.add(key + "T", function(e) {
               initDeleteRowAll(e);
           });
@@ -748,18 +522,10 @@ var Ermis = function() {
         var grid = $kGrid.data("kendoGrid");
         var r = grid.dataSource.data();
         dataDefaultGrid.data["id"] = ""; 
-        var grid_vat = $kGridVat.data("kendoGrid");
-        var rv = grid_vat.dataSource.data();
-        dataDefaultGrid.data["id"] = ""; 
-        dataDefaultGrid.vat["id"] = ""; 
         jQuery.each(r, function(l, k) {
               k["id"] = "";
           });
-          grid.refresh();   
-          jQuery.each(rv, function(l, k) {
-            k["id"] = "";
-        });
-        grid_vat.refresh();           
+          grid.refresh();       
     }
 
     var initChangeAuto = function() {
@@ -788,40 +554,6 @@ var Ermis = function() {
         $auto.bind("change", OnChangeAuto);
     }
 
-    var initImport = function (e) {
-        ErmisTemplateEvent0(e, $import,
-        function () {
-            $import.data("kendoDialog").open();
-        },
-        function () {
-              initKendoUiImportDialog();
-        });
-    };
-    
-      var initKendoUiImportDialog = function () {      
-        $import = ErmisKendoDialogTemplate("#import","400px","Import",'<form id="import-form" enctype="multipart/form-data" role="form" method="post"><input name="files" id="files" type="file" /></form>','Import File','Download File',"Close",onImportFile,onDownloadFile);
-        ErmisKendoUploadTemplate("#files", false);
-        function onImportFile(e) {
-          var arr = {};
-          arr.action = 'import';
-          arr.com = Chat.com;
-          arr.key = Ermis.link;
-          ErmisTemplateAjaxPostAdd3(e,'#import-form',Ermis.link+'-import',arr,
-        function(results){
-            SetDataAjax(data.columns, results.data);    
-            initLoadGrid(results.data[0]);   
-            AddChooseObjectResult(results.data['object']);
-          },
-         function(){},
-         function(results){
-           kendo.alert(results.message);
-         });
-        }
-        function onDownloadFile(e) {
-            var url = Ermis.link+'-DownloadExcel';
-            window.open(url);
-        }  
-    };
 
     var initChangeCurrency = function() {
         function OnChangeCurrency(e) {
@@ -867,38 +599,6 @@ var Ermis = function() {
         $kWindow5.open();
     };
 
-    var initGetDataBarcode = function() {
-        jQuery('#search_barcode').on('click', function(e) {
-            var filter = GetAllDataForm('#form-window-barcode', 2);
-            var obj = GetDataAjax(filter.columns, filter.elem);
-            var postdata = {
-                data: JSON.stringify(obj)
-            };
-            ErmisTemplateAjaxPost0(e, postdata, Ermis.link + '-load', function(result) {
-                ErmisKendoGridAddData($kGridBarcode,result.data,Ermis.page_size_1,null);
-            }, function(result) {
-                kendo.alert(result.message);
-            });
-        });
-    };
-
-    var initGetDataReference = function() {
-        jQuery('#get_data').on('click', function(e) {
-            var filter = GetAllDataForm('#form-window-reference', 2);
-            var c = GetDataAjax(filter.columns, filter.elem);
-                c.obj.general_id = sessionStorage.dataId?sessionStorage.dataId:0;
-            var postdata = {
-                data: JSON.stringify(c.obj)
-            };
-            ErmisTemplateAjaxPost0(e, postdata, Ermis.link + '-reference', function(result) {
-                ErmisKendoGridAddData($kGridReference,result.data,Ermis.page_size_1,Ermis.field_reference);
-                initLoadCheckboxGrid(result.data,'reference','reference_by');
-            }, function(result) {
-                kendo.alert(result.message);
-            });
-        });
-    };
-
     var initLoadVoucherChange = function(e){    
         var obj = {};
         obj.id = Ermis.voucher.id;
@@ -915,23 +615,6 @@ var Ermis = function() {
                 kendo.alert(result.message);
             });       
     }
-
-    var initLoadCheckboxGrid = function (data,key,column_check){
-      jQuery.each(data, function(k, m) {
-        $item = jQuery('.k-checkbox.' + key+'#'+m.id);
-            if(m[column_check] != 0){
-              if (!$($item).is(':checked')) {
-                $item.click();
-                reference_by[k] = m.id;
-              }
-            }else{
-              if ($($item).is(':checked')) {
-                  $($item).click();
-              }
-            }
-      });
-    };
-
 
     var initWrite = function(e) {
         ErmisTemplateEvent0(e, Ermis.per.e,
@@ -976,8 +659,6 @@ var Ermis = function() {
     var initSave = function(e) {
         var obj = {};
         obj.detail = $kGrid.data("kendoGrid").dataSource.view();
-        obj.tax = $kGridVat.data("kendoGrid").dataSource.data();
-        obj.reference_by = reference_by;
         var crit1 = initValidationGrid(obj.detail,Ermis.field);
         var crit2 = initValidationGridColumnKey(obj.detail,Ermis.columns);
         var crit = crit1.concat(crit2);
@@ -1222,7 +903,6 @@ var Ermis = function() {
                 var grid = $kGridSubject.data("kendoGrid");
                 var dataItem = grid.dataItem($kGridSubject.find('tr.k-state-selected'));
                 $kWindow.close();
-                AddChooseObjectResult(dataItem);
             } else {
                 kendo.alert(Lang.get('messages.please_select_line_choose'));
             }
@@ -1395,13 +1075,7 @@ var Ermis = function() {
             initChangeAuto();
             initKendoGridSubject();
             initSearchGridSubject();
-            initKendoUiContextMenuGrid();
-            initKendoGridReference();
-            initKendoGridBarcode();
-            initKendoGridVoucher();
             initSearchGridVoucher();
-            initGetDataBarcode();
-            initGetDataReference();
             initBindData();
             initGetStoredArrId();
             initChangeCurrency();

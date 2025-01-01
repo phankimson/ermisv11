@@ -1367,7 +1367,7 @@ function calculateAmountRate(amount, rate, decimal ) {
 function calculateAmountTax(amount, tax, decimal ) {
   var amount_tax = 0;
   if(tax > 0 && tax != ""){
-    amount_tax = (amount * tax)/100;
+    amount_tax = amount + tax
   };
     return kendo.toString(amount_tax, 'n'+decimal);
 };
@@ -1452,8 +1452,7 @@ function calculateTotalVatAggregate(decimal) {
     var data = grid.dataSource.data();
     var total = 0;
     for (var i = 0; i < data.length; i++) {
-      var tax_value = data[i].tax.value != undefined ? data[i].tax.value : data[i].tax.code;
-      total += data[i].amount * tax_value / 100;
+      total += data[i].amount + data[i].tax;
     }
       return kendo.toString(total, 'n'+decimal);
 };
