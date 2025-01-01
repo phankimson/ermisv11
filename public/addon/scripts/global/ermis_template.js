@@ -815,8 +815,8 @@ var ErmisKendoGridTemplate4 = function($kGrid, data, aggregate, pageSize, pageab
     });
 };
 
-var ErmisKendoGridTemplate3 = function($kGrid, data, aggregate, field, pageSize, editable, height, columns) {
-    dataSource = new kendo.data.DataSource({
+var ErmisKendoGridTemplate3 = function($kGrid, data, aggregate, field, pageSize, editable, height, columns, onSave) {
+    dataSource = new kendo.data.DataSource({       
         data: data,
         aggregate: aggregate,
         batch: true,
@@ -831,12 +831,7 @@ var ErmisKendoGridTemplate3 = function($kGrid, data, aggregate, field, pageSize,
     });
     var grid = $kGrid.kendoGrid({
         dataSource: dataSource,
-        save: function(data) {
-            var grid = this;
-            setTimeout(function() {
-                grid.refresh();
-            });
-        },
+        save: onSave,
         editable: editable,
         height: height,
         columns: columns,
@@ -851,6 +846,7 @@ var ErmisKendoGridTemplate3 = function($kGrid, data, aggregate, field, pageSize,
         }
     });
 };
+
 
 var ErmisKendoGridTemplate2 = function($kGrid, dataSource, onChange, selectable, height, pageable, columns) {
     var grid = $kGrid.kendoGrid({

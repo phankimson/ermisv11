@@ -1364,18 +1364,22 @@ function calculateAmountRate(amount, rate, decimal ) {
     return kendo.toString(amount_rate, 'n'+decimal);
 };
 
-function calculateTax(amount, vat_tax, decimal ) {
-  var amount_tax = 0;
-  if(amount > 0 && vat_tax != ""){
-    amount_tax = amount * vat_tax/100;
-  };
-return kendo.toString(amount_tax, 'n'+decimal);
+function calculateTax(amount, vat_tax, decimal , tax = 0) {
+  if(tax == 0){
+    var amount_tax = 0;
+    if(amount > 0 && vat_tax != ""){
+      amount_tax = amount * vat_tax/100;
+    }; 
+  }else{
+    amount_tax = tax;
+  } 
+   return kendo.toString(amount_tax, 'n'+decimal);
 };
 
 function calculateAmountTax(amount, tax, decimal ) {
   var amount_tax = 0;
-  if(amount > 0 && tax != ""){
-    amount_tax = amount + tax
+  if(amount > 0 ){
+    amount_tax = amount + tax;
   };
     return kendo.toString(amount_tax, 'n'+decimal);
 };

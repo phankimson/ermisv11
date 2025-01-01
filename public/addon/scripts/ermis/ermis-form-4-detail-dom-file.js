@@ -37,13 +37,26 @@ var Ermis = function() {
         $kWindow4.title(Lang.get('acc_voucher.attach'));
         $kWindow5.title(Lang.get('acc_voucher.change_voucher'));
         // Grid Vat
-        ErmisKendoGridTemplate3($kGridVat, Ermis.data, Ermis.aggregate, Ermis.field_tax, Ermis.page_size , true, jQuery(window).height() * 0.5, Ermis.column_grid);
+        ErmisKendoGridTemplate3($kGridVat, Ermis.data, Ermis.aggregate, Ermis.field_tax, Ermis.page_size , true, jQuery(window).height() * 0.5, Ermis.column_grid,onSaveVat);
         initKendoGridVatChange();
         // Grid
         ErmisKendoGridTemplate3($kGrid, Ermis.data, Ermis.aggregate, Ermis.field, Ermis.page_size , {
             confirmation: false
-        }, jQuery(window).height() * 0.5, Ermis.columns);
+        }, jQuery(window).height() * 0.5, Ermis.columns,onSave);
         initKendoGridChange();
+    }
+
+    var onSave = function(data){  
+        var grid = this;
+            setTimeout(function() {
+                grid.refresh();
+            });        
+    }
+
+    var onSaveVat = function(data){        
+            if (data.values.amount) {
+                var test = data.model.set("tax", data.values.amount * data.model.vat_tax/100);
+       }
     }
    
 
@@ -282,12 +295,10 @@ var Ermis = function() {
             // checks to see if the action is a change and the column being changed is what is expected
             if (e.action === "itemchange" && (e.field === "amount" || e.field === "tax")) {
                 // here you can access model items using e.items[0].modelName;
-                var tax_value = (item.tax.value != undefined) ? item.tax.value : item.tax.code;
-                item.total_amount = (item.amount * tax_value) / 100;
+                item.total_amount = item.amount + item.tax
             }else if(e.action === "itemchange" && e.field === "total_amount" ){
               // here you can access model items using e.items[0].modelName;
-              var tax_value = (item.tax.value != undefined) ? item.tax.value : item.tax.code;
-              item.amount = (item.total_amount / tax_value) * 100;
+                item.amount = item.total_amount - item.tax
             }
             // finally, refresh the grid to show the changes
             gridVat.refresh();
@@ -1344,9 +1355,8 @@ var Ermis = function() {
               }else{
                   data[v.field] = dataItem[v.field];
               }
-
-            }
-        });
+            }         
+        });   
     }
 
     OnDataBoundDropDownEditor = function(e){
