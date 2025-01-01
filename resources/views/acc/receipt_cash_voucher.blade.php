@@ -141,11 +141,12 @@
                             { "field" : "subject_code","title" : "@lang('acc_voucher.subject_code')"  ,width : '150px'},
                             { "field" : "subject_name","title" : "@lang('acc_voucher.subject_name')"  ,width : '150px'},
                             { "field" : "tax_code","title" : "@lang('acc_voucher.tax_code')"  ,width : '150px'},
-                            { "field" : "address","title" : "@lang('acc_voucher.address')"  ,width : '150px'},
-                            { "field" : "description","title" : "@lang('acc_voucher.description')",width : '200px'  },
-                            { "field" : "vat_type","title" : "@lang('acc_voucher.vat_type')",width : '200px',"url" : "{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.vat-tax').'?type=1'}}",editor: ItemsReadDropDownEditor , "select" : "OnchangeItem" ,template : "#=getUrlAjaxItemName(vat_type,'vat_type')#" },
+                            { "field" : "address","title" : "@lang('acc_voucher.address')"  ,width : '200px'},
+                            { "field" : "description","title" : "@lang('acc_voucher.description')",width : '200px'},
+                            { "field" : "vat_type","title" : "@lang('acc_voucher.vat_type')",width : '200px',"url" : "{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.vat-tax').'?type=1'}}",editor: ItemsReadDropDownEditor , "select" : "OnchangeGroup" ,template : "#=getUrlAjaxItemName(vat_type,'vat_type')#", "group" : "1" },
+                            { "field" : "vat_tax","title" : "@lang('acc_voucher.vat_tax')",width : '100px', "group" : "1"},
                             { "field" : "amount","title" : "@lang('acc_voucher.amount')" ,type:"number",format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" ,aggregates: ['sum'],footerTemplate: "<p id='amount_total_tax'>#=FormatNumberDecimal(sum,{{$decimal}})#</p>" ,width : '150px'},
-                            { "field" : "tax","title" : "@lang('acc_voucher.tax')" ,type:"number",format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" ,aggregates: ['sum'],footerTemplate: "<p id='total_tax'>#=FormatNumberDecimal(sum,{{$decimal}})#</p>" ,width : '150px'},
+                            { "field" : "tax","title" : "@lang('acc_voucher.tax')" ,type:"number",format: "{0:n{{$decimal}}}",aggregates: ['sum'],template: "#=calculateTax(amount, vat_tax, {{$decimal}} )#",decimals: "{{$decimal}}" ,aggregates: ['sum'],footerTemplate: "<p id='total_tax'>#=calculateVatAggregate({{$decimal}})#</p>" ,width : '150px'},
                             { "field" : "total_amount","title" : "@lang('acc_voucher.total_amount')" ,format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" ,aggregates: ['sum'] , template: "#=calculateAmountTax(amount, tax, {{$decimal}} )#" ,footerTemplate: "<p id='total_amount'>#=calculateTotalVatAggregate({{$decimal}})#</p>" ,width : '150px'}];
 
 
@@ -158,7 +159,7 @@
                             { "field" : "rate","title" :"@lang('acc_voucher.rate')",format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}","width" : "150px"  },
                             { "field" : "amount_rate","title" : "@lang('acc_voucher.amount_rate')" ,"width" : "200px",format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" ,aggregates: ['sum'] , template: "#=calculateAmountRate(amount, rate, {{$decimal}} )#" ,footerTemplate: "<p id='amount_rate_total'>#=calculateTotalRateAggregate({{$decimal}})#</p>" },
                             { "field" : "subject_id", hidden: true ,"set" : "6" , "group" : "1"},
-                            { "field" : "subject_code","title" : "@lang('acc_voucher.subject_code')"  ,"url" : "{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.object')}}" ,width : '150px',editor: ItemsReadDropDownEditor , "select" : "OnchangeGroup" ,template : "#=getUrlAjaxItemName(subject_code,'subject_code')#" ,"set" : "2" , "group" : "1" },
+                            { "field" : "subject_code","title" : "@lang('acc_voucher.subject_code')"  ,"url" : "{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.object')}}" ,width : '150px',editor: ItemsReadDropDownEditor , "select" : "OnchangeGroup" ,template : "#=getUrlAjaxItemName(subject_code,'subject_code','subject_code')#" ,"set" : "2" , "group" : "1" },
                             { "field" : "subject_name","title" : "@lang('acc_voucher.subject_name')"  ,width : '150px',"set" : "6" ,  "group" : "1"},
                             { "field" : "department","title" :"@lang('acc_voucher.department')", "url" : "{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.department')}}" ,editor: ItemsReadDropDownEditor , "select" : "OnchangeItem" ,template : "#=getUrlAjaxItemName(department,'department')#"  ,"width" : "150px" ,"set" : "2" },
                             { "field" : "bank_account","title" :"@lang('acc_voucher.bank_account')","url" : "{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.bank-account')}}" , editor: ItemsReadDropDownEditor , "select" : "OnchangeItem" ,template : "#=getUrlAjaxItemName(bank_account,'bank_account')#"  ,"width" : "150px" ,"set" : "2" },
@@ -206,6 +207,7 @@
             address:     {field : "address"},
             description:     {field : "description"},
             vat_type:     {field : "vat_type", defaultValue: DefaultReadValueField(), validation: { required: true }},
+            vat_tax:     {field : "vat_tax" , defaultValue : 0, editable: false},
             amount:     {field : "amount",type:"number" , defaultValue : 0, validation: { min: 0, required: true }},
             tax:     {field : "tax" ,type:"number"},
             total_amount:     {field : "total_amount",type:"number" , defaultValue : 0, validation: { min: 0, required: true }},

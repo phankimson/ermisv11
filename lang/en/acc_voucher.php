@@ -17,6 +17,7 @@ return [
     "accounting_date"=>"Accounting Date",
     "detail" => "Detail",
     "vat" => "Vat",
+    "vat_tax" => "Vat Tax",
     "subject" => "Subject",
     "subject_code" => "Subject code",
     "subject_name" => "Subject name",

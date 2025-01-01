@@ -5,10 +5,11 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Resources\LangDropDownResource;
+use App\Http\Resources\LangTaxDropDownResource;
 use App\Http\Resources\BankDropDownResource;
 use App\Http\Resources\AccountedFastDropDownResource;
 use App\Http\Resources\ObjectTypeDropDownResource;
-use App\Http\Resources\ObjectDropDownResource;
+use App\Http\Resources\ObjectDropDownListResource;
 use App\Http\Resources\DropDownResource;
 use App\Http\Resources\TaxDropDownResource;
 use App\Http\Resources\DefaultDropDownResource;
@@ -126,7 +127,7 @@ class AccDropDownListController extends Controller
     $default = collect([$this->default]);
     $type = $request->input('type',null); 
     if($type){
-      $data = LangDropDownResource::collection(AccVat::active()->orderBy('code','asc')->get());
+      $data = LangTaxDropDownResource::collection(AccVat::active()->orderBy('code','asc')->get());
     }else{
       $data = TaxDropDownResource::collection(AccVat::active()->orderBy('code','asc')->get());
     }    
@@ -294,7 +295,7 @@ class AccDropDownListController extends Controller
    // Đối tượng
    public function object_dropdown_list(Request $request){
     $default = collect([$this->default]);
-    $data = ObjectDropDownResource::collection(AccObject::active()->orderBy('code','asc')->get());
+    $data = ObjectDropDownListResource::collection(AccObject::active()->orderBy('code','asc')->get());
     $data = $default->merge($data)->values();
     return response()->json($data)->withCallback($request->input('callback'));
   }

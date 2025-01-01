@@ -17,6 +17,7 @@ return [
     "accounting_date"=>"Ngày hạch toán",    
     "detail" => "Chi tiết",
     "vat" => "Thuế",
+    "vat_tax" => "Thuế xuất",
     "subject" => "Đối tượng",
     "subject_code" => "Mã đối tượng",
     "subject_name" => "Tên đối tượng",

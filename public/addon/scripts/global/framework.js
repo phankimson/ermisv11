@@ -1364,9 +1364,17 @@ function calculateAmountRate(amount, rate, decimal ) {
     return kendo.toString(amount_rate, 'n'+decimal);
 };
 
+function calculateTax(amount, vat_tax, decimal ) {
+  var amount_tax = 0;
+  if(amount > 0 && vat_tax != ""){
+    amount_tax = amount * vat_tax/100;
+  };
+return kendo.toString(amount_tax, 'n'+decimal);
+};
+
 function calculateAmountTax(amount, tax, decimal ) {
   var amount_tax = 0;
-  if(tax > 0 && tax != ""){
+  if(amount > 0 && tax != ""){
     amount_tax = amount + tax
   };
     return kendo.toString(amount_tax, 'n'+decimal);
@@ -1455,6 +1463,16 @@ function calculateTotalVatAggregate(decimal) {
       total += data[i].amount + data[i].tax;
     }
       return kendo.toString(total, 'n'+decimal);
+};
+
+function calculateVatAggregate(decimal) {
+  var grid = $kGridVat.data("kendoGrid");
+  var data = grid.dataSource.data();
+  var total = 0;
+  for (var i = 0; i < data.length; i++) {
+    total += data[i].amount * data[i].vat_tax/100;
+  }
+    return kendo.toString(total, 'n'+decimal);
 };
 
 function calculateTotalRateAggregate(decimal) {
@@ -1657,7 +1675,7 @@ function DefaultValueField(){
       };
 
 
-      getUrlAjaxItemName = function(model,field) {
+      getUrlAjaxItemName = function(model,field,crit = 'text') {
         b = field;
         var active = jQuery("#"+b).data("role");
         var url = jQuery("#"+b).data("url");
@@ -1670,7 +1688,7 @@ function DefaultValueField(){
               var result = RequestURL(url+"?value="+model.value);
             }            
             if (result != null) {
-                value = result.text;
+                value = result[crit];
             }else{
               value = '---SELECT---';
             }
