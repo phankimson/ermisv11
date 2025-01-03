@@ -170,7 +170,7 @@
                <tr>
                <td class="row-label"><label>@lang('acc_supplies_goods.vat_tax')</label></td>
                <td>
-               <select class="droplist read large" data-position="4" data-title="@lang('acc_supplies_goods.vat_tax')" data-template="#= FormatDropListRead(vat_tax,'vat_tax') #" data-type="number" data-width="200px"  data-value-field="value" data-text-field="text" data-read-url="{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.vat-tax')}}"  name="vat_tax">
+               <select class="droplist read large" data-position="4" data-title="@lang('acc_supplies_goods.vat_tax')" data-template="#= FormatDropListRead(vat_tax,'vat_tax') #" data-type="number" data-width="200px"  data-value-field="value" data-text-field="text" data-read-url="{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.vat-tax').'?type=1'}}"  name="vat_tax">
                        
                </select>
                </td>

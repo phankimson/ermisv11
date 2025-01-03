@@ -201,6 +201,7 @@
             invoice_form:     {field : "invoice_form"},
             invoice_symbol:     {field : "invoice_symbol"},
             invoice:     {field : "invoice"},
+            subject_id : {field :"subject_id" ,defaultValue: 0},
             subject_code:     {field : "subject_code",editable: false},
             subject_name:     {field : "subject_name"},
             tax_code:     {field : "tax_code"},

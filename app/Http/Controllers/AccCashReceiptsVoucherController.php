@@ -286,10 +286,10 @@ class AccCashReceiptsVoucherController extends Controller
              $tax->tax_code = $x->tax_code;
              $tax->address = $x->address;
              $tax->description = $x->description;
-             $tax->vat_type = $x->vat_type;
+             $tax->vat_type = $x->vat_type->value;// Đổi từ id value dạng read
              $tax->amount = $x->amount;
-             $tax->tax = $x->tax->id;
-             $tax->total_amount = $x->total_amount;
+             $tax->tax = $x->tax;
+             $tax->total_amount = $x->amount+$x->tax;
              $tax->status = 1;
              $tax->active = 1;
              $tax->save();
