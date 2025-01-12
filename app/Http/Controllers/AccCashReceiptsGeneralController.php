@@ -47,13 +47,14 @@ class AccCashReceiptsGeneralController extends Controller
 
   public function show(Request $request){
     $sys = AccSystems::get_systems($this->date_range);
+    $type =  Menu::get_menu_like_code($this->action["new"].'%');
     $end_date_default = Carbon::now();
     $start_date_default = Carbon::now()->subDays($sys->value);
     $data = AccGeneral::get_range_date(null,$this->type,$end_date_default,$start_date_default);
     $end_date = $end_date_default->format('d/m/Y');
     $start_date = $start_date_default->format('d/m/Y');
     $print = AccPrintTemplate::get_code($this->print);
-    return view('acc.receipt_cash_general',['data' => $data, 'key' => $this->key, 'action' => $this->action , 'end_date' => $end_date ,'print' => $print, 'start_date'=>$start_date]);
+    return view('acc.receipt_cash_general',['data' => $data, 'type' =>$type ,'key' => $this->key, 'action' => $this->action , 'end_date' => $end_date ,'print' => $print, 'start_date'=>$start_date]);
   }
 
 

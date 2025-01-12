@@ -36,6 +36,13 @@
                <option value="0">@lang('global.not_recorded') </option>
                <option value="1">@lang('global.recorded') </option>
            </select>
+
+           <select class="droplist medium-responsive" name="type">
+            @foreach($type as $t)
+            <option value="{{explode("/",$t->link)[1]}}">{{ $lang=='vi'? $t->name : $t->name_en}} </option>
+            @endforeach               
+           </select>
+
            <a href="javascript:;" class="uk-margin-left-30 k-button k-primary" id="get_data" data-uk-tooltip=""><i class="md-18 material-icons md-color-white">event_available</i>@lang('global.get_data')</a>
            <a href="javascript:;" class="uk-margin-left-30 k-button k-primary" id="re_voucher" data-uk-tooltip=""><i class="md-18 material-icons md-color-white">settings_backup_restore</i>@lang('global.re_voucher')</a>
        </div>

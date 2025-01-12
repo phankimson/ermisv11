@@ -194,12 +194,21 @@ var Ermis = function () {
         }
     }
 
+    var initLink =function(){
+      var type_url = jQuery("select[name='type']").val();
+      if(type_url){
+        window.location = type_url;
+      }else{
+        window.location = Ermis.action.new;
+      }           
+    }
+
     var initNew = function (e) {
       ErmisTemplateEvent0(e, Ermis.per.a,
           function () {
               sessionStorage.status = 1;
               sessionStorage.removeItem("dataId");
-              window.location = Ermis.action.new;
+              initLink();
           },function(){
               kendo.alert(Lang.get('messages.you_not_permission_add'));
           });
@@ -222,7 +231,7 @@ var Ermis = function () {
                 sessionStorage.arrId =  JSON.stringify(arrId);
                 sessionStorage.status = 5;
                 sessionStorage.dataId = selectedItem.id;
-                window.location = Ermis.action.new;
+                initLink();   
             } else {
               kendo.alert(Lang.get('messages.please_select_line_view'));
             }
