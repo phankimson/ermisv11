@@ -287,7 +287,7 @@ var Ermis = function() {
             });
             shortcut.add(key + "C", function(e) {
                 initCancel(e);
-            });           
+            });         
             jQuery('input,textarea').removeClass('disabled');
             jQuery('.k-button').removeClass('disabled');
             jQuery(".droplist").removeClass('disabled');
