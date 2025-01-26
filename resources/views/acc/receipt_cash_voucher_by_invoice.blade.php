@@ -5,11 +5,11 @@
 @endpush
 
 @push('action')
-@include('action.top_menu_5')
+@include('action.top_menu_7')
 @endpush
 
 @push('toolbar_action')
-@include('action.toolbar_7')
+@include('action.toolbar_6')
 @endpush
 
 
