@@ -245,55 +245,6 @@ var Ermis = function() {
          grid.refresh();
     }
 
-    var initKendoUiContextMenuGrid = function() {
-        jQuery("#context-menu-grid").kendoContextMenu({
-            target: "#grid",
-            select: function(e) {
-                var $this = e;
-                var grid = $kGridTab.data("kendoGrid");
-                var row = $kGridTab.find('tr.k-state-selected');
-                var dataItem = $kGridTab.data("kendoGrid").dataSource.data()[0];
-                if (type == 0) {
-                    var dataGrid = dataDefaultGrid.data;
-                };
-                if (jQuery($this.item).children().hasClass('remove_row')) {
-                    $.when(KendoUiConfirm(Lang.get('messages.are_you_sure'), Lang.get('global.message'))).then(function(confirmed) {
-                        if (confirmed) {
-                            grid.removeRow(row);
-                        }
-                    });
-                } else if (jQuery($this.item).children().hasClass('copy_row')) {
-                    if (dataItem) {
-                        grid.dataSource.add(dataItem.toJSON());
-                    } else {
-                        kendo.alert(Lang.get('messages.no_row'));
-                    }
-                } else if (jQuery($this.item).children().hasClass('new_row')) {
-                  if(dataGrid.hasOwnProperty("description") || dataGrid.hasOwnProperty("subject_code")){
-                     grid.dataSource.add(dataGrid);
-                  }else{
-                     grid.addRow();
-                  }
-                } else if (jQuery($this.item).children().hasClass('close_row')) {
-                    grid.cancelRow();
-                } else if (jQuery($this.item).children().hasClass('remove_all_row')) {
-                    $.when(KendoUiConfirm(Lang.get('messages.are_you_sure'), Lang.get('global.message'))).then(function(confirmed) {
-                        if (confirmed) {
-                            grid.cancelChanges(); // CLOSE ALL
-                        }
-                    });
-                }
-            }
-        });
-        $kGrid.on("mousedown", "tr[role='row']", function(e) {
-            if (e.which === 3) {
-                $kGrid.find(" tbody tr").removeClass("k-state-selected");
-                jQuery(this).addClass("k-state-selected");
-            }
-        });
-    };
-
-
 
     var initStatus = function(flag) {
         shortcut.remove(key + "A");
@@ -947,8 +898,6 @@ var Ermis = function() {
           var dataItem = $kGridTab.data("kendoGrid").dataSource.data()[0];
           if (type == 0) {
               var dataGrid = dataDefaultGrid.data;
-          } else {
-              var dataGrid = dataDefaultGrid.vat;
           };
             $kGridTab.find(" tbody tr").removeClass("k-state-selected");
             if (e.keyCode === 13) {
@@ -997,7 +946,7 @@ var Ermis = function() {
                 var grid = $kGridSubject.data("kendoGrid");
                 var dataItem = grid.dataItem($kGridSubject.find('tr.k-state-selected'));
                 $kWindow.close();
-                AddChooseObjectResult(dataItem);
+                AddChooseObjectResult1(dataItem);
             } else {
                 kendo.alert(Lang.get('messages.please_select_line_choose'));
             }
@@ -1169,7 +1118,6 @@ var Ermis = function() {
             initChangeAuto();
             initKendoGridSubject();
             initSearchGridSubject();
-            initKendoUiContextMenuGrid();
             initBindData();
             initGetStoredArrId();
             initChangeCurrency();

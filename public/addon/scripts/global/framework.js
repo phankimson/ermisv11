@@ -1713,6 +1713,12 @@ function DefaultValueField(){
       options.model[options.field] = date;
    }
 
+   AddChooseObjectResult1 = function(dataItem){
+    jQuery.each(Ermis.columns_subject, function(i, v) {
+      jQuery('#form-action').find('input[name="' + v.field + '"]').val(dataItem[v.field]);
+    }
+   )};
+
    AddChooseObjectResult = function(dataItem){
      // Check array
      //var arr = jQuery("#subject_code_dropdown_list").data("json");
