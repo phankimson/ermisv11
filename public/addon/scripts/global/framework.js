@@ -1715,7 +1715,7 @@ function DefaultValueField(){
 
    AddChooseObjectResult1 = function(dataItem){
     jQuery.each(Ermis.columns_subject, function(i, v) {
-      jQuery('#form-action').find('input[name="' + v.field + '"]').val(dataItem[v.field]);
+      jQuery('input[name="' + v.field + '"]').val(dataItem[v.field]);
     }
    )};
 

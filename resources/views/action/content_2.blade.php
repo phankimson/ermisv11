@@ -1,4 +1,11 @@
 <table>
+<tr>
+    <td>
+    </td>
+    <td><a href="javascript:;" class="uk-margin-left-30 k-button k-primary get-data" data-uk-tooltip=""><i class="md-18 material-icons md-color-white"><span class="material-symbols-outlined">
+filter_list
+</span></i>@lang('global.get_data')</a></td>    
+    </tr>
     <tr>
         <td class="row-label-responsive"><label>@lang('acc_voucher.subject')</label></td>
         <td>
@@ -8,7 +15,7 @@
                 <a href="javascript:;" style="right : 10px" class="k-icon k-i-filter filter">&nbsp;</a>
             </span>
         </td>
-        <td><input type="text" class="k-textbox large" data-get="object.name" data-find="subject_name" name="name" /></td>
+        <td><input type="text" class="k-textbox large" data-get="object.name" data-find="subject_name" name="name" readonly/></td>
 
         <td class="row-label-responsive"></td>
         <td><label>@lang('acc_voucher.accounting_date')</label></td>
@@ -37,4 +44,5 @@
             </td>
        
     </tr>
+    
 </table>

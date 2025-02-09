@@ -16,6 +16,8 @@
 @section('form_window')
 <div id="print"></div>
 @include('window.window_1')
+@include('window.window_4')
+@include('window.window_8')
 @endsection
 
 @section('uktab')
