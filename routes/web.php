@@ -1087,6 +1087,7 @@ Route::group([
   'controller' => AccCashReceiptsVoucherByInvoiceController::class
 ],function () {
 Route::get('/cash-receipts-voucher-by-invoice', 'show' )->name('');
+Route::post('/cash-receipts-voucher-by-invoice', 'get_data' )->name('-get-data');
 });
 });
 

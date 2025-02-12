@@ -125,6 +125,26 @@ var Ermis = function() {
 
     };
 
+    var initGetDataGrid = function(){
+        jQuery('.get_data').on('click', function(e) {
+            var d = GetAllDataForm('#form-window-get-data', 2);
+            var c = GetDataAjax(d.columns);
+            var postdata = {
+                data: JSON.stringify(c.obj)
+            };
+            ErmisTemplateAjaxPost0(e, postdata, Ermis.link + '-get-data', function(result) {
+                var grid = $kGrid.data("kendoGrid");
+                var ds = new kendo.data.DataSource({
+                    data: result.data
+                });
+                grid.setDataSource(ds);
+                grid.dataSource.page(1);
+            }, function(result) {
+                kendo.alert(result.message);
+            });
+        });
+    }
+
     var initChooseVoucher = function(e) {
         ErmisTemplateEvent1(e, function() {
             if ($kGridVoucher.find('tr.k-state-selected').length > 0) {
@@ -1070,6 +1090,7 @@ var Ermis = function() {
             initGetStoredArrId();
             initChangeCurrency();
             initSearchGridVoucher();
+            initGetDataGrid();
         }
 
     };

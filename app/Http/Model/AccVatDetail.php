@@ -42,6 +42,11 @@ class AccVatDetail extends Model
         AccVatDetail::where('general_id',$general_id)->whereNotIn('id',$arr)->delete();
       }
 
+      static public function get_detail_subject($subject_id,$end_date,$start_date) {
+        $result = AccVatDetail::where('subject_id',$subject_id)->whereBetween('date_invoice',[$end_date,$start_date])->get();
+        return $result;
+      }
+
       public function tax() {
         return $this->belongsTo(AccVat::class,'tax','id');
       }

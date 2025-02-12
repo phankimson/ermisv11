@@ -8,6 +8,9 @@ use App\Http\Model\Menu;
 use App\Http\Model\AccNumberVoucher;
 use App\Http\Model\AccPrintTemplate;
 use App\Http\Model\AccObjectType;
+use App\Http\Model\AccVatDetail;
+use use App\Http\Resources\CashReceiptVoucherInvoiceResource;
+use Exception;
 
 class AccCashReceiptsVoucherByInvoiceController extends Controller
 {
@@ -45,6 +48,29 @@ class AccCashReceiptsVoucherByInvoiceController extends Controller
                                         'print' => $print]);
   }
 
+  public function get_data(Request $request){
+    $type = 10;
+    try{
+      $req = json_decode($request->data);
+      $data = new CashReceiptVoucherInvoiceResource(AccVatDetail::get_data_load_all($req->object_id,$req->start_date,$req->end_date));
+      if($req && $data->count()>0 ){
+        return response()->json(['status'=>true,'data'=> $data]);
+      }else{
+        return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
+      }
+     }catch(Exception $e){
+        // Lưu lỗi
+        $err = new Error();
+        $err ->create([
+          'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
+          'user_id' => Auth::id(),
+          'menu_id' => $this->menu->id,
+          'error' => $e->getMessage(),
+          'url'  => $this->url,
+          'check' => 0 ]);
+        return response()->json(['status'=>false,'message'=> trans('messages.error').' '.$e->getMessage()]);
+      }
+  }
 
 
 }
