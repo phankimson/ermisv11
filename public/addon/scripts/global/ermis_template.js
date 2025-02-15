@@ -770,6 +770,59 @@ var ErmisKendoGridCheckboxTemplate2 = function($kGrid, data, height, pageSize, c
     });
 
 }
+
+
+var ErmisKendoGridCheckboxTemplate3 = function($kGrid, data, aggregate, field, pageSize, editable, height, columns, onSave ,key ,onChecked) {
+    dataSource = new kendo.data.DataSource({       
+        data: data,
+        aggregate: aggregate,
+        batch: true,
+        autoBind: true,
+        pageSize: pageSize,
+        schema: {
+            model: {
+                id: "id",
+                fields: field
+            }
+        }
+    });
+    var grid = $kGrid.kendoGrid({
+        dataSource: dataSource,
+        save: onSave,
+        editable: editable,
+        height: height,
+        columns: columns,
+        navigatable: true
+    });
+    var grid = $kGrid.data("kendoGrid");
+ 
+    grid.thead.kendoTooltip({
+        filter: "th",
+        position: "top",
+        content: function(e) {
+            var target = e.target; // element for which the tooltip is shown
+            return $(target).text();
+        }
+    });
+
+       
+      //bind click event to the checkbox
+        jQuery('#header-chb-' + key).change(function(ev) {
+            var checked = ev.target.checked;  
+            jQuery('.k-checkbox.' + key).each(function(idx, item) {
+                var row = $(item).closest("tr");
+                var dataItem = grid.dataItem(row);
+                $(item).click(); 
+                if (checked) {               
+                    onChecked(1,dataItem);  
+                } else {                   
+                    onChecked(0,dataItem);
+                }               
+            });
+        });
+
+}
+
 var ErmisKendoGridTemplate5 = function($kGrid, height, dataSource, scrollable, sortable, pageable, columns) {
     var grid = $kGrid.kendoGrid({
         height: height,
@@ -837,6 +890,7 @@ var ErmisKendoGridTemplate3 = function($kGrid, data, aggregate, field, pageSize,
         columns: columns,
         navigatable: true
     });
+    
     grid.data("kendoGrid").thead.kendoTooltip({
         filter: "th",
         position: "top",

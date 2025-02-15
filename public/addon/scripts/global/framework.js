@@ -1857,7 +1857,6 @@ function DefaultValueField(){
       }
    }
 
-
    //Filter
    var initFilterMultiSelectContent = function(a,field,type){
     if(a == null || (Array.isArray(a) && a.length == 0)){

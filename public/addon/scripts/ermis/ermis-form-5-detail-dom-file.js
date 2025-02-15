@@ -32,10 +32,20 @@ var Ermis = function() {
         $kWindow3.title(Lang.get('acc_voucher.search_for_voucher'));
         $kWindow6.title(Lang.get('global.get_data'));
         // Grid
-        ErmisKendoGridTemplate3($kGrid, Ermis.data, Ermis.aggregate, Ermis.field, Ermis.page_size , {
+        ErmisKendoGridCheckboxTemplate3($kGrid, Ermis.data, Ermis.aggregate, Ermis.field, Ermis.page_size , {
             confirmation: false
-        }, jQuery(window).height() * 0.5, Ermis.columns,onSave);
+        }, jQuery(window).height() * 0.5, Ermis.columns,onSave,"invoice",onChecked);
         initKendoGridChange();
+    }
+
+    var onChecked = function(t,dataItem){        
+        if(t == 0){
+            dataItem.set("payment",0);    
+            dataItem.set("checkbox",false);      
+        }else{
+            dataItem.set("payment",dataItem['total_amount']);
+            dataItem.set("checkbox",true);     
+        }    
     }
 
     var onSave = function(data){  
@@ -55,9 +65,8 @@ var Ermis = function() {
                 if (result.data) {
                     initActive(result.data.active);
                     SetDataAjax(data.columns, result.data);
-                    initLoadGrid(result.data);
+                    initLoadGrid(result.data.detail);
                     sessionStorage.dataId = result.data.id;
-                    initKendoGridVatChange();
                     initKendoGridChange();
                     //$kGrid.addClass('disabled');
                     //calculatePriceBind(result.data.detail);
@@ -73,7 +82,7 @@ var Ermis = function() {
     var initLoadGrid = function(dataLoad){
           var grid = $kGrid.data("kendoGrid");
           ds = new kendo.data.DataSource({
-              data: dataLoad.detail,
+              data: dataLoad,
               schema: {
                   model: {
                       fields: Ermis.field,
@@ -133,12 +142,8 @@ var Ermis = function() {
                 data: JSON.stringify(c.obj)
             };
             ErmisTemplateAjaxPost0(e, postdata, Ermis.link + '-get-data', function(result) {
-                var grid = $kGrid.data("kendoGrid");
-                var ds = new kendo.data.DataSource({
-                    data: result.data
-                });
-                grid.setDataSource(ds);
-                grid.dataSource.page(1);
+                initLoadGrid(result.data);           
+                $kWindow6.close();
             }, function(result) {
                 kendo.alert(result.message);
             });
@@ -576,7 +581,7 @@ var Ermis = function() {
           ErmisTemplateAjaxPostAdd3(e,'#import-form',Ermis.link+'-import',arr,
         function(results){
             SetDataAjax(data.columns, results.data);    
-            initLoadGrid(results.data[0]);   
+            initLoadGrid(results.data[0].detail);   
             AddChooseObjectResult(results.data['object']);
           },
          function(){},
@@ -694,7 +699,7 @@ var Ermis = function() {
                   initStatus(2);
                   initActive("1");
                   jQuery('.voucher').val(result.voucher_name);
-                  initLoadGrid(result.data);
+                  initLoadGrid(result.data.detail);
                   sessionStorage.dataId = result.dataId;
               },
               function() {

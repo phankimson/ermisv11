@@ -109,7 +109,7 @@
                                 {"field" : "invoice_symbol", hidden: true},]
 
       
-        Ermis.columns    = [{title: 'Select All',headerTemplate: '<input type="checkbox" id="header-chb-reference" class="k-checkbox reference"><label class="k-checkbox-label" for="header-chb-reference"></label>',template: function(dataItem){return '<input type="checkbox" id="'+ dataItem.id+'" class="k-checkbox reference"><label class="k-checkbox-label" for="'+ dataItem.id +'"></label>'},width: 50},
+        Ermis.columns    = [{  "title": 'Select All',headerTemplate: '<input type="checkbox" id="header-chb-invoice" class="k-checkbox"><label class="k-checkbox-label" for="header-chb-invoice"></label>',template: function(dataItem){return '<input type="checkbox" id="'+ dataItem.id+'" class="k-checkbox invoice"><label class="k-checkbox-label" for="'+ dataItem.id +'"></label>'},width: 50},
                             {"field" :"id", hidden : true},
                             { "field" : "invoice","title" : "@lang('acc_voucher.invoice')"  ,width : '150px'},
                             { "field" : "date_invoice","title" : "@lang('acc_voucher.date_invoice')",width : '150px'  },

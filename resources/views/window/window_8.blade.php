@@ -29,10 +29,10 @@
   <div class="uk-margin-medium-top"></div>
 
   <span>@lang('global.start_date') :</span>
-  <input type="text" data-type="date" id="start_b" class="start" name="start_date_b" value="{{date('d/m/Y')}}" />
+  <input type="text" data-type="date" id="start_b" class="start" name="start_date" value="{{date('d/m/Y')}}" />
 
   <span>@lang('global.end_date') :</span>
-  <input type="text" data-type="date" id="end_b" class="end" name="end_date_b" value="{{date('d/m/Y')}}" />
+  <input type="text" data-type="date" id="end_b" class="end" name="end_date" value="{{date('d/m/Y')}}" />
 
   <select class="droplist not_disabled medium-responsive" name="active">
       <option value="">@lang('global.all') </option>

@@ -1053,21 +1053,7 @@ Route::group([
   Route::post('/cash-receipts-voucher-unwrite','unwrite' )->name('-unwrite');
   Route::post('/cash-receipts-voucher-write','write' )->name('-write');
   Route::post('/cash-receipts-voucher-find', 'find' )->name('-find');
-  });
-
-  // Receipt Cash Detail
-  Route::group([
-    'as' => 'cash-receipts-voucher',
-    'controller' => AccVoucherController::class
-  ],function () {
-  Route::post('/cash-receipts-voucher-get', 'get' )->name('-get');
-  Route::post('/cash-receipts-voucher-auto', 'auto' )->name('-auto');
-  Route::post('/cash-receipts-voucher-ai', 'ai' )->name('-ai');
-  Route::post('/cash-receipts-voucher-currency', 'currency' )->name('-currency');
-  Route::post('/cash-receipts-voucher-reference', 'reference' )->name('-reference');
-  Route::post('/cash-receipts-voucher-voucher-change', 'voucher_change' )->name('-voucher-change');
-  Route::post('/cash-receipts-voucher-load-voucher-change', 'load_voucher_change' )->name('-load-voucher-change');
-  });
+  });  
 
   // Receipt Cash Detail
   Route::group([
@@ -1081,13 +1067,29 @@ Route::group([
   Route::any('/cash-receipts-voucher-import', 'import')->name('-import');
   });
 
+  // Receipt Cash Detail Voucher
+  Route::group([
+    'as' => 'cash-receipts-voucher',
+    'controller' => AccVoucherController::class
+  ],function () {
+  Route::post('/cash-receipts-voucher-get', 'get' )->name('-get');
+  Route::post('/cash-receipts-voucher-auto', 'auto' )->name('-auto');
+  Route::post('/cash-receipts-voucher-ai', 'ai' )->name('-ai');
+  Route::post('/cash-receipts-voucher-currency', 'currency' )->name('-currency');
+  Route::post('/cash-receipts-voucher-reference', 'reference' )->name('-reference');
+  Route::post('/cash-receipts-voucher-voucher-change', 'voucher_change' )->name('-voucher-change');
+  Route::post('/cash-receipts-voucher-load-voucher-change', 'load_voucher_change' )->name('-load-voucher-change');
+
+  Route::post('/cash-receipts-voucher-by-invoice-get', 'get' )->name('-get');
+  });
+
   // Receipt Cash Detail By Invoice
 Route::group([
   'as' => 'cash-receipts-voucher-by-invoice',
   'controller' => AccCashReceiptsVoucherByInvoiceController::class
 ],function () {
 Route::get('/cash-receipts-voucher-by-invoice', 'show' )->name('');
-Route::post('/cash-receipts-voucher-by-invoice', 'get_data' )->name('-get-data');
+Route::post('/cash-receipts-voucher-by-invoice-get-data', 'get_data' )->name('-get-data');
 });
 });
 
