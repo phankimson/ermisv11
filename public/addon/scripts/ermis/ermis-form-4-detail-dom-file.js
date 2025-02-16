@@ -777,7 +777,6 @@ var Ermis = function() {
         dataDefaultGrid.data["id"] = ""; 
         var grid_vat = $kGridVat.data("kendoGrid");
         var rv = grid_vat.dataSource.data();
-        dataDefaultGrid.data["id"] = ""; 
         dataDefaultGrid.vat["id"] = ""; 
         jQuery.each(r, function(l, k) {
               k["id"] = "";
@@ -875,10 +874,9 @@ var Ermis = function() {
             var r = grid.dataSource.data();
             dataDefaultGrid.data["rate"] = value; 
             jQuery.each(r, function(l, k) {
-                  k["rate"] = value;
-                  k["amount_rate"] = value*k["amount"];
-              });
-              grid.refresh();   
+                  k.set("rate",value)
+                  k.set("amount_rate",value*k["amount"]);
+              });  
         }
         $currency.bind("change", OnChangeCurrency);
         $rate.on("change", OnChangeRate);

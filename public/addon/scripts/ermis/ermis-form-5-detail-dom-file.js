@@ -40,11 +40,9 @@ var Ermis = function() {
 
     var onChecked = function(t,dataItem){        
         if(t == 0){
-            dataItem.set("payment",0);    
-            dataItem.set("checkbox",false);      
+            dataItem["payment"] = 0;         
         }else{
-            dataItem.set("payment",dataItem['total_amount']);
-            dataItem.set("checkbox",true);     
+            dataItem["payment"] = dataItem['total_amount'];              
         }    
     }
 
@@ -526,7 +524,6 @@ var Ermis = function() {
     var initDefaultIdGrid = function(){
         var grid = $kGrid.data("kendoGrid");
         var r = grid.dataSource.data();
-        dataDefaultGrid.data["id"] = ""; 
         dataDefaultGrid.data["id"] = ""; 
         jQuery.each(r, function(l, k) {
               k["id"] = "";
