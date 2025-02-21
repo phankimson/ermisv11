@@ -30,6 +30,8 @@ return [
     "amount"=>"Thành tiền",
     "total_amount"=>"Tổng tiền",
     "payment"=>"Thanh toán",
+    "remaining"=>"Còn lại",
+    "paid"=>"Đã thanh toán",
     "tax"=>"Thuế",
     "invoice"=>"Hóa đơn",
     "date_invoice"=>"Ngày hóa đơn",

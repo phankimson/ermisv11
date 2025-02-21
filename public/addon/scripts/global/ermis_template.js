@@ -820,8 +820,38 @@ var ErmisKendoGridCheckboxTemplate3 = function($kGrid, data, aggregate, field, p
                 }               
             });
         });
+      // Click checkbox
 
-}
+      grid.table.on("click", ".k-checkbox." + key, selectRow);
+
+       //on click of the checkbox:
+       function selectRow() {
+        var checked = this.checked,
+            row = $(this).closest("tr"),
+            grid = $kGrid.data("kendoGrid"),
+            dataItem = grid.dataItem(row);
+            if (checked) {               
+                onChecked(1,dataItem); 
+                var checkHeader = true;
+
+                jQuery.each(grid.items(), function (index, item) {
+                    if (!(jQuery(item).hasClass("k-state-selected"))) {
+                        checkHeader = false;
+                    }
+                });
+                var a = jQuery('.k-checkbox.' + key+":checked").not('#header-chb-' + key).length;
+                if(a == grid.items().length){
+                    checkHeader = true;
+                };
+                 jQuery('#header-chb-' + key)[0].checked = checkHeader; 
+            } else {                   
+                onChecked(0,dataItem);
+                //-remove selection
+                row.removeClass("k-state-selected");
+                jQuery('#header-chb-' + key)[0].checked = false
+            }  
+        } 
+    }
 
 var ErmisKendoGridTemplate5 = function($kGrid, height, dataSource, scrollable, sortable, pageable, columns) {
     var grid = $kGrid.kendoGrid({

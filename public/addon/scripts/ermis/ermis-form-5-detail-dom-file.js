@@ -40,10 +40,12 @@ var Ermis = function() {
 
     var onChecked = function(t,dataItem){        
         if(t == 0){
-            dataItem["payment"] = 0;         
+            dataItem.set("payment", 0); 
+            dataItem.set("checkbox", "");            
         }else{
-            dataItem["payment"] = dataItem['total_amount'];              
-        }    
+            dataItem.set("payment", dataItem['total_amount']); 
+            dataItem.set("checkbox", "checked");              
+        };   
     }
 
     var onSave = function(data){  

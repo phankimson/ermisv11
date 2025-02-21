@@ -29,6 +29,8 @@ return [
     "reference" => "Reference",
     "amount"=>"Amount",
     "total_amount"=>"Total amount",
+    "remaining"=>"Remaining",
+    "paid"=>"Paid",
     "payment"=>"Payment",
     "tax"=>"Vat tax",
     "invoice"=>"Invoice",

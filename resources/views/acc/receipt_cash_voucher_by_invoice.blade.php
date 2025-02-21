@@ -109,26 +109,33 @@
                                 {"field" : "invoice_symbol", hidden: true},]
 
       
-        Ermis.columns    = [{  "title": 'Select All',headerTemplate: '<input type="checkbox" id="header-chb-invoice" class="k-checkbox"><label class="k-checkbox-label" for="header-chb-invoice"></label>',template: function(dataItem){return '<input type="checkbox" id="'+ dataItem.id+'" class="k-checkbox invoice"><label class="k-checkbox-label" for="'+ dataItem.id +'"></label>'},width: 50},
+        Ermis.columns    = [{  "title": 'Select All',headerTemplate: '<input type="checkbox" id="header-chb-invoice" class="k-checkbox"><label class="k-checkbox-label" for="header-chb-invoice"></label>',template: function(dataItem){                   
+                                return '<input type="checkbox" id="'+ dataItem.id+'" '+dataItem.checkbox+'  class="k-checkbox invoice"><label class="k-checkbox-label" for="'+ dataItem.id +'"></label>'
+                            },width: 50},
                             {"field" :"id", hidden : true},
                             { "field" : "invoice","title" : "@lang('acc_voucher.invoice')"  ,width : '150px'},
                             { "field" : "date_invoice","title" : "@lang('acc_voucher.date_invoice')",width : '150px'  },
                             { "field" : "description","title" : "@lang('acc_voucher.description')",width : '200px'  },                           
                             { "field" : "total_amount","title" : "@lang('acc_voucher.total_amount')" ,format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" ,aggregates: ['sum'] ,footerTemplate: "<p id='total_amount'>#={{$decimal}}#</p>" ,width : '150px'},
+                            { "field" : "paid","title" : "@lang('acc_voucher.paid')" ,format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" ,aggregates: ['sum'] ,footerTemplate: "<p id='total_paid'>#={{$decimal}}#</p>" ,width : '150px'},
+                            { "field" : "remaining","title" : "@lang('acc_voucher.remaining')" ,format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" ,aggregates: ['sum'] ,footerTemplate: "<p id='total_remaining'>#={{$decimal}}#</p>" ,width : '150px'},
                             { "field" : "payment","title" : "@lang('acc_voucher.payment')" ,format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" ,aggregates: ['sum'] ,footerTemplate: "<p id='total_payment'>#={{$decimal}}#</p>" ,width : '150px'}];
                       
         Ermis.field = {
             id : {field :"id" ,defaultValue: 0,editable: false},
+            checkbox:     {field : "checkbox"},
             invoice:     {field : "invoice",editable: false},
             date_invoice:     {field : "date_invoice",editable: false},
             description:     {field : "description",editable: false},
-            total_amount:     {field : "total_amount",type:"number" , defaultValue : 0 , validation: { min: 1, required: true },editable: false},
-            payment:     {field : "payment",type:"number" , defaultValue : 0 , validation: { min: 1, required: true }},           
+            total_amount:     {field : "total_amount",type:"number" , defaultValue : 0 ,editable: false},
+            paid:     {field : "paid",type:"number" , defaultValue : 0 , editable: false},
+            remaining:     {field : "remaining",type:"number" , defaultValue : 0 , editable: false},
+            payment:     {field : "payment", type:"number" , defaultValue : 0 , validation: { min: 1, required: true }},           
         };
 
         Ermis.aggregate = [ { field: "description", aggregate: "count" },
-                            { field: "amount", aggregate: "sum" },
-                            { field: "amount_rate", aggregate: "sum" },
+                            { field: "payment", aggregate: "sum" },
+                            { field: "paid", aggregate: "sum" },
                             { field: "total_amount", aggregate: "sum" }];
     });
 </script>
