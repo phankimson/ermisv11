@@ -11,6 +11,9 @@ use App\Http\Model\AccPrintTemplate;
 use App\Http\Model\AccObjectType;
 use App\Http\Model\AccVatDetail;
 use App\Http\Model\AccGeneral;
+use App\Http\Model\AccDetail;
+use App\Http\Model\AccSettingVoucher;
+use App\Http\Model\AccCurrencyCheck;
 use App\Http\Model\AccCountVoucher;
 use App\Http\Resources\CashReceiptVoucherInvoiceResource;
 use App\Http\Model\Error;
@@ -147,37 +150,14 @@ class AccCashReceiptsVoucherByInvoiceController extends Controller
           $general->accounting_date = $arr->accounting_date;
           $general->traders = $arr->traders;
           $general->subject = $arr->subject_id;
-          $general->reference = $arr->reference;
           $general->total_amount = $arr->total_amount;
-          $general->total_amount_rate = $arr->total_amount_rate;
+          $general->total_amount_rate = $arr->total_amount;
           $general->status = 1;
           $general->active = 1;
-          $general->save();
+          $general->save();          
           
-          // Tham chiếu / Reference
-          // Ktra dòng dư tham chiếu
-          if(collect($arr->reference_by)->count()>0){
-            $rb = AccGeneral::get_reference_by_whereNotIn($arr->reference_by);
-            $rb->each(function ($item, $key) {
-              $item->reference_by = 0;
-              $item->save();
-            });
-          // Lưu tham chiếu
-            foreach($arr->reference_by as $s => $f){
-              $general_reference = AccGeneral::find($f);
-              if($general_reference->reference_by == 0){
-                $general_reference-> reference_by = $general->id;
-                $general_reference->save();
-              }
-            };
-          }else{
-              $rb = AccGeneral::get_reference_by($general->id);
-              $rb->each(function ($item, $key) {
-                $item->reference_by = 0;
-                $item->save();
-              });
-          };
 
+          $setting_voucher = AccSettingVoucher::get_menu($this->menu->id);
           // CHI TIET / Detail
            foreach($arr->detail as $k => $d){
              $detail = collect([]);
@@ -187,22 +167,12 @@ class AccCashReceiptsVoucherByInvoiceController extends Controller
                $detail = new AccDetail();
              }
              $detail->general_id = $general->id;
-             $detail->description = $d->description;
-             $detail->debit = $d->debit->value;  // Đổi từ id value dạng read
-             $detail->credit = $d->credit->value;  // Đổi từ id value dạng read
-             $detail->amount = $d->amount;
+             $detail->description = $general->description;
+             $detail->debit = $setting_voucher->debit;  // Lấy từ seting default
+             $detail->credit = $setting_voucher->credit; // Lấy từ seting default
+             $detail->amount = $d->payment;
              $detail->rate = $d->rate;
-             $detail->amount_rate = $d->amount * $d->rate;
-             $detail->accounted_fast = $d->accounted_fast->value;  // Đổi từ id value dạng read
-             $detail->department = $d->department->value; // Đổi từ id value dạng read
-             $detail->bank_account = $d->bank_account->value;  // Đổi từ id value dạng read
-             $detail->case_code = $d->case_code->value;  // Đổi từ id value dạng read
-             $detail->cost_code = $d->cost_code->value;  // Đổi từ id value dạng read
-             $detail->statistical_code = $d->statistical_code->value;  // Đổi từ id value dạng read
-             $detail->work_code = $d->work_code->value;  // Đổi từ id value dạng read
-             $detail->lot_number = $d->lot_number;
-             $detail->contract = $d->contract;
-             $detail->order = $d->order;
+             $detail->amount_rate = $d->payment;             
              $detail->subject_id_credit = $d->subject_code->value;// Đổi từ id value dạng read
              $detail->subject_name_credit = $d->subject_code->text;// Đổi từ name text dạng read
              $detail->save();
@@ -214,14 +184,14 @@ class AccCashReceiptsVoucherByInvoiceController extends Controller
              if($d->debit->text == '11*'){
                $balance = AccCurrencyCheck::get_type_first($d->debit->value,$arr->currency,null);
                if($balance){
-                 $balance->amount = $balance->amount + ($d->amount * $d->rate);
+                 $balance->amount = $balance->amount + $d->payment;
                  $balance->save();
                }else{
                  $balance = new AccCurrencyCheck();
-                 $balance->type = $d->debit->value;
+                 $balance->type = $setting_voucher->debit;
                  $balance->currency = $arr->currency;
                  $balance->bank_account = null;
-                 $balance->amount = $d->amount * $d->rate;
+                 $balance->amount = $d->payment;
                  $balance->save();
                }
              }

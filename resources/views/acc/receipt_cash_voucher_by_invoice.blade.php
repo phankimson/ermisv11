@@ -114,7 +114,7 @@
                             },width: 50},
                             {"field" :"id", hidden : true},
                             { "field" : "invoice","title" : "@lang('acc_voucher.invoice')"  ,width : '150px'},
-                            { "field" : "date_invoice","title" : "@lang('acc_voucher.date_invoice')",width : '150px'  },
+                            { "field" : "date_invoice","title" : "@lang('acc_voucher.date_invoice')",template: '#= FormatDate(date_invoice) #',width : '150px'  },
                             { "field" : "description","title" : "@lang('acc_voucher.description')",width : '200px'  },                           
                             { "field" : "total_amount","title" : "@lang('acc_voucher.total_amount')" ,format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" ,aggregates: ['sum'] ,footerTemplate: "<p id='total_amount'>#={{$decimal}}#</p>" ,width : '150px'},
                             { "field" : "paid","title" : "@lang('acc_voucher.paid')" ,format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" ,aggregates: ['sum'] ,footerTemplate: "<p id='total_paid'>#={{$decimal}}#</p>" ,width : '150px'},
