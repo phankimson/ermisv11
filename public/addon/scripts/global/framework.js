@@ -1535,6 +1535,26 @@ function DefaultValueField(){
   return {id: 0 , code: "--Select--", name:"--Select--"};
 }
 
+    DatePickerEditor = function(container, options){
+      var datePicker = $('<input data-role="datepicker" data-format="dd/MM/yyyy" type="date" name="' + options.field + '" data-bind="value:'+ options.field + '">');
+      datePicker.appendTo(container);
+      var date = kendo.parseDate(options.model[options.field]);
+      options.model[options.field] = date;
+    }
+
+    MaxValueEditor = function(container, options){
+      var c  = findObjectByKey($kGridTab_column,"field",options.field);
+        // create an input element
+        var input = jQuery("<input name='" + options.field + "'/>");
+        // append it to the container
+        input.appendTo(container);
+        // initialize a Kendo UI numeric text box and set max value
+        input.kendoNumericTextBox({
+            max: options.model[c.maxValueColumn]
+        });
+    }
+
+
    ItemsDropDownEditor = function (container, options) {
        var c  = findObjectByKey($kGridTab_column,"field",options.field);
        jQuery('<input required id="' + options.field + '" class="dropdown-list" name="' + options.field + '"/>')
@@ -1704,14 +1724,7 @@ function DefaultValueField(){
         value = model.text; 
         return value;       
       }
-
-
-   DatePickerEditor = function(container, options){
-     var datePicker = $('<input data-role="datepicker" data-format="dd/MM/yyyy" type="date" name="' + options.field + '" data-bind="value:'+ options.field + '">');
-      datePicker.appendTo(container);
-      var date = kendo.parseDate(options.model[options.field]);
-      options.model[options.field] = date;
-   }
+ 
 
    AddChooseObjectResult1 = function(dataItem){
     jQuery.each(Ermis.columns_subject, function(i, v) {

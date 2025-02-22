@@ -44,7 +44,7 @@ class AccCashReceiptsVoucherController extends Controller
   public function __construct(Request $request)
  {
      $this->url =  $request->segment(3);
-     $this->type = 1; // 1 Thu tiền mặt
+     $this->type = 1; // 1 Thu tiền mặt, //2 Thu tiền mặt theo hóa đơn
      $this->type_object = 2; // 2 Khách hàng (VD : 2,3 nếu nhiều đối tượng)
      $this->key = "cash-receipts-voucher";
      $this->menu = Menu::where('code', '=', $this->key)->first();

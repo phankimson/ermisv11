@@ -43,7 +43,7 @@ var Ermis = function() {
             dataItem.set("payment", 0); 
             dataItem.set("checkbox", "");            
         }else{
-            dataItem.set("payment", dataItem['total_amount']); 
+            dataItem.set("payment", dataItem['remaining']); 
             dataItem.set("checkbox", "checked");              
         };   
     }

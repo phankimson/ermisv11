@@ -119,7 +119,7 @@
                             { "field" : "total_amount","title" : "@lang('acc_voucher.total_amount')" ,format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" ,aggregates: ['sum'] ,footerTemplate: "<p id='total_amount'>#={{$decimal}}#</p>" ,width : '150px'},
                             { "field" : "paid","title" : "@lang('acc_voucher.paid')" ,format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" ,aggregates: ['sum'] ,footerTemplate: "<p id='total_paid'>#={{$decimal}}#</p>" ,width : '150px'},
                             { "field" : "remaining","title" : "@lang('acc_voucher.remaining')" ,format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" ,aggregates: ['sum'] ,footerTemplate: "<p id='total_remaining'>#={{$decimal}}#</p>" ,width : '150px'},
-                            { "field" : "payment","title" : "@lang('acc_voucher.payment')" ,format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" ,aggregates: ['sum'] ,footerTemplate: "<p id='total_payment'>#={{$decimal}}#</p>" ,width : '150px'}];
+                            { "field" : "payment",editor: MaxValueEditor,"maxValueColumn" : "remaining","title" : "@lang('acc_voucher.payment')" ,format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" ,aggregates: ['sum'] ,footerTemplate: "<p id='total_payment'>#={{$decimal}}#</p>" ,width : '150px'}];
                       
         Ermis.field = {
             id : {field :"id" ,defaultValue: 0,editable: false},
@@ -130,7 +130,7 @@
             total_amount:     {field : "total_amount",type:"number" , defaultValue : 0 ,editable: false},
             paid:     {field : "paid",type:"number" , defaultValue : 0 , editable: false},
             remaining:     {field : "remaining",type:"number" , defaultValue : 0 , editable: false},
-            payment:     {field : "payment", type:"number" , defaultValue : 0 , validation: { min: 1, required: true }},           
+            payment:     {field : "payment", type:"number" , defaultValue : 0 , validation: { min: 1 , required: true }},           
         };
 
         Ermis.aggregate = [ { field: "description", aggregate: "count" },

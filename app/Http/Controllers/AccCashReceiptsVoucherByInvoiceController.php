@@ -5,14 +5,20 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Model\Menu;
+use App\Http\Model\AccPeriod;
 use App\Http\Model\AccNumberVoucher;
 use App\Http\Model\AccPrintTemplate;
 use App\Http\Model\AccObjectType;
 use App\Http\Model\AccVatDetail;
+use App\Http\Model\AccGeneral;
+use App\Http\Model\AccCountVoucher;
 use App\Http\Resources\CashReceiptVoucherInvoiceResource;
 use App\Http\Model\Error;
+use App\Classes\Convert;
 use Illuminate\Support\Facades\Auth;
 use Exception;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class AccCashReceiptsVoucherByInvoiceController extends Controller
 {
@@ -29,13 +35,12 @@ class AccCashReceiptsVoucherByInvoiceController extends Controller
   public function __construct(Request $request)
  {
      $this->url =  $request->segment(3);
-     $this->type = 1; // 1 Thu tiền mặt theo hóa đơn
+     $this->type = 2; // 1 Thu tiền mặt, //2 Thu tiền mặt theo hóa đơn
      $this->type_object = 2; // 2 Khách hàng (VD : 2,3 nếu nhiều đối tượng)
      $this->key = "cash-receipts-voucher";
-     $this->key_invoice = "cash-receipts-voucher-by-invoice";
-     $this->menu_invoice = Menu::where('code', '=', $this->key_invoice)->first();
-     $this->menu = Menu::where('code', '=', $this->key)->first();
-     $this->print = 'PT%';
+     $this->key_invoice = "cash-receipts-voucher-by-invoice";     
+     $this->menu = Menu::where('code', '=', $this->key_invoice)->first();
+     $this->print = 'PTHD%';
      $this->document = 'DOCUMENT_TAX';
  }
 
@@ -45,7 +50,7 @@ class AccCashReceiptsVoucherByInvoiceController extends Controller
     $menu_tab =  Menu::get_menu_like_code($this->key.'%');   
     $voucher_list = AccNumberVoucher::all();
     $print = AccPrintTemplate::get_code($this->print);
-    return view('acc.receipt_cash_voucher_by_invoice',[ 'key' => $this->key_invoice , 'voucher' => $voucher, 'menu'=>$this->menu_invoice->id,  'menu_tab' => $menu_tab,                                        
+    return view('acc.receipt_cash_voucher_by_invoice',[ 'key' => $this->key_invoice , 'voucher' => $voucher, 'menu'=>$this->menu->id,  'menu_tab' => $menu_tab,                                        
                                         'voucher_list' => $voucher_list ,
                                         'ot' => $ot,
                                         'sg' => $ot,
@@ -68,12 +73,279 @@ class AccCashReceiptsVoucherByInvoiceController extends Controller
         $err ->create([
           'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
           'user_id' => Auth::id(),
-          'menu_id' => $this->menu_invoice->id,
+          'menu_id' => $this->menu->id,
           'error' => $e->getMessage(),
           'url'  => $this->url,
           'check' => 0 ]);
         return response()->json(['status'=>false,'message'=> trans('messages.error').' '.$e->getMessage()]);
       }
+  }
+
+
+  public function save(Request $request){
+    $type = 0;
+    try{
+      DB::connection(env('CONNECTION_DB_ACC'))->beginTransaction();
+      $arr = json_decode($request->data);
+      if($arr){
+         $period = AccPeriod::get_date(Carbon::parse($arr->accounting_date)->format('Y-m'),1);
+        if(!$period){
+          $general = [];
+          $removeId = [];
+          $removeId_v = [];
+          $permission = $request->session()->get('per');
+          $user = Auth::user();
+          if($permission['e'] == true && $arr->id ){
+            $general = AccGeneral::find($arr->id);
+            $v = $general->voucher;
+            $type = 3;
+          }else if($permission['a'] == true && !$arr->id){
+            $type = 2;
+            $general = new AccGeneral();
+            $general->user = $user->id;
+            // Lưu số nhảy
+            $voucher = AccNumberVoucher::get_menu($this->menu->id);
+            // Thay đổi số nhảy theo yêu cầu DD MM YY
+            $voucher_id = $voucher->id;
+            $voucher_length_number = $voucher->length_number;
+            $format = $voucher->format;
+            $prefix = $voucher->prefix;
+            if($voucher->change_voucher == 1){
+              $val = Convert::dateformatArr($format,$arr->accounting_date);
+              $voucher = AccCountVoucher::get_count_voucher($voucher_id,$format,$val['day_format'],$val['month_format'],$val['year_format']);              
+              if(!$voucher){
+                $voucher = new AccCountVoucher();
+                $voucher->number_voucher = $voucher_id;
+                $voucher->format = $format;
+                $voucher->day = $val['day_format'];
+                $voucher->month = $val['month_format'];
+                $voucher->year = $val['year_format'];
+                $voucher->length_number = $voucher_length_number;
+                $voucher->active = 1;
+              }
+            }                
+            // Load Phiếu tự động / Load AutoNumber
+              $v = Convert::VoucherMasker1($voucher,$prefix);
+                 
+              $number = $voucher->number + 1;
+              $length_number = $voucher->length_number;
+              if(strlen($number."") > $voucher->length_number){
+                $voucher->number = 1;
+                $voucher->length_number = $length_number + 1;
+              }else{
+                $voucher->number = $number;
+              }
+              $voucher->save();
+          }
+
+          $general->type = $this->type;
+          $general->voucher = $v;
+          $general->currency = $arr->currency;
+          $general->rate = $arr->rate;
+          $general->description = $arr->description;
+          $general->voucher_date = $arr->voucher_date;
+          $general->accounting_date = $arr->accounting_date;
+          $general->traders = $arr->traders;
+          $general->subject = $arr->subject_id;
+          $general->reference = $arr->reference;
+          $general->total_amount = $arr->total_amount;
+          $general->total_amount_rate = $arr->total_amount_rate;
+          $general->status = 1;
+          $general->active = 1;
+          $general->save();
+          
+          // Tham chiếu / Reference
+          // Ktra dòng dư tham chiếu
+          if(collect($arr->reference_by)->count()>0){
+            $rb = AccGeneral::get_reference_by_whereNotIn($arr->reference_by);
+            $rb->each(function ($item, $key) {
+              $item->reference_by = 0;
+              $item->save();
+            });
+          // Lưu tham chiếu
+            foreach($arr->reference_by as $s => $f){
+              $general_reference = AccGeneral::find($f);
+              if($general_reference->reference_by == 0){
+                $general_reference-> reference_by = $general->id;
+                $general_reference->save();
+              }
+            };
+          }else{
+              $rb = AccGeneral::get_reference_by($general->id);
+              $rb->each(function ($item, $key) {
+                $item->reference_by = 0;
+                $item->save();
+              });
+          };
+
+          // CHI TIET / Detail
+           foreach($arr->detail as $k => $d){
+             $detail = collect([]);
+             if($d->id){
+               $detail = AccDetail::find($d->id);
+             }else{
+               $detail = new AccDetail();
+             }
+             $detail->general_id = $general->id;
+             $detail->description = $d->description;
+             $detail->debit = $d->debit->value;  // Đổi từ id value dạng read
+             $detail->credit = $d->credit->value;  // Đổi từ id value dạng read
+             $detail->amount = $d->amount;
+             $detail->rate = $d->rate;
+             $detail->amount_rate = $d->amount * $d->rate;
+             $detail->accounted_fast = $d->accounted_fast->value;  // Đổi từ id value dạng read
+             $detail->department = $d->department->value; // Đổi từ id value dạng read
+             $detail->bank_account = $d->bank_account->value;  // Đổi từ id value dạng read
+             $detail->case_code = $d->case_code->value;  // Đổi từ id value dạng read
+             $detail->cost_code = $d->cost_code->value;  // Đổi từ id value dạng read
+             $detail->statistical_code = $d->statistical_code->value;  // Đổi từ id value dạng read
+             $detail->work_code = $d->work_code->value;  // Đổi từ id value dạng read
+             $detail->lot_number = $d->lot_number;
+             $detail->contract = $d->contract;
+             $detail->order = $d->order;
+             $detail->subject_id_credit = $d->subject_code->value;// Đổi từ id value dạng read
+             $detail->subject_name_credit = $d->subject_code->text;// Đổi từ name text dạng read
+             $detail->save();
+       
+             array_push($removeId,$detail->id);
+             $arr->detail[$k]->id = $detail->id;
+
+             // Lưu số tồn tiền bên Nợ
+             if($d->debit->text == '11*'){
+               $balance = AccCurrencyCheck::get_type_first($d->debit->value,$arr->currency,null);
+               if($balance){
+                 $balance->amount = $balance->amount + ($d->amount * $d->rate);
+                 $balance->save();
+               }else{
+                 $balance = new AccCurrencyCheck();
+                 $balance->type = $d->debit->value;
+                 $balance->currency = $arr->currency;
+                 $balance->bank_account = null;
+                 $balance->amount = $d->amount * $d->rate;
+                 $balance->save();
+               }
+             }
+               // End
+
+               // Lưu số tồn tiền bên Có
+               if($d->credit->text == '111*' || $d->credit->text == '113*'){
+                 $balance = AccCurrencyCheck::get_type_first($d->credit->value,$arr->currency,null);
+                 if($balance){
+                   $balance->amount = $balance->amount - ($d->amount * $d->rate);
+                   $balance->save();
+                 }else{
+                   $balance = new AccCurrencyCheck();
+                   $balance->type = $d->credit->value;
+                   $balance->currency = $arr->currency;
+                   $balance->bank_account = null;
+                   $balance->amount = 0 - ($d->amount * $d->rate);
+                   $balance->save();
+                 }
+               }else if($d->credit->text == '112*'){
+                 $balance = AccCurrencyCheck::get_type_first($d->credit->id,$arr->currency,$d->bank_account);
+                 if($balance){
+                   $balance->amount = $balance->amount - ($d->amount * $d->rate);
+                   $balance->save();
+                 }else{
+                   $balance = new AccCurrencyCheck();
+                   $balance->type = $d->credit->value;
+                   $balance->currency = $arr->currency;
+                   $balance->bank_account = $d->bank_account;
+                   $balance->amount = 0 - ($d->amount * $d->rate);
+                   $balance->save();
+                 }
+               }
+               // End
+           }
+
+           // Xóa dòng chi tiết
+           AccDetail::get_detail_whereNotIn_delete($general->id,$removeId);
+
+           // Lưu VAT
+           foreach($arr->tax as $l => $x){
+             $tax = collect([]);
+             if($x->id){
+               $tax = AccVatDetail::find($x->id);
+             }else{
+               $tax = new AccVatDetail();
+             }
+             $tax->general_id = $general->id;
+             $tax->date_invoice = $x->date_invoice;
+             $tax->invoice_form = $x->invoice_form;
+             $tax->invoice_symbol = $x->invoice_symbol;
+             $tax->invoice = $x->invoice;
+             $tax->subject_id = $x->subject_id;
+             $tax->subject_code = $x->subject_code;
+             $tax->subject_name = $x->subject_name;
+             $tax->tax_code = $x->tax_code;
+             $tax->address = $x->address;
+             $tax->description = $x->description;
+             $tax->vat_type = $x->vat_type->value;// Đổi từ id value dạng read
+             $tax->amount = $x->amount;
+             $tax->tax = $x->tax;
+             $tax->total_amount = $x->amount+$x->tax;
+             $tax->status = 1;
+             $tax->active = 1;
+             $tax->save();
+             array_push($removeId_v,$tax->id);
+             $arr->tax[$l]->id = $tax->id;
+           }
+           // Xóa dòng chi tiết Vat
+           AccVatDetail::get_detail_whereNotIn_delete($general->id,$removeId_v);
+
+
+           // Lưu file
+           if($request->hasFile('files')) {
+             $files = $request->file('files');
+             foreach($files as $file){
+               $com = $request->session()->get('com');
+               $filename = $file->getClientOriginalName().'_'.Str::random(10);
+               $sys = AccSystems::get_systems($this->path);
+               $path = public_path().'/'.$sys->value.'/'.$com.'/'. $general->id;
+               $pathname = $sys->value . $com.'/'. $general->id.'/'.$filename;
+               if(!File::isDirectory($path)){
+               File::makeDirectory($path, 0777, true, true);
+               }
+               $files->move($path, $filename);
+               // Lưu lại hình ảnh
+               $attach = new AccAttach();
+               $attach->general_id = $general->id;
+               $attach->name = $filename;
+               $attach->path = $pathname;
+               $attach->save();
+             }
+           }
+
+           // Lưu lịch sử
+           $h = new AccHistoryAction();
+           $h ->create([
+           'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
+           'user' => Auth::id(),
+           'menu' => $this->menu->id,
+           'url'  => $this->url,
+           'dataz' => \json_encode($arr)]);
+           DB::connection(env('CONNECTION_DB_ACC'))->commit();
+           return response()->json(['status'=>true,'message'=> trans('messages.update_success'), 'voucher_name' => $v , 'dataId' => $general->id ,  'data' => $arr ]);
+           //
+      }else{
+          return response()->json(['status'=>false,'message'=> trans('messages.locked_period')]);
+      }
+      }else{
+          return response()->json(['status'=>false,'message'=> trans('messages.update_fail')]);
+      }
+    }catch(Exception $e){
+      DB::connection(env('CONNECTION_DB_ACC'))->rollBack();
+       // Lưu lỗi
+       $err = new Error();
+       $err ->create([
+         'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
+         'user_id' => Auth::id(),
+         'menu_id' => $this->menu->id,
+         'error' => $e->getMessage(),
+         'url'  => $this->url,
+         'check' => 0 ]);
+       return response()->json(['status'=>false,'message'=> trans('messages.error').' '.$e->getMessage()]);
+     }
   }
 
 

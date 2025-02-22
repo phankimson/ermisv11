@@ -5,6 +5,7 @@ namespace App\Http\Model;
 use Illuminate\Database\Eloquent\Model;
 use App\Http\Model\AccObject;
 use App\Http\Model\AccDetail;
+use App\Http\Model\AccVatDetailPayment;
 use App\Http\Model\AccAttach;
 use App\Http\Model\Casts\Decimal;
 use App\Http\Traits\ScopesTraits;
@@ -105,6 +106,10 @@ class AccGeneral extends Model
 
     public function tax() {
       return $this->hasMany(AccVatDetail::class,'general_id','id');
+    }
+
+    public function vat_detail_payment() {
+      return $this->hasMany(AccVatDetailPayment::class,'general_id','id');
     }
 
     public function attach() {
