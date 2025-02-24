@@ -1095,10 +1095,50 @@ Route::post('/cash-receipts-voucher-by-invoice-get-data', 'get_data' )->name('-g
 
 
 
-
+// POS
 Route::group([
   'prefix'=>'pos',
   'as' => 'pos.'
+],function () {
+  Route::controller(HomeController::class)->group(function () {
+  Route::get('/index', 'show');
+  Route::get('/', 'show')->name('index');
+  Route::get('login', 'login')->name('login');
+  Route::post('login', 'doLogin');
+  });
+});
+
+// HRM
+Route::group([
+  'prefix'=>'hrm',
+  'as' => 'hrm.'
+],function () {
+  Route::controller(HomeController::class)->group(function () {
+  Route::get('/index', 'show');
+  Route::get('/', 'show')->name('index');
+  Route::get('login', 'login')->name('login');
+  Route::post('login', 'doLogin');
+  });
+});
+
+// HOTEL
+Route::group([
+  'prefix'=>'hotel',
+  'as' => 'hotel.'
+],function () {
+  Route::controller(HomeController::class)->group(function () {
+  Route::get('/index', 'show');
+  Route::get('/', 'show')->name('index');
+  Route::get('login', 'login')->name('login');
+  Route::post('login', 'doLogin');
+  });
+});
+
+
+// EDU
+Route::group([
+  'prefix'=>'edu',
+  'as' => 'edu.'
 ],function () {
   Route::controller(HomeController::class)->group(function () {
   Route::get('/index', 'show');
