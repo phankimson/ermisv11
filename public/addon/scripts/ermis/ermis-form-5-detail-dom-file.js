@@ -27,9 +27,11 @@ var Ermis = function() {
         // KendoWindowTemplate
         $kWindow = ErmisKendoWindowTemplate(myWindow, "600px", ""); 
         $kWindow3 = ErmisKendoWindowTemplate(myWindow3, "1000px", "");
+        $kWindow4 = ErmisKendoWindowTemplate(myWindow4, "400px", "");
         $kWindow6 = ErmisKendoWindowTemplate(myWindow6, "800px", "");       
         $kWindow.title(Lang.get('acc_voucher.search_for_object'));
         $kWindow3.title(Lang.get('acc_voucher.search_for_voucher'));
+        $kWindow4.title(Lang.get('acc_voucher.attach'));
         $kWindow6.title(Lang.get('global.get_data'));
         // Grid
         ErmisKendoGridCheckboxTemplate3($kGrid, Ermis.data, Ermis.aggregate, Ermis.field, Ermis.page_size , {
@@ -284,6 +286,7 @@ var Ermis = function() {
             jQuery('.cancel-window').on('click', initClose);
             jQuery('.filter').on('click', initFilterForm);
             jQuery('.import').on('click', initImport);
+            jQuery('.attach').on('click', initAttachForm);
             shortcut.add(key + "S", function(e) {
                 initSave(e);
             });
@@ -341,6 +344,7 @@ var Ermis = function() {
             jQuery('.cancel').on('click', initCancel);
             jQuery('.save').on('click', initSave);
             jQuery('.filter').on('click', initFilterForm);
+            jQuery('.attach').on('click', initAttachForm);
             jQuery('.cancel-window').on('click', initClose);
             shortcut.add(key + "S", function(e) {
                 initSave(e);
@@ -469,6 +473,7 @@ var Ermis = function() {
           jQuery('.cancel').on('click', initCancel);
           jQuery('.save').on('click', initSave);
           jQuery('.filter').on('click', initFilterForm);
+          jQuery('.attach').on('click', initAttachForm);
           jQuery('.cancel-window').on('click', initClose);
           shortcut.add(key + "S", function(e) {
               initSave(e);
@@ -633,6 +638,10 @@ var Ermis = function() {
     };
     var initVoucherForm = function() {
         $kWindow3.open();
+    };
+
+    var initAttachForm = function() {
+        $kWindow4.open();
     };
 
     var initGetDataForm = function() {

@@ -15,10 +15,16 @@ use App\Http\Model\AccDetail;
 use App\Http\Model\AccSettingVoucher;
 use App\Http\Model\AccCurrencyCheck;
 use App\Http\Model\AccCountVoucher;
+use App\Http\Model\AccVatDetailPayment;
+use App\Http\Model\AccSystems;
+use App\Http\Model\AccAttach;
+use App\Http\Model\AccHistoryAction;
 use App\Http\Resources\CashReceiptVoucherInvoiceResource;
 use App\Http\Model\Error;
 use App\Classes\Convert;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\File;
 use Exception;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -94,8 +100,6 @@ class AccCashReceiptsVoucherByInvoiceController extends Controller
          $period = AccPeriod::get_date(Carbon::parse($arr->accounting_date)->format('Y-m'),1);
         if(!$period){
           $general = [];
-          $removeId = [];
-          $removeId_v = [];
           $permission = $request->session()->get('per');
           $user = Auth::user();
           if($permission['e'] == true && $arr->id ){
@@ -160,28 +164,28 @@ class AccCashReceiptsVoucherByInvoiceController extends Controller
           $setting_voucher = AccSettingVoucher::get_menu($this->menu->id);
           // CHI TIET / Detail
            foreach($arr->detail as $k => $d){
-             $detail = collect([]);
-             if($d->id){
-               $detail = AccDetail::find($d->id);
-             }else{
-               $detail = new AccDetail();
-             }
+             $detail = AccDetail::find($d->id);            
              $detail->general_id = $general->id;
              $detail->description = $general->description;
              $detail->debit = $setting_voucher->debit;  // Lấy từ seting default
              $detail->credit = $setting_voucher->credit; // Lấy từ seting default
              $detail->amount = $d->payment;
-             $detail->rate = $d->rate;
+             $detail->rate = $arr->rate;
              $detail->amount_rate = $d->payment;             
              $detail->subject_id_credit = $d->subject_code->value;// Đổi từ id value dạng read
              $detail->subject_name_credit = $d->subject_code->text;// Đổi từ name text dạng read
              $detail->save();
-       
-             array_push($removeId,$detail->id);
-             $arr->detail[$k]->id = $detail->id;
+
+              // Lưu VAT payment
+
+              $pm = new AccVatDetailPayment();
+              $pm->general_id = $general->id;
+              $pm->vat_detail_id = $detail->id;
+              $pm->payment = $d->payment;   
+              $pm->save();
 
              // Lưu số tồn tiền bên Nợ
-             if($d->debit->text == '11*'){
+             if($setting_voucher->debit){
                $balance = AccCurrencyCheck::get_type_first($d->debit->value,$arr->currency,null);
                if($balance){
                  $balance->amount = $balance->amount + $d->payment;
@@ -196,74 +200,8 @@ class AccCashReceiptsVoucherByInvoiceController extends Controller
                }
              }
                // End
-
-               // Lưu số tồn tiền bên Có
-               if($d->credit->text == '111*' || $d->credit->text == '113*'){
-                 $balance = AccCurrencyCheck::get_type_first($d->credit->value,$arr->currency,null);
-                 if($balance){
-                   $balance->amount = $balance->amount - ($d->amount * $d->rate);
-                   $balance->save();
-                 }else{
-                   $balance = new AccCurrencyCheck();
-                   $balance->type = $d->credit->value;
-                   $balance->currency = $arr->currency;
-                   $balance->bank_account = null;
-                   $balance->amount = 0 - ($d->amount * $d->rate);
-                   $balance->save();
-                 }
-               }else if($d->credit->text == '112*'){
-                 $balance = AccCurrencyCheck::get_type_first($d->credit->id,$arr->currency,$d->bank_account);
-                 if($balance){
-                   $balance->amount = $balance->amount - ($d->amount * $d->rate);
-                   $balance->save();
-                 }else{
-                   $balance = new AccCurrencyCheck();
-                   $balance->type = $d->credit->value;
-                   $balance->currency = $arr->currency;
-                   $balance->bank_account = $d->bank_account;
-                   $balance->amount = 0 - ($d->amount * $d->rate);
-                   $balance->save();
-                 }
-               }
-               // End
-           }
-
-           // Xóa dòng chi tiết
-           AccDetail::get_detail_whereNotIn_delete($general->id,$removeId);
-
-           // Lưu VAT
-           foreach($arr->tax as $l => $x){
-             $tax = collect([]);
-             if($x->id){
-               $tax = AccVatDetail::find($x->id);
-             }else{
-               $tax = new AccVatDetail();
-             }
-             $tax->general_id = $general->id;
-             $tax->date_invoice = $x->date_invoice;
-             $tax->invoice_form = $x->invoice_form;
-             $tax->invoice_symbol = $x->invoice_symbol;
-             $tax->invoice = $x->invoice;
-             $tax->subject_id = $x->subject_id;
-             $tax->subject_code = $x->subject_code;
-             $tax->subject_name = $x->subject_name;
-             $tax->tax_code = $x->tax_code;
-             $tax->address = $x->address;
-             $tax->description = $x->description;
-             $tax->vat_type = $x->vat_type->value;// Đổi từ id value dạng read
-             $tax->amount = $x->amount;
-             $tax->tax = $x->tax;
-             $tax->total_amount = $x->amount+$x->tax;
-             $tax->status = 1;
-             $tax->active = 1;
-             $tax->save();
-             array_push($removeId_v,$tax->id);
-             $arr->tax[$l]->id = $tax->id;
-           }
-           // Xóa dòng chi tiết Vat
-           AccVatDetail::get_detail_whereNotIn_delete($general->id,$removeId_v);
-
-
+               
+           }          
            // Lưu file
            if($request->hasFile('files')) {
              $files = $request->file('files');

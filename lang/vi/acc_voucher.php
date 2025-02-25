@@ -26,7 +26,7 @@ return [
     "payer"=>"Người nộp tiền",
     "deliver" => "Người giao",
     "description" => "Ghi chú",
-    "reference" => "Đính kèm",
+    "reference" => "Tham chiếu",
     "amount"=>"Thành tiền",
     "total_amount"=>"Tổng tiền",
     "payment"=>"Thanh toán",
