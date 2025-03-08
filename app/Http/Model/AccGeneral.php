@@ -91,6 +91,12 @@ class AccGeneral extends Model
         return $result;
       }
 
+      static public function find_subject($subject) {
+        $result = AccGeneral::where('subject',$subject)->first();
+        return $result;
+      }
+
+
       public function object()
     {
         return $this->belongsTo(AccObject::class,'subject','id');

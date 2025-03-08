@@ -70,9 +70,10 @@ class AccCashReceiptsVoucherByInvoiceController extends Controller
     $type = 10;
     try{
       $req = json_decode($request->data);
-      $data = CashReceiptVoucherInvoiceResource::collection(AccVatDetail::get_detail_subject($req->subject_id,$req->start_date,$req->end_date));    
+      $data = CashReceiptVoucherInvoiceResource::collection(AccVatDetail::get_detail_subject($req->subject_id,$req->start_date,$req->end_date));
+      $general = AccGeneral::find_subject($req->subject_id);
       if($req && $data->count()>0){
-        return response()->json(['status'=>true,'data'=> $data]);
+        return response()->json(['status'=>true,'data'=> $data,'currency'=>$general->currency]);
       }else{
         return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
       }    

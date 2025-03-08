@@ -144,7 +144,10 @@ var Ermis = function() {
                 data: JSON.stringify(c.obj)
             };
             ErmisTemplateAjaxPost0(e, postdata, Ermis.link + '-get-data', function(result) {
-                initLoadGrid(result.data);           
+                initLoadGrid(result.data);
+                $currency = jQuery("#currency").data("kendoDropDownList");
+                $currency.value(result.currency);   
+                $currency.trigger("change");
                 $kWindow6.close();
             }, function(result) {
                 kendo.alert(result.message);

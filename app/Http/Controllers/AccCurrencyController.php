@@ -44,7 +44,7 @@ class AccCurrencyController extends Controller
     //$data = AccCurrency::with('denominations')->get();
     $count = AccCurrency::count();
     $sys_page = AccSystems::get_systems($this->page_system);
-    $paging = $count>$sys_page->value?1:0;   
+    $paging = $count>$sys_page->value?1:0;
     //$account = collect(DropDownListResource::collection(AccAccountSystems::active()->OrderBy('code','asc')->doesntHave('account')->get()));
     return view('acc.currency',['paging' => $paging, 'key' => $this->key ]);
   }

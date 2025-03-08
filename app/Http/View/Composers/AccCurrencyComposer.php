@@ -35,7 +35,7 @@ class AccCurrencyComposer
         $default = AccSystems::get_systems("CURRENCY_DEFAULT");
         $this->currency_default = $default;
         $rate = AccCurrency::get_code($default->value);
-        $this->currency_rate = $rate->rate;
+        $this->rate = $rate->rate;
     }
 
     /**
@@ -48,6 +48,6 @@ class AccCurrencyComposer
     {
         $view->with('currency',$this->data);
         $view->with('currency_default', $this->currency_default);
-        $view->with('currency_rate',$this->currency_rate);
+        $view->with('currency_rate',$this->rate);
     }
 }
