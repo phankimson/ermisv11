@@ -41,9 +41,11 @@ class AccCashReceiptsVoucherController extends Controller
   protected $type_object;
   protected $document;
   protected $path;
+  protected $invoice_type;
   public function __construct(Request $request)
  {
      $this->url =  $request->segment(3);
+     $this->invoice_type = 2; // 1 Hóa đơn đầu vào , // 2 Hóa đơn đầu ra
      $this->type = 1; // 1 Thu tiền mặt, //2 Thu tiền mặt theo hóa đơn
      $this->type_object = 2; // 2 Khách hàng (VD : 2,3 nếu nhiều đối tượng)
      $this->key = "cash-receipts-voucher";
@@ -277,6 +279,7 @@ class AccCashReceiptsVoucherController extends Controller
              }
              $tax->general_id = $general->id;
              $tax->date_invoice = $x->date_invoice;
+             $tax->invoice_type = $this->invoice_type;
              $tax->invoice_form = $x->invoice_form;
              $tax->invoice_symbol = $x->invoice_symbol;
              $tax->invoice = $x->invoice;
