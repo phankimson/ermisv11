@@ -196,5 +196,7 @@
   </script>
 @endsection
 @section('scripts_end')
+<script src="{{ asset('library/kendoui/js/cultures/kendo.culture.en-DE.min.js') }}"></script>
+<script>kendo.culture('en-DE')</script>
 <script src="{{ url('addon/scripts/ermis/ermis-form-2-pageup.js') }}"></script>
 @endsection

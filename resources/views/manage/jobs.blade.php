@@ -78,5 +78,8 @@
   </script>
 @endsection
 @section('scripts_end')
+<script src="{{ asset('library/kendoui/js/cultures/kendo.culture.en-DE.min.js') }}"></script>
+<script>kendo.culture('en-DE')</script>
+@endif
 <script src="{{ url('addon/scripts/ermis/ermis-form-1-scrolltt.js') }}"></script>
 @endsection

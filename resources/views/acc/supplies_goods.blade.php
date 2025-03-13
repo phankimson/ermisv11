@@ -296,8 +296,8 @@
 @endsection
 @section('scripts_end')
 @if($decimal_symbol === ".")
-<script src="{{ asset('library/kendoui/js/cultures/kendo.culture.de-DE.min.js') }}"></script>
-<script>kendo.culture('de-DE')</script>
+<script src="{{ asset('library/kendoui/js/cultures/kendo.culture.en-DE.min.js') }}"></script>
+<script>kendo.culture('en-DE')</script>
 @endif
 <script src="{{ url('library/handsontable/dist/handsontable.full.min.js') }}"></script>
 <script src="{{ url('library/handsontable/dist/numbro/languages.min.js') }}"></script>
