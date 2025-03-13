@@ -12,7 +12,7 @@
           <select class="droplist" id="currency" name="currency">
                 <option readonly selected value="0">--Select--</option>
                 @foreach($currency as $c)
-                  @if($c->id == $currency_default->value)
+                  @if($c->code == $currency_default->value)
                   <option selected value="{{ $c->id }}">{{ $c->code }} - {{ $c->name }}</option>
                   @else
                   <option value="{{ $c->id }}">{{ $c->code }} - {{ $c->name }}</option>

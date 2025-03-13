@@ -1090,6 +1090,7 @@ Route::group([
 ],function () {
 Route::get('/cash-receipts-voucher-by-invoice', 'show' )->name('');
 Route::post('/cash-receipts-voucher-by-invoice-get-data', 'get_data' )->name('-get-data');
+Route::post('/cash-receipts-voucher-by-invoice-save', 'save' )->name('-save');
 });
 });
 

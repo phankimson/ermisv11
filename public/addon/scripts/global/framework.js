@@ -541,9 +541,10 @@ function SetDataAjax(data, dataItem){
           }
       } else if (col.key === 'select') {
             var classes = jQuery('select[name = ' + col.field + ']').prop('class');
-            hasWhiteSpace(classes) == true ?  classes =  classes.split(' ')[0] :  classes
-            if (classes == 'droplist') {
-              var data = jQuery("select[name='" + col.field + "']").data("kendoDropDownList").dataSource.view();
+            hasWhiteSpace(classes) == true ?  classes =  classes.split(' ')[0] :  classes            
+            if (classes == 'droplist') {          
+              var datasource = jQuery("select[name='" + col.field + "']").data("kendoDropDownList").dataSource;
+              var data = datasource.view();
               var found = data.some(el => el.value === v);
               if(found){
                 jQuery('.'+classes+'[name="' + col.field + '"]').data('kendoDropDownList').value(v);
