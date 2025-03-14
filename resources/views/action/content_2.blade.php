@@ -1,10 +1,8 @@
 <table>
 <tr>
-    <td>
-    </td>
-    <td>
-    <a href="javascript:;" class="uk-margin-left-30 k-button k-primary get-data" data-uk-tooltip=""><i class="md-18 material-icons md-color-white"><span class="material-symbols-outlined">filter_list</span></i>@lang('global.get_data')</a></td>    
-    <td></td>
+    <td class="row-label-responsive"><label>@lang('acc_voucher.payment')</label></td>
+    <td><input type="text" class="k-textbox number fix total_payment" value="0" min="0" name="total_payment" /></td>  
+    <td><a href="javascript:;" class="uk-margin-left-30 k-button k-primary get-data" data-uk-tooltip=""><i class="md-18 material-icons md-color-white"><span class="material-symbols-outlined">filter_list</span></i>@lang('global.get_data')</a></td>
         
     <td class="row-label-responsive"></td>
         <td><label>@lang('acc_voucher.currency')</label></td>
