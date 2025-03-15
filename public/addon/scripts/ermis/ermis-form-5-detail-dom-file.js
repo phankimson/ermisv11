@@ -634,7 +634,13 @@ var Ermis = function() {
         }
         $currency.bind("change", OnChangeCurrency);
         $rate.on("change", OnChangeRate);
-    }   
+    };
+    
+    var initChangeTotalPayment = function(){
+        jQuery(Ermis.total_payment).on("change",function(){
+           console.log() 
+        })
+    }
 
     var initFilterForm = function() {
         $kWindow.open();

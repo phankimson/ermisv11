@@ -101,6 +101,7 @@
         Ermis.voucher = <?= json_encode($voucher);?>;
         Ermis.decimal = "{{$decimal}}";
         Ermis.decimal_symbol = "{{$decimal_symbol}}";
+        Ermis.total_payment = '.total_payment';
         Ermis.columns_subject = [{ "title": "STT", "template": "<span class='row-number'></span>", "width": 100 },
                                 {"field" : "subject_id", hidden: true},
                                 {"field" : "code","title" :"@lang('acc_voucher.subject_code')" , "field_set": "subject_code"},
@@ -116,11 +117,11 @@
                             {"field" :"id", hidden : true},
                             { "field" : "invoice","title" : "@lang('acc_voucher.invoice')"  ,width : '150px'},
                             { "field" : "date_invoice","title" : "@lang('acc_voucher.date_invoice')",template: '#= FormatDate(date_invoice) #',width : '150px'  },
-                            { "field" : "description","title" : "@lang('acc_voucher.description')",width : '200px'  },                           
-                            { "field" : "total_amount","title" : "@lang('acc_voucher.total_amount')" ,format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" ,aggregates: ['sum'] ,footerTemplate: "<p id='total_amount'>#={{$decimal}}#</p>" ,width : '150px'},
-                            { "field" : "paid","title" : "@lang('acc_voucher.paid')" ,format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" ,aggregates: ['sum'] ,footerTemplate: "<p id='total_paid'>#={{$decimal}}#</p>" ,width : '150px'},
-                            { "field" : "remaining","title" : "@lang('acc_voucher.remaining')" ,format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" ,aggregates: ['sum'] ,footerTemplate: "<p id='total_remaining'>#={{$decimal}}#</p>" ,width : '150px'},
-                            { "field" : "payment",editor: MaxValueEditor,"maxValueColumn" : "remaining","title" : "@lang('acc_voucher.payment')" ,format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" ,aggregates: ['sum'] ,footerTemplate: "<p id='total_payment'>#={{$decimal}}#</p>" ,width : '150px'}];
+                            { "field" : "description","title" : "@lang('acc_voucher.description')",aggregates: ['count'], footerTemplate: "<p>Total Count: #=count#</p>",width : '200px'  },                           
+                            { "field" : "total_amount","title" : "@lang('acc_voucher.total_amount')" ,format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" ,aggregates: ['sum'] ,footerTemplate: "<p id='total_amount'>#=FormatNumberDecimal(sum,{{$decimal}})#</p>" ,width : '150px'},
+                            { "field" : "paid","title" : "@lang('acc_voucher.paid')" ,format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" ,aggregates: ['sum'] ,footerTemplate: "<p id='total_paid'>#=FormatNumberDecimal(sum,{{$decimal}})#</p>"  ,width : '150px'},
+                            { "field" : "remaining","title" : "@lang('acc_voucher.remaining')" ,format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" ,aggregates: ['sum'] ,footerTemplate: "<p id='total_remaining'>#=FormatNumberDecimal(sum,{{$decimal}})#</p>"  ,width : '150px'},
+                            { "field" : "payment",editor: MaxValueEditor,"maxValueColumn" : "remaining","title" : "@lang('acc_voucher.payment')" ,format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" ,aggregates: ['sum'] ,footerTemplate: "<p id='total_payment'>#=FormatNumberDecimalLinkInput(sum,{{$decimal}},Ermis.total_payment)#</p>" ,width : '150px'}];
                       
         Ermis.field = {
             id : {field :"id" ,defaultValue: 0,editable: false},
@@ -135,9 +136,10 @@
         };
 
         Ermis.aggregate = [ { field: "description", aggregate: "count" },
-                            { field: "payment", aggregate: "sum" },
+                            { field: "total_amount", aggregate: "sum" },
                             { field: "paid", aggregate: "sum" },
-                            { field: "total_amount", aggregate: "sum" }];
+                            { field: "remaining", aggregate: "sum" },
+                            { field: "payment", aggregate: "sum" }];
     });
 </script>
 

@@ -1243,6 +1243,17 @@ function FormatNumberDecimal(container,decimal) {
     return result;
 }
 
+function FormatNumberDecimalLinkInput(container,decimal,input) {
+  var result = 0;
+  if (container === null || container === "") {
+      result = 0;
+  } else {
+      result = kendo.toString(parseInt(container), "n"+decimal);
+  }
+  jQuery(input).val(result);
+  return result;
+}
+
 function FormatDecimal(container) {
     var result = 0;
     if (container != null || container != "") {
