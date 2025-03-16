@@ -61,5 +61,5 @@ return [
     "search_for_object" => "Search for object",
     "search_for_goods" => "Search for goods",
     "search_for_voucher" => "Search for voucher",
-    "change_voucher" => "Change vouchers",
+    "change_voucher" => "Change vouchers",  
 ];

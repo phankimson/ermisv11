@@ -1223,6 +1223,16 @@ function FormatMultiSelectValueRow(container,row) {
   return result;
 }
 
+function FormatNumberHtml(container,decimal_symbol) {
+  var result = 0;
+  if (container === null || container === "") {
+      result = 0;
+  } else {
+      result = container.replace(decimal_symbol, "");
+  }
+  return result;
+}
+
 function FormatNumber(container) {
     var result = 0;
     if (container === null || container === "") {

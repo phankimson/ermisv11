@@ -114,4 +114,6 @@ return [
       "software_has_expired"=>"Phần mềm đã hết hạn . Vui lòng liên hệ quản trị viên để được gia hạn thêm!",
       "please_fill_form_detail" => "Xin vui lòng điền các trường chi tiết !",
       "please_select_line_choose" => "Xin vui lòng chọn dòng !",
+      ".total_payment" => "Tổng thanh toán",
+      "exceed_the_amount_is" => "vượt quá số tiền là",
 ];

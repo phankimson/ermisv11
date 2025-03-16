@@ -638,7 +638,13 @@ var Ermis = function() {
     
     var initChangeTotalPayment = function(){
         jQuery(Ermis.total_payment).on("change",function(){
-           console.log() 
+           var total_payment = jQuery("#total_payment").html();
+           var total_payment_convert = FormatNumberHtml(total_payment,Ermis.decimal_symbol);
+           var total_payment_value = jQuery(this).val();
+           if(total_payment_value > total_payment_convert){
+            kendo.alert(kendo.alert(Lang.get('messages.'+Ermis.total_amount)+" "+Lang.get('messages.exceed_the_amount_is')+" "+ total_payment));
+            jQuery(this).val(total_payment);
+           }
         })
     }
 
@@ -1113,6 +1119,7 @@ var Ermis = function() {
             initChangeCurrency();
             initSearchGridVoucher();
             initGetDataGrid();
+            initChangeTotalPayment();
         }
 
     };
