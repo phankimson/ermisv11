@@ -101,7 +101,7 @@
         Ermis.voucher = <?= json_encode($voucher);?>;
         Ermis.decimal = "{{$decimal}}";
         Ermis.decimal_symbol = "{{$decimal_symbol}}";
-        Ermis.total_payment = '.total_payment';
+        Ermis.total_payment = ".total_payment";
         Ermis.columns_subject = [{ "title": "STT", "template": "<span class='row-number'></span>", "width": 100 },
                                 {"field" : "subject_id", hidden: true},
                                 {"field" : "code","title" :"@lang('acc_voucher.subject_code')" , "field_set": "subject_code"},

@@ -638,13 +638,28 @@ var Ermis = function() {
     
     var initChangeTotalPayment = function(){
         jQuery(Ermis.total_payment).on("change",function(){
-           var total_payment = jQuery("#total_payment").html();
-           var total_payment_convert = FormatNumberHtml(total_payment,Ermis.decimal_symbol);
+           var total_remaining = jQuery("#total_remaining").html();
+           var total_remaining_convert = FormatNumberHtml(total_remaining,Ermis.decimal_symbol);
            var total_payment_value = jQuery(this).val();
-           if(total_payment_value > total_payment_convert){
-            kendo.alert(kendo.alert(Lang.get('messages.'+Ermis.total_amount)+" "+Lang.get('messages.exceed_the_amount_is')+" "+ total_payment));
-            jQuery(this).val(total_payment);
-           }
+           var grid = $kGrid.data("kendoGrid");
+           var key = "invoice";
+           var dataItem = grid.dataSource.data();
+           var total = 0;
+           if(parseInt(total_payment_value) > parseInt(total_remaining_convert)){
+            kendo.alert(Lang.get('messages'+Ermis.total_payment)+" "+Lang.get('messages.exceed_the_amount_is')+" "+ total_remaining);
+            jQuery(this).val(total_remaining_convert);          
+           } 
+            jQuery.each(dataItem, function(l, k) {   
+                var remaining = total_payment_value - total;
+                var remaining_val = k['remaining'];
+                if(remaining > remaining_val){
+                    k.set("payment", remaining_val);                   
+                }else{
+                    k.set("payment", remaining); 
+                }            
+                    total += remaining_val;    
+                    grid.table.on("click", ".k-checkbox." + key, ErmisKendoGridCheckboxTemplate3.selectRow);
+            });                   
         })
     }
 
