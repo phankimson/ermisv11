@@ -1228,7 +1228,7 @@ function FormatNumberHtml(container,decimal_symbol) {
   if (container === null || container === "") {
       result = 0;
   } else {
-      result = container.replace(decimal_symbol, "");
+      result = replaceAll(container,decimal_symbol, "");
   }
   return result;
 }
@@ -1928,6 +1928,15 @@ function DefaultValueField(){
     
     return words;
 };
+
+function escapeRegExp(str) {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
+}
+
+
+function replaceAll(str, find, replace) {
+  return str.replace(new RegExp(escapeRegExp(find), 'g'), replace);
+}
 
 function hasWhiteSpace(s) {
   return (/\s/).test(s);

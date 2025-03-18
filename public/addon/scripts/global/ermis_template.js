@@ -771,7 +771,6 @@ var ErmisKendoGridCheckboxTemplate2 = function($kGrid, data, height, pageSize, c
 
 }
 
-
 var ErmisKendoGridCheckboxTemplate3 = function($kGrid, data, aggregate, field, pageSize, editable, height, columns, onSave ,key ,onChecked) {
     dataSource = new kendo.data.DataSource({       
         data: data,
@@ -805,27 +804,26 @@ var ErmisKendoGridCheckboxTemplate3 = function($kGrid, data, aggregate, field, p
         }
     });
 
-       
-      //bind click event to the checkbox
-        jQuery('#header-chb-' + key).change(function(ev) {
-            var checked = ev.target.checked;  
-            jQuery('.k-checkbox.' + key).each(function(idx, item) {
-                var row = $(item).closest("tr");
-                var dataItem = grid.dataItem(row);
-                $(item).click(); 
-                if (checked) {               
-                    onChecked(1,dataItem);  
-                } else {                   
-                    onChecked(0,dataItem);
-                }               
-            });
+    //bind click event to the checkbox
+    jQuery('#header-chb-' + key).change(function(ev) {
+        var checked = ev.target.checked;  
+        jQuery('.k-checkbox.' + key).each(function(idx, item) {
+            var row = $(item).closest("tr");
+            var dataItem = grid.dataItem(row);
+            $(item).click(); 
+            if (checked) {               
+                onChecked(1,dataItem);  
+            } else {                   
+                onChecked(0,dataItem);
+            }               
         });
-      // Click checkbox
-
-      grid.table.on("click", ".k-checkbox." + key, selectRow);
-
-       //on click of the checkbox:
-       function selectRow() {
+    });
+  // Click checkbox
+  
+    grid.table.on("click", ".k-checkbox." + key, selectRow);
+  
+    //on click of the checkbox:
+    function selectRow() {
         var checked = this.checked,
             row = $(this).closest("tr"),
             grid = $kGrid.data("kendoGrid"),
@@ -833,7 +831,7 @@ var ErmisKendoGridCheckboxTemplate3 = function($kGrid, data, aggregate, field, p
             if (checked) {               
                 onChecked(1,dataItem); 
                 var checkHeader = true;
-
+    
                 jQuery.each(grid.items(), function (index, item) {
                     if (!(jQuery(item).hasClass("k-state-selected"))) {
                         checkHeader = false;
@@ -843,7 +841,7 @@ var ErmisKendoGridCheckboxTemplate3 = function($kGrid, data, aggregate, field, p
                 if(a == grid.items().length){
                     checkHeader = true;
                 };
-                 jQuery('#header-chb-' + key)[0].checked = checkHeader; 
+                jQuery('#header-chb-' + key)[0].checked = checkHeader; 
             } else {                   
                 onChecked(0,dataItem);
                 //-remove selection
@@ -851,7 +849,9 @@ var ErmisKendoGridCheckboxTemplate3 = function($kGrid, data, aggregate, field, p
                 jQuery('#header-chb-' + key)[0].checked = false
             }  
         } 
+       
     }
+
 
 var ErmisKendoGridTemplate5 = function($kGrid, height, dataSource, scrollable, sortable, pageable, columns) {
     var grid = $kGrid.kendoGrid({

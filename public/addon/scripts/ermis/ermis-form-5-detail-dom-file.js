@@ -58,6 +58,7 @@ var Ermis = function() {
     }
 
     var initLoadData = function(dataId) {
+        if(Ermis.link == sessionStorage.link){
         var postdata = {
             data: JSON.stringify(dataId)
         };
@@ -79,6 +80,9 @@ var Ermis = function() {
             function() {
                 initStatus(7);
             });
+        }else{
+            initStatus(7);
+        }
     };
 
     var initLoadGrid = function(dataLoad){
@@ -627,10 +631,9 @@ var Ermis = function() {
             var r = grid.dataSource.data();
             dataDefaultGrid.data["rate"] = value; 
             jQuery.each(r, function(l, k) {
-                  k["rate"] = value;
-                  k["amount_rate"] = value*k["amount"];
-              });
-              grid.refresh();   
+                  k.set("rate",value);
+                  k.set("amount_rate",value*k["amount"]);
+              }); 
         }
         $currency.bind("change", OnChangeCurrency);
         $rate.on("change", OnChangeRate);
@@ -640,26 +643,32 @@ var Ermis = function() {
         jQuery(Ermis.total_payment).on("change",function(){
            var total_remaining = jQuery("#total_remaining").html();
            var total_remaining_convert = FormatNumberHtml(total_remaining,Ermis.decimal_symbol);
-           var total_payment_value = jQuery(this).val();
+           var total_payment_value = parseInt(FormatNumberHtml(jQuery(this).val(),Ermis.decimal_symbol));
            var grid = $kGrid.data("kendoGrid");
            var key = "invoice";
            var dataItem = grid.dataSource.data();
            var total = 0;
-           if(parseInt(total_payment_value) > parseInt(total_remaining_convert)){
-            kendo.alert(Lang.get('messages'+Ermis.total_payment)+" "+Lang.get('messages.exceed_the_amount_is')+" "+ total_remaining);
-            jQuery(this).val(total_remaining_convert);          
+           if(total_payment_value > total_remaining_convert){
+            jQuery(this).val(total_remaining_convert);
+            kendo.alert(Lang.get('messages'+Ermis.total_payment)+" "+Lang.get('messages.exceed_the_amount_is')+" "+ total_remaining);                
            } 
             jQuery.each(dataItem, function(l, k) {   
                 var remaining = total_payment_value - total;
                 var remaining_val = k['remaining'];
-                if(remaining > remaining_val){
-                    k.set("payment", remaining_val);                   
+                if(remaining >= remaining_val){
+                    onChecked(1,k);                                         
                 }else{
-                    k.set("payment", remaining); 
+                    k.set("checkbox", "");     
+                    k.set("payment", remaining);                     
                 }            
-                    total += remaining_val;    
-                    grid.table.on("click", ".k-checkbox." + key, ErmisKendoGridCheckboxTemplate3.selectRow);
-            });                   
+                    total += remaining_val;                     
+            }); 
+            var a = jQuery('.k-checkbox.' + key+":checked").not('#header-chb-' + key).length;
+            if(a == dataItem.length){
+                jQuery('#header-chb-' + key)[0].checked = true; 
+            }else{
+                jQuery('#header-chb-' + key)[0].checked = false; 
+            }                   
         })
     }
 
@@ -732,13 +741,14 @@ var Ermis = function() {
           ErmisTemplateAjaxPost11(e, "#attach", data.columns, Ermis.link + '-save', sessionStorage.dataId, obj, obj.detail.length > 0,
               function(result) {
                   sessionStorage.dataId = result.dataId;
-                  storedarrId.push(result.dataId);
+                  sessionStorage.link = Ermis.link;
+                  storedarrId[Ermis.link].push(result.dataId);
                   sessionStorage.arrId = JSON.stringify(storedarrId);
                   initStatus(2);
                   initActive("1");
                   jQuery('.voucher').val(result.voucher_name);
                   initLoadGrid(result.data.detail);
-                  sessionStorage.dataId = result.dataId;
+                  //sessionStorage.dataId = result.dataId;
               },
               function() {
 

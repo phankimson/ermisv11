@@ -61,28 +61,33 @@ var Ermis = function() {
    
 
     var initLoadData = function(dataId) {
-        var postdata = {
-            data: JSON.stringify(dataId)
-        };
-
-        ErmisTemplateAjaxPost0(null, postdata, Ermis.link + '-bind',
-            function(result) {
-                if (result.data) {
-                    initActive(result.data.active);
-                    SetDataAjax(data.columns, result.data);
-                    initLoadGrid(result.data);
-                    sessionStorage.dataId = result.data.id;
-                    initKendoGridVatChange();
-                    initKendoGridChange();
-                    //$kGrid.addClass('disabled');
-                    //calculatePriceBind(result.data.detail);
-                } else {
+        if(Ermis.link == sessionStorage.link){
+            var postdata = {
+                data: JSON.stringify(dataId)
+            };
+    
+            ErmisTemplateAjaxPost0(null, postdata, Ermis.link + '-bind',
+                function(result) {
+                    if (result.data) {
+                        initActive(result.data.active);
+                        SetDataAjax(data.columns, result.data);
+                        initLoadGrid(result.data);
+                        sessionStorage.dataId = result.data.id;
+                        initKendoGridVatChange();
+                        initKendoGridChange();
+                        //$kGrid.addClass('disabled');
+                        //calculatePriceBind(result.data.detail);
+                    } else {
+                        initStatus(7);
+                    }
+                },
+                function() {
                     initStatus(7);
-                }
-            },
-            function() {
-                initStatus(7);
-            });
+                });
+        }else{
+            initStatus(7);
+        }
+        
     };
 
     var initLoadGrid = function(dataLoad){
@@ -1026,13 +1031,14 @@ var Ermis = function() {
           ErmisTemplateAjaxPost11(e, "#attach", data.columns, Ermis.link + '-save', sessionStorage.dataId, obj, obj.detail.length > 0,
               function(result) {
                   sessionStorage.dataId = result.dataId;
-                  storedarrId.push(result.dataId);
+                  sessionStorage.link = Ermis.link;
+                  storedarrId[Ermis.link].push(result.dataId);
                   sessionStorage.arrId = JSON.stringify(storedarrId);
                   initStatus(2);
                   initActive("1");
                   jQuery('.voucher').val(result.voucher_name);
                   initLoadGrid(result.data);
-                  sessionStorage.dataId = result.dataId;
+                  //sessionStorage.dataId = result.dataId;
               },
               function() {
 
