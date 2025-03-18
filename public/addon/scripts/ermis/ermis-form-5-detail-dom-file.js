@@ -653,7 +653,7 @@ var Ermis = function() {
             kendo.alert(Lang.get('messages'+Ermis.total_payment)+" "+Lang.get('messages.exceed_the_amount_is')+" "+ total_remaining);                
            } 
             jQuery.each(dataItem, function(l, k) {   
-                var remaining = total_payment_value - total;
+                var remaining = total_payment_value - total; /// còn sai check lại
                 var remaining_val = k['remaining'];
                 if(remaining >= remaining_val){
                     onChecked(1,k);                                         
