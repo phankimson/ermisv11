@@ -642,7 +642,7 @@ var Ermis = function() {
     var initChangeTotalPayment = function(){
         jQuery(Ermis.total_payment).on("change",function(){
            var total_remaining = jQuery("#total_remaining").html();
-           var total_remaining_convert = FormatNumberHtml(total_remaining,Ermis.decimal_symbol);
+           var total_remaining_convert = parseInt(FormatNumberHtml(total_remaining,Ermis.decimal_symbol));
            var total_payment_value = parseInt(FormatNumberHtml(jQuery(this).val(),Ermis.decimal_symbol));
            var grid = $kGrid.data("kendoGrid");
            var key = "invoice";
@@ -653,15 +653,17 @@ var Ermis = function() {
             kendo.alert(Lang.get('messages'+Ermis.total_payment)+" "+Lang.get('messages.exceed_the_amount_is')+" "+ total_remaining);                
            } 
             jQuery.each(dataItem, function(l, k) {   
-                var remaining = total_payment_value - total; /// còn sai check lại
+                var remaining = total_payment_value - total; 
                 var remaining_val = k['remaining'];
                 if(remaining >= remaining_val){
-                    onChecked(1,k);                                         
+                    onChecked(1,k);     
+                    total += remaining_val;                                        
                 }else{
                     k.set("checkbox", "");     
-                    k.set("payment", remaining);                     
+                    k.set("payment", remaining);    
+                    total += remaining;                 
                 }            
-                    total += remaining_val;                     
+                                 
             }); 
             var a = jQuery('.k-checkbox.' + key+":checked").not('#header-chb-' + key).length;
             if(a == dataItem.length){

@@ -125,14 +125,14 @@
                       
         Ermis.field = {
             id : {field :"id" ,defaultValue: 0,editable: false},
-            checkbox:     {field : "checkbox"},
+            checkbox:     {field : "checkbox",defaultValue: ""},
             invoice:     {field : "invoice",editable: false},
             date_invoice:     {field : "date_invoice",editable: false},
             description:     {field : "description",editable: false},
             total_amount:     {field : "total_amount",type:"number" , defaultValue : 0 ,editable: false},
             paid:     {field : "paid",type:"number" , defaultValue : 0 , editable: false},
             remaining:     {field : "remaining",type:"number" , defaultValue : 0 , editable: false},
-            payment:     {field : "payment", type:"number" , defaultValue : 0 , validation: { min: 1 , required: true }},           
+            payment:     {field : "payment", type:"number" , defaultValue : 0 , validation: { min: 0 , required: true }},           
         };
 
         Ermis.aggregate = [ { field: "description", aggregate: "count" },

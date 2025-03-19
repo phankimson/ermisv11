@@ -807,25 +807,21 @@ var ErmisKendoGridCheckboxTemplate3 = function($kGrid, data, aggregate, field, p
     //bind click event to the checkbox
     jQuery('#header-chb-' + key).change(function(ev) {
         var checked = ev.target.checked;  
-        jQuery('.k-checkbox.' + key).each(function(idx, item) {
-            var row = $(item).closest("tr");
-            var dataItem = grid.dataItem(row);
-            $(item).click(); 
-            if (checked) {               
-                onChecked(1,dataItem);  
-            } else {                   
-                onChecked(0,dataItem);
-            }               
-        });
+        var data = grid.dataSource.data();
+        jQuery.each(data, function (k, v) {
+            var item_checked = jQuery("input#"+v.id).attr("checked") == 'checked' ? true : false;
+            if(checked != item_checked){
+                jQuery("input#"+v.id).trigger('click');            
+            }         
+        })       
     });
-  // Click checkbox
-  
-    grid.table.on("click", ".k-checkbox." + key, selectRow);
+  // Click checkbox    
+    grid.tbody.on("click", ".k-checkbox." + key, selectRow);
   
     //on click of the checkbox:
     function selectRow() {
         var checked = this.checked,
-            row = $(this).closest("tr"),
+            row = $(this).closest("tr"),        
             grid = $kGrid.data("kendoGrid"),
             dataItem = grid.dataItem(row);
             if (checked) {               
