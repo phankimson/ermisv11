@@ -117,11 +117,13 @@
                             {"field" :"id", hidden : true},
                             { "field" : "invoice","title" : "@lang('acc_voucher.invoice')"  ,width : '150px'},
                             { "field" : "date_invoice","title" : "@lang('acc_voucher.date_invoice')",template: '#= FormatDate(date_invoice) #',width : '150px'  },
-                            { "field" : "description","title" : "@lang('acc_voucher.description')",aggregates: ['count'], footerTemplate: "<p>Total Count: #=count#</p>",width : '200px'  },                           
+                            { "field" : "description","title" : "@lang('acc_voucher.description')",aggregates: ['count'], footerTemplate: "<p>@lang('acc_voucher.total_count'): #=count#</p>",width : '200px'  },                           
                             { "field" : "total_amount","title" : "@lang('acc_voucher.total_amount')" ,format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" ,aggregates: ['sum'] ,footerTemplate: "<p id='total_amount'>#=FormatNumberDecimal(sum,{{$decimal}})#</p>" ,width : '150px'},
                             { "field" : "paid","title" : "@lang('acc_voucher.paid')" ,format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" ,aggregates: ['sum'] ,footerTemplate: "<p id='total_paid'>#=FormatNumberDecimal(sum,{{$decimal}})#</p>"  ,width : '150px'},
                             { "field" : "remaining","title" : "@lang('acc_voucher.remaining')" ,format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" ,aggregates: ['sum'] ,footerTemplate: "<p id='total_remaining'>#=FormatNumberDecimal(sum,{{$decimal}})#</p>"  ,width : '150px'},
-                            { "field" : "payment",editor: MaxValueEditor,"maxValueColumn" : "remaining","title" : "@lang('acc_voucher.payment')" ,format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" ,aggregates: ['sum'] ,footerTemplate: "<p id='total_payment'>#=FormatNumberDecimalLinkInput(sum,{{$decimal}},Ermis.total_payment)#</p>" ,width : '150px'}];
+                            { "field" : "payment",editor: MaxValueEditor,"maxValueColumn" : "remaining","title" : "@lang('acc_voucher.payment')" ,format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" ,aggregates: ['sum'] ,footerTemplate: "<p id='total_payment'>#=FormatNumberDecimalLinkInput(sum,{{$decimal}},Ermis.total_payment)#</p>" ,width : '150px'},
+                            { "field" : "rate","title" :"@lang('acc_voucher.rate')",format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}","width" : "150px"  },
+                            { "field" : "payment_rate","title" : "@lang('acc_voucher.payment_rate')" ,"width" : "200px",format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" ,aggregates: ['sum'] , template: "#=calculateAmountRate(payment, rate, {{$decimal}} )#" ,footerTemplate: "<p id='payment_rate_total'>#=calculateTotalRateAggregate({{$decimal}})#</p>" },];
                       
         Ermis.field = {
             id : {field :"id" ,defaultValue: 0,editable: false},
@@ -132,7 +134,9 @@
             total_amount:     {field : "total_amount",type:"number" , defaultValue : 0 ,editable: false},
             paid:     {field : "paid",type:"number" , defaultValue : 0 , editable: false},
             remaining:     {field : "remaining",type:"number" , defaultValue : 0 , editable: false},
-            payment:     {field : "payment", type:"number" , defaultValue : 0 , validation: { min: 0 , required: true }},           
+            payment:     {field : "payment", type:"number" , defaultValue : 0 , validation: { min: 0 , required: true }},  
+            rate:     {field : "rate",type:"number", defaultValue : parseInt(jQuery(".rate").val()) , validation: { min: 0, required: true }},
+            payment_rate:     {field : "payment_rate",type:"number" , defaultValue : 0 , validation: { min: 1, required: true }},         
         };
 
         Ermis.aggregate = [ { field: "description", aggregate: "count" },

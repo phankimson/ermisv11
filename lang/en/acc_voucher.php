@@ -29,9 +29,12 @@ return [
     "reference" => "Reference",
     "amount"=>"Amount",
     "total_amount"=>"Total amount",
+    "total_amount_rate"=>"Total amount rate",
+    "total_count"=>"Total count",
     "remaining"=>"Remaining",
     "paid"=>"Paid",
     "payment"=>"Payment",
+    "payment_rate"=>"Payment rate",
     "tax"=>"Vat tax",
     "invoice"=>"Invoice",
     "date_invoice"=>"Date invoice",
@@ -62,4 +65,5 @@ return [
     "search_for_goods" => "Search for goods",
     "search_for_voucher" => "Search for voucher",
     "change_voucher" => "Change vouchers",  
+    "percent" => "Percent %",  
 ];

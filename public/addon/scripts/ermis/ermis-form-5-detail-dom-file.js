@@ -638,6 +638,17 @@ var Ermis = function() {
         $currency.bind("change", OnChangeCurrency);
         $rate.on("change", OnChangeRate);
     };
+    var initChangePercentPayment = function(){
+        jQuery(".percent").on("change",function(){
+            var total_remaining = jQuery("#total_remaining").html();
+            var total_remaining_convert = parseInt(FormatNumberHtml(total_remaining,Ermis.decimal_symbol));
+            var percent = parseInt(jQuery(this).val());
+            if(total_remaining_convert>0 && percent>0){                
+                var total_payment = Math.round(total_remaining_convert * percent/100)
+                jQuery(Ermis.total_payment).val(total_payment).trigger("change");
+            }            
+        })
+    }
     
     var initChangeTotalPayment = function(){
         jQuery(Ermis.total_payment).on("change",function(){
@@ -744,8 +755,8 @@ var Ermis = function() {
               function(result) {
                   sessionStorage.dataId = result.dataId;
                   sessionStorage.link = Ermis.link;
-                  storedarrId[Ermis.link].push(result.dataId);
-                  sessionStorage.arrId = JSON.stringify(storedarrId);
+                  storedarrId.push(result.dataId);
+                  sessionStorage[Ermis.link] = JSON.stringify(storedarrId);
                   initStatus(2);
                   initActive("1");
                   jQuery('.voucher').val(result.voucher_name);
@@ -809,7 +820,7 @@ var Ermis = function() {
                                     //return e != parseInt(sessionStorage.dataId) use id(int)
                                 })
                                 //storedarrId.sort();
-                                sessionStorage.arrId = JSON.stringify(storedarrId);
+                                sessionStorage[Ermis.link] = JSON.stringify(storedarrId);
                                 //if (storedarrId.length > 0) {
                                 //    storedarrId.length = storedarrId.length - 1;
                                 //}
@@ -883,8 +894,8 @@ var Ermis = function() {
     };
 
     var initGetStoredArrId = function() {
-        if (sessionStorage.arrId) {
-            storedarrId = JSON.parse(sessionStorage.arrId);
+        if (sessionStorage[Ermis.link]) {
+            storedarrId = JSON.parse(sessionStorage[Ermis.link]);
             return storedarrId;
         }
     };
@@ -1146,6 +1157,7 @@ var Ermis = function() {
             initChangeCurrency();
             initSearchGridVoucher();
             initGetDataGrid();
+            initChangePercentPayment();
             initChangeTotalPayment();
         }
 

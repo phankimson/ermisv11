@@ -12,6 +12,7 @@ var Ermis = function () {
     var dataSourceGeneral = '';
     var myWindow = jQuery("#form-window-voucher");
     var $kWindow = '';
+    var type = '';
 
     var initGetColunm = function () {
         data = GetAllDataForm('#form-search');
@@ -29,6 +30,10 @@ var Ermis = function () {
       ErmisKendoNumbericTemplateDate("#year","float",null,null);
       ErmisKendoDroplistTemplate(".droplist", "contains");
     }
+
+    var initGetActionNew = function(){
+      return type = Ermis.action.new;
+  };
 
     var initGetShortKey = function(){
         return key = Ermis.short_key;
@@ -194,13 +199,10 @@ var Ermis = function () {
         }
     }
 
-    var initLink =function(){
-      var type_url = jQuery("select[name='type']").val();
-      if(type_url){
-        window.location = type_url;
-      }else{
-        window.location = Ermis.action.new;
-      }           
+    var initChangeLink =function(){
+      jQuery("select[name='type']").on("change",function(){
+        type = jQuery(this).val();
+      })        
     }
 
     var initNew = function (e) {
@@ -208,7 +210,7 @@ var Ermis = function () {
           function () {
               sessionStorage.status = 1;
               sessionStorage.removeItem("dataId");
-              initLink();
+              window.location = type;
           },function(){
               kendo.alert(Lang.get('messages.you_not_permission_add'));
           });
@@ -228,10 +230,11 @@ var Ermis = function () {
                         sessionStorage.current = e;
                     }
                 });
-                sessionStorage.arrId =  JSON.stringify(arrId);
+                sessionStorage.link =  type;
+                sessionStorage[type] =  JSON.stringify(arrId);
                 sessionStorage.status = 5;
                 sessionStorage.dataId = selectedItem.id;
-                initLink();   
+                window.location = type;
             } else {
               kendo.alert(Lang.get('messages.please_select_line_view'));
             }
@@ -463,6 +466,7 @@ var Ermis = function () {
 
     return {
         init: function () {
+            initGetActionNew();
             initGetShortKey();
             initKendoGrid();
             initKendoDetailGrid();
@@ -471,6 +475,7 @@ var Ermis = function () {
             initStatus(Ermis.flag);
             initGetColunm();
             initBack();
+            initChangeLink();
         }
 
     };

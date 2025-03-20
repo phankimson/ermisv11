@@ -277,6 +277,7 @@ class AccCashReceiptsVoucherController extends Controller
              }else{
                $tax = new AccVatDetail();
              }
+             $total_amount = $x->amount+$x->tax;
              $tax->general_id = $general->id;
              $tax->date_invoice = $x->date_invoice;
              $tax->invoice_type = $this->invoice_type;
@@ -292,7 +293,9 @@ class AccCashReceiptsVoucherController extends Controller
              $tax->vat_type = $x->vat_type->value;// Đổi từ id value dạng read
              $tax->amount = $x->amount;
              $tax->tax = $x->tax;
-             $tax->total_amount = $x->amount+$x->tax;
+             $tax->total_amount = $total_amount;
+             $tax->rate = $x->rate;
+             $tax->total_amount_rate = $total_amount*$x->rate;
              $tax->status = 1;
              $tax->active = 1;
              $tax->save();

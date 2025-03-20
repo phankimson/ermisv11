@@ -29,7 +29,10 @@ return [
     "reference" => "Tham chiếu",
     "amount"=>"Thành tiền",
     "total_amount"=>"Tổng tiền",
+    "total_amount_rate"=>"Tổng tiền quy đổi",
+    "total_count"=>"Tổng dòng",
     "payment"=>"Thanh toán",
+    "payment_rate"=>"Thanh toán quy đổi",
     "remaining"=>"Còn lại",
     "paid"=>"Đã thanh toán",
     "tax"=>"Thuế",
@@ -62,4 +65,5 @@ return [
     "search_for_goods" => "Tìm kiếm hàng hóa",
     "search_for_voucher" => "Tìm kiếm chứng từ",
     "change_voucher" => "Thay đổi chứng từ",
+    "percent" => "Phần trăm %",  
 ];

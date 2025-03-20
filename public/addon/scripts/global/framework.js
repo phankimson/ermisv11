@@ -1511,6 +1511,16 @@ function calculateTotalRateAggregate(decimal) {
       return kendo.toString(total, 'n'+decimal);
 };
 
+function calculateTotalRateVatAggregate(decimal) {
+  var grid = $kGridVat.data("kendoGrid");
+  var data = grid.dataSource.data();
+  var total = 0;
+  for (var i = 0; i < data.length; i++) {
+    total += data[i].total_amount * data[i].rate ;
+  }
+    return kendo.toString(total, 'n'+decimal);
+};
+
 
 function calculatePriceAggregateDiscount(decimal) {
     var total = 0;
