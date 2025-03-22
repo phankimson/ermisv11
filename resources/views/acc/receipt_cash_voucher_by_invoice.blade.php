@@ -123,7 +123,7 @@
                             { "field" : "remaining","title" : "@lang('acc_voucher.remaining')" ,format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" ,aggregates: ['sum'] ,footerTemplate: "<p id='total_remaining'>#=FormatNumberDecimal(sum,{{$decimal}})#</p>"  ,width : '150px'},
                             { "field" : "payment",editor: MaxValueEditor,"maxValueColumn" : "remaining","title" : "@lang('acc_voucher.payment')" ,format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" ,aggregates: ['sum'] ,footerTemplate: "<p id='total_payment'>#=FormatNumberDecimalLinkInput(sum,{{$decimal}},Ermis.total_payment)#</p>" ,width : '150px'},
                             { "field" : "rate","title" :"@lang('acc_voucher.rate')",format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}","width" : "150px"  },
-                            { "field" : "payment_rate","title" : "@lang('acc_voucher.payment_rate')" ,"width" : "200px",format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" ,aggregates: ['sum'] , template: "#=calculateAmountRate(payment, rate, {{$decimal}} )#" ,footerTemplate: "<p id='payment_rate_total'>#=calculateTotalRateAggregate({{$decimal}})#</p>" },];
+                            { "field" : "payment_rate","title" : "@lang('acc_voucher.payment_rate')" ,"width" : "200px",format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" ,aggregates: ['sum'] , template: "#=calculateAmountRate(payment, rate, {{$decimal}} )#" ,footerTemplate: "<p id='payment_rate_total'>#=calculateTotalRatePaymentAggregate({{$decimal}})#</p>" },];
                       
         Ermis.field = {
             id : {field :"id" ,defaultValue: 0,editable: false},
@@ -143,7 +143,9 @@
                             { field: "total_amount", aggregate: "sum" },
                             { field: "paid", aggregate: "sum" },
                             { field: "remaining", aggregate: "sum" },
-                            { field: "payment", aggregate: "sum" }];
+                            { field: "payment", aggregate: "sum" },
+                            { field: "payment_rate", aggregate: "sum" }
+                        ];
     });
 </script>
 

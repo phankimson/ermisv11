@@ -24,6 +24,7 @@ class CashReceiptVoucherInvoiceResource extends JsonResource
             'remaining'=>$this->total_amount-$this->vat_detail_payment_sum_payment,  
             'payment'=>0,
             'rate'=>$this->rate,
+            'payment_rate'=>$this->total_amount_rate,
             'status' =>  $this->status,
             'active' =>  $this->active,
         ];

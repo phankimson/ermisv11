@@ -632,7 +632,7 @@ var Ermis = function() {
             dataDefaultGrid.data["rate"] = value; 
             jQuery.each(r, function(l, k) {
                   k.set("rate",value);
-                  k.set("amount_rate",value*k["amount"]);
+                  k.set("payment_rate",value*k["payment"]);
               }); 
         }
         $currency.bind("change", OnChangeCurrency);

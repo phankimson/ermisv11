@@ -1080,7 +1080,9 @@ Route::group([
   Route::post('/cash-receipts-voucher-voucher-change', 'voucher_change' )->name('-voucher-change');
   Route::post('/cash-receipts-voucher-load-voucher-change', 'load_voucher_change' )->name('-load-voucher-change');
 
-  Route::post('/cash-receipts-voucher-by-invoice-get', 'get' )->name('-get');
+  Route::post('/cash-receipts-voucher-by-invoice-get', 'get' )->name('-by-invoice-get');
+  Route::post('/cash-receipts-voucher-by-invoice-currency', 'currency' )->name('-by-invoice-currency');
+  Route::post('/cash-receipts-voucher-by-invoice-reference', 'reference' )->name('-by-invoice-reference');
   });
 
   // Receipt Cash Detail By Invoice
