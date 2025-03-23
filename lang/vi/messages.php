@@ -116,4 +116,5 @@ return [
       "please_select_line_choose" => "Xin vui lòng chọn dòng !",
       "total_payment" => "Tổng thanh toán",
       "exceed_the_amount_is" => "vượt quá số tiền là",
+      "receipt_from" => "Thu tiền từ",
 ];

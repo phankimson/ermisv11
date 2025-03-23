@@ -65,5 +65,5 @@ return [
     "search_for_goods" => "Search for goods",
     "search_for_voucher" => "Search for voucher",
     "change_voucher" => "Change vouchers",  
-    "percent" => "Percent %",  
+    "percent" => "Percent %", 
 ];

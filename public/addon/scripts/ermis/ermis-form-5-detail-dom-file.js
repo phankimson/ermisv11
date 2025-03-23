@@ -43,10 +43,12 @@ var Ermis = function() {
     var onChecked = function(t,dataItem){        
         if(t == 0){
             dataItem.set("payment", 0); 
-            dataItem.set("checkbox", "");            
+            dataItem.set("checkbox", "");   
+            initDescription(2,dataItem['invoice']);         
         }else{
             dataItem.set("payment", dataItem['remaining']); 
-            dataItem.set("checkbox", "checked");              
+            dataItem.set("checkbox", "checked"); 
+            initDescription(1,dataItem['invoice']);               
         };   
     }
 
@@ -638,6 +640,29 @@ var Ermis = function() {
         $currency.bind("change", OnChangeCurrency);
         $rate.on("change", OnChangeRate);
     };
+    var initDescription = function($type,$voucher){
+        var text = jQuery("input[name='description']").val();
+        if($type == 1){            
+            if(text == ""){
+                text = Lang.get('messages.receipt_from')+" : "+$voucher;
+            }else{
+                var check_text = text.indexOf($voucher);
+                if(check_text < 0){
+                    text = text+","+$voucher;
+                }                
+            }
+        }else{
+            var check_text = text.indexOf($voucher);
+                if(check_text > 0){
+                    text = text.replace(","+$voucher, '');
+                    text = text.replace($voucher, '');
+                }     
+           
+        }       
+        jQuery("input[name='description']").val(text);
+    }
+
+
     var initChangePercentPayment = function(){
         jQuery(".percent").on("change",function(){
             var total_remaining = jQuery("#total_remaining").html();
@@ -674,10 +699,10 @@ var Ermis = function() {
                     k.set("payment", remaining);    
                     total += remaining;                 
                 }            
-                                 
+                initDescription(1,k['invoice']);              
             }); 
             var a = jQuery('.k-checkbox.' + key+":checked").not('#header-chb-' + key).length;
-            if(a == dataItem.length){
+            if(a == dataItem.length && dataItem.length > 0){
                 jQuery('#header-chb-' + key)[0].checked = true; 
             }else{
                 jQuery('#header-chb-' + key)[0].checked = false; 

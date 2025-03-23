@@ -23,7 +23,9 @@ class AccVat extends Model
 
       protected $casts = [
         'amount'=> Decimal::class,   
-        'total_amount'=> Decimal::class,   
+        'total_amount'=> Decimal::class,
+        'rate'=> Decimal::class,    
+        'total_amount_rate'=> Decimal::class,   
     ];
 
    

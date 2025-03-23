@@ -160,12 +160,16 @@ class AccCashReceiptsVoucherByInvoiceController extends Controller
           $general->status = 1;
           $general->active = 1;
           $general->save();          
-          
 
           $setting_voucher = AccSettingVoucher::get_menu($this->menu->id);
           // CHI TIET / Detail
            foreach($arr->detail as $k => $d){
-             $detail = AccDetail::find($d->id);            
+            $detail = collect([]);
+            if($d->id){
+              $detail = AccDetail::find($d->id);
+            }else{
+              $detail = new AccDetail();
+            }            
              $detail->general_id = $general->id;
              $detail->description = $general->description;
              $detail->debit = $setting_voucher->debit;  // Lấy từ seting default
@@ -183,6 +187,8 @@ class AccCashReceiptsVoucherByInvoiceController extends Controller
               $pm->general_id = $general->id;
               $pm->vat_detail_id = $detail->id;
               $pm->payment = $d->payment;   
+              $pm->rate = $d->rate;  
+              $pm->payment_rate = $d->payment_rate;  
               $pm->save();
 
              // Lưu số tồn tiền bên Nợ
