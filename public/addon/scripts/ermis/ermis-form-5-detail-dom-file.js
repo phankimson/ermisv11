@@ -640,6 +640,7 @@ var Ermis = function() {
         $currency.bind("change", OnChangeCurrency);
         $rate.on("change", OnChangeRate);
     };
+    
     var initDescription = function($type,$voucher){
         var text = jQuery("input[name='description']").val();
         if($type == 1){            
@@ -648,8 +649,14 @@ var Ermis = function() {
             }else{
                 var check_text = text.indexOf($voucher);
                 if(check_text < 0){
-                    text = text+","+$voucher;
-                }                
+                    var length_text = text.length;
+                    var subtext = text.substr(length_text-2, length_text).trim();
+                    var char = "";
+                    if(subtext != ":"){
+                        char = ",";
+                    }    
+                    text = text+char+$voucher;
+                }            
             }
         }else{
             var check_text = text.indexOf($voucher);
