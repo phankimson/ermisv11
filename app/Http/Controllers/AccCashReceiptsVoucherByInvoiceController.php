@@ -156,10 +156,10 @@ class AccCashReceiptsVoucherByInvoiceController extends Controller
           $general->traders = $arr->traders;
           $general->subject = $arr->subject_id;
           $general->total_amount = $arr->total_amount;
-          $general->total_amount_rate = $arr->total_amount;
+          $general->total_amount_rate = $arr->total_amount_rate;
           $general->status = 1;
           $general->active = 1;
-          $general->save();          
+          $general->save();      
 
           $setting_voucher = AccSettingVoucher::get_menu($this->menu->id);
           // CHI TIET / Detail
@@ -169,16 +169,16 @@ class AccCashReceiptsVoucherByInvoiceController extends Controller
               $detail = AccDetail::find($d->id);
             }else{
               $detail = new AccDetail();
-            }            
+            }           
              $detail->general_id = $general->id;
              $detail->description = $general->description;
              $detail->debit = $setting_voucher->debit;  // Lấy từ seting default
              $detail->credit = $setting_voucher->credit; // Lấy từ seting default
              $detail->amount = $d->payment;
              $detail->rate = $arr->rate;
-             $detail->amount_rate = $d->payment;             
-             $detail->subject_id_credit = $d->subject_code->value;// Đổi từ id value dạng read
-             $detail->subject_name_credit = $d->subject_code->text;// Đổi từ name text dạng read
+             $detail->amount_rate = $d->payment_rate;             
+             $detail->subject_id_credit = $arr->subject_id;
+             $detail->subject_name_credit = $arr->code." - ".$arr->name;
              $detail->save();
 
               // Lưu VAT payment

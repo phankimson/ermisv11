@@ -114,7 +114,4 @@ return [
   "software_has_expired"=>"Software has expired. Please contact the administrator extend more!",
   "please_fill_form_detail" => "Please fill form detail !",
   "please_select_line_choose" => "Please select line choose !",
-  "total_payment" => "Total payment",
-  "exceed_the_amount_is" => "exceed the amount is",
-  "receipt_from" => "Receipt from", 
 ];

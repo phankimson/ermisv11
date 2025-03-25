@@ -66,4 +66,7 @@ return [
     "search_for_voucher" => "Tìm kiếm chứng từ",
     "change_voucher" => "Thay đổi chứng từ",
     "percent" => "Phần trăm %",  
+    "total_payment" => "Tổng thanh toán",
+    "exceed_the_amount_is" => "vượt quá số tiền là",
+    "receipt_from_invoice" => "Thu tiền từ hóa đơn",
 ];

@@ -151,6 +151,8 @@ var Ermis = function() {
             };
             ErmisTemplateAjaxPost0(e, postdata, Ermis.link + '-get-data', function(result) {
                 initLoadGrid(result.data);
+                initKendoGridChange();
+                initDefaultIdGrid();
                 $currency = jQuery("#currency").data("kendoDropDownList");
                 $currency.value(result.currency);   
                 $currency.trigger("change");
@@ -249,16 +251,16 @@ var Ermis = function() {
         grid.dataSource.bind("change", function(e) {
             // checks to see if the action is a change and the column being changed is what is expected
             var item = e.items[0];
-            if (e.action === "itemchange" && (e.field === "amount" || e.field === "rate")) {
+            if (e.action === "itemchange" && (e.field === "payment" || e.field === "rate")) {
                 // here you can access model items using e.items[0].modelName;
-                item.rate == 0 ? (item.amount_rate = 0) : (item.amount_rate = item.amount * item.rate);
-            }else if(e.action === "itemchange" && e.field === "amount_rate" ){
+                item.rate == 0 ? item.set("payment_rate" , 0) : item.set("payment_rate", item.payment * item.rate);
+            }else if(e.action === "itemchange" && e.field === "payment_rate" ){
                 // here you can access model items using e.items[0].modelName;
-                item.amount_rate = item.amount * item.rate;
+                item.set("payment_rate", item.payment * item.rate);
             }           
         });
          // finally, refresh the grid to show the changes
-         grid.refresh();
+         //grid.refresh();
     }
 
 
@@ -537,12 +539,14 @@ var Ermis = function() {
         }
     }
 
+  
     var initDefaultIdGrid = function(){
         var grid = $kGrid.data("kendoGrid");
         var r = grid.dataSource.data();
         dataDefaultGrid.data["id"] = ""; 
         jQuery.each(r, function(l, k) {
-              k["id"] = "";
+              // Không xài k.set('id',"")
+              k.id = "";
           });
           grid.refresh();            
     }
@@ -645,7 +649,7 @@ var Ermis = function() {
         var text = jQuery("input[name='description']").val();
         if($type == 1){            
             if(text == ""){
-                text = Lang.get('messages.receipt_from')+" : "+$voucher;
+                text = Lang.get('acc_voucher.receipt_from_invoice')+" : "+$voucher;
             }else{
                 var check_text = text.indexOf($voucher);
                 if(check_text < 0){
@@ -693,7 +697,7 @@ var Ermis = function() {
            var total = 0;
            if(total_payment_value > total_remaining_convert){
             jQuery(this).val(total_remaining_convert);
-            kendo.alert(Lang.get('messages'+Ermis.total_payment)+" "+Lang.get('messages.exceed_the_amount_is')+" "+ total_remaining);                
+            kendo.alert(Lang.get('acc_voucher'+Ermis.total_payment)+" "+Lang.get('acc_voucher.exceed_the_amount_is')+" "+ total_remaining);                
            } 
             jQuery.each(dataItem, function(l, k) {   
                 var remaining = total_payment_value - total; 
@@ -704,9 +708,13 @@ var Ermis = function() {
                 }else{
                     k.set("checkbox", "");     
                     k.set("payment", remaining);    
-                    total += remaining;                 
-                }            
-                initDescription(1,k['invoice']);              
+                    total += remaining;             
+                    if(remaining>0){
+                        initDescription(1,k['invoice']);      
+                    }else{
+                        initDescription(2,k['invoice']);
+                    } 
+                }                 
             }); 
             var a = jQuery('.k-checkbox.' + key+":checked").not('#header-chb-' + key).length;
             if(a == dataItem.length && dataItem.length > 0){
@@ -780,9 +788,9 @@ var Ermis = function() {
         var crit = crit1.concat(crit2);
         if(crit.length == 0){
           obj.type = jQuery('#tabstrip').find('.k-state-active').attr("data-search");
-          obj.total_number = ConvertNumber(jQuery('#quantity_total').html(),Ermis.decimal_symbol);
-          obj.total_amount = ConvertNumber(jQuery('#amount_total').html(),Ermis.decimal_symbol);
-          obj.total_amount_rate = ConvertNumber(jQuery('#amount_rate_total').html(),Ermis.decimal_symbol);
+          //obj.total_number = ConvertNumber(jQuery('#quantity_total').html(),Ermis.decimal_symbol);
+          obj.total_amount = ConvertNumber(jQuery('#total_payment').html(),Ermis.decimal_symbol);
+          obj.total_amount_rate = ConvertNumber(jQuery('#payment_rate_total').html(),Ermis.decimal_symbol);
           ErmisTemplateAjaxPost11(e, "#attach", data.columns, Ermis.link + '-save', sessionStorage.dataId, obj, obj.detail.length > 0,
               function(result) {
                   sessionStorage.dataId = result.dataId;

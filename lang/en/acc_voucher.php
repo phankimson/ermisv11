@@ -66,4 +66,7 @@ return [
     "search_for_voucher" => "Search for voucher",
     "change_voucher" => "Change vouchers",  
     "percent" => "Percent %", 
+    "total_payment" => "Total payment",
+    "exceed_the_amount_is" => "exceed the amount is",
+    "receipt_from_invoice" => "Receipt from invoice", 
 ];

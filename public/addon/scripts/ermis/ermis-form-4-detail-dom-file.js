@@ -415,14 +415,14 @@ var Ermis = function() {
             var item = e.items[0];
             if (e.action === "itemchange" && (e.field === "amount" || e.field === "rate")) {
                 // here you can access model items using e.items[0].modelName;
-                item.rate == 0 ? (item.amount_rate = 0) : (item.amount_rate = item.amount * item.rate);
+                item.rate == 0 ? item.set("amount_rate",0) : item.set("amount_rate",item.amount * item.rate);
             }else if(e.action === "itemchange" && e.field === "amount_rate" ){
                 // here you can access model items using e.items[0].modelName;
-                item.amount_rate = item.amount * item.rate;
+                item.set("amount_rate",item.amount * item.rate);
             }           
         });
          // finally, refresh the grid to show the changes
-         grid.refresh();
+         //grid.refresh();
     }
 
     var initKendoUiContextMenuGrid = function() {
@@ -784,11 +784,13 @@ var Ermis = function() {
         var rv = grid_vat.dataSource.data();
         dataDefaultGrid.vat["id"] = ""; 
         jQuery.each(r, function(l, k) {
-              k["id"] = "";
+            // Không xài được k.set('id',"")
+            k.id = "";
           });
-          grid.refresh();   
-          jQuery.each(rv, function(l, k) {
-            k["id"] = "";
+        grid.refresh();   
+        jQuery.each(rv, function(l, k) {
+            // Không xài được k.set('id',"")
+            k.id = "";
         });
         grid_vat.refresh();           
     }
