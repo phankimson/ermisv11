@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('acc_vat_detail', function (Blueprint $table) {
+        Schema::connection('mysql2')->table('acc_vat_detail', function (Blueprint $table) {
             $table->tinyInteger('invoice_type')->after('date_invoice'); 
         });
     }

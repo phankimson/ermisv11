@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('acc_inventory', function (Blueprint $table) {
+        Schema::connection('mysql2')->create('acc_inventory', function (Blueprint $table) {
             $table->uuid('id');
             $table->uuid('general_id');
             $table->uuid('item_id');

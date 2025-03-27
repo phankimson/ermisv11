@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('stock_balance', function (Blueprint $table) {
+        Schema::connection('mysql2')->table('stock_balance', function (Blueprint $table) {
             $table->renameColumn('amount', 'amount_receipt');
             $table->renameColumn('quantity', 'quantity_receipt');
             $table->decimal('amount_issue', total: 11, places: 2);

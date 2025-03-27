@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('acc_vat_detail_payment', function (Blueprint $table) {
+        Schema::connection('mysql2')->create('acc_vat_detail_payment', function (Blueprint $table) {
             $table->uuid('id');
             $table->uuid('vat_detail_id');
             $table->uuid('general_id');

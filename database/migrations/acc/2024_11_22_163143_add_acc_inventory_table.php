@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('acc_inventory', function (Blueprint $table) {
+        Schema::connection('mysql2')->table('acc_inventory', function (Blueprint $table) {
             $table->tinyInteger('status');
             $table->tinyInteger('active');
         });
