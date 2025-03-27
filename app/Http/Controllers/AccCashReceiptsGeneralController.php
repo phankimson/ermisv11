@@ -30,14 +30,14 @@ class AccCashReceiptsGeneralController extends Controller
   protected $url;
   protected $key;
   protected $menu;
-  protected $type;
+  protected $group;
   protected $print;
   protected $date_range;
   protected $action;
   public function __construct(Request $request)
  {
      $this->url =  $request->segment(3);
-     $this->type = 1; // 1 Thu tiền mặt
+     $this->group = 1; // 1 Thu tiền
      $this->key = "cash-receipts-general";
      $this->menu = Menu::where('code', '=', $this->key)->first();
      $this->print = 'PT%';
@@ -47,14 +47,18 @@ class AccCashReceiptsGeneralController extends Controller
 
   public function show(Request $request){
     $sys = AccSystems::get_systems($this->date_range);
-    $type =  Menu::get_menu_like_code($this->action["new"].'%');
+    $group =  Menu::get_menu_by_group($this->menu->type,$this->group);
+    $action = $this->action["new"];
+    $type = $group->first(function ($value, $key) use ($action) {
+        return $value->code == $action;
+    });
     $end_date_default = Carbon::now();
     $start_date_default = Carbon::now()->subDays($sys->value);
-    $data = AccGeneral::get_range_date(null,$this->type,$end_date_default,$start_date_default);
+    $data = AccGeneral::get_range_date(null,$type->id,$end_date_default,$start_date_default);
     $end_date = $end_date_default->format('d/m/Y');
     $start_date = $start_date_default->format('d/m/Y');
     $print = AccPrintTemplate::get_code($this->print);
-    return view('acc.receipt_cash_general',['data' => $data, 'type' =>$type ,'key' => $this->key, 'action' => $this->action , 'end_date' => $end_date ,'print' => $print, 'start_date'=>$start_date]);
+    return view('acc.receipt_cash_general',['data' => $data, 'group' =>$group ,'key' => $this->key, 'action' => $this->action , 'end_date' => $end_date ,'print' => $print, 'start_date'=>$start_date]);
   }
 
 
@@ -185,7 +189,8 @@ class AccCashReceiptsGeneralController extends Controller
     $type = 10;
     try{
       $req = json_decode($request->data);
-      $data = collect(CashReceiptGeneralResource::collection(AccGeneral::get_data_load_between($this->type,$req->start_date_a,$req->end_date_a)));
+      dd($req);
+      $data = collect(CashReceiptGeneralResource::collection(AccGeneral::get_data_load_between($req->type,$req->start_date_a,$req->end_date_a)));
       if($req->active != ""){
         $data = $data->where('active',$req->active)->values();
       }
@@ -215,7 +220,7 @@ class AccCashReceiptsGeneralController extends Controller
       // Tìm voucher
       $v = AccNumberVoucher::get_menu($this->menu->id); 
       $date_obj = Convert::dateformatRange($v->format,$req);
-      $data = collect(CashReceiptGeneralResource::collection(AccGeneral::get_data_load_between($this->type,$date_obj['start_date'],$date_obj['end_date'])));
+      $data = collect(CashReceiptGeneralResource::collection(AccGeneral::get_data_load_between($req->type,$date_obj['start_date'],$date_obj['end_date'])));
       if($data->count()>0){
         return response()->json(['status'=>true,'data'=> $data]);
       }else{

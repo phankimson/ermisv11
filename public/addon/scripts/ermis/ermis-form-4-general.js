@@ -13,6 +13,7 @@ var Ermis = function () {
     var myWindow = jQuery("#form-window-voucher");
     var $kWindow = '';
     var type = '';
+    var link = '';
 
     var initGetColunm = function () {
         data = GetAllDataForm('#form-search');
@@ -32,7 +33,7 @@ var Ermis = function () {
     }
 
     var initGetActionNew = function(){
-      return type = Ermis.action.new;
+      return link = Ermis.action.new;
   };
 
     var initGetShortKey = function(){
@@ -201,7 +202,8 @@ var Ermis = function () {
 
     var initChangeLink =function(){
       jQuery("select[name='type']").on("change",function(){
-        type = jQuery(this).val();
+          link = jQuery(this).val();
+          type = jQuery(this).attr("data-id");
       })        
     }
 
@@ -210,7 +212,7 @@ var Ermis = function () {
           function () {
               sessionStorage.status = 1;
               sessionStorage.removeItem("dataId");
-              window.location = type;
+              window.location = link;
           },function(){
               kendo.alert(Lang.get('messages.you_not_permission_add'));
           });
@@ -230,11 +232,11 @@ var Ermis = function () {
                         sessionStorage.current = e;
                     }
                 });
-                sessionStorage.link =  type;
+                sessionStorage.link =  link;
                 sessionStorage[type] =  JSON.stringify(arrId);
                 sessionStorage.status = 5;
                 sessionStorage.dataId = selectedItem.id;
-                window.location = type;
+                window.location = link;
             } else {
               kendo.alert(Lang.get('messages.please_select_line_view'));
             }
@@ -413,8 +415,9 @@ var Ermis = function () {
 };
 
     var initSearchData = function (e) {
-        var obj = GetDataAjax(data.columns, data.elem);
-        var postdata = { data: JSON.stringify(obj.obj) };
+        var d = GetDataAjax(data.columns, data.elem);
+        d.obj.type = type;
+        var postdata = { data: JSON.stringify(d.obj) };
         ErmisTemplateAjaxPost0(e,postdata,Ermis.link+'-get',
             function (result) {
               dataSourceGeneral = new kendo.data.DataSource({ data: result.data, pageSize: Ermis.page_size, schema: { model: { fields: Ermis.field } } });

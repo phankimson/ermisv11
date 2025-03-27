@@ -118,6 +118,7 @@ class MenuController extends Controller
         $data->name_en = $arr->name_en;
         $data->icon = $arr->icon;
         $data->link = $arr->link;
+        $data->group = $arr->group;
         $data->position = Convert::intDefaultformat($arr->position);
         $data->active = $arr->active;
         $data->save();
@@ -156,6 +157,7 @@ class MenuController extends Controller
         $data->name_en = $arr->name_en;
         $data->icon = $arr->icon;
         $data->link = $arr->link;
+        $data->group = $arr->group;
         $data->position = Convert::intDefaultformat($arr->position);
         $data->active = $arr->active;
         $data->save();

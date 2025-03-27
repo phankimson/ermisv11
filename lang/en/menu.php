@@ -21,6 +21,6 @@ return [
     "parent" => "Parent",
     "link" => "Link",
     "icon" => "Icon",
-    "position" => "Position"
-
+    "position" => "Position",
+    "group" => "Group",
 ];

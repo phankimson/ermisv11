@@ -21,6 +21,6 @@ return [
     "parent" => "Danh mục cha",
     "link" => "Đường dẫn",
     "icon" => "Biểu tượng",
-    "position" => "Vị trí"
-
+    "position" => "Vị trí",
+    "group" => "Nhóm",
 ];

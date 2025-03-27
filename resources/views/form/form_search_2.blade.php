@@ -38,8 +38,8 @@
            </select>
 
            <select class="droplist medium-responsive" name="type">
-            @foreach($type as $t)
-            <option value="{{explode("/",$t->link)[1]}}">{{ $lang=='vi'? $t->name : $t->name_en}} </option>
+            @foreach($group as $t)
+            <option data-id="{{$t->id}}" value="{{explode("/",$t->link)[1]}}">{{ $lang=='vi'? $t->name : $t->name_en}} </option>
             @endforeach               
            </select>
 

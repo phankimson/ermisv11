@@ -16,7 +16,7 @@
 
 @section('content_add')
 @include('window.window_7')
-@include('form.form_search_2',['type' => $type])
+@include('form.form_search_2',['group' => $group])
 <div class="uk-grid">
         <div class="uk-width-medium-4-4">
             <div id="grid"></div>

@@ -48,8 +48,12 @@
             <td><input type="text" class="k-textbox large" data-position="3" data-title="@lang('menu.link')" data-width="200px" data-type="string" name="link" /></td>
         </tr>
         <tr>
+            <td class="row-label"><label>@lang('menu.group') </label></td>
+            <td><input type="number" class="k-textbox large" step="1" min="0" data-position="3" data-title="@lang('menu.group')" data-width="200px" data-type="string" name="group" /></td>
+        </tr>
+        <tr>
             <td class="row-label"><label>@lang('menu.position')</label></td>
-            <td><input type="text" class="k-textbox medium" data-position="3" data-title="@lang('menu.position')" data-width="200px" data-type="string" name="position" /></td>
+            <td><input type="number" class="k-textbox medium" data-position="3" step="1" min="0" data-title="@lang('menu.position')" data-width="200px" data-type="string" name="position" /></td>
         </tr>
         <tr>
             <td><label>@lang('action.active')</label></td>
@@ -97,6 +101,7 @@
                            {field : "t.name_en", column:  "@lang('menu.name_en')" },
                            {field : "t.icon", column:  "@lang('menu.icon')" },
                            {field : "t.link", column:  "@lang('menu.link')" },
+                           {field : "t.group", column:  "@lang('menu.group')" },
                            {field : "t.position", column:  "@lang('menu.position')"},
                            {field : "t.active", column:  "@lang('action.active')" }];
   });
