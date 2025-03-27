@@ -1195,6 +1195,7 @@ var Ermis = function() {
             initBindData();
             initGetStoredArrId();
             initChangeCurrency();
+            initKendoGridVoucher();
             initSearchGridVoucher();
             initGetDataGrid();
             initChangePercentPayment();

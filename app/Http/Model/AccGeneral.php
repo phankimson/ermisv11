@@ -61,6 +61,11 @@ class AccGeneral extends Model
         return $result;
       }
 
+      static public function get_data_load_vat_payment($general_id){
+        $result = AccGeneral::where('id',$general_id)->first()->load('vat_detail_payment');
+        return $result;
+      }
+
       static public function get_data_load_between($type,$startDate,$endDate){
         $result = AccGeneral::where('type',$type)->whereBetween('accounting_date',[$startDate,$endDate])->orderBy('accounting_date', 'asc')->get();
         return $result;

@@ -20,6 +20,7 @@ use App\Http\Model\AccSystems;
 use App\Http\Model\AccAttach;
 use App\Http\Model\AccHistoryAction;
 use App\Http\Resources\CashReceiptVoucherInvoiceResource;
+use App\Http\Resources\CashReceiptGeneralReadResource;
 use App\Http\Model\Error;
 use App\Classes\Convert;
 use Illuminate\Support\Facades\Auth;
@@ -70,6 +71,7 @@ class AccCashReceiptsVoucherByInvoiceController extends Controller
     $type = 10;
     try{
       $req = json_decode($request->data);
+      //dd(AccVatDetail::get_detail_subject($req->subject_id,$req->start_date,$req->end_date));
       $data = CashReceiptVoucherInvoiceResource::collection(AccVatDetail::get_detail_subject($req->subject_id,$req->start_date,$req->end_date));
       $general = AccGeneral::find_subject($req->subject_id);
       if($req && $data->count()>0){
@@ -193,7 +195,7 @@ class AccCashReceiptsVoucherByInvoiceController extends Controller
 
              // Lưu số tồn tiền bên Nợ
              if($setting_voucher->debit){
-               $balance = AccCurrencyCheck::get_type_first($d->debit->value,$arr->currency,null);
+               $balance = AccCurrencyCheck::get_type_first($setting_voucher->debit,$arr->currency,null);
                if($balance){
                  $balance->amount = $balance->amount + $d->payment;
                  $balance->save();
@@ -261,6 +263,31 @@ class AccCashReceiptsVoucherByInvoiceController extends Controller
          'check' => 0 ]);
        return response()->json(['status'=>false,'message'=> trans('messages.error').' '.$e->getMessage()]);
      }
+  }
+
+  
+  public function bind(Request $request){
+    $type = 10;
+    try{
+      $req = json_decode($request->data);
+      $data = new CashReceiptGeneralReadResource(AccGeneral::get_data_load_vat_payment($req));
+      if($req && $data->count()>0 ){
+        return response()->json(['status'=>true,'data'=> $data]);
+      }else{
+        return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
+      }
+     }catch(Exception $e){
+        // Lưu lỗi
+        $err = new Error();
+        $err ->create([
+          'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
+          'user_id' => Auth::id(),
+          'menu_id' => $this->menu->id,
+          'error' => $e->getMessage(),
+          'url'  => $this->url,
+          'check' => 0 ]);
+        return response()->json(['status'=>false,'message'=> trans('messages.error').' '.$e->getMessage()]);
+      }
   }
 
 

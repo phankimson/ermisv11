@@ -1050,9 +1050,15 @@ Route::group([
   Route::get('/cash-receipts-general-DownloadExcel', 'DownloadExcel' )->name('-DownloadExcel');
   Route::any('/cash-receipts-general-import', 'import')->name('-import');
 
+  // Ghi , ko ghi , tìm chứng từ trang thu tiền
   Route::post('/cash-receipts-voucher-unwrite','unwrite' )->name('-unwrite');
   Route::post('/cash-receipts-voucher-write','write' )->name('-write');
   Route::post('/cash-receipts-voucher-find', 'find' )->name('-find');
+
+  // Ghi , ko ghi , tìm chứng từ trang thu tiền theo hóa đơn
+  Route::post('/cash-receipts-voucher-by-invoice-unwrite','unwrite' )->name('-by-invoice-unwrite');
+  Route::post('/cash-receipts-voucher-by-invoice-write','write' )->name('-by-invoice-write');
+  Route::post('/cash-receipts-voucher-by-invoice-find', 'find' )->name('-by-invoice-find');
   });  
 
   // Receipt Cash Detail
@@ -1080,6 +1086,7 @@ Route::group([
   Route::post('/cash-receipts-voucher-voucher-change', 'voucher_change' )->name('-voucher-change');
   Route::post('/cash-receipts-voucher-load-voucher-change', 'load_voucher_change' )->name('-load-voucher-change');
 
+  // Ghi , ko ghi , tìm chứng từ trang thu tiền theo hóa đơn
   Route::post('/cash-receipts-voucher-by-invoice-get', 'get' )->name('-by-invoice-get');
   Route::post('/cash-receipts-voucher-by-invoice-currency', 'currency' )->name('-by-invoice-currency');
   Route::post('/cash-receipts-voucher-by-invoice-reference', 'reference' )->name('-by-invoice-reference');
@@ -1093,6 +1100,7 @@ Route::group([
 Route::get('/cash-receipts-voucher-by-invoice', 'show' )->name('');
 Route::post('/cash-receipts-voucher-by-invoice-get-data', 'get_data' )->name('-get-data');
 Route::post('/cash-receipts-voucher-by-invoice-save', 'save' )->name('-save');
+Route::post('/cash-receipts-voucher-by-invoice-bind', 'bind' )->name('-bind');
 });
 });
 

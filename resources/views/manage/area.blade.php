@@ -73,9 +73,7 @@
   </script>
 @endsection
 @section('scripts_end')
-@if($decimal_symbol === ".")
 <script src="{{ asset('library/kendoui/js/cultures/kendo.culture.en-DE.min.js') }}"></script>
 <script>kendo.culture('en-DE')</script>
-@endif
 <script src="{{ url('addon/scripts/ermis/ermis-form-1-scrolldf.js') }}"></script>
 @endsection
