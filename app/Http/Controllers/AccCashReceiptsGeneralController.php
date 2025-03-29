@@ -18,6 +18,8 @@ use App\Http\Model\AccCurrencyCheck;
 use App\Http\Model\AccPrintTemplate;
 use App\Http\Model\Error;
 use App\Http\Resources\CashReceiptGeneralResource;
+use App\Http\Resources\TypeGeneralResource;
+use App\Http\Resources\TypeListGeneralResource;
 use App\Http\Model\Imports\AccCashReceiptImport;
 use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
@@ -42,25 +44,20 @@ class AccCashReceiptsGeneralController extends Controller
      $this->menu = Menu::where('code', '=', $this->key)->first();
      $this->print = 'PT%';
      $this->date_range = "DATE_RANGE_GENERAL";
-     $this->action = ["new"=>"cash-receipts-voucher"];
  }
 
-  public function show(Request $request){
+  public function show(){
     $sys = AccSystems::get_systems($this->date_range);
-    $group =  Menu::get_menu_by_group($this->menu->type,$this->group);
-    $action = $this->action["new"];
-    $type = $group->first(function ($value, $key) use ($action) {
-        return $value->code == $action;
-    });
+    $group =  TypeListGeneralResource::collection(Menu::get_menu_by_group($this->menu->type,$this->group));
+    $action = new TypeGeneralResource($group->first());
     $end_date_default = Carbon::now();
     $start_date_default = Carbon::now()->subDays($sys->value);
-    $data = AccGeneral::get_range_date(null,$type->id,$end_date_default,$start_date_default);
+    $data = AccGeneral::get_range_date(null,$action->type,$end_date_default,$start_date_default);
     $end_date = $end_date_default->format('d/m/Y');
     $start_date = $start_date_default->format('d/m/Y');
     $print = AccPrintTemplate::get_code($this->print);
-    return view('acc.receipt_cash_general',['data' => $data, 'group' =>$group ,'key' => $this->key, 'action' => $this->action , 'end_date' => $end_date ,'print' => $print, 'start_date'=>$start_date]);
+    return view('acc.receipt_cash_general',['data' => $data, 'group' =>$group ,'key' => $this->key, 'action' => $action , 'end_date' => $end_date ,'print' => $print, 'start_date'=>$start_date]);
   }
-
 
   public function unwrite(Request $request) {
     $type = 3;
@@ -189,7 +186,6 @@ class AccCashReceiptsGeneralController extends Controller
     $type = 10;
     try{
       $req = json_decode($request->data);
-      dd($req);
       $data = collect(CashReceiptGeneralResource::collection(AccGeneral::get_data_load_between($req->type,$req->start_date_a,$req->end_date_a)));
       if($req->active != ""){
         $data = $data->where('active',$req->active)->values();

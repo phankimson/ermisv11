@@ -34,7 +34,11 @@ var Ermis = function () {
 
     var initGetActionNew = function(){
       return link = Ermis.action.new;
-  };
+    };
+
+    var initGetType = function(){
+      return type = Ermis.action.type;
+    };
 
     var initGetShortKey = function(){
         return key = Ermis.short_key;
@@ -470,6 +474,7 @@ var Ermis = function () {
     return {
         init: function () {
             initGetActionNew();
+            initGetType();
             initGetShortKey();
             initKendoGrid();
             initKendoDetailGrid();
