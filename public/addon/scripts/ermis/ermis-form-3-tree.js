@@ -122,11 +122,7 @@ var Ermis = function () {
           jQuery('textarea').val("");
           SetDataDefault(data.columns);
           jQuery('.load').click();
-          jQuery.each(data.columns, function (k, v) {
-            if (v.addoption === "true") {              
-                jQuery('#'+v.field+'_listbox .k-item').removeClass('disabled k-state-disabled');
-            }
-        });
+          ErmisDisableKendoDroplist(null,data.columns);
         } else if (flag === 3) {//Edit , COpy
           $kWindow.center().open();
           $kGrid.addClass('disabled');
@@ -144,15 +140,7 @@ var Ermis = function () {
           jQuery('input,textarea').removeClass('disabled');
           jQuery('.k-button').removeClass('disabled');
           jQuery('input:checkbox').parent().removeClass('disabled');                 
-          jQuery.each(data.columns, function (k, v) {
-              if (v.addoption === "true") {
-                  var index = parseInt(jQuery('select[name="' + v.field + '"]').find('option[value=' + dataId + ']').index());
-                  jQuery('#'+v.field+'_listbox .k-item').removeClass('disabled k-state-disabled');
-                  if(dataId != null){                  
-                  jQuery('#'+v.field+'_listbox .k-item').eq(index).addClass('disabled k-state-disabled');
-                }
-              }
-          });
+          ErmisDisableKendoDroplist(dataId,data.columns);
         } else if (flag === 4) {//Cancel, Save
           $kGrid.removeClass('disabled');
           $kGrid.find('tr.k-state-selected').removeClass('k-state-selected');

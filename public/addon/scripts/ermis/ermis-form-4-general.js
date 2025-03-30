@@ -60,6 +60,7 @@ var Ermis = function () {
       var initSearchGridVoucher = function(e) {
             var filter = GetAllDataForm('#form-window-voucher', 2);
             var c = GetDataAjax(filter.columns);
+            c.obj.type = type;
             var postdata = {
                 data: JSON.stringify(c.obj)
             };
@@ -78,6 +79,7 @@ var Ermis = function () {
     var initStartVoucher = function(e) {
       var filter = GetAllDataForm('#form-window-voucher', 2);
       var c = GetDataAjax(filter.columns);
+      c.obj.type = type;
       var postdata = {
           data: JSON.stringify(c.obj)
       };
@@ -207,7 +209,12 @@ var Ermis = function () {
     var initChangeLink =function(){
       jQuery("select[name='type']").on("change",function(){
           link = jQuery(this).val();
-          type = jQuery(this).attr("data-id");
+          jQuery.each(Ermis.group, function( i, v ){
+              if(v.code == link ){
+                type = v.id;
+              }
+          });
+         
       })        
     }
 

@@ -13,6 +13,7 @@ var Ermis = function () {
     var $extra_page = jQuery("#list_extra_page");
     var myWindow = jQuery("#form-window-extra");
     var $kWindow = '';
+    var tabtrip_index = 0;
 
     var initGetShortKey = function(){
         return key = Ermis.short_key;
@@ -143,11 +144,7 @@ var Ermis = function () {
             jQuery('textarea').val("");
             SetDataDefault(data.columns);
             jQuery('.load').click();
-            jQuery.each(data.columns, function (k, v) {
-              if (v.addoption === "true") {              
-                  jQuery('#'+v.field+'_listbox .k-item').removeClass('disabled k-state-disabled');
-              }
-          });
+            ErmisDisableKendoDroplist(null,data.columns,tabtrip_index);
                if (ts.length > 0) {
             //disable the items
             tabstrip.disable(items);
@@ -169,15 +166,7 @@ var Ermis = function () {
             jQuery('.k-button').removeClass('disabled');
             jQuery(".droplist").removeClass('disabled');
             jQuery('input:checkbox').parent().removeClass('disabled');
-            jQuery.each(data.columns, function (k, v) {
-              if (v.addoption === "true") {
-                  var index = parseInt(jQuery('select[name="' + v.field + '"]').find('option[value=' + dataId + ']').index());
-                  jQuery('#'+v.field+'_listbox .k-item').removeClass('disabled k-state-disabled');
-                  if(dataId != null){                  
-                  jQuery('#'+v.field+'_listbox .k-item').eq(index).addClass('disabled k-state-disabled');
-                }
-              }
-          });
+            ErmisDisableKendoDroplist(dataId,data.columns,tabtrip_index);
                if (ts.length > 0) {
             //disable the items
             tabstrip.disable(items);
@@ -236,12 +225,13 @@ var Ermis = function () {
                     var arr = ConvertDataArrayKendos(result.data,Lang.current)
                     parent.empty();
                     parent.append('<select id="'+ id+'" class="'+$class+'" data-width="'+$width+'" name="'+id+'">');
+                    tabtrip_index = 1;
                   jQuery('#'+ id).kendoDropDownList({
                        dataTextField: "text",
                        dataValueField: "value",
                        dataSource: arr,
                        filter: "contains",
-                       optionLabel: "--Select--"
+                       optionLabel: "--Select--",
                    });
                   }
               });

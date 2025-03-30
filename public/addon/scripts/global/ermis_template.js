@@ -2310,6 +2310,26 @@ var ErmisTooltipMaxlenght = function(elem) {
     });
 };
 
+var ErmisDisableKendoDroplist = function(dataId,columns,tabtrip_index = 0){
+    if(!dataId){// Remove class
+        jQuery.each(columns, function (k, v) {
+            if (v.addoption === "true") {              
+                jQuery('#'+v.field+'_listbox .k-item').removeClass('disabled k-state-disabled');
+            }
+        });
+    }else{ // AddClass disable
+        jQuery.each(columns, function (k, v) {
+            if (v.addoption === "true") {
+                var index = parseInt(jQuery('select[name="' + v.field + '"]').find('option[value=' + dataId + ']').index()-tabtrip_index);
+                jQuery('#'+v.field+'_listbox .k-item').removeClass('disabled k-state-disabled');
+                if(dataId != null){                  
+                jQuery('#'+v.field+'_listbox .k-item').eq(index).addClass('disabled k-state-disabled');
+              }
+            }
+        });
+    }
+}
+
 var ErmisChangeInputArr = function(){
     jQuery(".change_item").change(function() {
       $bind_id = jQuery(this).attr("change-item");

@@ -43,7 +43,7 @@
       Ermis.page_size = "{{$page_size}}";
       Ermis.short_key = "{{ config('app.short_key')}}";
       Ermis.decimal = "{{$decimal}}";
-      Ermis.group = "{{$group}}";
+      Ermis.group = <?= json_encode($group);?>;;
       Ermis.column_grid = [{ "field" : "id",hidden: true },
                                  { "field" : "voucher_date","title" : "@lang('acc_voucher.voucher_date') ", type:"date" ,template: "#=FormatDate(voucher_date)#" ,width : '150px'},
                                  { "field" : "voucher","title" : "@lang('acc_general.voucher') "  ,width : '150px'},
