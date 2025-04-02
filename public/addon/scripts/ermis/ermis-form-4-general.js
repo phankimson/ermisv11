@@ -29,6 +29,7 @@ var Ermis = function () {
       ErmisKendoNumbericTemplateDate("#day","n0",1,31);
       ErmisKendoNumbericTemplateDate("#month","n0",1,12);
       ErmisKendoNumbericTemplateDate("#year","float",null,null);
+      initkendoNumericDateMaxValue();
       ErmisKendoDroplistTemplate(".droplist", "contains");
     }
 
@@ -58,17 +59,17 @@ var Ermis = function () {
     };
 
       var initSearchGridVoucher = function(e) {
-            var filter = GetAllDataForm('#form-window-voucher', 2);
+            var filter = GetAllDataForm('#form-window-voucher', 2);           
             var c = GetDataAjax(filter.columns);
             c.obj.type = type;
             var postdata = {
                 data: JSON.stringify(c.obj)
             };
-            ErmisTemplateAjaxPost0(e, postdata, Ermis.link + '-revoucher', function(result) {
-                var grid = $kGridVoucher.data("kendoGrid");
+            ErmisTemplateAjaxPost0(e, postdata, Ermis.link + '-revoucher', function(result) {               
                 var ds = new kendo.data.DataSource({
                     data: result.data
                 });
+                var grid = $kGridVoucher.data("kendoGrid");
                 grid.setDataSource(ds);
                 grid.dataSource.page(1);
             }, function(result) {
@@ -133,6 +134,17 @@ var Ermis = function () {
               }
            }
       });
+    }
+
+
+    var initkendoNumericDateMaxValue = function(){
+      jQuery('#month,#year').on('change',function(e){
+        var month = jQuery("#month").val();
+        var year = jQuery("#year").val();
+        var max_day = daysInMonth(month,year);
+        var day = jQuery("#day").data("kendoNumericTextBox");
+        day.max(max_day);
+      })
     }
 
 
@@ -475,6 +487,8 @@ var Ermis = function () {
   };
 
       var initVoucherForm = function() {
+        var grid = $kGridVoucher.data("kendoGrid");         
+        grid.dataSource.data([]);
         $kWindow.open();
     };
 

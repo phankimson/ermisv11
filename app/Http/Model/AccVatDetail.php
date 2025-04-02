@@ -46,7 +46,7 @@ class AccVatDetail extends Model
       }
 
       static public function get_detail_subject($subject_id,$end_date,$start_date) {
-        $result = AccVatDetail::where('subject_id',$subject_id)->withSum('vat_detail_payment', 'payment')->whereBetween('date_invoice',[$end_date,$start_date])->get();
+        $result = AccVatDetail::where('subject_id',$subject_id)->withSum('vat_detail_payment as vat_detail_payment', 'payment')->whereBetween('date_invoice',[$end_date,$start_date])->get();
         return $result;
       }
 

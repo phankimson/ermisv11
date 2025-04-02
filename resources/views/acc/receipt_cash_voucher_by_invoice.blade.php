@@ -115,6 +115,7 @@
                                 return '<input type="checkbox" id="'+ dataItem.id+'" '+dataItem.checkbox+'  class="k-checkbox invoice"><label class="k-checkbox-label" for="'+ dataItem.id +'"></label>'
                             },width: 50},
                             {"field" :"id", hidden : true},
+                            {"field" :"vat_detail_id", hidden : true},
                             { "field" : "invoice","title" : "@lang('acc_voucher.invoice')"  ,width : '150px'},
                             { "field" : "date_invoice","title" : "@lang('acc_voucher.date_invoice')",template: '#= FormatDate(date_invoice) #',width : '150px'  },
                             { "field" : "description","title" : "@lang('acc_voucher.description')",aggregates: ['count'], footerTemplate: "<p>@lang('acc_voucher.total_count'): #=count#</p>",width : '200px'  },                           
@@ -127,6 +128,7 @@
                       
         Ermis.field = {
             id : {field :"id" ,defaultValue: 0,editable: false},
+            vat_detail_id : {field :"id" ,editable: false},
             checkbox:     {field : "checkbox",defaultValue: ""},
             invoice:     {field : "invoice",editable: false},
             date_invoice:     {field : "date_invoice",editable: false},

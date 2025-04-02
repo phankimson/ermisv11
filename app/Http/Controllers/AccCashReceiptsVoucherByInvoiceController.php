@@ -71,8 +71,8 @@ class AccCashReceiptsVoucherByInvoiceController extends Controller
     $type = 10;
     try{
       $req = json_decode($request->data);
-      //dd(AccVatDetail::get_detail_subject($req->subject_id,$req->start_date,$req->end_date));
       $data = CashReceiptVoucherInvoiceResource::collection(AccVatDetail::get_detail_subject($req->subject_id,$req->start_date,$req->end_date));
+      //dd(AccVatDetail::get_detail_subject($req->subject_id,$req->start_date,$req->end_date));
       $general = AccGeneral::find_subject($req->subject_id);
       if($req && $data->count()>0){
         return response()->json(['status'=>true,'data'=> $data,'currency'=>$general->currency]);
@@ -136,15 +136,17 @@ class AccCashReceiptsVoucherByInvoiceController extends Controller
             }                
             // Load Phiếu tự động / Load AutoNumber
               $v = Convert::VoucherMasker1($voucher,$prefix);
-                 
-              $number = $voucher->number + 1;
+              if($voucher->number == 0 ||  !$voucher->number ){
+                $number = 1;
+              }else{
+                $number = $voucher->number + 1;
+              }  
               $length_number = $voucher->length_number;
               if(strlen($number."") > $voucher->length_number){
-                $voucher->number = 1;
                 $voucher->length_number = $length_number + 1;
-              }else{
-                $voucher->number = $number;
               }
+                $voucher->number = $number;
+              
               $voucher->save();
           }
 
@@ -187,7 +189,7 @@ class AccCashReceiptsVoucherByInvoiceController extends Controller
 
               $pm = new AccVatDetailPayment();
               $pm->general_id = $general->id;
-              $pm->vat_detail_id = $detail->id;
+              $pm->vat_detail_id = $d->vat_detail_id;
               $pm->payment = $d->payment;   
               $pm->rate = $d->rate;  
               $pm->payment_rate = $d->payment_rate;  

@@ -241,7 +241,7 @@ class AccCashReceiptsGeneralController extends Controller
     try{
       $req = json_decode($request->data);
       // Tìm voucher
-      $v = AccNumberVoucher::get_menu($this->menu->id); 
+      $v = AccNumberVoucher::get_menu($req->type); 
       $val = Convert::dateformatArr($v->format,$req->year.'-'.$req->month.'-'.$req->day);
       $voucher = AccCountVoucher::get_count_voucher($v->id,$v->format,$val['day_format'],$val['month_format'],$val['year_format']);  
       $data = collect($voucher);
