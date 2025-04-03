@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Http\Model\Casts\Decimal;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class CashReceiptVoucherInvoiceResource extends JsonResource
@@ -20,11 +21,11 @@ class CashReceiptVoucherInvoiceResource extends JsonResource
             'date_invoice' => $this->date_invoice,
             'description'=>$this->description,  
             'total_amount'=>$this->total_amount,       
-            'paid'=>$this->vat_detail_payment?$this->vat_detail_payment:0,    
-            'remaining'=>$this->total_amount-$this->vat_detail_payment,  
+            'paid'=>(float)$this->vat_detail_payment?(float)$this->vat_detail_payment:0,    
+            'remaining'=>(float)$this->total_amount-(float)$this->vat_detail_payment,  
             'payment'=>0,
             'rate'=>$this->rate,
-            'payment_rate'=>$this->total_amount_rate,
+            'payment_rate'=>0,
             'status' =>  $this->status,
             'active' =>  $this->active,
         ];

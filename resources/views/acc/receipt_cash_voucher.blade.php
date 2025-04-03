@@ -100,6 +100,7 @@
     jQuery(document).ready(function () {
         Ermis.data = [];
         Ermis.link = "{{$key}}";
+        Ermis.type = "{{$menu}}";
         Ermis.page_size = "{{$page_size}}";
         Ermis.page_size_1 = "{{$page_size_1}}";
         Ermis.per = <?= json_encode($per);?>;

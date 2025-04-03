@@ -1031,8 +1031,7 @@ Route::group([
 
   // Receipt Cash General
   Route::controller(AccGeneralController::class)->group(function () {
-  Route::post('/cash-receipts-general-detail','detail');
-  Route::post('/cash-receipts-voucher-delete', 'delete' )->name('-delete'); 
+  Route::post('/cash-receipts-general-detail','detail');  
   });
 
   // Receipt Cash General
@@ -1049,16 +1048,19 @@ Route::group([
   Route::post('/cash-receipts-general-change-voucher', 'change_voucher' )->name('-change-voucher');
   Route::get('/cash-receipts-general-DownloadExcel', 'DownloadExcel' )->name('-DownloadExcel');
   Route::any('/cash-receipts-general-import', 'import')->name('-import');
+  Route::any('/cash-receipts-general-delete', 'delete')->name('-delete');
 
   // Ghi , ko ghi , tìm chứng từ trang thu tiền
   Route::post('/cash-receipts-voucher-unwrite','unwrite' )->name('-unwrite');
   Route::post('/cash-receipts-voucher-write','write' )->name('-write');
   Route::post('/cash-receipts-voucher-find', 'find' )->name('-find');
+  Route::post('/cash-receipts-voucher-delete', 'delete' )->name('-delete'); 
 
   // Ghi , ko ghi , tìm chứng từ trang thu tiền theo hóa đơn
   Route::post('/cash-receipts-voucher-by-invoice-unwrite','unwrite' )->name('-by-invoice-unwrite');
   Route::post('/cash-receipts-voucher-by-invoice-write','write' )->name('-by-invoice-write');
   Route::post('/cash-receipts-voucher-by-invoice-find', 'find' )->name('-by-invoice-find');
+  Route::post('/cash-receipts-voucher-by-invoice-delete', 'delete' )->name('-by-invoice-delete'); 
   });  
 
   // Receipt Cash Detail
@@ -1086,7 +1088,7 @@ Route::group([
   Route::post('/cash-receipts-voucher-voucher-change', 'voucher_change' )->name('-voucher-change');
   Route::post('/cash-receipts-voucher-load-voucher-change', 'load_voucher_change' )->name('-load-voucher-change');
 
-  // Ghi , ko ghi , tìm chứng từ trang thu tiền theo hóa đơn
+  // Tìm chứng từ trang thu tiền theo hóa đơn
   Route::post('/cash-receipts-voucher-by-invoice-get', 'get' )->name('-by-invoice-get');
   Route::post('/cash-receipts-voucher-by-invoice-currency', 'currency' )->name('-by-invoice-currency');
   Route::post('/cash-receipts-voucher-by-invoice-reference', 'reference' )->name('-by-invoice-reference');

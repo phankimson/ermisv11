@@ -1035,7 +1035,7 @@ var Ermis = function() {
                   sessionStorage.dataId = result.dataId;
                   sessionStorage.link = Ermis.link;
                   storedarrId.push(result.dataId);
-                  sessionStorage[Ermis.link] = JSON.stringify(storedarrId);
+                  sessionStorage[Ermis.type] = JSON.stringify(storedarrId);
                   initStatus(2);
                   initActive("1");
                   jQuery('.voucher').val(result.voucher_name);
@@ -1099,7 +1099,7 @@ var Ermis = function() {
                                     //return e != parseInt(sessionStorage.dataId) use id(int)
                                 })
                                 //storedarrId.sort();
-                                sessionStorage[Ermis.link] = JSON.stringify(storedarrId);
+                                sessionStorage[Ermis.type] = JSON.stringify(storedarrId);
                                 //if (storedarrId.length > 0) {
                                 //    storedarrId.length = storedarrId.length - 1;
                                 //}
@@ -1173,8 +1173,8 @@ var Ermis = function() {
     };
 
     var initGetStoredArrId = function() {
-        if (sessionStorage[Ermis.link]) {
-            storedarrId = JSON.parse(sessionStorage[Ermis.link]);
+        if (sessionStorage[Ermis.type]) {
+            storedarrId = JSON.parse(sessionStorage[Ermis.type]);
             return storedarrId;
         }
     };

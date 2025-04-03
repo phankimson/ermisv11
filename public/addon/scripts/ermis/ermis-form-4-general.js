@@ -344,7 +344,7 @@ var Ermis = function () {
                 ErmisTemplateAjaxPost0(e,postdata,Ermis.link+'-write',
                     function () {
                       initActive("1");
-                      selectedItem.set("active", "1");
+                      selectedItem.set("active", true);
                       initStatus(1);
                     },
                     function (result) {
@@ -371,7 +371,7 @@ var Ermis = function () {
                 ErmisTemplateAjaxPost0(e,postdata,Ermis.link+'-unwrite',
                     function () {
                       initActive("0");
-                      selectedItem.set("active", "0");
+                      selectedItem.set("active", false);
                       initStatus(1);
                     },
                     function (result) {

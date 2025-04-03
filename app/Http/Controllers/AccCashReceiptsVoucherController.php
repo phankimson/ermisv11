@@ -36,7 +36,7 @@ class AccCashReceiptsVoucherController extends Controller
   protected $url;
   protected $key;
   protected $menu;
-  protected $type;
+  protected $group;
   protected $print;
   protected $type_object;
   protected $document;
@@ -46,7 +46,7 @@ class AccCashReceiptsVoucherController extends Controller
  {
      $this->url =  $request->segment(3);
      $this->invoice_type = 2; // 1 Hóa đơn đầu vào , // 2 Hóa đơn đầu ra
-     $this->type = 1; // 1 Thu tiền mặt, //2 Thu tiền mặt theo hóa đơn
+     $this->group = 1; // 1 Nhóm thu tiền mặt
      $this->type_object = 2; // 2 Khách hàng (VD : 2,3 nếu nhiều đối tượng)
      $this->key = "cash-receipts-voucher";
      $this->menu = Menu::where('code', '=', $this->key)->first();
@@ -132,21 +132,23 @@ class AccCashReceiptsVoucherController extends Controller
                 $voucher->active = 1;
               }
             }                
-            // Load Phiếu tự động / Load AutoNumber
-              $v = Convert::VoucherMasker1($voucher,$prefix);
-                 
-              $number = $voucher->number + 1;
-              $length_number = $voucher->length_number;
-              if(strlen($number."") > $voucher->length_number){
-                $voucher->number = 1;
-                $voucher->length_number = $length_number + 1;
-              }else{
-                $voucher->number = $number;
-              }
-              $voucher->save();
+                // Load Phiếu tự động / Load AutoNumber
+                $v = Convert::VoucherMasker1($voucher,$prefix);
+                if($voucher->number == 0 ||  !$voucher->number ){
+                  $number = 1;
+                }else{
+                  $number = $voucher->number + 1;
+                }  
+                $length_number = $voucher->length_number;
+                if(strlen($number."") > $voucher->length_number){
+                  $voucher->length_number = $length_number + 1;
+                }
+                  $voucher->number = $number;
+                
+                $voucher->save();
           }
 
-          $general->type = $this->type;
+          $general->type = $this->menu->id;
           $general->voucher = $v;
           $general->currency = $arr->currency;
           $general->rate = $arr->rate;
@@ -160,6 +162,7 @@ class AccCashReceiptsVoucherController extends Controller
           $general->total_amount_rate = $arr->total_amount_rate;
           $general->status = 1;
           $general->active = 1;
+          $general->group = $this->group;
           $general->save();
           
           // Tham chiếu / Reference

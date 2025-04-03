@@ -37,7 +37,7 @@ class AccCashReceiptsVoucherByInvoiceController extends Controller
   protected $key_invoice;
   protected $menu_invoice;
   protected $menu;
-  protected $type;
+  protected $group;
   protected $print;
   protected $type_object;
   protected $document;
@@ -45,7 +45,7 @@ class AccCashReceiptsVoucherByInvoiceController extends Controller
   public function __construct(Request $request)
  {
      $this->url =  $request->segment(3);
-     $this->type = 2; // 1 Thu tiền mặt, //2 Thu tiền mặt theo hóa đơn
+     $this->group = 2; // 1 Nhóm thu tiền mặt
      $this->type_object = 2; // 2 Khách hàng (VD : 2,3 nếu nhiều đối tượng)
      $this->key = "cash-receipts-voucher";
      $this->key_invoice = "cash-receipts-voucher-by-invoice";     
@@ -71,7 +71,7 @@ class AccCashReceiptsVoucherByInvoiceController extends Controller
     $type = 10;
     try{
       $req = json_decode($request->data);
-      $data = CashReceiptVoucherInvoiceResource::collection(AccVatDetail::get_detail_subject($req->subject_id,$req->start_date,$req->end_date));
+      $data = CashReceiptVoucherInvoiceResource::collection(AccVatDetail::get_detail_subject($req->subject_id,$req->start_date,$req->end_date,1));
       //dd(AccVatDetail::get_detail_subject($req->subject_id,$req->start_date,$req->end_date));
       $general = AccGeneral::find_subject($req->subject_id);
       if($req && $data->count()>0){
@@ -150,7 +150,7 @@ class AccCashReceiptsVoucherByInvoiceController extends Controller
               $voucher->save();
           }
 
-          $general->type = $this->type;
+          $general->type = $this->menu->id;
           $general->voucher = $v;
           $general->currency = $arr->currency;
           $general->rate = $arr->rate;
@@ -161,6 +161,7 @@ class AccCashReceiptsVoucherByInvoiceController extends Controller
           $general->subject = $arr->subject_id;
           $general->total_amount = $arr->total_amount;
           $general->total_amount_rate = $arr->total_amount_rate;
+          $general->group = $this->group;
           $general->status = 1;
           $general->active = 1;
           $general->save();      
@@ -185,8 +186,14 @@ class AccCashReceiptsVoucherByInvoiceController extends Controller
              $detail->subject_name_credit = $arr->code." - ".$arr->name;
              $detail->save();
 
-              // Lưu VAT payment
+             // Tìm VAT để cập nhật trạng thái đã thanh toán (cột payment)
+              $vat = AccVatDetail::find($d->vat_detail_id);
+              if((float)$d->payment - (float)$vat->total_amount >=0){
+                $vat->payment = 1;
+                $vat->save();
+              }
 
+              // Lưu VAT payment
               $pm = new AccVatDetailPayment();
               $pm->general_id = $general->id;
               $pm->vat_detail_id = $d->vat_detail_id;

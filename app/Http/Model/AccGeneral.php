@@ -76,8 +76,8 @@ class AccGeneral extends Model
         return $result;
       }
 
-      static public function get_id_with_detail($id) {
-        $result = AccGeneral::where('id',$id)->with('detail')->with('tax')->with('attach')->first();
+      static public function get_id_with_detail($id,$arr_with) {
+        $result = AccGeneral::where('id',$id)->with($arr_with)->first();
         return $result;
       }
 

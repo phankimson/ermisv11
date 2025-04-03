@@ -10,6 +10,7 @@ use App\Http\Model\AccHistoryAction;
 use App\Http\Model\Menu;
 use App\Http\Model\AccGeneral;
 use App\Http\Model\AccDetail;
+use App\Http\Model\AccVatDetail;
 use App\Http\Model\AccSystems;
 use App\Http\Model\AccPeriod;
 use App\Http\Model\AccNumberVoucher;
@@ -26,6 +27,7 @@ use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
 use Exception;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 
 class AccCashReceiptsGeneralController extends Controller
 {
@@ -39,7 +41,7 @@ class AccCashReceiptsGeneralController extends Controller
   public function __construct(Request $request)
  {
      $this->url =  $request->segment(3);
-     $this->group = 1; // 1 Thu tiền
+     $this->group = 1; // 1 Nhóm thu tiền mặt
      $this->key = "cash-receipts-general";
      $this->menu = Menu::where('code', '=', $this->key)->first();
      $this->print = 'PT%';
@@ -295,6 +297,99 @@ class AccCashReceiptsGeneralController extends Controller
           'check' => 0 ]);
         return response()->json(['status'=>false,'message'=> trans('messages.error').' '.$e->getMessage()]);
       }
+  }
+
+  
+
+  public function delete(Request $request) {
+    $type = 4;
+       try{
+        DB::connection(env('CONNECTION_DB_ACC'))->beginTransaction();
+         $permission = $request->session()->get('per');
+         $arr = json_decode($request->data);
+         if($arr){
+          $data = AccGeneral::get_id_with_detail($arr,['detail','tax','attach','vat_detail_payment']);
+           $period = AccPeriod::get_date(Carbon::parse($data->accounting_date)->format('Y-m'),1);
+           if(!$period){
+             if($permission['d'] == true){             
+
+               // Lưu lịch sử
+               $h = new AccHistoryAction();
+               $h ->create([
+               'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
+               'user' => Auth::id(),
+               'menu' => $this->menu->id,
+               'url'  => $this->url,
+               'dataz' => \json_encode($data)]);
+               //
+               $data->delete(); 
+               
+               
+               $detail = $data->detail();
+               foreach($detail as $d){
+                //Clear số tiền bên nợ
+                $b1 = AccCurrencyCheck::get_type_first($d->debit,$d->currency,null);
+                if($b1){
+                  $b1->amount = $b1->amount - $d->amount;
+                  $b1->save();
+                }
+                //Clear số tiền bên có
+                $b2 = AccCurrencyCheck::get_type_first($d->credit,$d->currency,null);
+                if($b2){
+                  $b2->amount = $b2->amount + $d->amount;
+                  $b2->save();
+                }             
+               }             
+
+               // Xóa các dòng chi tiết
+               $data->detail()->delete();
+
+               // Xóa các dòng thuế
+               $data->tax()->delete();
+
+               // Update lại trạng thái thanh toán
+               $tax = $data->vat_detail_payment();
+               foreach($tax as $v){
+                 $p = AccVatDetail::find($v->vat_detail_id);
+                 $p->payment = 0;
+                 $p->save(); 
+               };       
+
+                // Xóa các dòng thanh toán
+                $data->vat_detail_payment()->delete();                         
+
+               $attach = $data->attach();
+               foreach($attach as $a){
+                 //Xóa ảnh cũ
+                 if(File::exists(public_path($a->path))){
+                    File::delete(public_path($a->path));
+                 };
+                 $a->delete();
+               };
+               DB::connection(env('CONNECTION_DB_ACC'))->commit();
+               return response()->json(['status'=>true,'message'=> trans('messages.delete_success')]);
+           }else{
+             return response()->json(['status'=>false,'message'=> trans('messages.you_are_not_permission_delete')]);
+           }
+         }else{
+           return response()->json(['status'=>false,'message'=> trans('messages.locked_period')]);
+         }
+        }else{
+          return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
+        }
+       }catch(Exception $e){
+        DB::connection(env('CONNECTION_DB_ACC'))->rollBack();
+         // Lưu lỗi
+         $err = new Error();
+         $err ->create([
+           'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
+           'user_id' => Auth::id(),
+           'menu_id' => $this->menu->id,
+           'error' => $e->getMessage(),
+           'url'  => $this->url,
+           'check' => 0 ]);
+         return response()->json(['status'=>false,'message'=> trans('messages.delete_fail').' '.$e->getMessage()]);
+       }
   }
 
     public function DownloadExcel(){

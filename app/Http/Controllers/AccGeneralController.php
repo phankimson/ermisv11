@@ -5,14 +5,10 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Model\AccHistoryAction;
 use App\Http\Model\User;
 use App\Http\Model\Menu;
 use App\Http\Model\AccGeneral;
 use App\Http\Model\AccDetail;
-use App\Http\Model\AccVatDetail;
-use App\Http\Model\AccAttach;
-use App\Http\Model\AccPeriod;
 use App\Http\Model\AccSystems;
 use App\Http\Model\CompanySoftware;
 use App\Http\Model\Company;
@@ -21,10 +17,7 @@ use App\Http\Model\AccObject;
 use App\Http\Model\Error;
 use App\Classes\NumberConvert;
 use App\Classes\Replace;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\File;
 use Exception;
-use Illuminate\Support\Facades\DB;
 
 class AccGeneralController extends Controller
 {
@@ -63,80 +56,6 @@ class AccGeneralController extends Controller
     }
   }
 
-
-  public function delete(Request $request) {
-    $type = 4;
-       try{
-        DB::connection(env('CONNECTION_DB_ACC'))->beginTransaction();
-         $permission = $request->session()->get('per');
-         $arr = json_decode($request->data);
-         if($arr){
-          $data = AccGeneral::get_id_with_detail($arr);
-           $period = AccPeriod::get_date(Carbon::parse($data->accounting_date)->format('Y-m'),1);
-           if(!$period){
-             if($permission['d'] == true){             
-
-               // Lưu lịch sử
-               $h = new AccHistoryAction();
-               $h ->create([
-               'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-               'user' => Auth::id(),
-               'menu' => $this->menu->id,
-               'url'  => $this->url,
-               'dataz' => \json_encode($data)]);
-               //
-               $data->delete();
-
-               $detail = AccDetail::get_detail($arr);
-
-               // Xóa các dòng
-               if($detail->count()>0){
-                 $id_destroy = $detail->pluck('id');
-                 AccDetail::destroy($id_destroy);
-               }
-               ///////////////////
-
-               $vat = AccVatDetail::get_detail($arr);
-               // Xóa các dòng
-               if($vat->count()>0){
-                 $id_destroy_vat = $vat->pluck('id');
-                 AccVatDetail::destroy($id_destroy_vat);
-               }
-               ///////////////////
-
-               $attach = AccAttach::get_detail($arr);
-               foreach($attach as $a){
-                 //Xóa ảnh cũ
-                 if(File::exists(public_path($a->path))){
-                    File::delete(public_path($a->path));
-                 };
-                 $a->delete();
-               };
-               DB::connection(env('CONNECTION_DB_ACC'))->commit();
-               return response()->json(['status'=>true,'message'=> trans('messages.delete_success')]);
-           }else{
-             return response()->json(['status'=>false,'message'=> trans('messages.you_are_not_permission_delete')]);
-           }
-         }else{
-           return response()->json(['status'=>false,'message'=> trans('messages.locked_period')]);
-         }
-        }else{
-          return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
-        }
-       }catch(Exception $e){
-        DB::connection(env('CONNECTION_DB_ACC'))->rollBack();
-         // Lưu lỗi
-         $err = new Error();
-         $err ->create([
-           'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-           'user_id' => Auth::id(),
-           'menu_id' => $this->menu->id,
-           'error' => $e->getMessage(),
-           'url'  => $this->url,
-           'check' => 0 ]);
-         return response()->json(['status'=>false,'message'=> trans('messages.delete_fail').' '.$e->getMessage()]);
-       }
-  }
 
     public function prints(Request $request) {
     $mysql2 = $request->session()->get(env('CONNECTION_DB_ACC'));
