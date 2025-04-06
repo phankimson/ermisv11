@@ -4,7 +4,6 @@ var Ermis = function() {
         return key = Ermis.short_key;
     };
 
-
     var initGlobalRegister = function(){
         // MonthPickerTemplate
         ErmisKendoMonthPickerTemplate(".month-picker","year","year","MM/yyyy");

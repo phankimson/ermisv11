@@ -147,7 +147,7 @@ class AccCashReceiptsVoucherController extends Controller
                 
                 $voucher->save();
           }
-
+          dd($arr->currency);
           $general->type = $this->menu->id;
           $general->voucher = $v;
           $general->currency = $arr->currency;
@@ -219,10 +219,10 @@ class AccCashReceiptsVoucherController extends Controller
              $detail->save();
        
              array_push($removeId,$detail->id);
-             $arr->detail[$k]->id = $detail->id;
-
+             $arr->detail[$k]->id = $detail->id;            
+          
              // Lưu số tồn tiền bên Nợ
-             if($d->debit->text == '11*'){
+             if(substr($d->debit->text,2) == '11'){     
                $balance = AccCurrencyCheck::get_type_first($d->debit->value,$arr->currency,null);
                if($balance){
                  $balance->amount = $balance->amount + ($d->amount * $d->rate);
@@ -239,7 +239,7 @@ class AccCashReceiptsVoucherController extends Controller
                // End
 
                // Lưu số tồn tiền bên Có
-               if($d->credit->text == '111*' || $d->credit->text == '113*'){
+               if(substr($d->credit->text,3) == ('111' ||  '113')){    
                  $balance = AccCurrencyCheck::get_type_first($d->credit->value,$arr->currency,null);
                  if($balance){
                    $balance->amount = $balance->amount - ($d->amount * $d->rate);
@@ -252,7 +252,7 @@ class AccCashReceiptsVoucherController extends Controller
                    $balance->amount = 0 - ($d->amount * $d->rate);
                    $balance->save();
                  }
-               }else if($d->credit->text == '112*'){
+               }else if(substr($d->credit->text,3) == '112'){
                  $balance = AccCurrencyCheck::get_type_first($d->credit->id,$arr->currency,$d->bank_account);
                  if($balance){
                    $balance->amount = $balance->amount - ($d->amount * $d->rate);
