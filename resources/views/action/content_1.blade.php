@@ -13,7 +13,7 @@
         <td class="row-label-responsive"></td>
         <td><label>@lang('acc_voucher.currency')</label></td>
         <td colspan="2">
-          <select class="droplist fix" id="currency" name="currency">
+          <select class="droplist get_option fix" id="currency" name="currency">
                 <option readonly selected value="0">--Select--</option>
                 @foreach($currency as $c)
                   @if($c->code == $currency_default->value)

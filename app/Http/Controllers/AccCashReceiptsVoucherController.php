@@ -147,7 +147,6 @@ class AccCashReceiptsVoucherController extends Controller
                 
                 $voucher->save();
           }
-          dd($arr->currency);
           $general->type = $this->menu->id;
           $general->voucher = $v;
           $general->currency = $arr->currency;
