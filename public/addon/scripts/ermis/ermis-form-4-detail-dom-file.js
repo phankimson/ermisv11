@@ -299,13 +299,17 @@ var Ermis = function() {
             // checks to see if the action is a change and the column being changed is what is expected
             if (e.action === "itemchange" && (e.field === "amount" || e.field === "tax")) {
                 // here you can access model items using e.items[0].modelName;
-                item.total_amount = item.amount + item.tax
+                item.set("total_amount", item.amount + item.tax )
             }else if(e.action === "itemchange" && e.field === "total_amount" ){
               // here you can access model items using e.items[0].modelName;
-                item.amount = item.total_amount - item.tax
+                item.set("amount", item.total_amount - item.tax )
+                item.set("total_amount_rate", item.total_amount * item.rate )
+            }else if(e.action === "itemchange" && (e.field === "total_amount_rate" || e.field === "rate") ){
+                // here you can access model items using e.items[0].modelName;
+                  item.set("total_amount_rate", item.total_amount * item.rate )
             }
             // finally, refresh the grid to show the changes
-            gridVat.refresh();
+            //gridVat.refresh();
         });
 
         jQuery("input[name='description']").on("change", function(e) {
@@ -1313,13 +1317,15 @@ var Ermis = function() {
             data[field][dataTextField] =  '--Select--';
             data[field][dataValueField] = 0;
         }
-        $kGridTab.data("kendoGrid").refresh();        
+        // TEST
+        //$kGridTab.data("kendoGrid").refresh();        
     }
 
     var initLoadColumn = function(data, dataItem) {
         jQuery.each($kGridTab_column, function(i, v) {          
             if (v.set === "1") {
-                data[v.field] = dataItem[v.field] ? dataItem[v.field] : 0;
+                var value = dataItem[v.field] ? dataItem[v.field] : 0;
+                data.set(v.field,value);
             } else if (v.set === "2" || v.set === "5") {         
                 if(v.url){
                     dataTextField = "text";
@@ -1341,11 +1347,12 @@ var Ermis = function() {
                     }                                  
                 }
             } else if (v.set === "3") {
-                data[v.field] = dataItem[v.field] ? FormatNumber(parseInt(dataItem[v.field])) : 0;
+                var value = dataItem[v.field] ? FormatNumber(parseInt(dataItem[v.field])) : 0
+                data.set(v.field,value);                
             } else if (v.set === "4") {
-                data[v.field] = 1;
+                data.set(v.field,1);
             } else if (v.set === "6") {
-                data[v.field] = dataItem[v.field];
+                data.set(v.field,dataItem[v.field]);                
             }
            
         }); 
@@ -1384,7 +1391,8 @@ var Ermis = function() {
         var row = e.sender.element.closest("tr").index();
         //var col = e.sender.element.closest("td");        
         if (dataItem == undefined) {
-            $kGridTab.data("kendoGrid").refresh();
+            // TEST
+            //$kGridTab.data("kendoGrid").refresh();
         } else {
             var grid = $kGridTab.data("kendoGrid");
             var data = grid.dataSource.data()[row];      
@@ -1398,7 +1406,8 @@ var Ermis = function() {
          var select = this.dataItem(e.item);            
          initFixScrollGrid();
          if (select == undefined) {
-         $kGridTab.data("kendoGrid").refresh();
+            // TEST
+         //$kGridTab.data("kendoGrid").refresh();
        };
     };
 
