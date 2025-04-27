@@ -1819,6 +1819,7 @@ function DefaultValueField(){
            }
             //}
          });
+          // Không bỏ được refresh
          grid.refresh();
        };
       if(key_rs){
@@ -1828,6 +1829,7 @@ function DefaultValueField(){
                k[key_rs] = dataItem[key_rs];
             }
          });
+         // Không bỏ được refresh
          gridVat.refresh();
        }
     });
@@ -1843,16 +1845,16 @@ function DefaultValueField(){
      dataDefaultGrid.vat["description"] = r;
      jQuery.each(rsv, function(l, k) {
          if (!k['description']) {
-             k['description'] = r;
+             k.set('description', r);
          }
      });
-     gridVat.refresh();
+     //gridVat.refresh();
      jQuery.each(rs, function(l, k) {
          if (!k['description']) {
-             k['description'] = r;
+          k.set('description', r);
          }
      });
-     grid.refresh();
+     //grid.refresh();
    }
 
    AddSpeechInput = function(data){

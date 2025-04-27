@@ -143,7 +143,7 @@
                             { "field" : "subject_name","title" : "@lang('acc_voucher.subject_name')"  ,width : '150px'},
                             { "field" : "tax_code","title" : "@lang('acc_voucher.tax_code')"  ,width : '150px'},
                             { "field" : "address","title" : "@lang('acc_voucher.address')"  ,width : '200px'},
-                            { "field" : "description","title" : "@lang('acc_voucher.description')",width : '200px'},
+                            { "field" : "description","title" : "@lang('acc_voucher.description')",width : '200px',aggregates: ['count'], footerTemplate: "<p>@lang('acc_voucher.total_count'): #=count#</p>"},
                             { "field" : "vat_type","title" : "@lang('acc_voucher.vat_type')",width : '200px',"url" : "{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.vat-tax').'?type=1'}}",editor: ItemsReadDropDownEditor , "select" : "OnchangeGroup" ,template : "#=getUrlAjaxItemName(vat_type,'vat_type')#", "group" : "1" },
                             { "field" : "vat_tax","title" : "@lang('acc_voucher.vat_tax')",width : '100px', "group" : "1"},
                             { "field" : "amount","title" : "@lang('acc_voucher.amount')" ,type:"number",format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" ,aggregates: ['sum'],footerTemplate: "<p id='amount_total_tax'>#=FormatNumberDecimal(sum,{{$decimal}})#</p>" ,width : '150px'},
@@ -213,7 +213,7 @@
             vat_type:     {field : "vat_type", defaultValue: DefaultReadValueField(), validation: { required: true }},
             vat_tax:     {field : "vat_tax" , defaultValue : 0, editable: false},
             amount:     {field : "amount",type:"number" , defaultValue : 0, validation: { min: 0, required: true }},
-            tax:     {field : "tax" ,type:"number"},
+            tax:     {field : "tax" ,type:"number", validation: { min: 0, required: true }},
             total_amount:     {field : "total_amount",type:"number" , defaultValue : 0, validation: { min: 0, required: true }},
             rate:     {field : "rate",type:"number", defaultValue : parseInt(jQuery(".rate").val()) , validation: { min: 0, required: true }},
             total_amount_rate:     {field : "total_amount_rate",type:"number" , defaultValue : 0 , validation: { min: 1, required: true }},
@@ -224,6 +224,8 @@
                             { field: "tax", aggregate: "sum" },
                             { field: "total_amount", aggregate: "sum" },
                             { field: "total_amount_rate", aggregate: "sum" }];
+
+                                                    
     });
 </script>
 

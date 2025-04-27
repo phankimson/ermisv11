@@ -301,15 +301,14 @@ var Ermis = function() {
                 // here you can access model items using e.items[0].modelName;
                 item.set("total_amount", item.amount + item.tax )
             }else if(e.action === "itemchange" && e.field === "total_amount" ){
-              // here you can access model items using e.items[0].modelName;
                 item.set("amount", item.total_amount - item.tax )
                 item.set("total_amount_rate", item.total_amount * item.rate )
             }else if(e.action === "itemchange" && (e.field === "total_amount_rate" || e.field === "rate") ){
-                // here you can access model items using e.items[0].modelName;
                   item.set("total_amount_rate", item.total_amount * item.rate )
             }
             // finally, refresh the grid to show the changes
-            //gridVat.refresh();
+            // Không bỏ refresh được
+            gridVat.refresh();
         });
 
         jQuery("input[name='description']").on("change", function(e) {
@@ -420,7 +419,6 @@ var Ermis = function() {
                 // here you can access model items using e.items[0].modelName;
                 item.rate == 0 ? item.set("amount_rate",0) : item.set("amount_rate",item.amount * item.rate);
             }else if(e.action === "itemchange" && e.field === "amount_rate" ){
-                // here you can access model items using e.items[0].modelName;
                 item.set("amount_rate",item.amount * item.rate);
             }           
         });
@@ -814,6 +812,7 @@ var Ermis = function() {
                         var rs = grid.dataSource.data()[0];
                         initLoadColumn(rs, m);
                     });
+                    //Không xóa refresh
                     grid.refresh();
                 },
                 function() {
