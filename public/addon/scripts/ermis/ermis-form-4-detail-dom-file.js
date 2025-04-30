@@ -1316,8 +1316,8 @@ var Ermis = function() {
             data[field][dataTextField] =  '--Select--';
             data[field][dataValueField] = 0;
         }
-        // TEST
-        //$kGridTab.data("kendoGrid").refresh();        
+        // Không bỏ đc refresh
+        $kGridTab.data("kendoGrid").refresh();        
     }
 
     var initLoadColumn = function(data, dataItem) {

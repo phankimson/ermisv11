@@ -103,7 +103,8 @@ class AccVoucherController extends Controller
       }else{
         $reference_array = [0 , $req->general_id ] ;   
       }
-      $data = CashReceiptGeneralResource::collection(AccGeneral::get_data_load_between_reference($req->filter_voucher,$req->start_date,$req->end_date,$reference_array));
+      $number_voucher = AccNumberVoucher::find($req->filter_voucher);
+      $data = CashReceiptGeneralResource::collection(AccGeneral::get_data_load_between_reference($number_voucher->menu_id,$req->start_date,$req->end_date,$reference_array));
       if($req && $data->count()>0 ){
         return response()->json(['status'=>true,'data'=> $data]);
       }else{
