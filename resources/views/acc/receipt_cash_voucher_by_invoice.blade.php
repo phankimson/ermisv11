@@ -113,7 +113,7 @@
 
       
         Ermis.columns    = [{  "title": 'Select All',headerTemplate: '<input type="checkbox" id="header-chb-invoice" class="k-checkbox"><label class="k-checkbox-label" for="header-chb-invoice"></label>',template: function(dataItem){                   
-                                return '<input type="checkbox" id="'+ dataItem.id+'" '+dataItem.checkbox+'  class="k-checkbox invoice"><label class="k-checkbox-label" for="'+ dataItem.id +'"></label>'
+                                return '<input type="checkbox" id="'+ dataItem.vat_detail_id+'" '+dataItem.checkbox+'  class="k-checkbox invoice"><label class="k-checkbox-label" for="'+ dataItem.vat_detail_id +'"></label>'
                             },width: 50},
                             {"field" :"id", hidden : true},
                             {"field" :"vat_detail_id", hidden : true},
