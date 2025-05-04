@@ -771,7 +771,7 @@ var ErmisKendoGridCheckboxTemplate2 = function($kGrid, data, height, pageSize, c
 
 }
 
-var ErmisKendoGridCheckboxTemplate3 = function($kGrid, data, aggregate, field, pageSize, editable, height, columns, onSave ,key ,onChecked) {
+var ErmisKendoGridCheckboxTemplate3 = function($kGrid, data, aggregate, field, pageSize, editable, height, columns, onSave ,key ,onChecked,field_id = null) {
     dataSource = new kendo.data.DataSource({       
         data: data,
         aggregate: aggregate,
@@ -809,9 +809,15 @@ var ErmisKendoGridCheckboxTemplate3 = function($kGrid, data, aggregate, field, p
         var checked = ev.target.checked;  
         var data = grid.dataSource.data();
         jQuery.each(data, function (k, v) {
-            var item_checked = jQuery("input#"+v.id).attr("checked") == 'checked' ? true : false;
+            var input_id = "";
+            if(field_id != null){
+                input_id = v[field_id];
+            }else{
+                input_id = v.id;
+            };
+            var item_checked = jQuery("input#"+input_id).attr("checked") == 'checked' ? true : false;
             if(checked != item_checked){
-                jQuery("input#"+v.id).trigger('click');            
+                jQuery("input#"+input_id).trigger('click');            
             }         
         })       
     });

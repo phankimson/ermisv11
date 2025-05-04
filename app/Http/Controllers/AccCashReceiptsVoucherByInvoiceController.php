@@ -73,9 +73,14 @@ class AccCashReceiptsVoucherByInvoiceController extends Controller
       $req = json_decode($request->data);
       $data = CashReceiptVoucherInvoiceResource::collection(AccVatDetail::get_detail_subject($req->subject_id,$req->start_date,$req->end_date,1));
       //dd(AccVatDetail::get_detail_subject($req->subject_id,$req->start_date,$req->end_date));
-      $general = AccGeneral::find_subject($req->subject_id);
+      if($data->count()>0){
+        $general = AccGeneral::find($data->first()->general_id);
+        $currency = $general->currency;
+      }else{
+        $currency = 0;
+      }
       if($req && $data->count()>0){
-        return response()->json(['status'=>true,'data'=> $data,'currency'=>$general->currency]);
+        return response()->json(['status'=>true,'data'=> $data,'currency'=>$currency]);
       }else{
         return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
       }    
@@ -164,7 +169,7 @@ class AccCashReceiptsVoucherByInvoiceController extends Controller
           $general->group = $this->group;
           $general->status = 1;
           $general->active = 1;
-          $general->save();      
+          $general->save();          
 
           $setting_voucher = AccSettingVoucher::get_menu($this->menu->id);
           // CHI TIET / Detail
@@ -174,7 +179,7 @@ class AccCashReceiptsVoucherByInvoiceController extends Controller
               $detail = AccDetail::find($d->id);
             }else{
               $detail = new AccDetail();
-            }           
+            }            
              $detail->general_id = $general->id;
              $detail->description = $general->description;
              $detail->debit = $setting_voucher->debit;  // Lấy từ seting default

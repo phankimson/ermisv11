@@ -96,8 +96,8 @@ class AccGeneral extends Model
         return $result;
       }
 
-      static public function find_subject($subject) {
-        $result = AccGeneral::where('subject',$subject)->first();
+      static public function find_subject($subject,$start_date,$end_date,) {
+        $result = AccGeneral::where('subject',$subject)->whereBetween('voucher_date',[$end_date,$start_date])->first();
         return $result;
       }
 

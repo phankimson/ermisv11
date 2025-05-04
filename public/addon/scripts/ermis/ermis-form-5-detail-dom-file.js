@@ -36,7 +36,7 @@ var Ermis = function() {
         // Grid
         ErmisKendoGridCheckboxTemplate3($kGrid, Ermis.data, Ermis.aggregate, Ermis.field, Ermis.page_size , {
             confirmation: false
-        }, jQuery(window).height() * 0.5, Ermis.columns,onSave,"invoice",onChecked);
+        }, jQuery(window).height() * 0.5, Ermis.columns,onSave,"invoice",onChecked,"vat_detail_id");
         initKendoGridChange();
     }
 
@@ -153,6 +153,7 @@ var Ermis = function() {
                 initLoadGrid(result.data);
                 initKendoGridChange();
                 initDefaultIdGrid();
+                jQuery('#header-chb-invoice')[0].checked = false; 
                 $currency = jQuery("#currency").data("kendoDropDownList");
                 $currency.value(result.currency);   
                 $currency.trigger("change");
