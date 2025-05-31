@@ -813,7 +813,7 @@ var Ermis = function() {
                         initLoadColumn(rs, m);
                     });
                     //Không xóa refresh
-                    grid.refresh();
+                    //grid.refresh();
                 },
                 function() {
 
@@ -1299,8 +1299,10 @@ var Ermis = function() {
         if(rs != null){
             if(rs[dataValueField] != undefined){
                 //if(data[field] != null){
-                    data[field][dataValueField] = rs[dataValueField];
-                    data[field][dataTextField] = rs[dataTextField];   
+                    //data[field][dataValueField] = rs[dataValueField];
+                    //data[field][dataTextField] = rs[dataTextField];
+                    data[field].set(dataValueField,rs[dataValueField]);
+                    data[field].set(dataTextField,rs[dataTextField]); 
                 //}else{
                 //    var array  = [];
                 //    array[dataValueField] = rs[dataValueField];
@@ -1309,15 +1311,17 @@ var Ermis = function() {
                // }
                            
             }else{
-                data[field][dataTextField] =  '--Select--';
-                data[field][dataValueField] = 0;
+                data[field].set(dataValueField,0);
+                data[field].set(dataTextField,'--Select--'); 
+                //data[field][dataTextField] =  '--Select--';
+                //data[field][dataValueField] = 0;
             }                                                
         }else{
-            data[field][dataTextField] =  '--Select--';
-            data[field][dataValueField] = 0;
+            data[field].set(dataValueField,0);
+            data[field].set(dataTextField,'--Select--'); 
         }
         // Không bỏ đc refresh
-        $kGridTab.data("kendoGrid").refresh();        
+        //$kGridTab.data("kendoGrid").refresh();        
     }
 
     var initLoadColumn = function(data, dataItem) {
@@ -1338,7 +1342,7 @@ var Ermis = function() {
                     if(v.url && a[v.field] == undefined){
                         var sytax =  v.url.includes("?") ? "&" : "?"; 
                          RequestURLcallback(v.url+sytax+"value="+dataItem[v.field],function(rs){
-                            initLoadDropdownGrid(data,v.field,dataValueField,dataTextField,rs);   
+                            initLoadDropdownGrid(data,v.field,dataValueField,dataTextField,rs); 
                         });                                          
                     }else{
                         var f = findObjectByKey(a[v.field],dataValueField,dataItem[v.field]);    
@@ -1382,7 +1386,7 @@ var Ermis = function() {
         var grid = $kGridTab.data("kendoGrid");
         var data = grid.dataSource.data()[row];
         initLoadColumn(data, dataItem);
-        initFixScrollGrid();
+        //initFixScrollGrid();
     };
 
     OnchangeCancel = function(e) {        
@@ -1396,7 +1400,7 @@ var Ermis = function() {
             var grid = $kGridTab.data("kendoGrid");
             var data = grid.dataSource.data()[row];      
             initLoadColumn(data, dataItem);
-            initFixScrollGrid();
+            //initFixScrollGrid();
         }
    
     };
@@ -1425,7 +1429,7 @@ var Ermis = function() {
         var searchResultArray = findObjectByKey(a ,'field', columnTitle);
         var data = grid.dataSource.data()[row];
         initLoadGroupColumn(data, dataItem ,searchResultArray['group']);
-        initFixScrollGrid();
+        //initFixScrollGrid();
     };
 
 

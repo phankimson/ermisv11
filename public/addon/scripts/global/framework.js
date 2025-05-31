@@ -1500,8 +1500,8 @@ function calculateVatAggregate(decimal) {
   var grid = $kGridVat.data("kendoGrid");
   var data = grid.dataSource.data();
   var total = 0;
-  for (var i = 0; i < data.length; i++) {
-    total += data[i].amount * data[i].vat_tax/100;
+  for (var i = 0; i < data.length; i++) {   
+      total += data[i].tax;   
   }
     return kendo.toString(total, 'n'+decimal);
 };
