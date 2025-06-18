@@ -60,66 +60,157 @@ class AccDropDownListController extends Controller
     $this->default = ['value' => '0','text' => "--Select--"];
   }
   public function country_dropdown_list(Request $request){
+     $val = $request->input('value',null); 
+    if($val){
+      $rs = Country::find($val);
+      if(!$rs){
+        $data = collect($this->default);
+      }else{
+        $data = new DropDownResource($rs);
+      }      
+    }else{
     $default = collect([$this->default]);
     $data = DropDownResource::collection(Country::active()->get());
     $data = $default->merge($data)->values();
+    } 
     return response()->json($data)->withCallback($request->input('callback'));
   }
 
   public function regions_dropdown_list(Request $request){
+    $val = $request->input('value',null); 
+    if($val){
+      $rs = Regions::find($val);
+      if(!$rs){
+        $data = collect($this->default);
+      }else{
+        $data = new LangDropDownResource($rs);
+      }      
+    }else{
     $default = collect([$this->default]);
     $data = LangDropDownResource::collection(Regions::active()->get());
     $data = $default->merge($data)->values();
+    } 
+    
     return response()->json($data)->withCallback($request->input('callback'));
   }
 
   public function area_dropdown_list(Request $request){
+     $val = $request->input('value',null); 
+    if($val){
+      $rs = Area::find($val);
+      if(!$rs){
+        $data = collect($this->default);
+      }else{
+        $data = new LangDropDownResource($rs);
+      }      
+    }else{
     $default = collect([$this->default]);
     $data = LangDropDownResource::collection(Area::active()->get());
     $data = $default->merge($data)->values();
+    }    
     return response()->json($data)->withCallback($request->input('callback'));
   }
 
   public function distric_dropdown_list(Request $request){
+    $val = $request->input('value',null); 
+    if($val){
+      $rs = Distric::find($val);
+      if(!$rs){
+        $data = collect($this->default);
+      }else{
+        $data = new LangDropDownResource($rs);
+      }      
+    }else{
     $default = collect([$this->default]);
     $data = LangDropDownResource::collection(Distric::active()->get());
     $data = $default->merge($data)->values();
+    }       
     return response()->json($data)->withCallback($request->input('callback'));
   }
 
   // Đơn vị tính Droplist
   public function unit_dropdown_list(Request $request){
+    $val = $request->input('value',null); 
+    if($val){
+      $rs = AccUnit::find($val);
+      if(!$rs){
+        $data = collect($this->default);
+      }else{
+        $data = new LangDropDownResource($rs);
+      }      
+    }else{
     $default = collect([$this->default]);
-      $data = LangDropDownResource::collection(AccUnit::active()->orderBy('code','asc')->get());
-      $data = $default->merge($data)->values();
-      return response()->json($data)->withCallback($request->input('callback'));
+    $data = LangDropDownResource::collection(AccUnit::active()->orderBy('code','asc')->get());
+    $data = $default->merge($data)->values();
+    }         
+    return response()->json($data)->withCallback($request->input('callback'));
   }
   // Loại hàng hóa Droplist
   public function supplies_goods_type_dropdown_list(Request $request){
+    $val = $request->input('value',null); 
+    if($val){
+      $rs = AccSuppliesGoodsType::find($val);
+      if(!$rs){
+        $data = collect($this->default);
+      }else{
+        $data = new LangDropDownResource($rs);
+      }      
+    }else{
     $default = collect([$this->default]);
     $data = LangDropDownResource::collection(AccSuppliesGoodsType::active()->orderBy('code','asc')->get());
     $data = $default->merge($data)->values();
+    }     
     return response()->json($data)->withCallback($request->input('callback'));
   }
   // Nhóm hàng hóa Droplist
   public function supplies_goods_group_dropdown_list(Request $request){
+    $val = $request->input('value',null); 
+    if($val){
+      $rs = AccSuppliesGoodsGroup::find($val);
+      if(!$rs){
+        $data = collect($this->default);
+      }else{
+        $data = new LangDropDownResource($rs);
+      }      
+    }else{
     $default = collect([$this->default]);
     $data = LangDropDownResource::collection(AccSuppliesGoodsGroup::active()->orderBy('code','asc')->get());
     $data = $default->merge($data)->values();
+    }         
     return response()->json($data)->withCallback($request->input('callback'));
   }
   // Bảo hành Droplist
   public function warranty_period_dropdown_list(Request $request){
+    $val = $request->input('value',null); 
+    if($val){
+      $rs = AccWarrantyPeriod::find($val);
+      if(!$rs){
+        $data = collect($this->default);
+      }else{
+        $data = new LangDropDownResource($rs);
+      }      
+    }else{
     $default = collect([$this->default]);
     $data = LangDropDownResource::collection(AccWarrantyPeriod::active()->orderBy('code','asc')->get());
     $data = $default->merge($data)->values();
+    }     
     return response()->json($data)->withCallback($request->input('callback'));
   }
    // Kho Droplist
   public function stock_dropdown_list(Request $request){
+     $val = $request->input('value',null); 
+    if($val){
+      $rs = AccStock::find($val);
+      if(!$rs){
+        $data = collect($this->default);
+      }else{
+        $data = new LangDropDownResource($rs);
+      }      
+    }else{
     $default = collect([$this->default]);
     $data = LangDropDownResource::collection(AccStock::active()->orderBy('code','asc')->get());
     $data = $default->merge($data)->values();
+    }     
     return response()->json($data)->withCallback($request->input('callback'));
   }
   // Thuế VAT Droplist
@@ -137,16 +228,36 @@ class AccDropDownListController extends Controller
 
   // Thuế TTDB Droplist
   public function excise_tax_dropdown_list(Request $request){
+    $val = $request->input('value',null); 
+    if($val){
+      $rs = AccExcise::find($val);
+      if(!$rs){
+        $data = collect($this->default);
+      }else{
+        $data = new LangDropDownResource($rs);
+      }      
+    }else{
     $default = collect([$this->default]);
     $data = LangDropDownResource::collection(AccExcise::active()->orderBy('code','asc')->get());
     $data = $default->merge($data)->values();
+    }    
     return response()->json($data)->withCallback($request->input('callback'));
   }
   // Thuế Tài nguyên
   public function natural_resources_dropdown_list(Request $request){
+     $val = $request->input('value',null); 
+    if($val){
+      $rs = AccNaturalResources::find($val);
+      if(!$rs){
+        $data = collect($this->default);
+      }else{
+        $data = new LangDropDownResource($rs);
+      }      
+    }else{
     $default = collect([$this->default]);
     $data = LangDropDownResource::collection(AccNaturalResources::active()->orderBy('code','asc')->get());
     $data = $default->merge($data)->values();
+    }    
     return response()->json($data)->withCallback($request->input('callback'));
   }
   // Lấy tài khoản nhóm theo mã
@@ -262,9 +373,19 @@ class AccDropDownListController extends Controller
 
   // TK Ngân hàng
   public function bank_account_dropdown_list(Request $request){
-    $default = collect([$this->default]);
-    $data = BankDropDownResource::collection(AccBankAccount::active()->orderBy('bank_account','asc')->get());
-    $data = $default->merge($data)->values();
+    $val = $request->input('value',null); 
+    if($val){
+      $rs = AccBankAccount::find($val);
+      if(!$rs){
+        $data = collect($this->default);
+      }else{
+        $data = new BankDropDownResource($rs);
+      }      
+    }else{
+      $default = collect([$this->default]);
+      $data = BankDropDownResource::collection(AccBankAccount::active()->orderBy('bank_account','asc')->get());
+      $data = $default->merge($data)->values();
+    }  
     return response()->json($data)->withCallback($request->input('callback'));
   }
 
@@ -294,33 +415,73 @@ class AccDropDownListController extends Controller
 
    // Đối tượng
    public function object_dropdown_list(Request $request){
-    $default = collect([$this->default]);
-    $data = ObjectDropDownListResource::collection(AccObject::active()->orderBy('code','asc')->get());
-    $data = $default->merge($data)->values();
+     $val = $request->input('value',null); 
+    if($val){
+      $rs = AccObject::find($val);
+      if(!$rs){
+        $data = collect($this->default);
+      }else{
+        $data = new ObjectDropDownListResource($rs);
+      }      
+    }else{
+      $default = collect([$this->default]);
+      $data = ObjectDropDownListResource::collection(AccObject::active()->orderBy('code','asc')->get());
+      $data = $default->merge($data)->values();
+    }    
     return response()->json($data)->withCallback($request->input('callback'));
   }
 
    // Bộ phận
    public function department_dropdown_list(Request $request){
-    $default = collect([$this->default]);
-    $data = LangDropDownResource::collection(AccDepartment::active()->orderBy('code','asc')->get());
-    $data = $default->merge($data)->values();
+    $val = $request->input('value',null); 
+    if($val){
+      $rs = AccDepartment::find($val);
+      if(!$rs){
+        $data = collect($this->default);
+      }else{
+        $data = new LangDropDownResource($rs);
+      }      
+    }else{
+      $default = collect([$this->default]);
+      $data = LangDropDownResource::collection(AccDepartment::active()->orderBy('code','asc')->get());
+      $data = $default->merge($data)->values();
+    }      
     return response()->json($data)->withCallback($request->input('callback'));
   }
 
   // Loại Tài khoản
   public function account_type_dropdown_list(Request $request){
-    $default = collect([$this->default]);
-    $data = LangDropDownResource::collection(AccAccountType::active()->orderBy('code','asc')->get());
-    $data = $default->merge($data)->values();
+    $val = $request->input('value',null); 
+    if($val){
+      $rs = AccAccountType::find($val);
+      if(!$rs){
+        $data = collect($this->default);
+      }else{
+        $data = new LangDropDownResource($rs);
+      }      
+    }else{
+      $default = collect([$this->default]);
+      $data = LangDropDownResource::collection(AccAccountType::active()->orderBy('code','asc')->get());
+      $data = $default->merge($data)->values();
+    }   
     return response()->json($data)->withCallback($request->input('callback'));
   }
 
    // Tính chất Tài khoản
    public function account_nature_dropdown_list(Request $request){
-    $default = collect([$this->default]);
-    $data = LangDropDownResource::collection(AccAccountNature::active()->orderBy('code','asc')->get());
-    $data = $default->merge($data)->values();
+    $val = $request->input('value',null); 
+    if($val){
+      $rs = AccAccountNature::find($val);
+      if(!$rs){
+        $data = collect($this->default);
+      }else{
+        $data = new LangDropDownResource($rs);
+      }      
+    }else{
+      $default = collect([$this->default]);
+      $data = LangDropDownResource::collection(AccAccountNature::active()->orderBy('code','asc')->get());
+      $data = $default->merge($data)->values();
+    }   
     return response()->json($data)->withCallback($request->input('callback'));
   }
 
@@ -389,9 +550,19 @@ class AccDropDownListController extends Controller
 
   // Group User
   public function group_user_dropdown_list(Request $request){
-    $default = collect([$this->default]);
-    $data = LangDropDownResource::collection(GroupUsers::active()->orderBy('code','asc')->get());
-    $data = $default->merge($data)->values();
+    $val = $request->input('value',null); 
+    if($val){
+      $rs = GroupUsers::find($val);
+      if(!$rs){
+        $data = collect($this->default);
+      }else{
+        $data = new LangDropDownResource($rs);
+      }      
+    }else{
+      $default = collect([$this->default]);
+      $data = LangDropDownResource::collection(GroupUsers::active()->orderBy('code','asc')->get());
+      $data = $default->merge($data)->values();
+    }   
     return response()->json($data)->withCallback($request->input('callback'));
   }
 
@@ -412,9 +583,19 @@ class AccDropDownListController extends Controller
 
    // Số chứng từ
    public function number_voucher_dropdown_list(Request $request){
-    $default = collect([$this->default]);
-    $data = LangDropDownResource::collection(AccNumberVoucher::active()->orderBy('code','asc')->get());
-    $data = $default->merge($data)->values();
+     $val = $request->input('value',null); 
+    if($val){
+      $rs = AccNumberVoucher::find($val);
+      if(!$rs){
+        $data = collect($this->default);
+      }else{
+        $data = new LangDropDownResource($rs);
+      }      
+    }else{
+      $default = collect([$this->default]);
+      $data = LangDropDownResource::collection(AccNumberVoucher::active()->orderBy('code','asc')->get());
+      $data = $default->merge($data)->values();
+    }
     return response()->json($data)->withCallback($request->input('callback'));
   }
 
@@ -429,9 +610,19 @@ class AccDropDownListController extends Controller
 
    // Tài liệu
    public function document_dropdown_list(Request $request){
-    $default = collect([$this->default]);
-    $data = LangDropDownResource::collection(Document::active()->orderBy('code','asc')->get());
-    $data = $default->merge($data)->values();
+     $val = $request->input('value',null); 
+    if($val){
+      $rs = Document::find($val);
+      if(!$rs){
+        $data = collect($this->default);
+      }else{
+        $data = new LangDropDownResource($rs);
+      }      
+    }else{
+      $default = collect([$this->default]);
+      $data = LangDropDownResource::collection(Document::active()->orderBy('code','asc')->get());
+      $data = $default->merge($data)->values();
+    }    
     return response()->json($data)->withCallback($request->input('callback'));
   }
 
