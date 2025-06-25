@@ -20,7 +20,7 @@ use App\Http\Model\AccSystems;
 use App\Http\Model\AccAttach;
 use App\Http\Model\AccHistoryAction;
 use App\Http\Resources\CashReceiptVoucherInvoiceResource;
-use App\Http\Resources\CashReceiptGeneralReadResource;
+use App\Http\Resources\CashReceiptGeneralPaymentReadResource;
 use App\Http\Model\Error;
 use App\Classes\Convert;
 use Illuminate\Support\Facades\Auth;
@@ -284,7 +284,7 @@ class AccCashReceiptsVoucherByInvoiceController extends Controller
     $type = 10;
     try{
       $req = json_decode($request->data);
-      $data = new CashReceiptGeneralReadResource(AccGeneral::get_data_load_vat_payment($req));
+      $data = new CashReceiptGeneralPaymentReadResource(AccGeneral::get_data_load_vat_payment($req));
       if($req && $data->count()>0 ){
         return response()->json(['status'=>true,'data'=> $data]);
       }else{
