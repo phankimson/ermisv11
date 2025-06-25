@@ -62,7 +62,7 @@ class AccGeneral extends Model
       }
 
       static public function get_data_load_vat_payment($general_id){
-        $result = AccGeneral::where('id',$general_id)->first()->load('vat_detail_payment');
+        $result = AccGeneral::where('id',$general_id)->first()->load('object','vat_detail_payment','detail');
         return $result;
       }
 

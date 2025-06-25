@@ -72,7 +72,6 @@ class AccCashReceiptsVoucherByInvoiceController extends Controller
     try{
       $req = json_decode($request->data);
       $data = CashReceiptVoucherInvoiceResource::collection(AccVatDetail::get_detail_subject($req->subject_id,$req->start_date,$req->end_date,1));
-      //dd(AccVatDetail::get_detail_subject($req->subject_id,$req->start_date,$req->end_date));
       if($data->count()>0){
         $general = AccGeneral::find($data->first()->general_id);
         $currency = $general->currency;
@@ -193,7 +192,8 @@ class AccCashReceiptsVoucherByInvoiceController extends Controller
 
              // Tìm VAT để cập nhật trạng thái đã thanh toán (cột payment)
               $vat = AccVatDetail::find($d->vat_detail_id);
-              if((float)$d->payment - (float)$vat->total_amount >=0){
+              $vat_payment = AccVatDetailPayment::sum_vat_detail($vat->id,'payment');
+              if((float)$d->payment + $vat_payment - (float)$vat->total_amount >=0){
                 $vat->payment = 1;
                 $vat->save();
               }

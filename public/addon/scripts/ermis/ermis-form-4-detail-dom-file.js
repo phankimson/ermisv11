@@ -304,7 +304,7 @@ var Ermis = function() {
                 item.set("amount", item.total_amount - item.tax )
                 item.set("total_amount_rate", item.total_amount * item.rate )
             }else if(e.action === "itemchange" && (e.field === "total_amount_rate" || e.field === "rate") ){
-                  item.set("total_amount_rate", item.total_amount * item.rate )
+                item.set("total_amount_rate", item.total_amount * item.rate )
             }
             // finally, refresh the grid to show the changes
             // Không bỏ refresh được
@@ -1386,7 +1386,7 @@ var Ermis = function() {
         var grid = $kGridTab.data("kendoGrid");
         var data = grid.dataSource.data()[row];
         initLoadColumn(data, dataItem);
-        //initFixScrollGrid();
+        initFixScrollGrid();
     };
 
     OnchangeCancel = function(e) {        
@@ -1400,7 +1400,7 @@ var Ermis = function() {
             var grid = $kGridTab.data("kendoGrid");
             var data = grid.dataSource.data()[row];      
             initLoadColumn(data, dataItem);
-            //initFixScrollGrid();
+            initFixScrollGrid();
         }
    
     };
@@ -1429,7 +1429,7 @@ var Ermis = function() {
         var searchResultArray = findObjectByKey(a ,'field', columnTitle);
         var data = grid.dataSource.data()[row];
         initLoadGroupColumn(data, dataItem ,searchResultArray['group']);
-        //initFixScrollGrid();
+        initFixScrollGrid();
     };
 
 

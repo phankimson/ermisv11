@@ -30,6 +30,10 @@
     user-select: none;
   }
 
+  .menu_title:hover{
+    color:#7cb342;
+  }
+
 .sk-chase {
   width: 100px;
   height: 100px;

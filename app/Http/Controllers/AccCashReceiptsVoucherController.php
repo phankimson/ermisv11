@@ -218,10 +218,10 @@ class AccCashReceiptsVoucherController extends Controller
              $detail->save();
        
              array_push($removeId,$detail->id);
-             $arr->detail[$k]->id = $detail->id;            
+             $arr->detail[$k]->id = $detail->id;       
           
              // Lưu số tồn tiền bên Nợ
-             if(substr($d->debit->text,2) == '11'){     
+             if(substr($d->debit->text,0,3) === '111'){     
                $balance = AccCurrencyCheck::get_type_first($d->debit->value,$arr->currency,null);
                if($balance){
                  $balance->amount = $balance->amount + ($d->amount * $d->rate);
@@ -238,7 +238,7 @@ class AccCashReceiptsVoucherController extends Controller
                // End
 
                // Lưu số tồn tiền bên Có
-               if(substr($d->credit->text,3) == ('111' ||  '113')){    
+               if(substr($d->credit->text,0,3) === ('111' ||  '113')){    
                  $balance = AccCurrencyCheck::get_type_first($d->credit->value,$arr->currency,null);
                  if($balance){
                    $balance->amount = $balance->amount - ($d->amount * $d->rate);

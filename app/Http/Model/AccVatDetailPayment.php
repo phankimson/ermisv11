@@ -3,7 +3,6 @@
 namespace App\Http\Model;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Http\Model\AccVatDetail;
 use App\Http\Model\Casts\Decimal;
 use App\Http\Traits\ScopesTraits;
 use App\Http\Traits\BootedTraits;
@@ -30,5 +29,10 @@ class AccVatDetailPayment extends Model
           'payment'=> Decimal::class,
           'active' => 'boolean',
       ];
+
+        static public function sum_vat_detail($vat_detail_id,$sum) {
+        $result = AccVatDetailPayment::where('vat_detail_id',$vat_detail_id )->sum($sum);
+        return $result;
+      }     
       
 }
