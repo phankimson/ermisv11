@@ -107,6 +107,8 @@ class AccCashReceiptsVoucherByInvoiceController extends Controller
          $period = AccPeriod::get_date(Carbon::parse($arr->accounting_date)->format('Y-m'),1);
         if(!$period){
           $general = [];
+          $check_payment = false;
+          $invoice ='';
           $permission = $request->session()->get('per');
           $user = Auth::user();
           if($permission['e'] == true && $arr->id ){
@@ -192,6 +194,12 @@ class AccCashReceiptsVoucherByInvoiceController extends Controller
 
              // Tìm VAT để cập nhật trạng thái đã thanh toán (cột payment)
               $vat = AccVatDetail::find($d->vat_detail_id);
+             // Ktra xem payment = 1 không. Nếu = 1 (đã thanh toán) thì rollback. 
+             if($vat->payment == 1 && $permission['a'] == true ){
+               $check_payment = true;    
+               $invoice =  $vat->invoice;      
+               break;      
+             };
               $vat_payment = AccVatDetailPayment::sum_vat_detail($vat->id,'payment');
               if((float)$d->payment + $vat_payment - (float)$vat->total_amount >=0){
                 $vat->payment = 1;
@@ -202,6 +210,8 @@ class AccCashReceiptsVoucherByInvoiceController extends Controller
               $pm = new AccVatDetailPayment();
               $pm->general_id = $general->id;
               $pm->vat_detail_id = $d->vat_detail_id;
+              $pm->paid = $d->paid;   
+              $pm->remaining = $d->remaining;   
               $pm->payment = $d->payment;   
               $pm->rate = $d->rate;  
               $pm->payment_rate = $d->payment_rate;  
@@ -255,9 +265,15 @@ class AccCashReceiptsVoucherByInvoiceController extends Controller
            'menu' => $this->menu->id,
            'url'  => $this->url,
            'dataz' => \json_encode($arr)]);
+           if($check_payment == true){
+           DB::connection(env('CONNECTION_DB_ACC'))->rollBack();
+           return response()->json(['status'=>false,'message'=> trans('messages.invoice_number_paid',['invoice'=>$invoice])]);
+           }else{
            DB::connection(env('CONNECTION_DB_ACC'))->commit();
            return response()->json(['status'=>true,'message'=> trans('messages.update_success'), 'voucher_name' => $v , 'dataId' => $general->id ,  'data' => $arr ]);
            //
+           }
+          
       }else{
           return response()->json(['status'=>false,'message'=> trans('messages.locked_period')]);
       }

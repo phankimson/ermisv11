@@ -27,7 +27,7 @@ class CashReceiptGeneralPaymentReadResource extends JsonResource
             'rate' => $this->rate,
             'object' => new ObjectDropDownListResource($this->whenLoaded('object')),
             'status' =>  $this->status,
-            'detail' => CashReceiptVoucherInvoiceResource::collection($this->whenLoaded('tax')),
+            'detail' => CashReceiptVoucherInvoiceBindResource::collection($this->whenLoaded('vat_detail_payment')),
             'active' =>  $this->active,
         ];
     }

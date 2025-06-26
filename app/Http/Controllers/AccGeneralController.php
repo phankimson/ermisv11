@@ -112,7 +112,7 @@ class AccGeneralController extends Controller
         'error' => $e->getMessage(),
         'url'  => $this->url,
         'check' => 0 ]);
-      return response()->json(['status'=>false,'message'=> trans('messages.delete_fail').' '.$e->getMessage()]);
+      return response()->json(['status'=>false,'message'=> trans('messages.print_fail').' '.$e->getMessage()]);
     }
 
     }

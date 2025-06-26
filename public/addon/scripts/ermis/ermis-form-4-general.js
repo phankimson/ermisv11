@@ -223,7 +223,7 @@ var Ermis = function () {
           link = jQuery(this).val();
           jQuery.each(Ermis.group, function( i, v ){
               if(v.code == link ){
-                type = v.id;
+                type = v.id;                
               }
           });
          
@@ -234,7 +234,7 @@ var Ermis = function () {
       ErmisTemplateEvent0(e, Ermis.per.a,
           function () {
               sessionStorage.status = 1;
-              sessionStorage.removeItem("dataId");
+              sessionStorage.removeItem("dataId");        
               window.location = link;
           },function(){
               kendo.alert(Lang.get('messages.you_not_permission_add'));
@@ -254,8 +254,7 @@ var Ermis = function () {
                     if (v.id === selectedItem.id) {
                         sessionStorage.current = e;
                     }
-                });
-                sessionStorage.link =  link;
+                });         
                 sessionStorage[type] =  JSON.stringify(arrId);
                 sessionStorage.status = 5;
                 sessionStorage.dataId = selectedItem.id;

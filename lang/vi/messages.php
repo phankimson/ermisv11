@@ -22,6 +22,7 @@ return [
       "delete_success" => "Xóa thành công !",
       "delete_fail" => "Xóa thất bại ! Xin vui long thử lại",
       "delete_error" => "Phát sinh lỗi khi xóa !",
+      "print_fail" => "Phát sinh lỗi khi in !",
       "recored_success" => "Ghi sổ thành công !",
       "recored_fail" => "Ghi sổ thất bại ! Xin vui lòng thử lại !",
       "recored_error" => "Phát sinh lỗi khi ghi sổ !",
@@ -114,4 +115,5 @@ return [
       "software_has_expired"=>"Phần mềm đã hết hạn . Vui lòng liên hệ quản trị viên để được gia hạn thêm!",
       "please_fill_form_detail" => "Xin vui lòng điền các trường chi tiết !",
       "please_select_line_choose" => "Xin vui lòng chọn dòng !",
+      "invoice_number_paid" => "Số hóa đơn :invoice đã thanh toán !",
 ];

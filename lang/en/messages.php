@@ -22,6 +22,7 @@ return [
   "delete_success" => "Delete Successful !",
   "delete_fail" => "Delete fail ! Please try again",
   "delete_error" => "Delete error !",
+  "print_fail" => "Print fail ! Please try again",
   "recored_success" => "Record Successful !",
   "recored_fail" => "Record fail ! Please try again",
   "recored_error" => "Record error",
@@ -114,4 +115,5 @@ return [
   "software_has_expired"=>"Software has expired. Please contact the administrator extend more!",
   "please_fill_form_detail" => "Please fill form detail !",
   "please_select_line_choose" => "Please select line choose !",
+  "invoice_number_paid" => "Invoice number :invoice paid !",
 ];

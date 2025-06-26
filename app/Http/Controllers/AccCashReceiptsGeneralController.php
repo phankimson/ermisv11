@@ -308,7 +308,7 @@ class AccCashReceiptsGeneralController extends Controller
          $permission = $request->session()->get('per');
          $arr = json_decode($request->data);
          if($arr){
-          $data = AccGeneral::get_id_with_detail($arr,['detail','tax','attach','vat_detail_payment']);
+           $data = AccGeneral::get_id_with_detail($arr,['detail','tax','attach','vat_detail_payment']);
            $period = AccPeriod::get_date(Carbon::parse($data->accounting_date)->format('Y-m'),1);
            if(!$period){
              if($permission['d'] == true){             
@@ -342,18 +342,18 @@ class AccCashReceiptsGeneralController extends Controller
                }             
 
                // Xóa các dòng chi tiết
-               $data->detail()->delete();
-
-               // Xóa các dòng thuế
-               $data->tax()->delete();
+               $data->detail()->delete();              
 
                // Update lại trạng thái thanh toán
-               $tax = $data->vat_detail_payment();
-               foreach($tax as $v){
+               $tax_payment = $data->vat_detail_payment();
+               foreach($tax_payment as $v){
                  $p = AccVatDetail::find($v->vat_detail_id);
                  $p->payment = 0;
                  $p->save(); 
-               };       
+               }; 
+               
+                // Xóa các dòng thuế
+               $data->tax()->delete();
 
                 // Xóa các dòng thanh toán
                 $data->vat_detail_payment()->delete();                         

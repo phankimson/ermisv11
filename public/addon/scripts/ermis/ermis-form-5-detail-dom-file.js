@@ -60,7 +60,6 @@ var Ermis = function() {
     }
 
     var initLoadData = function(dataId) {
-        if(Ermis.link == sessionStorage.link){
         var postdata = {
             data: JSON.stringify(dataId)
         };
@@ -82,9 +81,6 @@ var Ermis = function() {
             function() {
                 initStatus(7);
             });
-        }else{
-            initStatus(7);
-        }
     };
 
     var initLoadGrid = function(dataLoad){
@@ -105,6 +101,11 @@ var Ermis = function() {
     var initBindData = function() {
         if (sessionStorage.dataId) {
             var dataId = sessionStorage.dataId;
+            storedarrId = JSON.parse(sessionStorage[Ermis.type]);
+            var hasId = storedarrId.includes(dataId);
+            if(hasId == false && storedarrId.length >0){             
+              dataId = storedarrId[0];
+            }
             initLoadData(dataId);
         } else {
             initStatus(1);
@@ -181,6 +182,7 @@ var Ermis = function() {
         jQuery('#search_voucher').on('click', function(e) {
             var filter = GetAllDataForm('#form-window-voucher', 2);
             var c = GetDataAjax(filter.columns);
+                c.obj.type = Ermis.type;
             var postdata = {
                 data: JSON.stringify(c.obj)
             };
@@ -867,7 +869,8 @@ var Ermis = function() {
                                 //}
                                 if (storedarrId.length > 0) {
                                     index = index - 1;
-                                    var dataId = getAtIndex(index, storedarrId);
+                                    var a_index = Math.abs(index) % storedarrId.length;
+                                    var dataId = getAtIndex(a_index, storedarrId);
                                     initLoadData(dataId);
                                 } else {
                                     sessionStorage.removeItem('dataId');
@@ -941,10 +944,11 @@ var Ermis = function() {
         }
     };
 
-    var initBack = function(e) {
+ var initBack = function(e) {
         ErmisTemplateEvent1(e, function() {
             index = index - 1;
-            var dataId = getAtIndex(index, storedarrId);
+            var a_index = Math.abs(index) % storedarrId.length;
+            var dataId = getAtIndex(a_index, storedarrId);
             sessionStorage.dataId = dataId;
             initLoadData(dataId);
         })
@@ -953,7 +957,8 @@ var Ermis = function() {
     var initForward = function(e) {
         ErmisTemplateEvent1(e, function() {
             index = index + 1;
-            var dataId = getAtIndex(index, storedarrId);
+            var a_index = Math.abs(index) % storedarrId.length;
+            var dataId = getAtIndex(a_index, storedarrId);
             sessionStorage.dataId = dataId;
             initLoadData(dataId);
         })

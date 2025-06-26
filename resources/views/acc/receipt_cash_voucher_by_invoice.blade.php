@@ -103,6 +103,11 @@
         Ermis.decimal = "{{$decimal}}";
         Ermis.decimal_symbol = "{{$decimal_symbol}}";
         Ermis.total_payment = ".total_payment";
+        Ermis.columns_voucher = [{"field" : "voucher_date","title" : "@lang('acc_voucher.voucher_date')" ,template : "#=FormatDate(voucher_date)#" },
+                                {"field" : "voucher","title" : "@lang('acc_voucher.voucher')" },
+                                {"field" : "description","title" : "@lang('acc_voucher.description')" },
+                                {"field" : "total_amount","title" :  "@lang('acc_voucher.total_amount')" ,template: '#= FormatNumberDecimal(total_amount, {{$decimal}} )#' } ];
+                                
         Ermis.columns_subject = [{ "title": "STT", "template": "<span class='row-number'></span>", "width": 100 },
                                 {"field" : "subject_id", hidden: true},
                                 {"field" : "code","title" :"@lang('acc_voucher.subject_code')" , "field_set": "subject_code"},
