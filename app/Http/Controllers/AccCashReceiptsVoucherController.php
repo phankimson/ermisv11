@@ -198,6 +198,7 @@ class AccCashReceiptsVoucherController extends Controller
              }
              $detail->general_id = $general->id;
              $detail->description = $d->description;
+             $detail->currency = $d->currency;
              $detail->debit = $d->debit->value;  // Đổi từ id value dạng read
              $detail->credit = $d->credit->value;  // Đổi từ id value dạng read
              $detail->amount = $d->amount;

@@ -308,7 +308,7 @@ class AccCashReceiptsGeneralController extends Controller
          $permission = $request->session()->get('per');
          $arr = json_decode($request->data);
          if($arr){
-           $data = AccGeneral::get_id_with_detail($arr,['detail','tax','attach','vat_detail_payment']);
+           $data = AccGeneral::get_id_with_detail($arr,['detail','tax','attach','vat_detail_payment']);           
            $period = AccPeriod::get_date(Carbon::parse($data->accounting_date)->format('Y-m'),1);
            if(!$period){
              if($permission['d'] == true){             
@@ -321,15 +321,14 @@ class AccCashReceiptsGeneralController extends Controller
                'menu' => $this->menu->id,
                'url'  => $this->url,
                'dataz' => \json_encode($data)]);
-               //
-               $data->delete(); 
+               //           
                
+               $detail = $data->detail;
                
-               $detail = $data->detail();
                foreach($detail as $d){
                 //Clear số tiền bên nợ
                 $b1 = AccCurrencyCheck::get_type_first($d->debit,$d->currency,null);
-                if($b1){
+                if($b1){          
                   $b1->amount = $b1->amount - $d->amount;
                   $b1->save();
                 }
@@ -345,7 +344,7 @@ class AccCashReceiptsGeneralController extends Controller
                $data->detail()->delete();              
 
                // Update lại trạng thái thanh toán
-               $tax_payment = $data->vat_detail_payment();
+               $tax_payment = $data->vat_detail_payment;
                foreach($tax_payment as $v){
                  $p = AccVatDetail::find($v->vat_detail_id);
                  $p->payment = 0;
@@ -366,6 +365,8 @@ class AccCashReceiptsGeneralController extends Controller
                  };
                  $a->delete();
                };
+
+               $data->delete(); 
                DB::connection(env('CONNECTION_DB_ACC'))->commit();
                return response()->json(['status'=>true,'message'=> trans('messages.delete_success')]);
            }else{

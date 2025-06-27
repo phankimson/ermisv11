@@ -98,15 +98,19 @@ var Ermis = function() {
           grid.setDataSource(ds);
     }
 
-    var initBindData = function() {
+     var initBindData = function() {
         if (sessionStorage.dataId) {
             var dataId = sessionStorage.dataId;
-            storedarrId = JSON.parse(sessionStorage[Ermis.type]);
-            var hasId = storedarrId.includes(dataId);
-            if(hasId == false && storedarrId.length >0){             
-              dataId = storedarrId[0];
-            }
-            initLoadData(dataId);
+            if(sessionStorage.hasOwnProperty(Ermis.type)){
+                var storedId = JSON.parse(sessionStorage[Ermis.type]);
+                var hasId = storedId.includes(dataId);
+                if(hasId == false){
+                 dataId = storedId[0];   
+                }
+                 initLoadData(dataId);
+            }else{
+                initStatus(7);
+            }                      
         } else {
             initStatus(1);
         }
@@ -190,6 +194,9 @@ var Ermis = function() {
                 var grid = $kGridVoucher.data("kendoGrid");
                 var ds = new kendo.data.DataSource({
                     data: result.data
+                });
+                jQuery.each(result.data, function(i, item) {
+                    storedarrId.push(item.id);
                 });
                 grid.setDataSource(ds);
                 grid.dataSource.page(1);
@@ -869,9 +876,7 @@ var Ermis = function() {
                                 //}
                                 if (storedarrId.length > 0) {
                                     index = index - 1;
-                                    var a_index = Math.abs(index) % storedarrId.length;
-                                    var dataId = getAtIndex(a_index, storedarrId);
-                                    initLoadData(dataId);
+                                    initClickBackForward(index);
                                 } else {
                                     sessionStorage.removeItem('dataId');
                                     initStatus(4);
@@ -944,23 +949,31 @@ var Ermis = function() {
         }
     };
 
- var initBack = function(e) {
-        ErmisTemplateEvent1(e, function() {
-            index = index - 1;
-            var a_index = Math.abs(index) % storedarrId.length;
-            var dataId = getAtIndex(a_index, storedarrId);
-            sessionStorage.dataId = dataId;
-            initLoadData(dataId);
+    var initCheckIndex = function(){
+          if(storedarrId.indexOf(sessionStorage.dataId)){
+                index = storedarrId.indexOf(sessionStorage.dataId);
+            }
+            return index;    
+    }
+
+    var initClickBackForward = function(index){        
+        var a_index = Math.abs(index) % storedarrId.length;
+        var dataId = getAtIndex(a_index, storedarrId);
+        sessionStorage.dataId = dataId;
+        initLoadData(dataId);
+    }   
+
+    var initBack = function(e) {
+        ErmisTemplateEvent1(e, function() {      
+          index = index - 1;
+          initClickBackForward(index);
         })
     };
 
     var initForward = function(e) {
-        ErmisTemplateEvent1(e, function() {
+        ErmisTemplateEvent1(e, function() {          
             index = index + 1;
-            var a_index = Math.abs(index) % storedarrId.length;
-            var dataId = getAtIndex(a_index, storedarrId);
-            sessionStorage.dataId = dataId;
-            initLoadData(dataId);
+            initClickBackForward(index);
         })
     };
 
@@ -1192,6 +1205,7 @@ var Ermis = function() {
             initTabsTrip();
             initGlobalRegister();
             initStatus(status);
+            initCheckIndex();
             //initClick();
             initBackTo();
             initKeyCode();

@@ -183,6 +183,7 @@ class AccCashReceiptsVoucherByInvoiceController extends Controller
             }            
              $detail->general_id = $general->id;
              $detail->description = $general->description;
+             $detail->currency = $arr->currency;
              $detail->debit = $setting_voucher->debit;  // Lấy từ seting default
              $detail->credit = $setting_voucher->credit; // Lấy từ seting default
              $detail->amount = $d->payment;

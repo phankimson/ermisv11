@@ -226,7 +226,10 @@ var Ermis = function () {
                 type = v.id;                
               }
           });
-         
+          initStatus(1);
+          dataSourceGeneral = new kendo.data.DataSource({ data: [], pageSize: Ermis.page_size, schema: { model: { fields: Ermis.field } } });
+          var grid = $kGrid.data("kendoGrid");
+          grid.setDataSource(dataSourceGeneral);
       })        
     }
 
@@ -450,7 +453,7 @@ var Ermis = function () {
               grid_detail.setDataSource(dataSource);
               calculatePriceBind(result.data);
             },
-            function (result) {
+            function (result) {              
                 kendo.alert(result.message);
             });
     };
