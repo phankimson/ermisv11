@@ -17,6 +17,7 @@ use App\Http\Model\AccNumberVoucher;
 use App\Http\Model\AccCountVoucher;
 use App\Http\Model\AccCurrencyCheck;
 use App\Http\Model\AccPrintTemplate;
+use App\Http\Model\AccVatDetailPayment;
 use App\Http\Model\Error;
 use App\Http\Resources\CashReceiptGeneralResource;
 use App\Http\Resources\TypeGeneralResource;
@@ -349,8 +350,19 @@ class AccCashReceiptsGeneralController extends Controller
                  $p = AccVatDetail::find($v->vat_detail_id);
                  $p->payment = 0;
                  $p->save(); 
+
+                // Update lại số tiền đã thanh toán của từng phiếu
+                $tax_payment_update = AccVatDetailPayment::vat_detail_payment_created_at_not_id($v->vat_detail_id,$v->created_at,$v->id);
+                foreach($tax_payment_update as $t){
+                  if($t->paid > $v->paid){
+                  $t->paid = $t->paid - $v->payment;
+                  $t->remaining = $t->remaining + $v->payment;
+                  $t->save();
+                  }          
+                }               
                }; 
-               
+
+              
                 // Xóa các dòng thuế
                $data->tax()->delete();
 

@@ -67,7 +67,7 @@ class AccGeneral extends Model
       }
 
       static public function get_data_load_between($type,$startDate,$endDate){
-        $result = AccGeneral::where('type',$type)->whereBetween('accounting_date',[$startDate,$endDate])->orderBy('accounting_date', 'asc')->get();
+        $result = AccGeneral::where('type',$type)->whereBetween('accounting_date',[$startDate,$endDate])->orderBy('accounting_date', 'asc')->orderBy('created_at', 'asc')->get();
         return $result;
       }
 

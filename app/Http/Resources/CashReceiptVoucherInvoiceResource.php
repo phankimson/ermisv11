@@ -17,6 +17,7 @@ class CashReceiptVoucherInvoiceResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'detail_id'=> $this->detail_id,
             'invoice' => $this->invoice,
             'date_invoice' => $this->date_invoice,
             'description'=>$this->description,  

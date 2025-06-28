@@ -17,6 +17,7 @@ class CashReceiptVoucherInvoiceBindResource extends JsonResource
         $vat_detail = $this->first()->vat_detail->first();
         return [
             'id' => $this->id,
+            'detail_id'=> $this->detail_id,
             'invoice' => $vat_detail->invoice,
             'date_invoice' => $vat_detail->date_invoice,
             'description'=>$vat_detail->description,  

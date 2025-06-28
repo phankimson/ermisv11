@@ -33,10 +33,19 @@ class AccVatDetailPayment extends Model
           'active' => 'boolean',
       ];
 
-        static public function sum_vat_detail($vat_detail_id,$sum) {
-        $result = AccVatDetailPayment::where('vat_detail_id',$vat_detail_id )->sum($sum);
+      static public function vat_detail_payment_created_at_not_id($vat_detail_id,$created_at,$id) {
+        $result = AccVatDetailPayment::where('vat_detail_id',$vat_detail_id )->where('created_at',">=",$created_at)->whereNot('id',$id)->get();
         return $result;
       }     
+
+      static public function sum_vat_detail($vat_detail_id,$sum) {
+        $result = AccVatDetailPayment::where('vat_detail_id',$vat_detail_id )->sum($sum);
+        return $result;
+      }  
+      static public function sum_vat_detail_not_id($vat_detail_id,$sum,$id) {
+        $result = AccVatDetailPayment::where('vat_detail_id',$vat_detail_id )->whereNot('id',$id)->sum($sum);
+        return $result;
+      }       
 
        public function vat_detail() {
         return $this->hasOne(AccVatDetail::class,'id','vat_detail_id');

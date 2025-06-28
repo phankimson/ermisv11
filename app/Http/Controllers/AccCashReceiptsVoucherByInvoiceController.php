@@ -176,8 +176,8 @@ class AccCashReceiptsVoucherByInvoiceController extends Controller
           // CHI TIET / Detail
            foreach($arr->detail as $k => $d){
             $detail = collect([]);
-            if($d->id){
-              $detail = AccDetail::find($d->id);
+            if($d->detail_id){
+              $detail = AccDetail::find($d->detail_id);
             }else{
               $detail = new AccDetail();
             }            
@@ -196,11 +196,16 @@ class AccCashReceiptsVoucherByInvoiceController extends Controller
              // Tìm VAT để cập nhật trạng thái đã thanh toán (cột payment)
               $vat = AccVatDetail::find($d->vat_detail_id);
              // Ktra xem payment = 1 không. Nếu = 1 (đã thanh toán) thì rollback. 
-             if($vat->payment == 1 && $permission['a'] == true ){
+             // Ktra xem chỉnh sửa tt đủ chưa
+             
+              $vat_payment_id = AccVatDetailPayment::sum_vat_detail_not_id($vat->id,'payment',$d->vat_detail_id);
+              dd( $vat_payment_id);
+
+             if(($vat->payment == 1 && $permission['a'] == true) ||($vat_payment_id+(float)$d->payment > (float)$vat->total_amount && $permission['e'] == true)){
                $check_payment = true;    
                $invoice =  $vat->invoice;      
                break;      
-             };
+             }
               $vat_payment = AccVatDetailPayment::sum_vat_detail($vat->id,'payment');
               if((float)$d->payment + $vat_payment - (float)$vat->total_amount >=0){
                 $vat->payment = 1;
@@ -208,7 +213,12 @@ class AccCashReceiptsVoucherByInvoiceController extends Controller
               }
 
               // Lưu VAT payment
-              $pm = new AccVatDetailPayment();
+               $pm = collect([]);
+              if($d->detail_id){
+                $pm = AccVatDetailPayment::find($d->vat_detail_id);
+              }else{
+                $pm = new AccVatDetailPayment();
+              }
               $pm->general_id = $general->id;
               $pm->vat_detail_id = $d->vat_detail_id;
               $pm->paid = $d->paid;   
