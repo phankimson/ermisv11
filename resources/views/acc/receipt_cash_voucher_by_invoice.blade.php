@@ -121,6 +121,7 @@
                                 return '<input type="checkbox" id="'+ dataItem.vat_detail_id+'" '+dataItem.checkbox+'  class="k-checkbox invoice"><label class="k-checkbox-label" for="'+ dataItem.vat_detail_id +'"></label>'
                             },width: 50},
                             {"field" :"id", hidden : true},
+                            {"field" :"detail_id", hidden : true},
                             {"field" :"vat_detail_id", hidden : true},
                             { "field" : "invoice","title" : "@lang('acc_voucher.invoice')"  ,width : '150px'},
                             { "field" : "date_invoice","title" : "@lang('acc_voucher.date_invoice')",template: '#= FormatDate(date_invoice) #',width : '150px'  },
@@ -133,8 +134,9 @@
                             { "field" : "payment_rate","title" : "@lang('acc_voucher.payment_rate')" ,"width" : "200px",format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" ,aggregates: ['sum'] ,footerTemplate: "<p id='payment_rate_total'>#=calculateTotalRatePaymentAggregate({{$decimal}})#</p>" },];
                       
         Ermis.field = {
-            id : {field :"id" ,defaultValue: 0,editable: false},
-            vat_detail_id : {field :"id" ,editable: false},
+            id : {field :"id"},
+            detail_id : {field :"detail_id"},
+            vat_detail_id : {field :"vat_detail_id"},
             checkbox:     {field : "checkbox",defaultValue: ""},
             invoice:     {field : "invoice",editable: false},
             date_invoice:     {field : "date_invoice",editable: false},

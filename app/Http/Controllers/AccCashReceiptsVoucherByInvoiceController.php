@@ -199,7 +199,6 @@ class AccCashReceiptsVoucherByInvoiceController extends Controller
              // Ktra xem chỉnh sửa tt đủ chưa
              
               $vat_payment_id = AccVatDetailPayment::sum_vat_detail_not_id($vat->id,'payment',$d->vat_detail_id);
-              dd( $vat_payment_id);
 
              if(($vat->payment == 1 && $permission['a'] == true) ||($vat_payment_id+(float)$d->payment > (float)$vat->total_amount && $permission['e'] == true)){
                $check_payment = true;    
@@ -215,11 +214,12 @@ class AccCashReceiptsVoucherByInvoiceController extends Controller
               // Lưu VAT payment
                $pm = collect([]);
               if($d->detail_id){
-                $pm = AccVatDetailPayment::find($d->vat_detail_id);
+                $pm = AccVatDetailPayment::find($d->id);
               }else{
                 $pm = new AccVatDetailPayment();
               }
               $pm->general_id = $general->id;
+              $pm->detail_id = $detail->id;
               $pm->vat_detail_id = $d->vat_detail_id;
               $pm->paid = $d->paid;   
               $pm->remaining = $d->remaining;   

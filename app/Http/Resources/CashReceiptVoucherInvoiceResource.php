@@ -16,8 +16,9 @@ class CashReceiptVoucherInvoiceResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'id' => $this->id,
-            'detail_id'=> $this->detail_id,
+            'id' => "",
+            'detail_id'=> "",
+            'vat_detail_id'=> $this->id,
             'invoice' => $this->invoice,
             'date_invoice' => $this->date_invoice,
             'description'=>$this->description,  
