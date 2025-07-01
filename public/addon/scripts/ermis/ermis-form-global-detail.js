@@ -38,3 +38,4 @@ var currentIndex = 0;
 var reference_by = {};
 var $kGridTab_column = [];
 var $kGridTab = $kGrid;
+var grid_header_key = "invoice";

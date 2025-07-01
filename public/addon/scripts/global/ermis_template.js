@@ -839,11 +839,13 @@ var ErmisKendoGridCheckboxTemplate3 = function($kGrid, data, aggregate, field, p
                         checkHeader = false;
                     }
                 });
-                var a = jQuery('.k-checkbox.' + key+":checked").not('#header-chb-' + key).length;
-                if(a == grid.items().length){
-                    checkHeader = true;
-                };
-                jQuery('#header-chb-' + key)[0].checked = checkHeader; 
+
+                checked_header_grid(grid,key,checkHeader);
+                //var a = jQuery('.k-checkbox.' + key+":checked").not('#header-chb-' + key).length;
+                //if(a == grid.items().length){
+                //    checkHeader = true;
+                //};
+                //jQuery('#header-chb-' + key)[0].checked = checkHeader; 
             } else {                   
                 onChecked(0,dataItem);
                 //-remove selection

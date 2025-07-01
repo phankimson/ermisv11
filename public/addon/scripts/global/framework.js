@@ -1574,6 +1574,14 @@ function calculatePriceAggregateDiscount(decimal) {
       return kendo.toString(total, 'n'+decimal);
 };
 
+function checked_header_grid(grid,key,checkHeader){
+   var a = jQuery('.k-checkbox.' + key+":checked").not('#header-chb-' + key).length;
+      if(a == grid.items().length){
+          checkHeader = true;
+      };
+      jQuery('#header-chb-' + key)[0].checked = checkHeader; 
+}
+
 function DefaultReadValueField(){
   return {value: 0 , text: "--Select--"};
 }

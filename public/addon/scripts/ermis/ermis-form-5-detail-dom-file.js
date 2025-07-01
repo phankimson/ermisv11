@@ -36,7 +36,7 @@ var Ermis = function() {
         // Grid
         ErmisKendoGridCheckboxTemplate3($kGrid, Ermis.data, Ermis.aggregate, Ermis.field, Ermis.page_size , {
             confirmation: false
-        }, jQuery(window).height() * 0.5, Ermis.columns,onSave,"invoice",onChecked,"vat_detail_id");
+        }, jQuery(window).height() * 0.5, Ermis.columns,onSave,grid_header_key,onChecked,"vat_detail_id");
         initKendoGridChange();
     }
 
@@ -51,6 +51,7 @@ var Ermis = function() {
             initDescription(1,dataItem['invoice']);               
         };   
     }
+    
 
     var onSave = function(data){  
         var grid = this;
@@ -70,6 +71,9 @@ var Ermis = function() {
                     initActive(result.data.active);
                     SetDataAjax(data.columns, result.data);
                     initLoadGrid(result.data.detail);
+                    var grid = $kGrid.data("kendoGrid");
+                    var checkHeader = false;
+                    checked_header_grid(grid,grid_header_key,checkHeader);
                     sessionStorage.dataId = result.data.id;
                     initKendoGridChange();
                     //$kGrid.addClass('disabled');
