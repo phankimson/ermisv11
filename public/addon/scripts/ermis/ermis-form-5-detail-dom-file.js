@@ -449,6 +449,7 @@ var Ermis = function() {
             jQuery('.back').on('click', initBack);
             jQuery('.forward').on('click', initForward);
             jQuery('.delete').on('click', initDelete);
+            jQuery('.pageview').on('click', initVoucherForm);
         } else if (flag === 6) { //Write = 1
             jQuery('.add,.copy,.print,.back,.forward,.pageview').removeClass('disabled');
             shortcut.add(key + "A", function(e) {
@@ -553,7 +554,7 @@ var Ermis = function() {
         }
     }
 
-  
+      
     var initDefaultIdGrid = function(){
         var grid = $kGrid.data("kendoGrid");
         var r = grid.dataSource.data();
@@ -815,6 +816,13 @@ var Ermis = function() {
                   initActive("1");
                   jQuery('.voucher').val(result.voucher_name);
                   initLoadGrid(result.data.detail);
+                  initKendoGridChange();
+                  // Thay đổi bảng tìm kiếm
+                  var grid = $kGridVoucher.data("kendoGrid");
+                  var dataItem = grid.dataSource.get(result.data.id);
+                  if(dataItem != undefined){
+                  initEditDefault(result.data,grid,Ermis.columns_voucher);
+                  }
                   //sessionStorage.dataId = result.dataId;
               },
               function() {
@@ -878,6 +886,13 @@ var Ermis = function() {
                                 //if (storedarrId.length > 0) {
                                 //    storedarrId.length = storedarrId.length - 1;
                                 //}
+                                // Xóa dòng trong tìm chứng từ
+                                var grid = $kGridVoucher.data("kendoGrid");
+                                var dataItem = grid.dataSource.get(dataId);
+                                if(dataItem != undefined){
+                                var row = grid.tbody.find("tr[data-uid='" + dataItem.uid + "']");
+                                grid.removeRow(row);  
+                                }                                                       
                                 if (storedarrId.length > 0) {
                                     index = index - 1;
                                     initClickBackForward(index);
@@ -981,58 +996,7 @@ var Ermis = function() {
         })
     };
 
-    var initClick = function(e) {
-        jQuery("#page_content_inner").not("#grid").not('#grid_vat').click(function(e) {
-            $kGridTab.find(" tbody tr").removeClass("k-state-selected");
-            if (jQuery(e.target).closest('#grid').length || jQuery(e.target).closest('#grid_vat').length) {
-                return false;
-            } else if (jQuery('.k-grid-edit-row').length > 0) {
-                //$kGrid.data("kendoGrid").cancelChanges(); // CLOSE ALL
-                //$kGrid.data("kendoGrid").closeCell();
-                $kGridTab.data("kendoGrid").cancelRow();
-            }
-        });
-    };
-
-    var initKeyCode = function() {
-        jQuery(document).keyup(function(e) {
-          var grid = $kGridTab.data("kendoGrid");
-          var row = $kGridTab.find('tr.k-state-selected');
-          var dataItem = $kGridTab.data("kendoGrid").dataSource.data()[0];
-          if (type == 0) {
-              var dataGrid = dataDefaultGrid.data;
-          };
-            $kGridTab.find(" tbody tr").removeClass("k-state-selected");
-            if (e.keyCode === 13) {
-                if (e.target.id == "barcode") {
-                   // initScanBarcode(e.target);
-                } else {
-                  if(dataGrid.hasOwnProperty("description") || dataGrid.hasOwnProperty("subject_code")){
-                     grid.dataSource.add(dataGrid);
-                  }else{
-                     grid.addRow();
-                  }
-                }
-            } else if (e.keyCode === 45) {
-                var dataItem = grid.dataSource.data()[0];
-                if (dataItem) {
-                    grid.dataSource.add(dataItem.toJSON());
-                } else {
-                    kendo.alert(Lang.get('messages.no_row'));
-                }
-            } else if (e.keyCode === 27) {
-                grid.cancelChanges();
-            } else if (e.keyCode === 46) {
-                if (dataItem) {
-                    var row = grid.tbody.find("tr[data-uid='" + dataItem + "']");
-                    grid.removeRow(row);
-                } else {
-                    kendo.alert(Lang.get('messages.no_row'));
-                }
-            }
-        });
-    };
-
+    
     var initDeleteRowAll = function(e) {
       var grid = $kGridTab.data("kendoGrid");
         $.when(KendoUiConfirm(Lang.get('messages.are_you_sure'), Lang.get('global.message'))).then(function(confirmed) {
@@ -1210,9 +1174,7 @@ var Ermis = function() {
             initGlobalRegister();
             initStatus(status);
             initCheckIndex();
-            //initClick();
             initBackTo();
-            initKeyCode();
             initChangeAuto();
             initKendoGridSubject();
             initSearchGridSubject();

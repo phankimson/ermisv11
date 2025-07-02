@@ -548,8 +548,12 @@ function SetDataAjax(data, dataItem){
                 var data = jQuery("select[name='" + col.field + "'] option");
                 var found = $.map(data, e => $(e).val());
               }else{
-                var data = jQuery("select[name='" + col.field + "']").data("kendoDropDownList").dataSource.view();
-                var found = data.some(el => el.value === v);
+                var found = false;
+                jQuery("select[name='" + col.field + "']").each(function(){
+                  if(jQuery(this).val() === v){
+                    found = true;
+                  }               
+                });
               }              
               if(found){
                 jQuery('.'+classes+'[name="' + col.field + '"]').data('kendoDropDownList').value(v);

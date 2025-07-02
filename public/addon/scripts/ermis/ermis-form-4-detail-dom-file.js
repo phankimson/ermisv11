@@ -677,6 +677,7 @@ var Ermis = function() {
             jQuery('.back').on('click', initBack);
             jQuery('.forward').on('click', initForward);
             jQuery('.delete').on('click', initDelete);
+            jQuery('.pageview').on('click', initVoucherForm);
         } else if (flag === 6) { //Write = 1
             jQuery('.add,.copy,.print,.back,.forward,.pageview').removeClass('disabled');
             shortcut.add(key + "A", function(e) {
@@ -1050,6 +1051,13 @@ var Ermis = function() {
                   initActive("1");
                   jQuery('.voucher').val(result.voucher_name);
                   initLoadGrid(result.data);
+                  initKendoGridChange();
+                  // Thay đổi bảng tìm kiếm
+                  var grid = $kGridVoucher.data("kendoGrid");
+                  var dataItem = grid.dataSource.get(result.data.id);
+                  if(dataItem != undefined){
+                  initEditDefault(result.data,grid,Ermis.columns_voucher);
+                  }
                   //sessionStorage.dataId = result.dataId;
               },
               function() {
@@ -1113,6 +1121,12 @@ var Ermis = function() {
                                 //if (storedarrId.length > 0) {
                                 //    storedarrId.length = storedarrId.length - 1;
                                 //}
+                                 // Xóa dòng trong tìm chứng từ
+                                var grid = $kGridVoucher.data("kendoGrid");
+                                if(dataItem != undefined){
+                                var row = grid.tbody.find("tr[data-uid='" + dataItem.uid + "']");
+                                grid.removeRow(row);  
+                                }
                                 if (storedarrId.length > 0) {
                                     index = index - 1;
                                     initClickBackForward(index);

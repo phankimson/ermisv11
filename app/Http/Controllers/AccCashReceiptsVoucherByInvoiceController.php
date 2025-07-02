@@ -196,11 +196,8 @@ class AccCashReceiptsVoucherByInvoiceController extends Controller
              // Tìm VAT để cập nhật trạng thái đã thanh toán (cột payment)
               $vat = AccVatDetail::find($d->vat_detail_id);
              // Ktra xem payment = 1 không. Nếu = 1 (đã thanh toán) thì rollback. 
-             // Ktra xem chỉnh sửa tt đủ chưa
              
-              $vat_payment_id = AccVatDetailPayment::sum_vat_detail_not_id($vat->id,'payment',$d->vat_detail_id);
-
-             if(($vat->payment == 1 && $permission['a'] == true) ||($vat_payment_id+(float)$d->payment > (float)$vat->total_amount && $permission['e'] == true)){
+             if(($vat->payment == 1 && !$d->id)){              
                $check_payment = true;    
                $invoice =  $vat->invoice;      
                break;      
@@ -213,8 +210,30 @@ class AccCashReceiptsVoucherByInvoiceController extends Controller
 
               // Lưu VAT payment
                $pm = collect([]);
-              if($d->detail_id){
+              if($d->id){
                 $pm = AccVatDetailPayment::find($d->id);
+                // Ktra xem chỉnh sửa tt đủ chưa             
+                $vat_payment_id = AccVatDetailPayment::sum_vat_detail_not_id($vat->id,'payment',$pm->id);
+                if($vat_payment_id+(float)$d->payment > (float)$vat->total_amount){                  
+                  $check_payment = true;    
+                  $invoice =  $vat->invoice;      
+                  break;                 
+                }else if($vat_payment_id+(float)$d->payment < (float)$vat->total_amount){
+                  // Update lại trạng thái thanh toán
+                  $tax_payment = AccVatDetail::find($pm->vat_detail_id);                    
+                  $tax_payment->payment = 0;
+                  $tax_payment->save(); 
+                   // Update lại số tiền đã thanh toán của từng phiếu
+                  $tax_payment_update = AccVatDetailPayment::vat_detail_payment_created_at_not_id($pm->vat_detail_id,$pm->created_at,$pm->id);
+                  foreach($tax_payment_update as $t){
+                    if($t->paid > $pm->paid){
+                    $t->paid = ($t->paid - $pm->payment)+$d->payment;
+                    $t->remaining = ($t->remaining + $pm->payment)-$d->payment;
+                    $t->save();
+                    }          
+                  }  
+                }                         
+             
               }else{
                 $pm = new AccVatDetailPayment();
               }
@@ -227,6 +246,8 @@ class AccCashReceiptsVoucherByInvoiceController extends Controller
               $pm->rate = $d->rate;  
               $pm->payment_rate = $d->payment_rate;  
               $pm->save();
+              // Lưu id
+              $arr->detail[$k]->id = $pm->id; 
 
              // Lưu số tồn tiền bên Nợ
              if($setting_voucher->debit){
