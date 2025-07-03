@@ -268,6 +268,17 @@ var Ermis = function() {
             if (e.action === "itemchange" && (e.field === "payment" || e.field === "rate")) {
                 // here you can access model items using e.items[0].modelName;
                 item.rate == 0 ? item.set("payment_rate" , 0) : item.set("payment_rate", item.payment * item.rate);
+                if(e.field === "payment" &&  item.remaining == item.payment){
+                     item.set("checkbox", "checked");  
+                       var a = jQuery('.k-checkbox.' + grid_header_key+":checked").not('#header-chb-' + grid_header_key).length;
+                        if(a+1 == grid.items().length){
+                             jQuery('#header-chb-' + grid_header_key)[0].checked = true;
+                        };                       
+                }else if(e.field === "payment" &&  item.remaining != item.payment){
+                     item.set("checkbox", ""); 
+                     var checkHeader = false;
+                     jQuery('#header-chb-' + grid_header_key)[0].checked = checkHeader;   
+                }                                    
             }else if(e.action === "itemchange" && e.field === "payment_rate" ){
                 // here you can access model items using e.items[0].modelName;
                 item.set("payment_rate", item.payment * item.rate);
@@ -707,7 +718,6 @@ var Ermis = function() {
            var total_remaining_convert = parseInt(FormatNumberHtml(total_remaining,Ermis.decimal_symbol));
            var total_payment_value = parseInt(FormatNumberHtml(jQuery(this).val(),Ermis.decimal_symbol));
            var grid = $kGrid.data("kendoGrid");
-           var key = "invoice";
            var dataItem = grid.dataSource.data();
            var total = 0;
            if(total_payment_value > total_remaining_convert){
@@ -731,11 +741,11 @@ var Ermis = function() {
                     } 
                 }                 
             }); 
-            var a = jQuery('.k-checkbox.' + key+":checked").not('#header-chb-' + key).length;
+            var a = jQuery('.k-checkbox.' + grid_header_key+":checked").not('#header-chb-' + grid_header_key).length;
             if(a == dataItem.length && dataItem.length > 0){
-                jQuery('#header-chb-' + key)[0].checked = true; 
+                jQuery('#header-chb-' + grid_header_key)[0].checked = true; 
             }else{
-                jQuery('#header-chb-' + key)[0].checked = false; 
+                jQuery('#header-chb-' + grid_header_key)[0].checked = false; 
             }                   
         })
     }
@@ -886,6 +896,7 @@ var Ermis = function() {
                                 //if (storedarrId.length > 0) {
                                 //    storedarrId.length = storedarrId.length - 1;
                                 //}
+                                jQuery('#header-chb-' + grid_header_key)[0].checked = false; 
                                 // Xóa dòng trong tìm chứng từ
                                 var grid = $kGridVoucher.data("kendoGrid");
                                 var dataItem = grid.dataSource.get(dataId);

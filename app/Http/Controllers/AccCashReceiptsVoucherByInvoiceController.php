@@ -35,18 +35,18 @@ class AccCashReceiptsVoucherByInvoiceController extends Controller
   protected $url;
   protected $key;
   protected $key_invoice;
-  protected $menu_invoice;
   protected $menu;
   protected $group;
   protected $print;
   protected $type_object;
   protected $document;
-  protected $path;
+  protected $invoice_type;
   public function __construct(Request $request)
  {
      $this->url =  $request->segment(3);
      $this->group = 2; // 1 Nhóm thu tiền mặt
      $this->type_object = 2; // 2 Khách hàng (VD : 2,3 nếu nhiều đối tượng)
+     $this->invoice_type = 2; // 1 Hóa đơn đầu vào , // 2 Hóa đơn đầu ra
      $this->key = "cash-receipts-voucher";
      $this->key_invoice = "cash-receipts-voucher-by-invoice";     
      $this->menu = Menu::where('code', '=', $this->key_invoice)->first();
@@ -71,7 +71,7 @@ class AccCashReceiptsVoucherByInvoiceController extends Controller
     $type = 10;
     try{
       $req = json_decode($request->data);
-      $data = CashReceiptVoucherInvoiceResource::collection(AccVatDetail::get_detail_subject($req->subject_id,$req->start_date,$req->end_date,1));
+      $data = CashReceiptVoucherInvoiceResource::collection(AccVatDetail::get_detail_subject($req->subject_id,$req->start_date,$req->end_date,$this->invoice_type,1));
       if($data->count()>0){
         $general = AccGeneral::find($data->first()->general_id);
         $currency = $general->currency;
