@@ -116,4 +116,5 @@ return [
       "please_fill_form_detail" => "Xin vui lòng điền các trường chi tiết !",
       "please_select_line_choose" => "Xin vui lòng chọn dòng !",
       "invoice_number_paid" => "Số hóa đơn :invoice đã thanh toán !",
+      "invoice_number_duplicate" => "Số hóa đơn :invoice bị trùng!",
 ];

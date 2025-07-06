@@ -115,5 +115,5 @@ return [
   "software_has_expired"=>"Software has expired. Please contact the administrator extend more!",
   "please_fill_form_detail" => "Please fill form detail !",
   "please_select_line_choose" => "Please select line choose !",
-  "invoice_number_paid" => "Invoice number :invoice paid !",
+  "invoice_number_duplicate" => "Invoice number :invoice duplicate !",
 ];

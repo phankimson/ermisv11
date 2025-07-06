@@ -271,12 +271,23 @@ class AccCashReceiptsVoucherController extends Controller
 
            // Xóa dòng chi tiết
            AccDetail::get_detail_whereNotIn_delete($general->id,$removeId);
-
+           $check_invoice = false;
+           $invoice = '';
            // Lưu VAT
            foreach($arr->tax as $l => $x){
              $tax = collect([]);
              if($x->id){
                $tax = AccVatDetail::find($x->id);
+               // Kiểm tra có trùng MST, số hóa đơn 
+               if($tax->invoice == $x->invoice &&
+                 //$tax->invoice_symbol == $x->invoice_symbol &&
+                 $tax->invoice_form == $x->invoice_form &&
+                 $tax->tax_code == $x->tax_code)
+                 {
+                  $check_invoice = true;
+                  $invoice = $tax->invoice;
+                  break;
+                 }
              }else{
                $tax = new AccVatDetail();
              }
@@ -339,8 +350,13 @@ class AccCashReceiptsVoucherController extends Controller
            'menu' => $this->menu->id,
            'url'  => $this->url,
            'dataz' => \json_encode($arr)]);
+          if($check_invoice == true){
+           DB::connection(env('CONNECTION_DB_ACC'))->rollBack();
+           return response()->json(['status'=>false,'message'=> trans('messages.invoice_number_duplicate',['invoice'=>$invoice])]);
+           }else{
            DB::connection(env('CONNECTION_DB_ACC'))->commit();
            return response()->json(['status'=>true,'message'=> trans('messages.update_success'), 'voucher_name' => $v , 'dataId' => $general->id ,  'data' => $arr ]);
+           }
            //
       }else{
           return response()->json(['status'=>false,'message'=> trans('messages.locked_period')]);
