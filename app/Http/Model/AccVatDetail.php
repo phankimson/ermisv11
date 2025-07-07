@@ -45,6 +45,11 @@ class AccVatDetail extends Model
         AccVatDetail::where('general_id',$general_id)->whereNotIn('id',$arr)->delete();
       }
 
+      static public function get_invoice_not_id($arr,$id = null){
+         $result = AccVatDetail::where($arr)->whereNotNull('id',$id)->first();
+         return $result;
+      }
+
       static public function get_detail_subject($subject_id,$end_date,$start_date,$invoice_type,$payment = null) {
         $result = AccVatDetail::where('subject_id',$subject_id)->where('invoice_type',$invoice_type)->withSum('vat_detail_payment as vat_detail_payment', 'payment')->whereBetween('date_invoice',[$end_date,$start_date])->whereNot('payment',$payment)->get();
         return $result;

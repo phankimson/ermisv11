@@ -276,18 +276,21 @@ class AccCashReceiptsVoucherController extends Controller
            // Lưu VAT
            foreach($arr->tax as $l => $x){
              $tax = collect([]);
-             if($x->id){
-               $tax = AccVatDetail::find($x->id);
-               // Kiểm tra có trùng MST, số hóa đơn 
-               if($tax->invoice == $x->invoice &&
-                 //$tax->invoice_symbol == $x->invoice_symbol &&
-                 $tax->invoice_form == $x->invoice_form &&
-                 $tax->tax_code == $x->tax_code)
-                 {
-                  $check_invoice = true;
-                  $invoice = $tax->invoice;
+              // Kiểm tra có trùng MST, số hóa đơn 
+              $arr_check = array(
+                ['invoice', '=',$x->invoice],
+                ['invoice_symbol', '=',$x->invoice_symbol],
+                ['invoice_form', '=',$x->invoice_form],
+                ['tax_code', '=',$x->tax_code]
+              );
+              $tax_check = AccVatDetail::get_invoice_not_id($arr_check,$x->id);
+              if($tax_check){
+                 $check_invoice = true;
+                  $invoice = $x->invoice;
                   break;
-                 }
+              }
+             if($x->id){
+               $tax = AccVatDetail::find($x->id);              
              }else{
                $tax = new AccVatDetail();
              }
