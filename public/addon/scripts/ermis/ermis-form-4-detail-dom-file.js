@@ -1035,13 +1035,32 @@ var Ermis = function() {
         obj.reference_by = reference_by;
         var crit1 = initValidationGrid(obj.detail,Ermis.field);
         var crit2 = initValidationGridColumnKey(obj.detail,Ermis.columns);
-        var crit = crit1.concat(crit2);
+        var crit3 = initValidationGrid(obj.tax,Ermis.field_tax);
+        var crit4 = initValidationGridColumnKey(obj.tax,Ermis.column_grid);
+        var crit = crit1.concat(crit2).concat(crit3).concat(crit4);
         if(crit.length == 0){
           obj.type = jQuery('#tabstrip').find('.k-state-active').attr("data-search");
           obj.total_number = ConvertNumber(jQuery('#quantity_total').html(),Ermis.decimal_symbol);
           obj.total_amount = ConvertNumber(jQuery('#amount_total').html(),Ermis.decimal_symbol);
           obj.total_amount_rate = ConvertNumber(jQuery('#amount_rate_total').html(),Ermis.decimal_symbol);
-          ErmisTemplateAjaxPost11(e, "#attach", data.columns, Ermis.link + '-save', sessionStorage.dataId, obj, obj.detail.length > 0,
+          var tax_amount = ConvertNumber(jQuery('#total_amount').html(),Ermis.decimal_symbol);
+          var tax_amount_rate = ConvertNumber(jQuery('#total_amount_rate').html(),Ermis.decimal_symbol);
+          var message_confirmed = '';
+          if(tax_amount>0 && tax_amount_rate> 0 && tax_amount != obj.total_amount && tax_amount_rate != obj.total_amount_rate){
+              message_confirmed = Lang.get('messages.amount_diffirent_are_you_sure');  
+          }else{
+              message_confirmed = Lang.get('messages.are_you_sure');  
+          }    
+              initSaveDetail(e,obj,message_confirmed);     
+        }else{        
+             initShowValidationGrid(obj.detail,crit,$kGrid);        
+             initShowValidationGrid(obj.tax,crit,$kGridVat);    
+        }
+
+    };
+
+    var initSaveDetail = function(e,obj,message_confirmed){
+         ErmisTemplateAjaxPost12(e, "#attach", data.columns, Ermis.link + '-save', sessionStorage.dataId, obj, obj.detail.length > 0,
               function(result) {
                   sessionStorage.dataId = result.dataId;
                   sessionStorage.link = Ermis.link;
@@ -1071,12 +1090,9 @@ var Ermis = function() {
               },
               function() {
                   kendo.alert(Lang.get('messages.please_fill_field'));
-              });
-        }else{
-              initShowValidationGrid(obj.detail,crit,$kGrid);
-        }
-
-    };
+              },
+            message_confirmed);
+    }
 
     var initAdd = function(e) {
         ErmisTemplateEvent0(e, Ermis.per.a,

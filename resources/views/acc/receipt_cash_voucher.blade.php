@@ -213,7 +213,7 @@
             vat_type:     {field : "vat_type", defaultValue: DefaultReadValueField(), validation: { required: true }},
             vat_tax:     {field : "vat_tax" , defaultValue : 0, editable: false},
             amount:     {field : "amount",type:"number" , defaultValue : 0, validation: { min: 0, required: true }},
-            tax:     {field : "tax" ,type:"number", validation: { min: 0, required: true }},
+            tax:     {field : "tax" ,type:"number", defaultValue : 0 },
             total_amount:     {field : "total_amount",type:"number" , defaultValue : 0, validation: { min: 0, required: true }},
             rate:     {field : "rate",type:"number", defaultValue : parseInt(jQuery(".rate").val()) , validation: { min: 0, required: true }},
             total_amount_rate:     {field : "total_amount_rate",type:"number" , defaultValue : 0 , validation: { min: 1, required: true }},

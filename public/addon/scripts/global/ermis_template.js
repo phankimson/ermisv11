@@ -443,6 +443,44 @@ var ErmisTemplateAjaxPost11 = function(e, elem, elem_data, url, dataId, obj_add,
     jQuerylink.data('lockedAt', +new Date());
 };
 
+var ErmisTemplateAjaxPost12 = function(e, elem, elem_data, url, dataId, obj_add, crit2, callback_true, callback_false, callback, crit_false, crit_false2 , message_confirmed) {
+    var jQuerylink = jQuery(e.target);
+    e.preventDefault();
+    if (!jQuerylink.data('lockedAt') || +new Date() - jQuerylink.data('lockedAt') > 300) {
+        $.when(KendoUiConfirm(message_confirmed, Lang.get('messages.message'))).then(function(confirmed) {
+            if (confirmed) {
+                var a = jQuery(elem)[0].files;
+                var c = GetDataAjax(elem_data);
+                var obj = c.obj;
+                // Merge object2 into object1
+                $.extend(obj, obj_add);
+                var crit = c.crit;
+                obj.id = (dataId ? dataId : null);
+                if (crit === true) {
+                    if (crit2) {
+                        var fd = new FormData(); // XXX: Neex AJAX2
+                        fd.append('files', a);
+                        fd.append('data', JSON.stringify(obj));
+                        RequestURLImage(url, 'json', fd, function(result) {
+                            if (result.status === true) {
+                                callback_true(result, obj);
+                            } else {
+                                callback_false(result);
+                            }
+                            callback(result);
+                        }, true);
+                    } else {
+                        crit_false();
+                    }
+                } else {
+                    crit_false2();
+                }
+            }
+        });
+    }
+    jQuerylink.data('lockedAt', +new Date());
+};
+
 var ErmisTemplateEvent0 = function(e, crit, crit_true, crit_false) {
     var jQuerylink = jQuery(e.target);
     e.preventDefault();

@@ -19,6 +19,7 @@ use App\Http\Model\AccCountVoucher;
 use App\Http\Model\AccPrintTemplate;
 use App\Http\Model\Error;
 use App\Classes\Convert;
+use App\Http\Model\AccObject;
 use App\Http\Model\AccObjectType;
 use App\Http\Resources\CashReceiptGeneralReadResource;
 use App\Http\Model\Imports\AccCashReceiptGeneralImport;
@@ -98,6 +99,7 @@ class AccCashReceiptsVoucherController extends Controller
       if($arr){
          $period = AccPeriod::get_date(Carbon::parse($arr->accounting_date)->format('Y-m'),1);
         if(!$period){
+          dd($arr);
           $general = [];
           $removeId = [];
           $removeId_v = [];
@@ -276,19 +278,29 @@ class AccCashReceiptsVoucherController extends Controller
            // Lưu VAT
            foreach($arr->tax as $l => $x){
              $tax = collect([]);
-              // Kiểm tra có trùng MST, số hóa đơn 
-              $arr_check = array(
-                ['invoice', '=',$x->invoice],
-                ['invoice_symbol', '=',$x->invoice_symbol],
-                ['invoice_form', '=',$x->invoice_form],
-                ['tax_code', '=',$x->tax_code]
-              );
-              $tax_check = AccVatDetail::get_invoice_not_id($arr_check,$x->id);
-              if($tax_check){
-                 $check_invoice = true;
-                  $invoice = $x->invoice;
-                  break;
-              }
+                // Kiểm tra có trùng MST, số hóa đơn 
+                $arr_check = array(
+                  ['invoice', '=',$x->invoice],
+                  ['invoice_symbol', '=',$x->invoice_symbol],
+                  //['invoice_form', '=',$x->invoice_form],
+                  ['tax_code', '=',$x->tax_code],
+                  ['id','<>',$x->id]
+                );
+                $tax_check = AccVatDetail::get_invoice($arr_check);
+                if($tax_check){
+                  $check_invoice = true;
+                    $invoice = $x->invoice;
+                    break;
+                }
+                // End
+                // Update mẫu, ký tự hóa đơn
+                $obj = AccObject::find($x->subject_id);
+                if($obj){
+                  $obj->invoice_form = $x->invoice_form;
+                  $obj->invoice_symbol = $x->invoice_symbol;
+                  $obj->save();
+                }
+                // End
              if($x->id){
                $tax = AccVatDetail::find($x->id);              
              }else{

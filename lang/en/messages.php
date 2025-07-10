@@ -73,6 +73,7 @@ return [
   "failed_export" => "Export Failed",
   "no_matching_records_found" => "No matching records found !",
   "are_you_sure" => "Are you sure",
+  "amount_diffirent_are_you_sure" => "Tax amount and amount detail diffirent. Are you sure",
   "please_choose_user" => "Please choose user",
   "please_choose_item" => "Please choose item",
   "please_select_line_copy" => "You must select item to copy.",

@@ -45,8 +45,8 @@ class AccVatDetail extends Model
         AccVatDetail::where('general_id',$general_id)->whereNotIn('id',$arr)->delete();
       }
 
-      static public function get_invoice_not_id($arr,$id = null){
-         $result = AccVatDetail::where($arr)->whereNotNull('id',$id)->first();
+      static public function get_invoice($arr){
+         $result = AccVatDetail::where($arr)->first();
          return $result;
       }
 

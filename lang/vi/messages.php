@@ -71,6 +71,7 @@ return [
       "failed_export" => "Export thất bại",
       "no_matching_records_found" => "Không tìm thấy dòng nào !",
       "are_you_sure" => "Bạn chắc chắn chứ",
+      "amount_diffirent_are_you_sure" => "Tổng tiền phần thuế và chi tiết khác nhau. Bạn chắc chắn chứ",
       "please_choose_user" => "Xin vui lòng chọn tên người dùng",
       "please_choose_item" => "Xin chọn mặt hàng",
       "please_select_line_copy" => "Bạn phải chọn dòng để sao chép.",
