@@ -48,6 +48,18 @@ class AccDetail extends Model
         return $result;
       }
 
+      static public function get_detail_scopes_active($general_id) {
+        $result = AccDetail::where('general_id',$general_id)->active()->get();
+        $result = $result->map(function ($rs) {
+            $rs->debit = $rs->debit()->first()->code;
+            $rs->credit = $rs->credit()->first()->code;
+            $rs->unsetRelation('debit');
+            $rs->unsetRelation('credit');
+            return $rs;
+        });
+        return $result;
+      }
+
       static public function get_detail_active($general_id,$active) {
         $result = AccDetail::where('general_id',$general_id)->where('active', $active)->get();
         return $result;
@@ -63,10 +75,11 @@ class AccDetail extends Model
 
       public function debit() {
         return $this->belongsTo(AccAccountSystems::class,'debit','id');
-      }
+      }     
       public function credit() {
         return $this->belongsTo(AccAccountSystems::class,'credit','id');
-      }
+      }    
+      
       public function case_code() {
         return $this->belongsTo(AccCaseCode::class,'case_code','id');
       }

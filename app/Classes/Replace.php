@@ -28,5 +28,14 @@ class Replace
       return ReplaceArray( $format, $data);
   }
 
+  static public function ArrayKey( $format, array $data)
+  {
+      foreach ( $data as $key=>$value )
+      {
+         $format = str_replace($key, $value, $format); 
+      }
+      return $format;
+  }
+
 
 }

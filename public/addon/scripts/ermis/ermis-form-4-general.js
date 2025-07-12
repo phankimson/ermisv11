@@ -304,6 +304,7 @@ var Ermis = function () {
     };
 
     var initPrint = function (e) {
+      var $this = this;
       ErmisTemplateEvent1(e,function(){
           if ($kGrid.find('.k-state-selected').length > 0) {
               var obj = {};
@@ -311,7 +312,7 @@ var Ermis = function () {
               var selectedItem = grid.dataItem(grid.select());
               var dataId = selectedItem.id;
               obj.id = dataId;
-              obj.voucher = jQuery(this).attr('data-id');
+              obj.voucher = jQuery($this).attr('data-id');
               var postdata = { data: JSON.stringify(obj) };
               ErmisTemplateAjaxPost0(e,postdata,Ermis.link+'-print',function (result) {
                 if (result.detail_content) {

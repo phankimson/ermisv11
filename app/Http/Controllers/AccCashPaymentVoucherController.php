@@ -32,7 +32,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 
-class AccCashReceiptsVoucherController extends Controller
+class AccCashPaymentVoucherController extends Controller
 {
   protected $url;
   protected $key;
@@ -46,12 +46,12 @@ class AccCashReceiptsVoucherController extends Controller
   public function __construct(Request $request)
  {
      $this->url =  $request->segment(3);
-     $this->invoice_type = 2; // 1 Hóa đơn đầu vào , // 2 Hóa đơn đầu ra
-     $this->group = 1; // 1 Nhóm thu tiền mặt
-     $this->type_object = 2; // 2 Khách hàng (VD : 2,3 nếu nhiều đối tượng)
-     $this->key = "cash-receipts-voucher";
+     $this->invoice_type = 1; // 1 Hóa đơn đầu vào , // 2 Hóa đơn đầu ra
+     $this->group = 2; // 1 Nhóm chi tiền mặt
+     $this->type_object = 1; // 1 Nhà cung cấp (VD : 2,3 nếu nhiều đối tượng)
+     $this->key = "cash-payment-voucher";
      $this->menu = Menu::where('code', '=', $this->key)->first();
-     $this->print = 'PT%';
+     $this->print = 'PC%';
      $this->path = 'PATH_UPLOAD_CASH_RECEIPTS';
      $this->document = 'DOCUMENT_TAX';
  }
@@ -82,7 +82,7 @@ class AccCashReceiptsVoucherController extends Controller
     //$subject_code = json_encode(ObjectDropDownListResource::collection(AccObject::active()->orderBy('code','asc')->get()));
     $voucher_list = AccNumberVoucher::all();
     $print = AccPrintTemplate::get_code($this->print);
-    return view('acc.receipt_cash_voucher',[ 'key' => $this->key , 'voucher' => $voucher, 'menu'=>$this->menu->id, 'menu_tab' => $menu_tab,                                    
+    return view('acc.payment_cash_voucher',[ 'key' => $this->key , 'voucher' => $voucher, 'menu'=>$this->menu->id, 'menu_tab' => $menu_tab,                                    
                                         'voucher_list' => $voucher_list ,
                                         'ot' => $ot,
                                         'sg' => $ot,
@@ -218,8 +218,6 @@ class AccCashReceiptsVoucherController extends Controller
              $detail->order = $d->order;
              $detail->subject_id_credit = $d->subject_code->value;// Đổi từ id value dạng read
              $detail->subject_name_credit = $d->subject_code->text;// Đổi từ name text dạng read
-             $detail->active = 1;
-             $detail->status = 1;
              $detail->save();
        
              array_push($removeId,$detail->id);

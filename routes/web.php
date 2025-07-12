@@ -1032,6 +1032,12 @@ Route::group([
   // Receipt Cash General
   Route::controller(AccGeneralController::class)->group(function () {
   Route::post('/cash-receipts-general-detail','detail');  
+  // In Phiếu trang tổng hợp
+  Route::post('/cash-receipts-general-print','prints');  
+  // In Phiếu trang chi tiết
+  Route::post('/cash-receipts-voucher-print','prints');  
+  // In Phiếu trang thu tiền theo hóa đơn
+  Route::post('/cash-receipts-voucher-by-invoice-print','prints');  
   });
 
   // Receipt Cash General

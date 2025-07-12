@@ -191,6 +191,8 @@ class AccCashReceiptsVoucherByInvoiceController extends Controller
              $detail->amount_rate = $d->payment_rate;             
              $detail->subject_id_credit = $arr->subject_id;
              $detail->subject_name_credit = $arr->code." - ".$arr->name;
+             $detail->active = 1;
+             $detail->status = 1;
              $detail->save();
 
              // Tìm VAT để cập nhật trạng thái đã thanh toán (cột payment)

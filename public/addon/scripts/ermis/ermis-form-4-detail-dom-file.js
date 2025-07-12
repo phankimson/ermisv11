@@ -1191,7 +1191,8 @@ var Ermis = function() {
         var obj = {};
         obj.id = sessionStorage.dataId;
         obj.voucher = jQuery(this).attr('data-id');
-        ErmisTemplateAjaxPost0(e, obj, Ermis.link + '-print', function(result) {
+         var postdata = { data: JSON.stringify(obj) };
+        ErmisTemplateAjaxPost0(e, postdata, Ermis.link + '-print', function(result) {
             if (result.detail_content) {
                 var decoded = $("<div/>").html(result.print_content).text();
                 decoded = decoded.replace('<tr class="detail_content"></tr>', result.detail_content);

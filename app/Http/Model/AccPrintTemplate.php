@@ -45,7 +45,7 @@ class AccPrintTemplate extends Model
       }
       
       static public function get_code($code) {
-        $result = AccPrintTemplate::where('code',$code)->get();  
+        $result = AccPrintTemplate::where('code','like',$code)->get();  
         return $result;
       }
      
