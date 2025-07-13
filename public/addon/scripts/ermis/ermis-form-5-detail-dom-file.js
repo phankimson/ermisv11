@@ -953,19 +953,11 @@ var Ermis = function() {
         obj.id = sessionStorage.dataId;
         obj.voucher = jQuery(this).attr('data-id');
         ErmisTemplateAjaxPost0(e, obj, Ermis.link + '-print', function(result) {
-            if (result.detail_content) {
-                var decoded = $("<div/>").html(result.print_content).text();
-                decoded = decoded.replace('<tr class="detail_content"></tr>', result.detail_content);
-                PrintForm(jQuery('#print'), decoded);
-                jQuery('#print').html("");
-            } else if (result.section_content) {
-                var decoded = $("<div/>").html(result.print_content).text();
-                decoded = decoded.replace('<div class="section_content"></div>', result.section_content);
-                PrintForm(jQuery('#print'), decoded);
-                jQuery('#print').html("");
-            } else if (result.download) {
-                window.open(Ermis.link + '-downloadExcel');
-            }
+            if (result.print_content) {
+                  var decoded = $("<div/>").html(result.print_content).text();                    
+                    PrintForm(jQuery('#print'), decoded);
+                    jQuery('#print').html("");
+                }
         }, function(result) {
             kendo.alert(result.message);
         })

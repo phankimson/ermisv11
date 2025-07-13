@@ -1032,12 +1032,16 @@ Route::group([
   // Receipt Cash General
   Route::controller(AccGeneralController::class)->group(function () {
   Route::post('/cash-receipts-general-detail','detail');  
+  Route::post('/cash-payment-general-detail','detail');  
   // In Phiếu trang tổng hợp
   Route::post('/cash-receipts-general-print','prints');  
+  Route::post('/cash-payment-general-print','prints'); 
   // In Phiếu trang chi tiết
   Route::post('/cash-receipts-voucher-print','prints');  
+  Route::post('/cash-payment-voucher-print','prints');  
   // In Phiếu trang thu tiền theo hóa đơn
   Route::post('/cash-receipts-voucher-by-invoice-print','prints');  
+  Route::post('/cash-payment-voucher-by-invoice-print','prints');  
   });
 
   // Receipt Cash General
@@ -1069,6 +1073,35 @@ Route::group([
   Route::post('/cash-receipts-voucher-by-invoice-delete', 'delete' )->name('-by-invoice-delete'); 
   });  
 
+  // Payment Cash General
+  Route::group([
+    'as' => 'cash-payment-general',
+    'controller' => AccCashPaymentGeneralController::class
+  ],function () {
+  Route::get('/cash-payment-general', 'show' )->name('');
+  Route::post('/cash-payment-general-get','find' )->name('-find');
+  Route::post('/cash-payment-general-unwrite','unwrite' )->name('-unwrite');
+  Route::post('/cash-payment-general-write','write' )->name('-write');
+  Route::post('/cash-payment-general-revoucher', 'revoucher' )->name('-revoucher');
+  Route::post('/cash-payment-general-start-voucher', 'start_voucher' )->name('-start-voucher');
+  Route::post('/cash-payment-general-change-voucher', 'change_voucher' )->name('-change-voucher');
+  Route::get('/cash-payment-general-DownloadExcel', 'DownloadExcel' )->name('-DownloadExcel');
+  Route::any('/cash-payment-general-import', 'import')->name('-import');
+  Route::any('/cash-payment-general-delete', 'delete')->name('-delete');
+
+  // Ghi , ko ghi , tìm chứng từ trang chi tiền
+  Route::post('/cash-payment-voucher-unwrite','unwrite' )->name('-unwrite');
+  Route::post('/cash-payment-voucher-write','write' )->name('-write');
+  Route::post('/cash-payment-voucher-find', 'find' )->name('-find');
+  Route::post('/cash-payment-voucher-delete', 'delete' )->name('-delete'); 
+
+  // Ghi , ko ghi , tìm chứng từ trang chi tiền theo hóa đơn
+  Route::post('/cash-payment-voucher-by-invoice-unwrite','unwrite' )->name('-by-invoice-unwrite');
+  Route::post('/cash-payment-voucher-by-invoice-write','write' )->name('-by-invoice-write');
+  Route::post('/cash-payment-voucher-by-invoice-find', 'find' )->name('-by-invoice-find');
+  Route::post('/cash-payment-voucher-by-invoice-delete', 'delete' )->name('-by-invoice-delete'); 
+  });  
+
   // Receipt Cash Detail
   Route::group([
     'as' => 'cash-receipts-voucher',
@@ -1079,6 +1112,18 @@ Route::group([
   Route::post('/cash-receipts-voucher-bind', 'bind' )->name('-bind');
   Route::get('/cash-receipts-voucher-DownloadExcel', 'DownloadExcel' )->name('-DownloadExcel');
   Route::any('/cash-receipts-voucher-import', 'import')->name('-import');
+  });
+
+  // Payyment Cash Detail
+  Route::group([
+    'as' => 'cash-payment-voucher',
+    'controller' => AccCashReceiptsVoucherController::class
+  ],function () {
+  Route::get('/cash-payment-voucher', 'show' )->name('');
+  Route::post('/cash-payment-voucher-save', 'save' )->name('-save');
+  Route::post('/cash-payment-voucher-bind', 'bind' )->name('-bind');
+  Route::get('/cash-payment-voucher-DownloadExcel', 'DownloadExcel' )->name('-DownloadExcel');
+  Route::any('/cash-payment-voucher-import', 'import')->name('-import');
   });
 
   // Receipt Cash Detail Voucher
@@ -1100,6 +1145,26 @@ Route::group([
   Route::post('/cash-receipts-voucher-by-invoice-reference', 'reference' )->name('-by-invoice-reference');
   });
 
+
+  // Payment Cash Detail Voucher
+  Route::group([
+    'as' => 'cash-payment-voucher',
+    'controller' => AccVoucherController::class
+  ],function () {
+  Route::post('/cash-payment-voucher-get', 'get' )->name('-get');
+  Route::post('/cash-payment-voucher-auto', 'auto' )->name('-auto');
+  Route::post('/cash-payment-voucher-ai', 'ai' )->name('-ai');
+  Route::post('/cash-payment-voucher-currency', 'currency' )->name('-currency');
+  Route::post('/cash-payment-voucher-reference', 'reference' )->name('-reference');
+  Route::post('/cash-payment-voucher-voucher-change', 'voucher_change' )->name('-voucher-change');
+  Route::post('/cash-payment-voucher-load-voucher-change', 'load_voucher_change' )->name('-load-voucher-change');
+
+  // Tìm chứng từ trang thu tiền theo hóa đơn
+  Route::post('/cash-payment-voucher-by-invoice-get', 'get' )->name('-by-invoice-get');
+  Route::post('/cash-payment-voucher-by-invoice-currency', 'currency' )->name('-by-invoice-currency');
+  Route::post('/cash-payment-voucher-by-invoice-reference', 'reference' )->name('-by-invoice-reference');
+  });
+
   // Receipt Cash Detail By Invoice
 Route::group([
   'as' => 'cash-receipts-voucher-by-invoice',
@@ -1109,6 +1174,18 @@ Route::get('/cash-receipts-voucher-by-invoice', 'show' )->name('');
 Route::post('/cash-receipts-voucher-by-invoice-get-data', 'get_data' )->name('-get-data');
 Route::post('/cash-receipts-voucher-by-invoice-save', 'save' )->name('-save');
 Route::post('/cash-receipts-voucher-by-invoice-bind', 'bind' )->name('-bind');
+});
+
+
+  // Payment Cash Detail By Invoice
+Route::group([
+  'as' => 'cash-payment-voucher-by-invoice',
+  'controller' => AccCashPaymentVoucherByInvoiceController::class
+],function () {
+Route::get('/cash-payment-voucher-by-invoice', 'show' )->name('');
+Route::post('/cash-payment-voucher-by-invoice-get-data', 'get_data' )->name('-get-data');
+Route::post('/cash-payment-voucher-by-invoice-save', 'save' )->name('-save');
+Route::post('/cash-payment-voucher-by-invoice-bind', 'bind' )->name('-bind');
 });
 });
 
