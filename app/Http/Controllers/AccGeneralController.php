@@ -10,8 +10,6 @@ use App\Http\Model\Menu;
 use App\Http\Model\AccGeneral;
 use App\Http\Model\AccDetail;
 use App\Http\Model\AccSystems;
-use App\Http\Model\CompanySoftware;
-use App\Http\Model\Company;
 use App\Http\Model\AccPrintTemplate;
 use App\Http\Model\AccObject;
 use App\Http\Model\Error;
@@ -88,7 +86,7 @@ class AccGeneralController extends Controller
               '{subject}'=> $object->name,
               '{address}'=> $object->address,
               '{reason}'=> $general->description,
-              '{amount}'=> $general->total_amount,
+              '{amount}'=> number_format($general->total_amount),
               '{amount_letter}' => $letter,
               '{attach}'=> '1',
               '{day_voucher}' =>$voucher_day,
