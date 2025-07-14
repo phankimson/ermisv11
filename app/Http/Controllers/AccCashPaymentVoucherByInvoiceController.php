@@ -30,7 +30,7 @@ use Exception;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
-class AccCashReceiptsVoucherByInvoiceController extends Controller
+class AccCashPaymentVoucherByInvoiceController extends Controller
 {
   protected $url;
   protected $key;
@@ -44,13 +44,13 @@ class AccCashReceiptsVoucherByInvoiceController extends Controller
   public function __construct(Request $request)
  {
      $this->url =  $request->segment(3);
-     $this->group = 1; // 1 Nhóm thu tiền mặt
-     $this->type_object = 2; // 2 Khách hàng (VD : 2,3 nếu nhiều đối tượng)
-     $this->invoice_type = 2; // 1 Hóa đơn đầu vào , // 2 Hóa đơn đầu ra
-     $this->key = "cash-receipts-voucher";
-     $this->key_invoice = "cash-receipts-voucher-by-invoice";     
+     $this->group = 2; // 1 Nhóm chi tiền mặt
+     $this->type_object = 1; // 2 Nhà cung cấp (VD : 2,3 nếu nhiều đối tượng)
+     $this->invoice_type = 1; // 1 Hóa đơn đầu vào , // 2 Hóa đơn đầu ra
+     $this->key = "cash-payment-voucher";
+     $this->key_invoice = "cash-payment-voucher-by-invoice";     
      $this->menu = Menu::where('code', '=', $this->key_invoice)->first();
-     $this->print = 'PTHD%';
+     $this->print = 'PCHD%';
      $this->document = 'DOCUMENT_TAX';
  }
 

@@ -12,7 +12,6 @@ use App\Http\Resources\ObjectTypeDropDownResource;
 use App\Http\Resources\ObjectDropDownListResource;
 use App\Http\Resources\DropDownResource;
 use App\Http\Resources\TaxDropDownResource;
-use App\Http\Resources\DefaultDropDownResource;
 use App\Http\Model\AccUnit;
 use App\Http\Model\AccSuppliesGoodsType;
 use App\Http\Model\AccSuppliesGoodsGroup;
@@ -506,7 +505,7 @@ class AccDropDownListController extends Controller
       $setting_voucher = AccSettingVoucher::get_menu($menu);
       $data = [];
       if($type == 1){ // Mặc định debit
-         if($setting_voucher->credit == 0){
+         if($setting_voucher->debit == 0){
            $debt_default =  $default;
          }else{
            $debt_default = new LangDropDownResource(AccAccountSystems::find($setting_voucher->debit));

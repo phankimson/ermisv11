@@ -218,13 +218,15 @@ class AccCashPaymentVoucherController extends Controller
              $detail->order = $d->order;
              $detail->subject_id_credit = $d->subject_code->value;// Đổi từ id value dạng read
              $detail->subject_name_credit = $d->subject_code->text;// Đổi từ name text dạng read
+             $detail->active = 1;
+             $detail->status = 1;
              $detail->save();
        
              array_push($removeId,$detail->id);
              $arr->detail[$k]->id = $detail->id;       
           
              // Lưu số tồn tiền bên Nợ
-             if(substr($d->debit->text,0,3) === '111'){     
+             if(substr($d->debit->text,0,3) === ('111' || '113' )){     
                $balance = AccCurrencyCheck::get_type_first($d->debit->value,$arr->currency,null);
                if($balance){
                  $balance->amount = $balance->amount + ($d->amount * $d->rate);
@@ -237,7 +239,20 @@ class AccCashPaymentVoucherController extends Controller
                  $balance->amount = $d->amount * $d->rate;
                  $balance->save();
                }
-             }
+             }else if(substr($d->debit->text,3) == '112'){
+                 $balance = AccCurrencyCheck::get_type_first($d->debit->id,$arr->currency,$d->bank_account);
+                 if($balance){
+                   $balance->amount = $balance->amount + ($d->amount * $d->rate);
+                   $balance->save();
+                 }else{
+                   $balance = new AccCurrencyCheck();
+                   $balance->type = $d->debit->value;
+                   $balance->currency = $arr->currency;
+                   $balance->bank_account = $d->bank_account;
+                   $balance->amount = $d->amount * $d->rate;
+                   $balance->save();
+                 }
+               }
                // End
 
                // Lưu số tồn tiền bên Có
@@ -325,7 +340,7 @@ class AccCashPaymentVoucherController extends Controller
              $tax->total_amount = $total_amount;
              $tax->rate = $x->rate;
              $tax->total_amount_rate = $total_amount*$x->rate;
-             $tax->status = 1;
+             $tax->status = 0;
              $tax->active = 1;
              $tax->save();
              array_push($removeId_v,$tax->id);

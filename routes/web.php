@@ -1117,7 +1117,7 @@ Route::group([
   // Payyment Cash Detail
   Route::group([
     'as' => 'cash-payment-voucher',
-    'controller' => AccCashReceiptsVoucherController::class
+    'controller' => AccCashPaymentVoucherController::class
   ],function () {
   Route::get('/cash-payment-voucher', 'show' )->name('');
   Route::post('/cash-payment-voucher-save', 'save' )->name('-save');

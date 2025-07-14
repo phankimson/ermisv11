@@ -27,12 +27,12 @@ class AccSettingVoucher extends Model
       }
 
       static public function get_raw_skip_page($skip,$limit,$orderBy,$asc) {
-        $result = AccSettingVoucher::WithRowNumberDb(env('CONNECTION_DB_ACC'),$orderBy,$asc)->orderBy('row_number','desc')->skip($skip)->take($limit)->get();  
+        $result = AccSettingVoucher::WithRowNumberDb(env('CONNECTION_DB_ACC'),$orderBy,$asc)->orderBy('row_number','desc')->skip($skip)->take($limit)->with('debit_filter','credit_filter')->get()->pluckDistant('debit_filter','account_systems')->pluckDistant('credit_filter','account_systems');  
         return $result;
       }
 
       static public function get_raw_skip_filter_page($skip,$limit,$orderBy,$asc,$filter) {
-        $result = AccSettingVoucher::WithRowNumberWhereRawColumnDb(env('CONNECTION_DB_ACC'),$filter,$orderBy,$asc)->skip($skip)->take($limit)->get();  
+        $result = AccSettingVoucher::WithRowNumberWhereRawColumnDb(env('CONNECTION_DB_ACC'),$filter,$orderBy,$asc)->skip($skip)->take($limit)->with('debit_filter','credit_filter')->get()->pluckDistant('debit_filter','account_systems')->pluckDistant('credit_filter','account_systems');  
         return $result;
       }
 
