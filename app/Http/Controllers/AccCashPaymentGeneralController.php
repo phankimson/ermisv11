@@ -87,14 +87,29 @@ class AccCashPaymentGeneralController extends Controller
                $data->save();
 
                //DETAIL
-               $ty = 1 ;// 1 -> Cash , 2 -> Bank
-               $detail->each(function ($d) use ($ty){
-                    $d->update(['active'=>0]);
-                    // Lưu số tồn
-                    $ba = AccCurrencyCheck::get_type_first($ty,$d->currency,null);
-                    if($ba){
-                      $ba->amount = $ba->amount + $d->amount;
-                      $ba->save();
+               $detail->each(function ($d){
+                    $d->update(['active'=>0]);                    
+                    // Lưu số lại số tồn bên nợ
+                    if(substr($d->debit()->first()->code,0,3) == ("111" || "113")){
+                        $ba = AccCurrencyCheck::get_type_first($d->debit,$d->currency,null);
+                      if($ba){
+                        $ba->amount = $ba->amount - $d->amount;
+                        $ba->save();
+                      }
+                    }else if(substr($d->debit()->first()->code,0,3) == "112"){
+                       $ba = AccCurrencyCheck::get_type_first($d->debit,$d->currency,$d->bank_account);
+                      if($ba){
+                        $ba->amount = $ba->amount - $d->amount;
+                        $ba->save();
+                      }
+                    }
+                    // Lưu số lại số tồn bên có
+                    if(substr($d->credit()->first()->code,0,3) == "111"){
+                        $ca = AccCurrencyCheck::get_type_first($d->credit,$d->currency,null);
+                      if($ca){
+                        $ca->amount = $ca->amount + $d->amount;
+                        $ca->save();
+                      }
                     }
                 });
                 DB::connection(env('CONNECTION_DB_ACC'))->commit();
@@ -148,14 +163,29 @@ class AccCashPaymentGeneralController extends Controller
                $data->save();
 
                //DETAIL
-               $ty = 1 ;// 1 -> Cash , 2 -> Bank
-               $detail->each(function ($d) use ($ty){
+               $detail->each(function ($d){
                     $d->update(['active'=>1]);
-                    // Lưu số tồn
-                    $ba = AccCurrencyCheck::get_type_first($ty,$d->currency,null);
-                    if($ba){
-                      $ba->amount = $ba->amount - $d->amount;
-                      $ba->save();
+                   // Lưu số lại số tồn bên nợ
+                    if(substr($d->debit()->first()->code,0,3) == ("111" || "113")){
+                        $ba = AccCurrencyCheck::get_type_first($d->debit,$d->currency,null);
+                      if($ba){
+                        $ba->amount = $ba->amount + $d->amount;
+                        $ba->save();
+                      }
+                    }else if(substr($d->debit()->first()->code,0,3) == "112"){
+                       $ba = AccCurrencyCheck::get_type_first($d->debit,$d->currency,$d->bank_account);
+                      if($ba){
+                        $ba->amount = $ba->amount + $d->amount;
+                        $ba->save();
+                      }
+                    }
+                    // Lưu số lại số tồn bên có
+                    if(substr($d->credit()->first()->code,0,3) == "111"){
+                        $ca = AccCurrencyCheck::get_type_first($d->credit,$d->currency,null);
+                      if($ca){
+                        $ca->amount = $ca->amount - $d->amount;
+                        $ca->save();
+                      }
                     }
                 });
                 DB::connection(env('CONNECTION_DB_ACC'))->commit();

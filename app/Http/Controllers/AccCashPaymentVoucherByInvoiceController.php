@@ -16,6 +16,7 @@ use App\Http\Model\AccSettingVoucher;
 use App\Http\Model\AccCurrencyCheck;
 use App\Http\Model\AccCountVoucher;
 use App\Http\Model\AccVatDetailPayment;
+use App\Http\Model\AccAccountSystems;
 use App\Http\Model\AccSystems;
 use App\Http\Model\AccAttach;
 use App\Http\Model\AccHistoryAction;
@@ -41,6 +42,8 @@ class AccCashPaymentVoucherByInvoiceController extends Controller
   protected $type_object;
   protected $document;
   protected $invoice_type;
+  protected $path;
+  protected $check_cash;
   public function __construct(Request $request)
  {
      $this->url =  $request->segment(3);
@@ -52,6 +55,8 @@ class AccCashPaymentVoucherByInvoiceController extends Controller
      $this->menu = Menu::where('code', '=', $this->key_invoice)->first();
      $this->print = 'PCHD%';
      $this->document = 'DOCUMENT_TAX';
+     $this->path = 'PATH_UPLOAD_CASH_PAYMENT';
+     $this->check_cash = 'CHECK_CASH';
  }
 
   public function show(){
@@ -60,7 +65,7 @@ class AccCashPaymentVoucherByInvoiceController extends Controller
     $menu_tab =  Menu::get_menu_like_code($this->key.'%');   
     $voucher_list = AccNumberVoucher::all();
     $print = AccPrintTemplate::get_code($this->print);
-    return view('acc.receipt_cash_voucher_by_invoice',[ 'key' => $this->key_invoice , 'voucher' => $voucher, 'menu'=>$this->menu->id,  'menu_tab' => $menu_tab,                                        
+    return view('acc.payment_cash_voucher_by_invoice',[ 'key' => $this->key_invoice , 'voucher' => $voucher, 'menu'=>$this->menu->id,  'menu_tab' => $menu_tab,                                        
                                         'voucher_list' => $voucher_list ,
                                         'ot' => $ot,
                                         'sg' => $ot,
@@ -142,7 +147,7 @@ class AccCashPaymentVoucherByInvoiceController extends Controller
             }                
             // Load Phiếu tự động / Load AutoNumber
               $v = Convert::VoucherMasker1($voucher,$prefix);
-              if($voucher->number == 0 ||  !$voucher->number ){
+              if(!$voucher){///Xem lại
                 $number = 1;
               }else{
                 $number = $voucher->number + 1;
@@ -172,6 +177,9 @@ class AccCashPaymentVoucherByInvoiceController extends Controller
           $general->active = 1;
           $general->save();          
 
+           // Lấy giá trị kiểm tra tiền mặt có âm không
+          $ca = AccSystems::get_systems($this->check_cash);
+          $acc = "";
           $setting_voucher = AccSettingVoucher::get_menu($this->menu->id);
           // CHI TIET / Detail
            foreach($arr->detail as $k => $d){
@@ -251,19 +259,24 @@ class AccCashPaymentVoucherByInvoiceController extends Controller
               // Lưu id
               $arr->detail[$k]->id = $pm->id; 
 
-             // Lưu số tồn tiền bên Nợ
-             if($setting_voucher->debit){
-               $balance = AccCurrencyCheck::get_type_first($setting_voucher->debit,$arr->currency,null);
+             // Lưu số tồn tiền bên Có
+             if($setting_voucher->credit){
+               $balance = AccCurrencyCheck::get_type_first($setting_voucher->credit,$arr->currency,null);
                if($balance){
-                 $balance->amount = $balance->amount + $d->payment;
+                 $balance->amount = $balance->amount - $d->payment;
                  $balance->save();
                }else{
                  $balance = new AccCurrencyCheck();
-                 $balance->type = $setting_voucher->debit;
+                 $balance->type = $setting_voucher->credit;
                  $balance->currency = $arr->currency;
                  $balance->bank_account = null;
-                 $balance->amount = $d->payment;
+                 $balance->amount = 0 - $d->payment;
                  $balance->save();
+               }
+              if($ca->value == 1 && $balance->amount<0){
+                  $acc_system = AccAccountSystems::find($setting_voucher->credit);
+                  $acc = $acc_system->code;
+                  break;
                }
              }
                // End
@@ -302,6 +315,9 @@ class AccCashPaymentVoucherByInvoiceController extends Controller
            if($check_payment == true){
            DB::connection(env('CONNECTION_DB_ACC'))->rollBack();
            return response()->json(['status'=>false,'message'=> trans('messages.invoice_number_paid',['invoice'=>$invoice])]);
+           }else if($acc != ""){
+            DB::connection(env('CONNECTION_DB_ACC'))->rollBack();
+            return response()->json(['status'=>false,'message'=> trans('messages.account_negative',['account'=>$acc])]);
            }else{
            DB::connection(env('CONNECTION_DB_ACC'))->commit();
            return response()->json(['status'=>true,'message'=> trans('messages.update_success'), 'voucher_name' => $v , 'dataId' => $general->id ,  'data' => $arr ]);

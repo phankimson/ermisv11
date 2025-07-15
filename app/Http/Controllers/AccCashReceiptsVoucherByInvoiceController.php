@@ -41,6 +41,7 @@ class AccCashReceiptsVoucherByInvoiceController extends Controller
   protected $type_object;
   protected $document;
   protected $invoice_type;
+  protected $path;
   public function __construct(Request $request)
  {
      $this->url =  $request->segment(3);
@@ -52,6 +53,7 @@ class AccCashReceiptsVoucherByInvoiceController extends Controller
      $this->menu = Menu::where('code', '=', $this->key_invoice)->first();
      $this->print = 'PTHD%';
      $this->document = 'DOCUMENT_TAX';
+     $this->path = 'PATH_UPLOAD_CASH_RECEIPTS';     
  }
 
   public function show(){
@@ -142,7 +144,7 @@ class AccCashReceiptsVoucherByInvoiceController extends Controller
             }                
             // Load Phiếu tự động / Load AutoNumber
               $v = Convert::VoucherMasker1($voucher,$prefix);
-              if($voucher->number == 0 ||  !$voucher->number ){
+              if(!$voucher){ ///Xem lại
                 $number = 1;
               }else{
                 $number = $voucher->number + 1;

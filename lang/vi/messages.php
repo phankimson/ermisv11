@@ -118,4 +118,5 @@ return [
       "please_select_line_choose" => "Xin vui lòng chọn dòng !",
       "invoice_number_paid" => "Số hóa đơn :invoice đã thanh toán !",
       "invoice_number_duplicate" => "Số hóa đơn :invoice bị trùng!",
+      "account_negative" => "Tài khoản :account âm !",
 ];

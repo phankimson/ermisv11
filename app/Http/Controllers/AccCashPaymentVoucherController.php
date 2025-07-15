@@ -43,6 +43,7 @@ class AccCashPaymentVoucherController extends Controller
   protected $document;
   protected $path;
   protected $invoice_type;
+  protected $check_cash;
   public function __construct(Request $request)
  {
      $this->url =  $request->segment(3);
@@ -52,8 +53,9 @@ class AccCashPaymentVoucherController extends Controller
      $this->key = "cash-payment-voucher";
      $this->menu = Menu::where('code', '=', $this->key)->first();
      $this->print = 'PC%';
-     $this->path = 'PATH_UPLOAD_CASH_RECEIPTS';
+     $this->path = 'PATH_UPLOAD_CASH_PAYMENT';
      $this->document = 'DOCUMENT_TAX';
+     $this->check_cash = 'CHECK_CASH';
  }
 
   public function show(){
@@ -99,7 +101,6 @@ class AccCashPaymentVoucherController extends Controller
       if($arr){
          $period = AccPeriod::get_date(Carbon::parse($arr->accounting_date)->format('Y-m'),1);
         if(!$period){
-          dd($arr);
           $general = [];
           $removeId = [];
           $removeId_v = [];
@@ -136,7 +137,7 @@ class AccCashPaymentVoucherController extends Controller
             }                
                 // Load Phiếu tự động / Load AutoNumber
                 $v = Convert::VoucherMasker1($voucher,$prefix);
-                if($voucher->number == 0 ||  !$voucher->number ){
+                if(!$voucher){///Xem lại
                   $number = 1;
                 }else{
                   $number = $voucher->number + 1;
@@ -148,7 +149,7 @@ class AccCashPaymentVoucherController extends Controller
                   $voucher->number = $number;
                 
                 $voucher->save();
-          }
+          }       
           $general->type = $this->menu->id;
           $general->voucher = $v;
           $general->currency = $arr->currency;
@@ -189,7 +190,9 @@ class AccCashPaymentVoucherController extends Controller
                 $item->save();
               });
           };
-
+             // Lấy giá trị kiểm tra tiền mặt có âm không
+          $ca = AccSystems::get_systems($this->check_cash);
+          $acc = "";
           // CHI TIET / Detail
            foreach($arr->detail as $k => $d){
              $detail = collect([]);
@@ -227,7 +230,7 @@ class AccCashPaymentVoucherController extends Controller
           
              // Lưu số tồn tiền bên Nợ
              if(substr($d->debit->text,0,3) === ('111' || '113' )){     
-               $balance = AccCurrencyCheck::get_type_first($d->debit->value,$arr->currency,null);
+               $balance = AccCurrencyCheck::get_type_first($d->debit->value,$arr->currency,null);            
                if($balance){
                  $balance->amount = $balance->amount + ($d->amount * $d->rate);
                  $balance->save();
@@ -239,8 +242,8 @@ class AccCashPaymentVoucherController extends Controller
                  $balance->amount = $d->amount * $d->rate;
                  $balance->save();
                }
-             }else if(substr($d->debit->text,3) == '112'){
-                 $balance = AccCurrencyCheck::get_type_first($d->debit->id,$arr->currency,$d->bank_account);
+             }else if(substr($d->debit->text,0,3) == '112'){
+                 $balance = AccCurrencyCheck::get_type_first($d->debit->value,$arr->currency,$d->bank_account->value);
                  if($balance){
                    $balance->amount = $balance->amount + ($d->amount * $d->rate);
                    $balance->save();
@@ -248,7 +251,7 @@ class AccCashPaymentVoucherController extends Controller
                    $balance = new AccCurrencyCheck();
                    $balance->type = $d->debit->value;
                    $balance->currency = $arr->currency;
-                   $balance->bank_account = $d->bank_account;
+                   $balance->bank_account = $d->bank_account->value;
                    $balance->amount = $d->amount * $d->rate;
                    $balance->save();
                  }
@@ -256,7 +259,7 @@ class AccCashPaymentVoucherController extends Controller
                // End
 
                // Lưu số tồn tiền bên Có
-               if(substr($d->credit->text,0,3) === ('111' ||  '113')){    
+               if(substr($d->credit->text,0,3) === '111'){    
                  $balance = AccCurrencyCheck::get_type_first($d->credit->value,$arr->currency,null);
                  if($balance){
                    $balance->amount = $balance->amount - ($d->amount * $d->rate);
@@ -269,20 +272,11 @@ class AccCashPaymentVoucherController extends Controller
                    $balance->amount = 0 - ($d->amount * $d->rate);
                    $balance->save();
                  }
-               }else if(substr($d->credit->text,3) == '112'){
-                 $balance = AccCurrencyCheck::get_type_first($d->credit->id,$arr->currency,$d->bank_account);
-                 if($balance){
-                   $balance->amount = $balance->amount - ($d->amount * $d->rate);
-                   $balance->save();
-                 }else{
-                   $balance = new AccCurrencyCheck();
-                   $balance->type = $d->credit->value;
-                   $balance->currency = $arr->currency;
-                   $balance->bank_account = $d->bank_account;
-                   $balance->amount = 0 - ($d->amount * $d->rate);
-                   $balance->save();
-                 }
-               }
+                  if($ca->value == "1" && $balance->amount<0){
+                    $acc = $d->credit->text;
+                    break;
+                  }
+               }                  
                // End
            }
 
@@ -383,6 +377,9 @@ class AccCashPaymentVoucherController extends Controller
           if($check_invoice == true){
            DB::connection(env('CONNECTION_DB_ACC'))->rollBack();
            return response()->json(['status'=>false,'message'=> trans('messages.invoice_number_duplicate',['invoice'=>$invoice])]);
+           }else if($acc != ""){
+            DB::connection(env('CONNECTION_DB_ACC'))->rollBack();
+            return response()->json(['status'=>false,'message'=> trans('messages.account_negative',['account'=>$acc])]);
            }else{
            DB::connection(env('CONNECTION_DB_ACC'))->commit();
            return response()->json(['status'=>true,'message'=> trans('messages.update_success'), 'voucher_name' => $v , 'dataId' => $general->id ,  'data' => $arr ]);

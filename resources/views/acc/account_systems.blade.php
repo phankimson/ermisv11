@@ -49,7 +49,7 @@
                <tr>
                <td class="row-label"><label>@lang('acc_account_systems.parent')</label></td>
                <td>
-               <select class="droplist read load_droplist large"  id="parent_id"  data-position="6" data-title="@lang('acc_account_systems.parent')" data-hidden="true"  add-option="true" data-template="#= FormatDropListRead(parent_id,'parent_id') #" data-type="number" data-nullable ="true"  data-width="200px"  data-value-field="value" data-text-field="text" data-read-url="{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.account')}}"  name="parent_id">
+               <select class="droplist read load_droplist large"  id="parent_id"  data-position="6" data-title="@lang('acc_account_systems.parent')" data-hidden="true"  add-option="true" data-template="#= FormatDropListRead(parent_id,'parent_id') #" data-type="number" data-nullable ="true"  data-width="200px"  data-value-field="value" data-text-field="text" data-read-url="{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.account').'?full=true'}}"  name="parent_id">
                       
                </select>
                </td>

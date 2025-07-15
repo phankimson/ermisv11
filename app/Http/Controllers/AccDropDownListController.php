@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Resources\LangDropDownResource;
+use App\Http\Resources\AccountSystemsDropDownResource;
 use App\Http\Resources\LangTaxDropDownResource;
 use App\Http\Resources\BankDropDownResource;
 use App\Http\Resources\AccountedFastDropDownResource;
@@ -486,13 +487,18 @@ class AccDropDownListController extends Controller
 
   // List tài khoản
   public function account_dropdown_list(Request $request){
-    $multiple = $request->input('multiple',null);    
-      if(!$multiple){
-      $default = collect([$this->default]);
-      $data = LangDropDownResource::collection(AccAccountSystems::active()->orderBy('code','asc')->doesntHave('account')->get());
-      $data = $default->merge($data)->values();
-      }else{
+    $multiple = $request->input('multiple',null);
+    $full = $request->input('full',null);       
+      if($multiple){
        $data = LangDropDownResource::collection(AccAccountSystems::active()->orderBy('code','asc')->doesntHave('account')->get());
+      }else if($full){
+        $default = collect([$this->default]);
+        $data = LangDropDownResource::collection(AccAccountSystems::orderBy('code','asc')->get());
+        $data = $default->merge($data)->values();  
+      }else{
+        $default = collect([$this->default]);
+        $data = LangDropDownResource::collection(AccAccountSystems::active()->orderBy('code','asc')->doesntHave('account')->get());
+        $data = $default->merge($data)->values();       
       }  
     return response()->json($data)->withCallback($request->input('callback'));
   }
@@ -528,15 +534,25 @@ class AccDropDownListController extends Controller
     $menu = $request->input('menu',null);
     $type = $request->input('type',null);
     $val = $request->input('value',null);   
+    $option = $request->input('option',null);  
     $setting_voucher = AccSettingVoucher::get_menu($menu);
     $sys = AccSystems::get_systems($this->document);
     $document = Document::get_code($sys->value);
     $data = [];
     if($type == 1){ // Def
-      $debt_account = LangDropDownResource::collection(AccAccountSystems::get_wherein_id($document->id,$setting_voucher->debit_filter));
+      if($option){
+        $debt_account = AccountSystemsDropDownResource::collection(AccAccountSystems::get_wherein_id($document->id,$setting_voucher->debit_filter));
+      }else{
+        $debt_account = LangDropDownResource::collection(AccAccountSystems::get_wherein_id($document->id,$setting_voucher->debit_filter));
+      }      
       $data = $debt_account;
     }else if ($type == 2){
-      $credit_account = LangDropDownResource::collection(AccAccountSystems::get_wherein_id($document->id,$setting_voucher->credit_filter));
+      if($option){
+        $credit_account = AccountSystemsDropDownResource::collection(AccAccountSystems::get_wherein_id($document->id,$setting_voucher->credit_filter));
+      }else{
+        $credit_account = LangDropDownResource::collection(AccAccountSystems::get_wherein_id($document->id,$setting_voucher->credit_filter));
+      }
+      
       $data = $credit_account;
     }  
     if($val){

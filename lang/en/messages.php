@@ -117,4 +117,5 @@ return [
   "please_fill_form_detail" => "Please fill form detail !",
   "please_select_line_choose" => "Please select line choose !",
   "invoice_number_duplicate" => "Invoice number :invoice duplicate !",
+  "account_negative" => "Account :account negative !",
 ];
