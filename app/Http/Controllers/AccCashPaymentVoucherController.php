@@ -123,7 +123,7 @@ class AccCashPaymentVoucherController extends Controller
             $prefix = $voucher->prefix;
             if($voucher->change_voucher == 1){
               $val = Convert::dateformatArr($format,$arr->accounting_date);
-              $voucher = AccCountVoucher::get_count_voucher($voucher_id,$format,$val['day_format'],$val['month_format'],$val['year_format']);              
+              $voucher = AccCountVoucher::get_count_voucher($voucher_id,$format,$val['day_format'],$val['month_format'],$val['year_format']);             
               if(!$voucher){
                 $voucher = new AccCountVoucher();
                 $voucher->number_voucher = $voucher_id;
@@ -135,9 +135,8 @@ class AccCashPaymentVoucherController extends Controller
                 $voucher->active = 1;
               }
             }                
-                // Load Phiếu tự động / Load AutoNumber
-                $v = Convert::VoucherMasker1($voucher,$prefix);
-                if(!$voucher){///Xem lại
+                // Load Phiếu tự động / Load AutoNumber               
+                if($voucher->number == 0 ||  !$voucher->number ){
                   $number = 1;
                 }else{
                   $number = $voucher->number + 1;
@@ -146,8 +145,8 @@ class AccCashPaymentVoucherController extends Controller
                 if(strlen($number."") > $voucher->length_number){
                   $voucher->length_number = $length_number + 1;
                 }
-                  $voucher->number = $number;
-                
+                $voucher->number = $number;
+                $v = Convert::VoucherMasker1($voucher,$prefix);
                 $voucher->save();
           }       
           $general->type = $this->menu->id;
