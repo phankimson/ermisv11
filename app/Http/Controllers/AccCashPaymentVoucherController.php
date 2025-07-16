@@ -21,9 +21,9 @@ use App\Http\Model\Error;
 use App\Classes\Convert;
 use App\Http\Model\AccObject;
 use App\Http\Model\AccObjectType;
-use App\Http\Resources\CashReceiptGeneralReadResource;
-use App\Http\Model\Imports\AccCashReceiptGeneralImport;
-use App\Http\Model\Imports\AccCashReceiptVoucherImport;
+use App\Http\Resources\CashPaymentGeneralReadResource;
+use App\Http\Model\Imports\AccCashPaymentGeneralImport;
+use App\Http\Model\Imports\AccCashPaymentVoucherImport;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\File;
 use Maatwebsite\Excel\Facades\Excel;
@@ -48,7 +48,7 @@ class AccCashPaymentVoucherController extends Controller
  {
      $this->url =  $request->segment(3);
      $this->invoice_type = 1; // 1 Hóa đơn đầu vào , // 2 Hóa đơn đầu ra
-     $this->group = 2; // 1 Nhóm chi tiền mặt
+     $this->group = 2; // 2 Nhóm chi tiền mặt
      $this->type_object = 1; // 1 Nhà cung cấp (VD : 2,3 nếu nhiều đối tượng)
      $this->key = "cash-payment-voucher";
      $this->menu = Menu::where('code', '=', $this->key)->first();
@@ -210,7 +210,7 @@ class AccCashPaymentVoucherController extends Controller
              $detail->amount_rate = $d->amount * $d->rate;
              $detail->accounted_fast = $d->accounted_fast->value;  // Đổi từ id value dạng read
              $detail->department = $d->department->value; // Đổi từ id value dạng read
-             $detail->bank_account = $d->bank_account->value;  // Đổi từ id value dạng read
+             $detail->bank_account_debit = $d->bank_account->value;  // Đổi từ id value dạng read
              $detail->case_code = $d->case_code->value;  // Đổi từ id value dạng read
              $detail->cost_code = $d->cost_code->value;  // Đổi từ id value dạng read
              $detail->statistical_code = $d->statistical_code->value;  // Đổi từ id value dạng read
@@ -218,8 +218,8 @@ class AccCashPaymentVoucherController extends Controller
              $detail->lot_number = $d->lot_number;
              $detail->contract = $d->contract;
              $detail->order = $d->order;
-             $detail->subject_id_credit = $d->subject_code->value;// Đổi từ id value dạng read
-             $detail->subject_name_credit = $d->subject_code->text;// Đổi từ name text dạng read
+             $detail->subject_id_debit = $d->subject_code->value;// Đổi từ id value dạng read
+             $detail->subject_name_debit = $d->subject_code->text;// Đổi từ name text dạng read
              $detail->active = 1;
              $detail->status = 1;
              $detail->save();
@@ -332,7 +332,7 @@ class AccCashPaymentVoucherController extends Controller
              $tax->tax = $x->tax;
              $tax->total_amount = $total_amount;
              $tax->rate = $x->rate;
-             $tax->total_amount_rate = $total_amount*$x->rate;
+             $tax->total_amount_rate = $total_amount*$x->tax_rate;
              $tax->status = 0;
              $tax->active = 1;
              $tax->save();
@@ -411,7 +411,7 @@ class AccCashPaymentVoucherController extends Controller
     $type = 10;
     try{
       $req = json_decode($request->data);
-      $data = new CashReceiptGeneralReadResource(AccGeneral::get_data_load_all($req));
+      $data = new CashPaymentGeneralReadResource(AccGeneral::get_data_load_all($req));
       if($req && $data->count()>0 ){
         return response()->json(['status'=>true,'data'=> $data]);
       }else{
@@ -452,9 +452,9 @@ class AccCashPaymentVoucherController extends Controller
         $file = $request->file;
         // Đổi dữ liệu Excel sang collect
         config(['excel.imports.read_only' => false]);
-        $data = new AccCashReceiptGeneralImport($this->menu);
+        $data = new AccCashPaymentGeneralImport($this->menu);
         Excel::import($data , $file);
-        $detail = new AccCashReceiptVoucherImport;
+        $detail = new AccCashPaymentVoucherImport;
         Excel::import($detail, $file); 
         $merged = collect($data->getData())->push($detail->getData());            
         return response()->json(['status'=>true,'message'=> trans('messages.success_import'),'data'=>$merged]);

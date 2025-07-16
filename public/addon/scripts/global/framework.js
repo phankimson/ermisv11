@@ -1538,7 +1538,7 @@ function calculateTotalRateVatAggregate(decimal) {
   var data = grid.dataSource.data();
   var total = 0;
   for (var i = 0; i < data.length; i++) {
-    total += data[i].total_amount * data[i].rate ;
+    total += data[i].tax_amount * data[i].tax_rate ;
   }
     return kendo.toString(total, 'n'+decimal);
 };

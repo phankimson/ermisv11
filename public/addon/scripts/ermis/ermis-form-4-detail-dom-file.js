@@ -305,14 +305,15 @@ var Ermis = function() {
         gridVat.dataSource.bind("change", function(e) {
           var item = e.items[0];         
             // checks to see if the action is a change and the column being changed is what is expected
-            if (e.action === "itemchange" && (e.field === "amount" || e.field === "tax")) {
+            if (e.action === "itemchange" && (e.field === "amount" || e.field === "vat_type")) {
                 // here you can access model items using e.items[0].modelName;
-                item.set("total_amount", item.amount + item.tax )
-            }else if(e.action === "itemchange" && e.field === "total_amount" ){
-                item.set("amount", item.total_amount - item.tax )
-                item.set("total_amount_rate", item.total_amount * item.rate )
-            }else if(e.action === "itemchange" && (e.field === "total_amount_rate" || e.field === "rate") ){
-                item.set("total_amount_rate", item.total_amount * item.rate )
+                item.set("tax", (item.vat_tax + item.amount)/100);
+                item.set("tax_amount", item.amount + item.tax );
+            }else if(e.action === "itemchange" && e.field === "tax_amount" ){
+                item.set("amount", item.tax_amount - item.tax );
+                item.set("tax_amount_rate", item.tax_amount * item.tax_rate );
+            }else if(e.action === "itemchange" && (e.field === "tax_amount_rate" || e.field === "tax_rate") ){
+                item.set("tax_amount_rate", item.tax_amount * item.tax_rate );
             }
             // finally, refresh the grid to show the changes
             // Không bỏ refresh được

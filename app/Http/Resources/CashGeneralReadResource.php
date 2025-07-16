@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\ObjectDropDownListResource;
 
-class CashReceiptGeneralPaymentReadResource extends JsonResource
+class CashGeneralReadResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -27,7 +27,7 @@ class CashReceiptGeneralPaymentReadResource extends JsonResource
             'rate' => $this->rate,
             'object' => new ObjectDropDownListResource($this->whenLoaded('object')),
             'status' =>  $this->status,
-            'detail' => CashReceiptVoucherInvoiceBindResource::collection($this->whenLoaded('vat_detail_payment')),
+            'detail' => CashVoucherInvoiceBindResource::collection($this->whenLoaded('vat_detail_payment')),
             'active' =>  $this->active,
         ];
     }

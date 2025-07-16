@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use App\Http\Model\Casts\Decimal;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class CashReceiptVoucherInvoiceResource extends JsonResource
+class CashVoucherInvoiceResource extends JsonResource
 {
     /**
      * Transform the resource into an array.

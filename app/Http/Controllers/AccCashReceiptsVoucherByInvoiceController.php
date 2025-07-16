@@ -19,8 +19,8 @@ use App\Http\Model\AccVatDetailPayment;
 use App\Http\Model\AccSystems;
 use App\Http\Model\AccAttach;
 use App\Http\Model\AccHistoryAction;
-use App\Http\Resources\CashReceiptVoucherInvoiceResource;
-use App\Http\Resources\CashReceiptGeneralPaymentReadResource;
+use App\Http\Resources\CashVoucherInvoiceResource;
+use App\Http\Resources\CashGeneralReadResource;
 use App\Http\Model\Error;
 use App\Classes\Convert;
 use Illuminate\Support\Facades\Auth;
@@ -73,7 +73,7 @@ class AccCashReceiptsVoucherByInvoiceController extends Controller
     $type = 10;
     try{
       $req = json_decode($request->data);
-      $data = CashReceiptVoucherInvoiceResource::collection(AccVatDetail::get_detail_subject($req->subject_id,$req->start_date,$req->end_date,$this->invoice_type,1));
+      $data = CashVoucherInvoiceResource::collection(AccVatDetail::get_detail_subject($req->subject_id,$req->start_date,$req->end_date,$this->invoice_type,1));
       if($data->count()>0){
         $general = AccGeneral::find($data->first()->general_id);
         $currency = $general->currency;
@@ -335,7 +335,7 @@ class AccCashReceiptsVoucherByInvoiceController extends Controller
     $type = 10;
     try{
       $req = json_decode($request->data);
-      $data = new CashReceiptGeneralPaymentReadResource(AccGeneral::get_data_load_vat_payment($req));
+      $data = new CashGeneralReadResource(AccGeneral::get_data_load_vat_payment($req));
       if($req && $data->count()>0 ){
         return response()->json(['status'=>true,'data'=> $data]);
       }else{

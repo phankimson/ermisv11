@@ -3,11 +3,11 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-use App\Http\Resources\CashReceiptDetailResource;
+use App\Http\Resources\CashPaymentDetailReadResource;
 use App\Http\Resources\ObjectDropDownListResource;
-use App\Http\Resources\TaxResource;
+use App\Http\Resources\TaxReadResource;
 
-class CashReceiptGeneralResource extends JsonResource
+class CashPaymentGeneralReadResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -25,15 +25,16 @@ class CashReceiptGeneralResource extends JsonResource
             'voucher_date' => $this->voucher_date,
             'accounting_date' => $this->accounting_date,
             'traders' => $this->traders,
-            'subject' => $this->subject,
+            'subject_id' => $this->subject,
+            'rate' => $this->rate,
             'object' => new ObjectDropDownListResource($this->whenLoaded('object')),
             'total_amount' => $this->total_amount,
             'total_amount_rate' => $this->total_amount_rate,
             'reference' =>  $this->reference,
             'reference_by' =>  $this->reference_by,
             'status' =>  $this->status,
-            'detail' => CashReceiptDetailResource::collection($this->whenLoaded('detail')),
-            'tax' => TaxResource::collection($this->whenLoaded('tax')),
+            'detail' => CashPaymentDetailReadResource::collection($this->whenLoaded('detail')),
+            'tax' => TaxReadResource::collection($this->whenLoaded('tax')),
             'active' =>  $this->active,
         ];
     }

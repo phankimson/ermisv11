@@ -212,7 +212,7 @@ class AccCashReceiptsVoucherController extends Controller
              $detail->amount_rate = $d->amount * $d->rate;
              $detail->accounted_fast = $d->accounted_fast->value;  // Đổi từ id value dạng read
              $detail->department = $d->department->value; // Đổi từ id value dạng read
-             $detail->bank_account = $d->bank_account->value;  // Đổi từ id value dạng read
+             $detail->bank_account_credit = $d->bank_account->value;  // Đổi từ id value dạng read
              $detail->case_code = $d->case_code->value;  // Đổi từ id value dạng read
              $detail->cost_code = $d->cost_code->value;  // Đổi từ id value dạng read
              $detail->statistical_code = $d->statistical_code->value;  // Đổi từ id value dạng read
@@ -337,7 +337,7 @@ class AccCashReceiptsVoucherController extends Controller
              $tax->tax = $x->tax;
              $tax->total_amount = $total_amount;
              $tax->rate = $x->rate;
-             $tax->total_amount_rate = $total_amount*$x->rate;
+             $tax->total_amount_rate = $total_amount*$x->tax_rate;
              $tax->status = 0;
              $tax->active = 1;
              $tax->save();

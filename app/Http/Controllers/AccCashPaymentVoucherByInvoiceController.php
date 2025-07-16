@@ -20,8 +20,8 @@ use App\Http\Model\AccAccountSystems;
 use App\Http\Model\AccSystems;
 use App\Http\Model\AccAttach;
 use App\Http\Model\AccHistoryAction;
-use App\Http\Resources\CashReceiptVoucherInvoiceResource;
-use App\Http\Resources\CashReceiptGeneralPaymentReadResource;
+use App\Http\Resources\CashVoucherInvoiceResource;
+use App\Http\Resources\CashGeneralReadResource;
 use App\Http\Model\Error;
 use App\Classes\Convert;
 use Illuminate\Support\Facades\Auth;
@@ -47,7 +47,7 @@ class AccCashPaymentVoucherByInvoiceController extends Controller
   public function __construct(Request $request)
  {
      $this->url =  $request->segment(3);
-     $this->group = 2; // 1 Nhóm chi tiền mặt
+     $this->group = 2; // 2 Nhóm chi tiền mặt
      $this->type_object = 1; // 2 Nhà cung cấp (VD : 2,3 nếu nhiều đối tượng)
      $this->invoice_type = 1; // 1 Hóa đơn đầu vào , // 2 Hóa đơn đầu ra
      $this->key = "cash-payment-voucher";
@@ -76,7 +76,7 @@ class AccCashPaymentVoucherByInvoiceController extends Controller
     $type = 10;
     try{
       $req = json_decode($request->data);
-      $data = CashReceiptVoucherInvoiceResource::collection(AccVatDetail::get_detail_subject($req->subject_id,$req->start_date,$req->end_date,$this->invoice_type,1));
+      $data = CashVoucherInvoiceResource::collection(AccVatDetail::get_detail_subject($req->subject_id,$req->start_date,$req->end_date,$this->invoice_type,1));
       if($data->count()>0){
         $general = AccGeneral::find($data->first()->general_id);
         $currency = $general->currency;
@@ -196,8 +196,8 @@ class AccCashPaymentVoucherByInvoiceController extends Controller
              $detail->amount = $d->payment;
              $detail->rate = $arr->rate;
              $detail->amount_rate = $d->payment_rate;             
-             $detail->subject_id_credit = $arr->subject_id;
-             $detail->subject_name_credit = $arr->code." - ".$arr->name;
+             $detail->subject_id_debit = $arr->subject_id;
+             $detail->subject_name_debit = $arr->code." - ".$arr->name;
              $detail->active = 1;
              $detail->status = 1;
              $detail->save();
@@ -349,7 +349,7 @@ class AccCashPaymentVoucherByInvoiceController extends Controller
     $type = 10;
     try{
       $req = json_decode($request->data);
-      $data = new CashReceiptGeneralPaymentReadResource(AccGeneral::get_data_load_vat_payment($req));
+      $data = new CashGeneralReadResource(AccGeneral::get_data_load_vat_payment($req));
       if($req && $data->count()>0 ){
         return response()->json(['status'=>true,'data'=> $data]);
       }else{

@@ -1,5 +1,5 @@
 <div class="uk-grid" id="form-search" aria-hidden="false">
-       <div class="uk-width-medium-4-4 mobile_full_width">
+       <div class="uk-width-medium-4-4 mobile_full_width margin-bottom-20">
            <select class="medium" id="fast_date">
                <option value="">@lang('action.choose')</option>
                <option value="today">@lang('global.today')</option>

@@ -15,7 +15,7 @@ class AccountedFastDropDownListResource extends JsonResource
      */
     public function toArray($request)
     {
-       $type_object = $request->session()->get('type_object');
+      $type_object = $request->session()->get('type_object');
       $subject_code = $type_object == $type_object ? $this->subject_debit : $this->subject_credit;
       $subject_name = AccObject::find($subject_code);
       return (object)[

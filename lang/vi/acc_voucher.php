@@ -24,6 +24,7 @@ return [
     "tax_code" => "Tax code",
     "address" => "Địa chỉ",
     "payer"=>"Người nộp tiền",
+    "receiver"=>"Người nhận tiền",
     "deliver" => "Người giao",
     "description" => "Ghi chú",
     "reference" => "Tham chiếu",

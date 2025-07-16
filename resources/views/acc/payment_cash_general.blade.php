@@ -58,12 +58,14 @@
                             };
             Ermis.columns    =   [{ "field" : "id",hidden: true },
                                 { "field" : "description","title" : "@lang('acc_general.description') " ,"width" : "200px" ,aggregates: ['count'], footerTemplate: "<p>Total Count: #=count#</p>" },
+                                { "field" : "debit","title" : "@lang('acc_voucher.debit') " ,"width" : "100px" },
+                                { "field" : "credit","title" : "@lang('acc_voucher.credit') " ,"width" : "100px" },
                                 { "field" : "amount","title" : "@lang('acc_general.amount') " ,"width" : "150px", template: '#= FormatNumberDecimal(amount,{{$decimal}}) #'},
                                 { "field" : "rate","title" : "@lang('acc_voucher.rate') " ,"width" : "150px" ,template: '#= FormatNumberDecimal(amount,{{$decimal}}) #'},
                                 { "field" : "amount_rate","title" : "@lang('acc_voucher.amount_rate') " ,"width" : "150px" ,template: '#= FormatNumberDecimal(amount,{{$decimal}}) #'},
-                                { "field" : "lot_number","title" : "@lang('acc_general.lot_number') " ,"width" : "150px" },
-                                { "field" : "contract","title" : "@lang('acc_general.contract') " ,"width" : "150px" },
-                                { "field" : "order","title" : "@lang('acc_general.order') " ,"width" : "200px"} ]
+                                { "field" : "lot_number","title" : "@lang('acc_general.lot_number') " ,"width" : "100px" },
+                                { "field" : "contract","title" : "@lang('acc_general.contract') " ,"width" : "100px" },
+                                { "field" : "order","title" : "@lang('acc_general.order') " ,"width" : "100px"} ]
 
             Ermis.aggregate = [ { field: "description", aggregate: "count" },
                                 { field: "amount", aggregate: "sum" }];
@@ -72,7 +74,7 @@
                                     {"field" : "revoucher","title" : "@lang('global.re_voucher')" },
                                     {"field" : "description","title" : "@lang('acc_voucher.description')",editor: initReadOnlyGrid },
                                     {"field" : "total_amount","title" :  "@lang('acc_voucher.total_amount')" ,template: '#= FormatNumberDecimal(total_amount, {{$decimal}} )#' ,editor: initReadOnlyGrid} ];
-            Ermis.field = {
+            Ermis.field_voucher = {
                 revoucher :   {field : "revoucher"},
                 voucher_date : {field : "voucher_date"},
                 voucher : {field : "voucher"},

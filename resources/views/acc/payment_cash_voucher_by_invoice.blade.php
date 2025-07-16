@@ -32,7 +32,7 @@
 
 @section('content_add')
 <div class="uk-width-medium-4-4 search-table-outter">
-  @include('action.content_2')
+  @include('action.content_2',['voucher'=>$voucher])
 </div>
 @endsection
 

@@ -24,6 +24,7 @@ return [
     "tax_code" => "Tax code",
     "address" => "Address",
     "payer"=>"Payer",
+    "receiver"=>"Receiver",
     "deliver" => "Deliver",
     "description" => "Description",
     "reference" => "Reference",

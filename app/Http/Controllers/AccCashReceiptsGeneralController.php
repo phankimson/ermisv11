@@ -19,7 +19,7 @@ use App\Http\Model\AccCurrencyCheck;
 use App\Http\Model\AccPrintTemplate;
 use App\Http\Model\AccVatDetailPayment;
 use App\Http\Model\Error;
-use App\Http\Resources\CashReceiptGeneralResource;
+use App\Http\Resources\CashGeneralResource;
 use App\Http\Resources\TypeGeneralResource;
 use App\Http\Resources\TypeListGeneralResource;
 use App\Http\Model\Imports\AccCashReceiptImport;
@@ -220,7 +220,7 @@ class AccCashReceiptsGeneralController extends Controller
     $type = 10;
     try{
       $req = json_decode($request->data);
-      $data = collect(CashReceiptGeneralResource::collection(AccGeneral::get_data_load_between($req->type,$req->start_date_a,$req->end_date_a)));
+      $data = collect(CashGeneralResource::collection(AccGeneral::get_data_load_between($req->type,$req->start_date_a,$req->end_date_a)));
       if($req->active != ""){
         $data = $data->where('active',$req->active)->values();
       }
@@ -250,7 +250,7 @@ class AccCashReceiptsGeneralController extends Controller
       // Tìm voucher
       $v = AccNumberVoucher::get_menu($this->menu->id); 
       $date_obj = Convert::dateformatRange($v->format,$req);
-      $data = collect(CashReceiptGeneralResource::collection(AccGeneral::get_data_load_between($req->type,$date_obj['start_date'],$date_obj['end_date'])));
+      $data = collect(CashGeneralResource::collection(AccGeneral::get_data_load_between($req->type,$date_obj['start_date'],$date_obj['end_date'])));
       if($data->count()>0){
         return response()->json(['status'=>true,'data'=> $data]);
       }else{

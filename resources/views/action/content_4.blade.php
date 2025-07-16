@@ -37,12 +37,15 @@
     </tr>
 
     <tr>
-        @if($voucher->code == "PTHD")
-        <td><label>@lang('acc_voucher.payer')</label></td>    
-        @elseif($voucher->code == "PCHD")
-        <td><label>@lang('acc_voucher.receiver')</label></td>    
-        @endif     
-        <td colspan="2"><input type="text" class="k-textbox xxlarge" name="traders" /></td>
+         <td class="row-label-responsive"><label>@lang('acc_voucher.bank_account')</label></td>
+        <td>
+            <input type="text" name="bank_id" data-get="bank.id" data-find="bank_id" readonly hidden />
+            <span class="k-textbox k-space-right">
+                <input type="text" name="bank_account" data-get="bank.account" data-find="bank_account" readonly />
+                <a href="javascript:;" style="right : 10px" class="k-icon k-i-filter filter">&nbsp;</a>
+            </span>
+        </td>
+        <td><input type="text" class="k-textbox large" data-get="bank.name" data-find="bank_name" name="bank_name" /></td>
 
         <td class="row-label-responsive"></td>
         <td><label>@lang('acc_voucher.accounting_date')</label></td>
@@ -50,9 +53,13 @@
        
     </tr>
     <tr>
-        <td><label>@lang('acc_voucher.description')</label></td>
-        <td colspan="2"><input type="text" class="k-textbox xxlarge" name="description" /></td>
-
+         @if($voucher->code == "BCHD")
+        <td><label>@lang('acc_voucher.payer')</label></td>    
+        @elseif($voucher->code == "BNHD")
+        <td><label>@lang('acc_voucher.receiver')</label></td>    
+        @endif     
+        <td colspan="2"><input type="text" class="k-textbox xxlarge" name="traders" /></td>
+       
         <td class="row-label-responsive"></td>
         <td><label>@lang('acc_voucher.voucher_date')</label></td>
         <td colspan="2"><input type="text" data-type="date" class="k-textbox date-picker" name="voucher_date" /></td>
@@ -60,13 +67,8 @@
     </tr>
 
     <tr>
-        <td><label>@lang('acc_voucher.attach')</label></td>
-        <td colspan="2">
-          <span class="k-textbox k-space-right xxlarge">
-              <input type="file" id="attach" class="md-btn" name="attach" multiple accept="image/png, image/jpeg,application/pdf,.doc,.docx,.xml,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
-              <a href="javascript:;" style="right : 10px"  class="k-icon k-i-folder-more attach">&nbsp;</a>
-          </span>
-        </td>
+         <td><label>@lang('acc_voucher.description')</label></td>
+        <td colspan="2"><input type="text" class="k-textbox xxlarge" name="description" /></td>        
 
         <td class="row-label-responsive"></td>
 
@@ -77,6 +79,15 @@
         <a href="javascript:;" style="right : 10px"  class="k-icon k-i-table-cell-properties voucher-change">&nbsp;</a>
     </span>               
     </td>
+    </tr>
+    <tr>
+        <td><label>@lang('acc_voucher.attach')</label></td>
+        <td colspan="2">
+          <span class="k-textbox k-space-right xxlarge">
+              <input type="file" id="attach" class="md-btn" name="attach" multiple accept="image/png, image/jpeg,application/pdf,.doc,.docx,.xml,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
+              <a href="javascript:;" style="right : 10px"  class="k-icon k-i-folder-more attach">&nbsp;</a>
+          </span>
+        </td>
     </tr>
     
 </table>

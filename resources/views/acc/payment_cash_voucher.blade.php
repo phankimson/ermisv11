@@ -35,7 +35,7 @@
 
 @section('content_add')
 <div class="uk-width-medium-4-4 search-table-outter">
-  @include('action.content_1')
+    @include('action.content_1',['voucher'=>$voucher])
 </div>
 @endsection
 
@@ -148,9 +148,9 @@
                             { "field" : "vat_tax","title" : "@lang('acc_voucher.vat_tax')",width : '100px', "group" : "1"},
                             { "field" : "amount","title" : "@lang('acc_voucher.amount')" ,type:"number",format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" ,aggregates: ['sum'],footerTemplate: "<p id='amount_total_tax'>#=FormatNumberDecimal(sum,{{$decimal}})#</p>" ,width : '150px'},
                             { "field" : "tax","title" : "@lang('acc_voucher.tax')" ,type:"number",format: "{0:n{{$decimal}}}",aggregates: ['sum'], decimals: "{{$decimal}}" ,aggregates: ['sum'],footerTemplate: "<p id='total_tax'>#=calculateVatAggregate({{$decimal}})#</p>" ,width : '150px'},
-                            { "field" : "total_amount","title" : "@lang('acc_voucher.total_amount')" ,format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" ,aggregates: ['sum'] ,footerTemplate: "<p id='total_amount'>#=calculateTotalVatAggregate({{$decimal}})#</p>" ,width : '150px'},
-                            { "field" : "rate","title" :"@lang('acc_voucher.rate')",format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}","width" : "150px"  },
-                            { "field" : "total_amount_rate","title" : "@lang('acc_voucher.total_amount_rate')" ,"width" : "200px",format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" ,aggregates: ['sum'] ,footerTemplate: "<p id='total_amount_rate'>#=calculateTotalRateVatAggregate({{$decimal}})#</p>" },];
+                            { "field" : "tax_amount","title" : "@lang('acc_voucher.total_amount')" ,format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" ,aggregates: ['sum'] ,footerTemplate: "<p id='total_amount'>#=calculateTotalVatAggregate({{$decimal}})#</p>" ,width : '150px'},
+                            { "field" : "tax_rate","title" :"@lang('acc_voucher.rate')",format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}","width" : "150px"  },
+                            { "field" : "tax_amount_rate","title" : "@lang('acc_voucher.total_amount_rate')" ,"width" : "200px",format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" ,aggregates: ['sum'] ,footerTemplate: "<p id='total_amount_rate'>#=calculateTotalRateVatAggregate({{$decimal}})#</p>" },];
 
 
         Ermis.columns    = [{"field" :"id", hidden : true},
@@ -214,16 +214,16 @@
             vat_tax:     {field : "vat_tax" , defaultValue : 0, editable: false},
             amount:     {field : "amount",type:"number" , defaultValue : 0, validation: { min: 0, required: true }},
             tax:     {field : "tax" ,type:"number", defaultValue : 0 },
-            total_amount:     {field : "total_amount",type:"number" , defaultValue : 0, validation: { min: 0, required: true }},
-            rate:     {field : "rate",type:"number", defaultValue : parseInt(jQuery(".rate").val()) , validation: { min: 0, required: true }},
-            total_amount_rate:     {field : "total_amount_rate",type:"number" , defaultValue : 0 , validation: { min: 1, required: true }},
+            tax_amount:     {field : "tax_amount",type:"number" , defaultValue : 0, validation: { min: 0, required: true }},
+            tax_rate:     {field : "tax_rate",type:"number", defaultValue : parseInt(jQuery(".rate").val()) , validation: { min: 0, required: true }},
+            tax_amount_rate:     {field : "tax_amount_rate",type:"number" , defaultValue : 0 , validation: { min: 1, required: true }},
         };
         Ermis.aggregate = [ { field: "description", aggregate: "count" },
                             { field: "amount", aggregate: "sum" },
                             { field: "amount_rate", aggregate: "sum" },
                             { field: "tax", aggregate: "sum" },
-                            { field: "total_amount", aggregate: "sum" },
-                            { field: "total_amount_rate", aggregate: "sum" }];
+                            { field: "tax_amount", aggregate: "sum" },
+                            { field: "tax_amount_rate", aggregate: "sum" }];
 
                                                     
     });

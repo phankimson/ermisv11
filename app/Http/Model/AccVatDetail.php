@@ -22,7 +22,7 @@ class AccVatDetail extends Model
 
       protected $keyType = 'string';
 
-      protected $with = ['tax'];
+      protected $with = ['vat_type'];
 
       protected static function booted()
       {
@@ -55,8 +55,8 @@ class AccVatDetail extends Model
         return $result;
       }
 
-      public function tax() {
-        return $this->belongsTo(AccVat::class,'tax','id');
+      public function vat_type() {
+        return $this->belongsTo(AccVat::class,'vat_type','id');
       }
 
       public function vat_detail_payment() {
