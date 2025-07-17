@@ -93,7 +93,7 @@ class FirstSheetImport implements ToModel, HasReferencesToOtherSheets, WithHeadi
         'contract'    => $row['contract'], 
         'order'    => $row['order'], 
       ];
-      $data = new AccCashReceiptVoucherImport();
+      $data = new AccCashPaymentVoucherImport();
       $data->setDataFirst($arr);
       }      
       return;
@@ -141,7 +141,7 @@ class FirstSheetImport implements ToModel, HasReferencesToOtherSheets, WithHeadi
           'tax'    => $vat_tax ? LangDropDownResource::make($vat_tax) : DefaultDropDownResource::make($vat_tax),
           'total_amount'    => $row['total_amount']== null ? $row['amount']*$row['vat_tax'] : $row['total_amount'],       
         ];    
-        $data = new AccCashReceiptVoucherImport();
+        $data = new AccCashPaymentVoucherImport();
         $data->setDataSecond($arr);
       }
         return;

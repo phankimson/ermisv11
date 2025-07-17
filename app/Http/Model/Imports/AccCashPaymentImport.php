@@ -21,13 +21,18 @@ use Maatwebsite\Excel\Concerns\WithStartRow;
 
 class AccCashPaymentImport implements  WithHeadingRow, WithMultipleSheets
 { 
+  protected $menu;
   public static $first = array();
   public static $second = array();
   public static $third = array();
+   public function __construct($menu)
+  {
+      $this->menu = $menu;
+  }
   public function sheets(): array
     {        
         return [
-          'general' => new FirstSheetImport(),
+          'general' => new FirstSheetImport($this->menu),
           'detail' => new SecondSheetImport(),
           'tax' => new ThirdSheetImport(),
         ];
@@ -64,15 +69,18 @@ class AccCashPaymentImport implements  WithHeadingRow, WithMultipleSheets
 }
 
 
-class FirstSheetImport implements ToModel, HasReferencesToOtherSheets, WithHeadingRow, WithBatchInserts, WithLimit, WithStartRow
+class FirstSheetImport extends AccCashPaymentImport implements ToModel, HasReferencesToOtherSheets, WithHeadingRow, WithBatchInserts, WithLimit, WithStartRow
 {   
-
-
+    protected $type;
+   function __construct() { //this will NOT overwrite the parents construct
+       $this->type = parent::__construct();
+    }
     public function model(array $row)
     {
       $subject = AccObject::WhereDefault('code',$row['subject'])->first();
       $code_check = AccGeneral::WhereCheck('voucher',$row['voucher'],'id',null)->first();
-      $type = 1; // 1 Receipt Cash
+      $type = $this->type; //Payment Cash
+      $group = 2;
         if($code_check == null){      
           $arr = [
             'id'     => Str::uuid()->toString(),
@@ -86,11 +94,12 @@ class FirstSheetImport implements ToModel, HasReferencesToOtherSheets, WithHeadi
             'subject'    => $subject == null ? 0 : $subject->id,
             'total_amount'    => $row['total_amount'],
             'rate'    => $row['rate'],
-            'total_amount_rate'    => $row['total_amount_rate'],        
+            'total_amount_rate'    => $row['total_amount_rate'],    
+            'group'=>  $group,   
             'status'    => $row['status'] == null ? 1 : $row['status'], 
             'active'    => $row['active'] == null ? 1 : $row['active'],
           ];
-          $data = new AccCashReceiptImport();
+          $data = new AccCashPaymentImport($this->menu);
           $data->setDataFirst($arr);
           return new AccGeneral($arr);
       }
@@ -140,7 +149,7 @@ class SecondSheetImport implements ToModel, HasReferencesToOtherSheets, WithHead
         'status'    => $row['status'] == null ? 1 : $row['status'], 
         'active'    => $row['active'] == null ? 1 : $row['active'],
       ];
-      $data = new AccCashReceiptImport();
+      $data = new AccCashPaymentImport("");
       $data->setDataSecond($arr);
       return new AccDetail($arr);          
     }
@@ -186,10 +195,13 @@ class SecondSheetImport implements ToModel, HasReferencesToOtherSheets, WithHead
           'amount'    => $row['amount'],
           'tax'    => $row['tax'],
           'total_amount'    => $row['total_amount'],        
+          'rate'    => $row['rate'],   
+          'total_amount_rate'    => $row['total_amount_rate'],
+          'payment'    => 0,      
           'status'    => $row['status'] == null ? 1 : $row['status'], 
           'active'    => $row['active'] == null ? 1 : $row['active'],
         ];      
-        $data = new AccCashReceiptImport();
+        $data = new AccCashPaymentImport("");
         $data->setDataThird($arr);
         return new AccVatDetail($arr);
       }
