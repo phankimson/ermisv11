@@ -118,6 +118,7 @@
                                 {"field" : "code","title" :"@lang('acc_voucher.subject_code')" , "field_set": "subject_code"},
                                 {"field" : "name","title" :"@lang('acc_voucher.subject_name')" , "field_set": "subject_name"},
                                 {"field" : "address","title" :"@lang('acc_voucher.address')" },
+                                {"field" : "tax_code", hidden: true},
                                 {"field" : "invoice_form", hidden: true},
                                 {"field" : "invoice_symbol", hidden: true},]
 

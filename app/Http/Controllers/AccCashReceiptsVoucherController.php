@@ -336,7 +336,7 @@ class AccCashReceiptsVoucherController extends Controller
              $tax->amount = $x->amount;
              $tax->tax = $x->tax;
              $tax->total_amount = $total_amount;
-             $tax->rate = $x->rate;
+             $tax->rate = $x->tax_rate;
              $tax->total_amount_rate = $total_amount*$x->tax_rate;
              $tax->status = 0;
              $tax->active = 1;

@@ -848,7 +848,8 @@ var Ermis = function() {
                   kendo.alert(Lang.get('messages.please_fill_field'));
               });
         }else{
-              initShowValidationGrid(obj.detail,crit,$kGrid);
+              var mes = initShowValidationGrid(obj.detail,crit,$kGrid);
+              kendo.alert(mes.join("</br>"));
         }
 
     };

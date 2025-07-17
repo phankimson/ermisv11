@@ -307,17 +307,21 @@ var Ermis = function() {
             // checks to see if the action is a change and the column being changed is what is expected
             if (e.action === "itemchange" && (e.field === "amount" || e.field === "vat_type")) {
                 // here you can access model items using e.items[0].modelName;
-                item.set("tax", (item.vat_tax + item.amount)/100);
+                var a = ((item.vat_tax * item.amount)/100).toFixed(Ermis.decimal);
+                item.set("tax", a);
                 item.set("tax_amount", item.amount + item.tax );
             }else if(e.action === "itemchange" && e.field === "tax_amount" ){
-                item.set("amount", item.tax_amount - item.tax );
+                var b = (item.tax_amount/(1+item.vat_tax/100)).toFixed(Ermis.decimal);
+                item.set("amount", b);
                 item.set("tax_amount_rate", item.tax_amount * item.tax_rate );
             }else if(e.action === "itemchange" && (e.field === "tax_amount_rate" || e.field === "tax_rate") ){
                 item.set("tax_amount_rate", item.tax_amount * item.tax_rate );
             }
             // finally, refresh the grid to show the changes
             // Không bỏ refresh được
-            gridVat.refresh();
+            if(e.action === "itemchange" && (e.field === "amount" || e.field === "vat_type" || e.field === "tax_amount_rate" || e.field === "tax_rate" ||  e.field === "tax_amount" )){
+                    gridVat.refresh();
+            }            
         });
 
         jQuery("input[name='description']").on("change", function(e) {
@@ -1038,8 +1042,9 @@ var Ermis = function() {
         var crit2 = initValidationGridColumnKey(obj.detail,Ermis.columns);
         var crit3 = initValidationGrid(obj.tax,Ermis.field_tax);
         var crit4 = initValidationGridColumnKey(obj.tax,Ermis.column_grid);
-        var crit = crit1.concat(crit2).concat(crit3).concat(crit4);
-        if(crit.length == 0){
+        var crit = crit1.concat(crit2);
+        var crit_tax = crit3.concat(crit4);
+        if(crit.length == 0 && crit_tax.length == 0){
           obj.type = jQuery('#tabstrip').find('.k-state-active').attr("data-search");
           obj.total_number = ConvertNumber(jQuery('#quantity_total').html(),Ermis.decimal_symbol);
           obj.total_amount = ConvertNumber(jQuery('#amount_total').html(),Ermis.decimal_symbol);
@@ -1054,8 +1059,9 @@ var Ermis = function() {
           }    
               initSaveDetail(e,obj,message_confirmed);     
         }else{        
-             initShowValidationGrid(obj.detail,crit,$kGrid);        
-             initShowValidationGrid(obj.tax,crit,$kGridVat);    
+             var mes1 = initShowValidationGrid(obj.detail,crit,$kGrid);        
+             var mes2 = initShowValidationGrid(obj.tax,crit_tax,$kGridVat);    
+             kendo.alert(mes1.join("</br>")+mes2.join("</br>"));
         }
 
     };

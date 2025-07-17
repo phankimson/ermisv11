@@ -474,7 +474,7 @@ var initShowValidationGrid = function(data,crit_arr,$kGrid){
         }
       });
     });
-      kendo.alert(mes.join("</br>"));
+      return mes;      
 }
 
 var sort_by = function (field, reverse, primer) {
