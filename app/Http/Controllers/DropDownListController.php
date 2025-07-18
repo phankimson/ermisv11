@@ -26,7 +26,7 @@ class DropDownListController extends Controller
   protected $default;
   public function __construct()
   {
-    $this->default = ['value' => '0','text' => "--Select--"];
+     $this->default = ["value" => "0","text" => "--Select--"];
   }
 
   public function country_dropdown_list(Request $request){

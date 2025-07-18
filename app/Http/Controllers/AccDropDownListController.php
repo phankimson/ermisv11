@@ -57,7 +57,7 @@ class AccDropDownListController extends Controller
   {
     $this->document = "DOCUMENT_TAX";
     $this->type = "acc";
-    $this->default = ['value' => '0','text' => "--Select--"];
+    $this->default = ["value" => "0","text" => "--Select--"];
   }
   public function country_dropdown_list(Request $request){
      $val = $request->input('value',null); 
