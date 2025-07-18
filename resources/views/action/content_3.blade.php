@@ -29,11 +29,12 @@
     <tr>
        <td class="row-label-responsive"><label>@lang('acc_voucher.bank_account')</label></td>
         <td>
-            <input type="text" name="bank_id" data-get="bank.id" data-find="bank_id" readonly hidden />
-            <span class="k-textbox k-space-right">
-                <input type="text" name="bank_account" data-get="bank.account" data-find="bank_account" readonly />
-                <a href="javascript:;" style="right : 10px" class="k-icon k-i-filter filter">&nbsp;</a>
-            </span>
+            <select class="droplist large xxlarge no_copy_value" id="accounted_auto" name="accounted_auto">
+                    <option readonly selected value="0">--Select--</option>
+                    @foreach($accounted_auto as $c)
+                    <option value="{{ $c->id }}">{{ $c->code }} - {{ $c->name }}</option>
+                    @endforeach
+            </select>
         </td>
         <td><input type="text" class="k-textbox large" data-get="bank.name" data-find="bank_name" name="bank_name" /></td>
 

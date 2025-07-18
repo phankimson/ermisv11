@@ -432,7 +432,7 @@ class AccCashPaymentVoucherController extends Controller
   }
 
   public function DownloadExcel(){
-    return Storage::download('public/downloadFile/AccCashReceiptsVoucher.xlsx');
+    return Storage::download('public/downloadFile/AccCashPaymentVoucher.xlsx');
   }
 
 
@@ -452,7 +452,7 @@ class AccCashPaymentVoucherController extends Controller
         $file = $request->file;
         // Đổi dữ liệu Excel sang collect
         config(['excel.imports.read_only' => false]);
-        $data = new AccCashPaymentGeneralImport($this->menu);
+        $data = new AccCashPaymentGeneralImport($this->menu);   
         Excel::import($data , $file);
         $detail = new AccCashPaymentVoucherImport;
         Excel::import($detail, $file); 

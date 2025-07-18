@@ -7,6 +7,7 @@ use Maatwebsite\Excel\Concerns\WithMappedCells;
 use App\Http\Model\AccGeneral;
 use App\Http\Model\AccNumberVoucher;
 use App\Http\Model\AccObject;
+use App\Http\Model\AccCurrency;
 use App\Http\Model\AccCountVoucher;
 use App\Classes\Convert;
 use App\Http\Resources\ObjectDropDownListResource;
@@ -46,8 +47,13 @@ class AccCashReceiptGeneralImport implements WithMappedCells,ToModel
   {             
     $subject = AccObject::WhereDefault('code',$row['subject'])->first();
     $code_check = AccGeneral::WhereCheck('voucher',$row['voucher'],'id',null)->first();
-    $row['accounting_date'] = $row['accounting_date'] ? $row['accounting_date'] : date("Y-m-d");
-    $row['voucher_date'] = $row['voucher_date'] ? $row['voucher_date'] : date("Y-m-d");
+    $currency = AccCurrency::WhereDefault('code',$row['currency'])->first();
+    if(is_numeric($row['accounting_date'])){
+      $row['accounting_date'] =  $row['accounting_date'] ? Convert::DateExcel($row['accounting_date']):date("Y-m-d");
+    }
+    if(is_numeric($row['voucher_date'])){
+      $row['voucher_date'] = $row['voucher_date'] ? Convert::DateExcel($row['voucher_date']):date("Y-m-d");
+    }
     if($code_check == null){
       if(!$row['voucher']){        
         // Lưu số nhảy
@@ -80,6 +86,8 @@ class AccCashReceiptGeneralImport implements WithMappedCells,ToModel
         'description'    => $row['description'],
         'voucher_date'    => $row['voucher_date'],
         'accounting_date'    => $row['accounting_date'],
+        'currency'   => $currency?$currency->id:0,
+        'rate'      =>$row['rate'],
         'traders'    => $row['traders'],
         'subject_id'    => $subject == null ? 0 : $subject->id,  
         'object' => new ObjectDropDownListResource($subject),

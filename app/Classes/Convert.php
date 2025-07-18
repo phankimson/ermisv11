@@ -23,6 +23,12 @@ class Convert
     }
   }
 
+  static public function DateExcel($dateValue) 
+  {
+    $unixDate = ($dateValue - 25569) * 86400;
+    return gmdate("Y-m-d", $unixDate); 
+  }
+
   static public function intDefaultformat($format)
   {
     return $format ==''? 0 : $format;

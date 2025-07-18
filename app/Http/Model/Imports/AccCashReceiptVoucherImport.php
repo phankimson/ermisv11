@@ -14,13 +14,13 @@ use App\Http\Model\AccDepartment;
 use App\Http\Model\AccBankAccount;
 use App\Http\Model\AccCaseCode;
 use App\Http\Model\AccCostCode;
-use App\Http\Model\AccSettingVoucher;
 use App\Http\Model\AccStatisticalCode;
 use App\Http\Model\AccVat;
 use App\Http\Model\AccWorkCode;
 use App\Http\Resources\LangDropDownResource;
 use App\Http\Resources\BankDropDownResource;
 use App\Http\Resources\DefaultDropDownResource;
+use App\Classes\Convert;
 
 class AccCashReceiptVoucherImport implements  WithHeadingRow, WithMultipleSheets
 {
@@ -125,21 +125,24 @@ class FirstSheetImport implements ToModel, HasReferencesToOtherSheets, WithHeadi
       public function model(array $row)
       {
         if($row['description'] && $row['no']){
-        $vat_tax = AccVat::WhereDefault('vat_tax',$row['vat_tax'])->first();
-        $row['amount'] = $row['amount'] == null ? 0 : $row['amount'];
-        $row['vat_tax'] = $row['vat_tax'] == null ? 0 : $row['vat_tax'];
+        $vat_type = AccVat::WhereDefault('code',$row['vat_type'])->first();
+        $row['amount'] = $row['amount'] == null ? 0 : $row['amount'];  
+        $date_invoice = $row['date_invoice'] ? Convert::DateExcel($row['date_invoice']) : date("Y-m-d");
         $arr = [
           'description'    => $row['description'],
-          'date_invoice'    => $row['date_invoice'],
+          'date_invoice'    =>  $date_invoice,
           'invoice_form'    => $row['invoice_form'],
           'invoice_symbol'    => $row['invoice_symbol'],
           'invoice'    => $row['invoice'],
           'address'    => $row['address'],
           'tax_code'    => $row['tax_code'],
-          'vat_type'    => $row['vat_type'],          
+          'vat_type'    => $vat_type ? LangDropDownResource::make($vat_type) : DefaultDropDownResource::make($vat_type), 
+          'vat_tax' => $vat_type ? $vat_type->vat_tax : 0,    
           'amount'    => $row['amount'],
-          'tax'    => $vat_tax ? LangDropDownResource::make($vat_tax) : DefaultDropDownResource::make($vat_tax),
-          'total_amount'    => $row['total_amount']== null ? $row['amount']*$row['vat_tax'] : $row['total_amount'],       
+          'tax'    => $row['tax'],
+          'tax_amount'    => $row['total_amount']== null ? $row['amount'] + $row['tax'] : $row['total_amount'],    
+          'tax_rate'    => $row['rate'],   
+          'tax_amount_rate'    => $row['total_amount_rate']== null ? $row['total_amount']*$row['rate'] : $row['total_amount_rate'],  
         ];    
         $data = new AccCashReceiptVoucherImport();
         $data->setDataSecond($arr);

@@ -457,7 +457,7 @@ class AccCashReceiptsGeneralController extends Controller
 
       $file = $request->file;
       // Import dữ liệu
-      $import = new AccCashReceiptImport;
+      $import = new AccCashReceiptImport($this->menu->id,$this->group);
       Excel::import($import, $file);
       // Lấy lại dữ liệu
       //$array = AccGeneral::with('detail','tax')->get();
