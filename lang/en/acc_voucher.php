@@ -23,6 +23,8 @@ return [
     "subject_name" => "Subject name",
     "tax_code" => "Tax code",
     "address" => "Address",
+    "bank_payer"=>"Bank account payer",
+    "bank_receiver"=>"Bank account receiver",
     "payer"=>"Payer",
     "receiver"=>"Receiver",
     "deliver" => "Deliver",

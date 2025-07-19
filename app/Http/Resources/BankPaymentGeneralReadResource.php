@@ -24,6 +24,7 @@ class BankPaymentGeneralReadResource extends JsonResource
             'description' => $this->description,
             'voucher_date' => $this->voucher_date,
             'accounting_date' => $this->accounting_date,
+            'bank_account'=> $this->detail()->first()->bank_account_credit,
             'traders' => $this->traders,
             'subject_id' => $this->subject,
             'rate' => $this->rate,

@@ -24,6 +24,7 @@ class BankGeneralReadResource extends JsonResource
             'accounting_date' => $this->accounting_date,
             'traders' => $this->traders,
             'subject_id' => $this->subject,
+            'bank_account' => $this->group == 3 ? $this->detail()->first()->bank_account_debit : $this->detail()->first()->bank_account_credit,
             'rate' => $this->rate,
             'object' => new ObjectDropDownListResource($this->whenLoaded('object')),
             'status' =>  $this->status,

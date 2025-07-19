@@ -7,6 +7,7 @@ var $kGridBarcode = jQuery('#grid_barcode');
 var $auto = jQuery("#accounted_auto");
 var $currency = jQuery("#currency");
 var $rate = jQuery(".rate");
+var $bank = jQuery(".bank_account");
 var $import = '';
 var myWindow = jQuery("#form-window-filter");
 var $kWindow = '';

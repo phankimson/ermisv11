@@ -23,6 +23,8 @@ return [
     "subject_name" => "Tên đối tượng",
     "tax_code" => "Tax code",
     "address" => "Địa chỉ",
+    "bank_payer"=>"Tài khoản chuyển",
+    "bank_receiver"=>"Tài khoản nhận",
     "payer"=>"Người nộp tiền",
     "receiver"=>"Người nhận tiền",
     "deliver" => "Người giao",

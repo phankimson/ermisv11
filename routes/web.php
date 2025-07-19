@@ -1033,15 +1033,23 @@ Route::group([
   Route::controller(AccGeneralController::class)->group(function () {
   Route::post('/cash-receipts-general-detail','detail');  
   Route::post('/cash-payment-general-detail','detail');  
+  Route::post('/bank-receipts-general-detail','detail');  
+  Route::post('/bank-payment-general-detail','detail');  
   // In Phiếu trang tổng hợp
   Route::post('/cash-receipts-general-print','prints');  
   Route::post('/cash-payment-general-print','prints'); 
+  Route::post('/bank-receipts-general-print','prints');  
+  Route::post('/bank-payment-general-print','prints'); 
   // In Phiếu trang chi tiết
   Route::post('/cash-receipts-voucher-print','prints');  
   Route::post('/cash-payment-voucher-print','prints');  
+  Route::post('/bank-receipts-voucher-print','prints');  
+  Route::post('/bank-payment-voucher-print','prints');  
   // In Phiếu trang thu tiền theo hóa đơn
   Route::post('/cash-receipts-voucher-by-invoice-print','prints');  
-  Route::post('/cash-payment-voucher-by-invoice-print','prints');  
+  Route::post('/cash-payment-voucher-by-invoice-print','prints');
+  Route::post('/bank-receipts-voucher-by-invoice-print','prints');  
+  Route::post('/bank-payment-voucher-by-invoice-print','prints');   
   });
 
   // Receipt Cash General
@@ -1102,6 +1110,65 @@ Route::group([
   Route::post('/cash-payment-voucher-by-invoice-delete', 'delete' )->name('-by-invoice-delete'); 
   });  
 
+
+   // Receipt Bank General
+  Route::group([
+    'as' => 'bank-receipts-general',
+    'controller' => AccBankReceiptsGeneralController::class
+  ],function () {
+  Route::get('/bank-receipts-general', 'show' )->name('');
+  Route::post('/bank-receipts-general-get','find' )->name('-find');
+  Route::post('/bank-receipts-general-unwrite','unwrite' )->name('-unwrite');
+  Route::post('/bank-receipts-general-write','write' )->name('-write');
+  Route::post('/bank-receipts-general-revoucher', 'revoucher' )->name('-revoucher');
+  Route::post('/bank-receipts-general-start-voucher', 'start_voucher' )->name('-start-voucher');
+  Route::post('/bank-receipts-general-change-voucher', 'change_voucher' )->name('-change-voucher');
+  Route::get('/bank-receipts-general-DownloadExcel', 'DownloadExcel' )->name('-DownloadExcel');
+  Route::any('/bank-receipts-general-import', 'import')->name('-import');
+  Route::any('/bank-receipts-general-delete', 'delete')->name('-delete');
+
+  // Ghi , ko ghi , tìm chứng từ trang thu tiền
+  Route::post('/bank-receipts-voucher-unwrite','unwrite' )->name('-unwrite');
+  Route::post('/bank-receipts-voucher-write','write' )->name('-write');
+  Route::post('/bank-receipts-voucher-find', 'find' )->name('-find');
+  Route::post('/bank-receipts-voucher-delete', 'delete' )->name('-delete'); 
+
+  // Ghi , ko ghi , tìm chứng từ trang thu tiền theo hóa đơn
+  Route::post('/bank-receipts-voucher-by-invoice-unwrite','unwrite' )->name('-by-invoice-unwrite');
+  Route::post('/bank-receipts-voucher-by-invoice-write','write' )->name('-by-invoice-write');
+  Route::post('/bank-receipts-voucher-by-invoice-find', 'find' )->name('-by-invoice-find');
+  Route::post('/bank-receipts-voucher-by-invoice-delete', 'delete' )->name('-by-invoice-delete'); 
+  });  
+
+  // Payment Bank General
+  Route::group([
+    'as' => 'bank-payment-general',
+    'controller' => AccBankPaymentGeneralController::class
+  ],function () {
+  Route::get('/bank-payment-general', 'show' )->name('');
+  Route::post('/bank-payment-general-get','find' )->name('-find');
+  Route::post('/bank-payment-general-unwrite','unwrite' )->name('-unwrite');
+  Route::post('/bank-payment-general-write','write' )->name('-write');
+  Route::post('/bank-payment-general-revoucher', 'revoucher' )->name('-revoucher');
+  Route::post('/bank-payment-general-start-voucher', 'start_voucher' )->name('-start-voucher');
+  Route::post('/bank-payment-general-change-voucher', 'change_voucher' )->name('-change-voucher');
+  Route::get('/bank-payment-general-DownloadExcel', 'DownloadExcel' )->name('-DownloadExcel');
+  Route::any('/bank-payment-general-import', 'import')->name('-import');
+  Route::any('/bank-payment-general-delete', 'delete')->name('-delete');
+
+  // Ghi , ko ghi , tìm chứng từ trang chi tiền
+  Route::post('/bank-payment-voucher-unwrite','unwrite' )->name('-unwrite');
+  Route::post('/bank-payment-voucher-write','write' )->name('-write');
+  Route::post('/bank-payment-voucher-find', 'find' )->name('-find');
+  Route::post('/bank-payment-voucher-delete', 'delete' )->name('-delete'); 
+
+  // Ghi , ko ghi , tìm chứng từ trang chi tiền theo hóa đơn
+  Route::post('/bank-payment-voucher-by-invoice-unwrite','unwrite' )->name('-by-invoice-unwrite');
+  Route::post('/bank-payment-voucher-by-invoice-write','write' )->name('-by-invoice-write');
+  Route::post('/bank-payment-voucher-by-invoice-find', 'find' )->name('-by-invoice-find');
+  Route::post('/bank-payment-voucher-by-invoice-delete', 'delete' )->name('-by-invoice-delete'); 
+  });  
+
   // Receipt Cash Detail
   Route::group([
     'as' => 'cash-receipts-voucher',
@@ -1124,6 +1191,30 @@ Route::group([
   Route::post('/cash-payment-voucher-bind', 'bind' )->name('-bind');
   Route::get('/cash-payment-voucher-DownloadExcel', 'DownloadExcel' )->name('-DownloadExcel');
   Route::any('/cash-payment-voucher-import', 'import')->name('-import');
+  });
+
+  // Receipt Bank Detail
+  Route::group([
+    'as' => 'bank-receipts-voucher',
+    'controller' => AccBankReceiptsVoucherController::class
+  ],function () {
+  Route::get('/bank-receipts-voucher', 'show' )->name('');
+  Route::post('/bank-receipts-voucher-save', 'save' )->name('-save');
+  Route::post('/bank-receipts-voucher-bind', 'bind' )->name('-bind');
+  Route::get('/bank-receipts-voucher-DownloadExcel', 'DownloadExcel' )->name('-DownloadExcel');
+  Route::any('/bank-receipts-voucher-import', 'import')->name('-import');
+  });
+
+  // Payyment Bank Detail
+  Route::group([
+    'as' => 'bank-payment-voucher',
+    'controller' => AccBankPaymentVoucherController::class
+  ],function () {
+  Route::get('/bank-payment-voucher', 'show' )->name('');
+  Route::post('/bank-payment-voucher-save', 'save' )->name('-save');
+  Route::post('/bank-payment-voucher-bind', 'bind' )->name('-bind');
+  Route::get('/bank-payment-voucher-DownloadExcel', 'DownloadExcel' )->name('-DownloadExcel');
+  Route::any('/bank-payment-voucher-import', 'import')->name('-import');
   });
 
   // Receipt Cash Detail Voucher
@@ -1165,6 +1256,45 @@ Route::group([
   Route::post('/cash-payment-voucher-by-invoice-reference', 'reference' )->name('-by-invoice-reference');
   });
 
+  // Receipt Bank Detail Voucher
+  Route::group([
+    'as' => 'bank-receipts-voucher',
+    'controller' => AccVoucherController::class
+  ],function () {
+  Route::post('/bank-receipts-voucher-get', 'get' )->name('-get');
+  Route::post('/bank-receipts-voucher-auto', 'auto' )->name('-auto');
+  Route::post('/bank-receipts-voucher-ai', 'ai' )->name('-ai');
+  Route::post('/bank-receipts-voucher-currency', 'currency' )->name('-currency');
+  Route::post('/bank-receipts-voucher-reference', 'reference' )->name('-reference');
+  Route::post('/bank-receipts-voucher-voucher-change', 'voucher_change' )->name('-voucher-change');
+  Route::post('/bank-receipts-voucher-load-voucher-change', 'load_voucher_change' )->name('-load-voucher-change');
+
+  // Tìm chứng từ trang thu tiền theo hóa đơn
+  Route::post('/bank-receipts-voucher-by-invoice-get', 'get' )->name('-by-invoice-get');
+  Route::post('/bank-receipts-voucher-by-invoice-currency', 'currency' )->name('-by-invoice-currency');
+  Route::post('/bank-receipts-voucher-by-invoice-reference', 'reference' )->name('-by-invoice-reference');
+  });
+
+
+  // Payment Bank Detail Voucher
+  Route::group([
+    'as' => 'bank-payment-voucher',
+    'controller' => AccVoucherController::class
+  ],function () {
+  Route::post('/bank-payment-voucher-get', 'get' )->name('-get');
+  Route::post('/bank-payment-voucher-auto', 'auto' )->name('-auto');
+  Route::post('/bank-payment-voucher-ai', 'ai' )->name('-ai');
+  Route::post('/bank-payment-voucher-currency', 'currency' )->name('-currency');
+  Route::post('/bank-payment-voucher-reference', 'reference' )->name('-reference');
+  Route::post('/bank-payment-voucher-voucher-change', 'voucher_change' )->name('-voucher-change');
+  Route::post('/bank-payment-voucher-load-voucher-change', 'load_voucher_change' )->name('-load-voucher-change');
+
+  // Tìm chứng từ trang thu tiền theo hóa đơn
+  Route::post('/bank-payment-voucher-by-invoice-get', 'get' )->name('-by-invoice-get');
+  Route::post('/bank-payment-voucher-by-invoice-currency', 'currency' )->name('-by-invoice-currency');
+  Route::post('/bank-payment-voucher-by-invoice-reference', 'reference' )->name('-by-invoice-reference');
+  });
+
   // Receipt Cash Detail By Invoice
 Route::group([
   'as' => 'cash-receipts-voucher-by-invoice',
@@ -1187,6 +1317,30 @@ Route::post('/cash-payment-voucher-by-invoice-get-data', 'get_data' )->name('-ge
 Route::post('/cash-payment-voucher-by-invoice-save', 'save' )->name('-save');
 Route::post('/cash-payment-voucher-by-invoice-bind', 'bind' )->name('-bind');
 });
+
+  // Receipt Bank Detail By Invoice
+Route::group([
+  'as' => 'bank-receipts-voucher-by-invoice',
+  'controller' => AccBankReceiptsVoucherByInvoiceController::class
+],function () {
+Route::get('/bank-receipts-voucher-by-invoice', 'show' )->name('');
+Route::post('/bank-receipts-voucher-by-invoice-get-data', 'get_data' )->name('-get-data');
+Route::post('/bank-receipts-voucher-by-invoice-save', 'save' )->name('-save');
+Route::post('/bank-receipts-voucher-by-invoice-bind', 'bind' )->name('-bind');
+});
+
+
+  // Payment Bank Detail By Invoice
+Route::group([
+  'as' => 'cash-payment-voucher-by-invoice',
+  'controller' => AccBankPaymentVoucherByInvoiceController::class
+],function () {
+Route::get('/bank-payment-voucher-by-invoice', 'show' )->name('');
+Route::post('/bank-payment-voucher-by-invoice-get-data', 'get_data' )->name('-get-data');
+Route::post('/bank-payment-voucher-by-invoice-save', 'save' )->name('-save');
+Route::post('/bank-payment-voucher-by-invoice-bind', 'bind' )->name('-bind');
+});
+
 });
 
 

@@ -195,7 +195,8 @@ class AccBankPaymentVoucherByInvoiceController extends Controller
              $detail->credit = $setting_voucher->credit; // Lấy từ seting default
              $detail->amount = $d->payment;
              $detail->rate = $arr->rate;
-             $detail->amount_rate = $d->payment_rate;             
+             $detail->amount_rate = $d->payment_rate;
+             $detail->bank_account_credit = $arr->bank_account;             
              $detail->subject_id_debit = $arr->subject_id;
              $detail->subject_name_debit = $arr->code." - ".$arr->name;
              $detail->active = 1;
@@ -349,7 +350,7 @@ class AccBankPaymentVoucherByInvoiceController extends Controller
     $type = 10;
     try{
       $req = json_decode($request->data);
-      $data = new BankGeneralReadResource(AccGeneral::get_data_load_vat_payment($req));
+      $data = new BankGeneralReadResource(AccGeneral::get_data_load_bank_vat_payment($req));
       if($req && $data->count()>0 ){
         return response()->json(['status'=>true,'data'=> $data]);
       }else{

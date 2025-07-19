@@ -38,14 +38,11 @@
 
     <tr>
          <td class="row-label-responsive"><label>@lang('acc_voucher.bank_account')</label></td>
-        <td>
-            <input type="text" name="bank_id" data-get="bank.id" data-find="bank_id" readonly hidden />
-            <span class="k-textbox k-space-right">
-                <input type="text" name="bank_account" data-get="bank.account" data-find="bank_account" readonly />
-                <a href="javascript:;" style="right : 10px" class="k-icon k-i-filter filter">&nbsp;</a>
-            </span>
-        </td>
-        <td><input type="text" class="k-textbox large" data-get="bank.name" data-find="bank_name" name="bank_name" /></td>
+        <td colspan="2">
+            <select class="droplist read large xxlarge bank_account" name="bank_account"  data-type="string" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.bank-account')}}" name="credit">
+                          
+            </select>            
+        </td>  
 
         <td class="row-label-responsive"></td>
         <td><label>@lang('acc_voucher.accounting_date')</label></td>
@@ -54,9 +51,9 @@
     </tr>
     <tr>
          @if($voucher->code == "BCHD")
-        <td><label>@lang('acc_voucher.payer')</label></td>    
+        <td><label>@lang('acc_voucher.bank_payer')</label></td>    
         @elseif($voucher->code == "BNHD")
-        <td><label>@lang('acc_voucher.receiver')</label></td>    
+        <td><label>@lang('acc_voucher.bank_receiver')</label></td>    
         @endif     
         <td colspan="2"><input type="text" class="k-textbox xxlarge" name="traders" /></td>
        

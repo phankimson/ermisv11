@@ -888,7 +888,6 @@ var Ermis = function() {
                 function() {
 
                 });
-
         };
 
         function OnChangeRate(e) {
@@ -904,6 +903,23 @@ var Ermis = function() {
         $currency.bind("change", OnChangeCurrency);
         $rate.on("change", OnChangeRate);
     }   
+
+    var initChangeBank = function(){
+        function OnChangeBank(e){
+            var arr = {};
+            arr["value"] = this.value;
+            arr["text"] = jQuery(this).find("option:selected").text();
+            var grid = $kGrid.data("kendoGrid");
+            var r = grid.dataSource.data();
+            dataDefaultGrid.data["bank_account"] = arr; 
+            jQuery.each(r, function(l, k) {
+                initLoadDropdownGrid(k,"bank_account","value","text",arr);
+            });
+        }   
+        if($bank){
+        $bank.bind("change", OnChangeBank);  
+        }         
+    }
 
     var initFilterForm = function() {
         $kWindow.open();
@@ -1508,6 +1524,7 @@ var Ermis = function() {
             initBindData();
             initGetStoredArrId();
             initChangeCurrency();
+            initChangeBank();
             initVoucherChange();
         }
 
