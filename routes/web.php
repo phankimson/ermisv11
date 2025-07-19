@@ -81,6 +81,16 @@ Route::group([
   Route::post('/query-change-database','ChangeDatabase')->name('-change-database');
   });
 
+   // Update Database
+  Route::group([
+    'as' => 'update-database',
+    'controller' => UpdateDatabaseController::class
+  ],function () {
+  Route::get('/update-database','show')->name('');
+  Route::post('/update-database','update')->name('-run');
+  Route::post('/load-database','GetTableDatabase')->name('-load-database');
+  });
+
   // Notes
   Route::group([
     'as' => 'notes',
