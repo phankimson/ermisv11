@@ -38,7 +38,7 @@ class UpdateDatabaseController extends Controller
                 'host'      => $req->host,
                 'database'  => $req->database,
                 'username'  => $req->username,
-                'password'  => $req->password==""?"":null,
+                'password'  => $req->password==""?null:$req->password,
                 'charset'   => 'utf8',
                 'collation' => 'utf8_unicode_ci',
                 'prefix'    => '',

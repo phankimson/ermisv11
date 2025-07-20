@@ -119,4 +119,6 @@ return [
       "invoice_number_paid" => "Số hóa đơn :invoice đã thanh toán !",
       "invoice_number_duplicate" => "Số hóa đơn :invoice bị trùng!",
       "account_negative" => "Tài khoản :account âm !",
+      "connect_success"=>"Kết nối thành công !",
+      "connect_fail"=>"Kết nối thất bại !",
 ];

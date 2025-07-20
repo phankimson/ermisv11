@@ -87,7 +87,7 @@ Route::group([
     'controller' => UpdateDatabaseController::class
   ],function () {
   Route::get('/update-database','show')->name('');
-  Route::post('/update-database','update')->name('-run');
+  Route::post('/update-database','start')->name('-start');
   Route::post('/load-database','GetTableDatabase')->name('-load-database');
   });
 

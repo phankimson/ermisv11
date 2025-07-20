@@ -25,20 +25,29 @@
        <div id="page_content_inner">
             <div class="md-card">
                 <div class="md-card-content">
-                    <h3 class="heading_a">Character Counter</h3>
-                    <div class="uk-grid" data-uk-grid-margin>
-                        <div class="uk-width-medium-1-3">
-                            <label>Default</label>
-                            <input type="text" class="input-count md-input" id="input_counter" maxlength="60" />
+                    <h3 class="heading_a">@lang('update_database.info_database')</h3>
+                    <div class="uk-grid info-database" data-uk-grid-margin>
+                        <div class="uk-width-medium-1-4">
+                            <label>@lang('update_database.host')</label>
+                            <input type="text" class="input-count md-input" value="157.66.47.202" name="host" maxlength="60" />
                         </div>
-                        <div class="uk-width-medium-1-3">
-                            <label>Error</label>
-                            <input type="text" class="md-input md-input-danger input-count" maxlength="40" value="Something wrong" />
+                        <div class="uk-width-medium-1-4">
+                            <label>@lang('update_database.database')</label>
+                            <input type="text" class="input-count md-input" value="ermis" name="database" maxlength="60" />
                         </div>
-                        <div class="uk-width-medium-1-3">
-                            <label>Success</label>
-                            <input type="text" class="md-input md-input-success input-count" maxlength="40" value="All ok" />
+                        <div class="uk-width-medium-1-4">
+                            <label>@lang('login.username')</label>
+                            <input type="text" class="input-count md-input" name="username" maxlength="60" />
                         </div>
+                        <div class="uk-width-medium-1-4">
+                            <label>@lang('login.password')</label>
+                            <input type="password" class="input-count md-input" name="password" maxlength="60" />
+                        </div>
+                    </div>
+                    <div id="notification"></div>
+                    <div class="pull-right">
+                        <a class="md-btn md-btn-primary md-btn-wave-light waves-effect waves-button waves-light load tooltips" >@lang('action.load')</a>
+                        <a class="md-btn md-btn-warning md-btn-wave-light waves-effect waves-button waves-light start tooltips">@lang('action.start')</a>                
                     </div>
                 </div>
             </div>
@@ -72,4 +81,5 @@
             }
         });
     </script>
+    <script src="{{ url('addon/scripts/update_database.js') }}"></script>
 @endpush
