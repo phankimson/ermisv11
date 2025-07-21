@@ -30,10 +30,11 @@ use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 
-class AccBankPaymentGeneralController extends Controller
+class AccBankTransferGeneralController extends Controller
 {
   protected $url;
   protected $key;
+  protected $key_voucher;
   protected $menu;
   protected $group;
   protected $print;
@@ -42,16 +43,17 @@ class AccBankPaymentGeneralController extends Controller
   public function __construct(Request $request)
  {
      $this->url =  $request->segment(3);
-     $this->group = 4; // 4 Nhóm chi ngân hàng
-     $this->key = "bank-payment-general";
+     $this->group = 0; // Nhóm chuyển nội bộ
+     $this->key = "bank-transfer-general";
+     $this->key_voucher = "bank-transfer-voucher";
      $this->menu = Menu::where('code', '=', $this->key)->first();
-     $this->print = 'BN%';
+     $this->print = 'BT%';
      $this->date_range = "DATE_RANGE_GENERAL";
  }
 
   public function show(){
     $sys = AccSystems::get_systems($this->date_range);
-    $group =  TypeListGeneralResource::collection(Menu::get_menu_by_group($this->menu->type,$this->group));
+    $group =  TypeListGeneralResource::collection(Menu::get_menu_like_code($this->key_voucher));
     $action = new TypeGeneralResource($group->first());
     $end_date_default = Carbon::now();
     $start_date_default = Carbon::now()->subDays($sys->value);
@@ -59,7 +61,7 @@ class AccBankPaymentGeneralController extends Controller
     $end_date = $end_date_default->format('d/m/Y');
     $start_date = $start_date_default->format('d/m/Y');
     $print = AccPrintTemplate::get_code($this->print);
-    return view('acc.payment_bank_general',['data' => $data, 'group' =>$group ,'key' => $this->key, 'action' => $action , 'end_date' => $end_date ,'print' => $print, 'start_date'=>$start_date]);
+    return view('acc.transfer_bank_general',['data' => $data, 'group' =>$group ,'key' => $this->key, 'action' => $action , 'end_date' => $end_date ,'print' => $print, 'start_date'=>$start_date]);
   }
 
   public function unwrite(Request $request) {
@@ -90,14 +92,8 @@ class AccBankPaymentGeneralController extends Controller
                $detail->each(function ($d){
                     $d->update(['active'=>0]);                    
                     // Lưu số lại số tồn bên nợ
-                    if(substr($d->debit()->first()->code,0,3) == ("111" || "113")){
-                        $ba = AccCurrencyCheck::get_type_first($d->debit,$d->currency,null);
-                      if($ba){
-                        $ba->amount = $ba->amount - $d->amount;
-                        $ba->save();
-                      }
-                    }else if(substr($d->debit()->first()->code,0,3) == "112"){
-                       $ba = AccCurrencyCheck::get_type_first($d->debit,$d->currency,$d->bank_account);
+                  if(substr($d->debit()->first()->code,0,3) == "112"){
+                       $ba = AccCurrencyCheck::get_type_first($d->debit,$d->currency,$d->bank_account_debit);
                       if($ba){
                         $ba->amount = $ba->amount - $d->amount;
                         $ba->save();
@@ -105,7 +101,7 @@ class AccBankPaymentGeneralController extends Controller
                     }
                     // Lưu số lại số tồn bên có
                     if(substr($d->credit()->first()->code,0,3) == "112"){
-                        $ca = AccCurrencyCheck::get_type_first($d->credit,$d->currency,$d->bank_account);
+                        $ca = AccCurrencyCheck::get_type_first($d->credit,$d->currency,$d->bank_account_credit);
                       if($ca){
                         $ca->amount = $ca->amount + $d->amount;
                         $ca->save();
@@ -166,14 +162,8 @@ class AccBankPaymentGeneralController extends Controller
                $detail->each(function ($d){
                     $d->update(['active'=>1]);
                    // Lưu số lại số tồn bên nợ
-                    if(substr($d->debit()->first()->code,0,3) == ("111" || "113")){
-                        $ba = AccCurrencyCheck::get_type_first($d->debit,$d->currency,null);
-                      if($ba){
-                        $ba->amount = $ba->amount + $d->amount;
-                        $ba->save();
-                      }
-                    }else if(substr($d->debit()->first()->code,0,3) == "112"){
-                       $ba = AccCurrencyCheck::get_type_first($d->debit,$d->currency,$d->bank_account);
+                   if(substr($d->debit()->first()->code,0,3) == "112"){
+                       $ba = AccCurrencyCheck::get_type_first($d->debit,$d->currency,$d->bank_account_debit);
                       if($ba){
                         $ba->amount = $ba->amount + $d->amount;
                         $ba->save();
@@ -181,7 +171,7 @@ class AccBankPaymentGeneralController extends Controller
                     }
                     // Lưu số lại số tồn bên có
                     if(substr($d->credit()->first()->code,0,3) == "112"){
-                        $ca = AccCurrencyCheck::get_type_first($d->credit,$d->currency,$d->bank_account);
+                        $ca = AccCurrencyCheck::get_type_first($d->credit,$d->currency,$d->bank_account_credit);
                       if($ca){
                         $ca->amount = $ca->amount - $d->amount;
                         $ca->save();
@@ -339,7 +329,7 @@ class AccBankPaymentGeneralController extends Controller
          $permission = $request->session()->get('per');
          $arr = json_decode($request->data);
          if($arr){
-           $data = AccGeneral::get_id_with_detail($arr,['detail','tax','attach','vat_detail_payment']);           
+           $data = AccGeneral::get_id_with_detail($arr,['detail','attach']);           
            $period = AccPeriod::get_date(Carbon::parse($data->accounting_date)->format('Y-m'),1);
            if(!$period){
              if($permission['d'] == true){             
