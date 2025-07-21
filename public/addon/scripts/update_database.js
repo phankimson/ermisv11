@@ -5,15 +5,24 @@ var Ermis = function() {
         jQuery('.load').on('click ', btnLoad);        
     }
   }
-
   var btnLoad = function(e){
         e.preventDefault();
           if(jQuery('input[name="host"]').val() != '' && jQuery('input[name="database"]').val() != ''){
+          var name = "Tables_in_"+jQuery('input[name="database"]').val();
           var data = GetAllValueForm('.info-database');
           var postdata = {data : JSON.stringify(data)};
               RequestURLWaiting('load-database','json',postdata,function(result){
                   if(result.status == true){
                       jQuery('#notification').EPosMessage('success', result.message);
+                        jQuery.each(result.tables, function (k, v) {
+                            var clone = jQuery(".item_table").clone(true);
+                            clone.removeClass("hidden");
+                            clone.removeClass("item_table");
+                            clone.find("label").html(v[name]);
+                            clone.find("input:checkbox").attr("name",v[name]);
+                            clone.find("select").attr("name",v[name]);
+                            clone.appendTo(".item_table_add");
+                        });
                   }else{
                       jQuery('#notification').EPosMessage('error', result.message);
                   }
