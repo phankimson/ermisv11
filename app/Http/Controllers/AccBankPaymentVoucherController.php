@@ -210,7 +210,7 @@ class AccBankPaymentVoucherController extends Controller
              $detail->amount_rate = $d->amount * $d->rate;
              $detail->accounted_fast = $d->accounted_fast->value;  // Đổi từ id value dạng read
              $detail->department = $d->department->value; // Đổi từ id value dạng read
-             $detail->bank_account_debit = $d->bank_account->value;  // Đổi từ id value dạng read
+             $detail->bank_account_debit = $arr->bank_account; 
              $detail->case_code = $d->case_code->value;  // Đổi từ id value dạng read
              $detail->cost_code = $d->cost_code->value;  // Đổi từ id value dạng read
              $detail->statistical_code = $d->statistical_code->value;  // Đổi từ id value dạng read
@@ -241,25 +241,26 @@ class AccBankPaymentVoucherController extends Controller
                  $balance->amount = $d->amount * $d->rate;
                  $balance->save();
                }
-             }else if(substr($d->debit->text,0,3) == '112'){
-                 $balance = AccCurrencyCheck::get_type_first($d->debit->value,$arr->currency,$d->bank_account->value);
-                 if($balance){
-                   $balance->amount = $balance->amount + ($d->amount * $d->rate);
-                   $balance->save();
-                 }else{
-                   $balance = new AccCurrencyCheck();
-                   $balance->type = $d->debit->value;
-                   $balance->currency = $arr->currency;
-                   $balance->bank_account = $d->bank_account->value;
-                   $balance->amount = $d->amount * $d->rate;
-                   $balance->save();
-                 }
-               }
+             }
+             //else if(substr($d->debit->text,0,3) == '112'){
+             //    $balance = AccCurrencyCheck::get_type_first($d->debit->value,$arr->currency,$d->bank_account->value);
+             //    if($balance){
+             //      $balance->amount = $balance->amount + ($d->amount * $d->rate);
+             //      $balance->save();
+             //    }else{
+             //      $balance = new AccCurrencyCheck();
+             //      $balance->type = $d->debit->value;
+             //      $balance->currency = $arr->currency;
+             //      $balance->bank_account = $d->bank_account->value;
+             //      $balance->amount = $d->amount * $d->rate;
+             //      $balance->save();
+             //    }
+             //  }
                // End
 
                // Lưu số tồn tiền bên Có
-               if(substr($d->credit->text,0,3) === '111'){    
-                 $balance = AccCurrencyCheck::get_type_first($d->credit->value,$arr->currency,null);
+               if(substr($d->credit->text,0,3) === '112'){    
+                 $balance = AccCurrencyCheck::get_type_first($d->credit->value,$arr->currency,$arr->bank_account);
                  if($balance){
                    $balance->amount = $balance->amount - ($d->amount * $d->rate);
                    $balance->save();
@@ -267,7 +268,7 @@ class AccBankPaymentVoucherController extends Controller
                    $balance = new AccCurrencyCheck();
                    $balance->type = $d->credit->value;
                    $balance->currency = $arr->currency;
-                   $balance->bank_account = null;
+                   $balance->bank_account = $arr->bank_account;
                    $balance->amount = 0 - ($d->amount * $d->rate);
                    $balance->save();
                  }

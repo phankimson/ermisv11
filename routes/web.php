@@ -1060,6 +1060,7 @@ Route::group([
   Route::post('/cash-payment-voucher-by-invoice-print','prints');
   Route::post('/bank-receipts-voucher-by-invoice-print','prints');  
   Route::post('/bank-payment-voucher-by-invoice-print','prints');   
+  
   });
 
   // Receipt Cash General
@@ -1179,6 +1180,31 @@ Route::group([
   Route::post('/bank-payment-voucher-by-invoice-delete', 'delete' )->name('-by-invoice-delete'); 
   });  
 
+// Transfer Bank General
+  Route::group([
+    'as' => 'bank-transfer-general',
+    'controller' => AccBankTransferGeneralController::class
+  ],function () {
+  Route::get('/bank-transfer-general', 'show' )->name('');
+  Route::post('/bank-transfer-general-get','find' )->name('-find');
+  Route::post('/bank-transfer-general-unwrite','unwrite' )->name('-unwrite');
+  Route::post('/bank-transfer-general-write','write' )->name('-write');
+  Route::post('/bank-transfer-general-revoucher', 'revoucher' )->name('-revoucher');
+  Route::post('/bank-transfer-general-start-voucher', 'start_voucher' )->name('-start-voucher');
+  Route::post('/bank-transfer-general-change-voucher', 'change_voucher' )->name('-change-voucher');
+  Route::get('/bank-transfer-general-DownloadExcel', 'DownloadExcel' )->name('-DownloadExcel');
+  Route::any('/bank-transfer-general-import', 'import')->name('-import');
+  Route::any('/bank-transfer-general-delete', 'delete')->name('-delete');
+
+  // Ghi , ko ghi , tìm chứng từ trang
+  Route::post('/bank-transfer-voucher-unwrite','unwrite' )->name('-unwrite');
+  Route::post('/bank-transfer-voucher-write','write' )->name('-write');
+  Route::post('/bank-transfer-voucher-find', 'find' )->name('-find');
+  Route::post('/bank-transfer-voucher-delete', 'delete' )->name('-delete'); 
+
+  });  
+  
+
   // Receipt Cash Detail
   Route::group([
     'as' => 'cash-receipts-voucher',
@@ -1225,6 +1251,19 @@ Route::group([
   Route::post('/bank-payment-voucher-bind', 'bind' )->name('-bind');
   Route::get('/bank-payment-voucher-DownloadExcel', 'DownloadExcel' )->name('-DownloadExcel');
   Route::any('/bank-payment-voucher-import', 'import')->name('-import');
+  });
+
+
+    // Transfer Bank Detail
+  Route::group([
+    'as' => 'bank-transfer-voucher',
+    'controller' => AccBankPaymentVoucherController::class
+  ],function () {
+  Route::get('/bank-transfer-voucher', 'show' )->name('');
+  Route::post('/bank-transfer-voucher-save', 'save' )->name('-save');
+  Route::post('/bank-transfer-voucher-bind', 'bind' )->name('-bind');
+  Route::get('/bank-transfer-voucher-DownloadExcel', 'DownloadExcel' )->name('-DownloadExcel');
+  Route::any('/bank-transfer-voucher-import', 'import')->name('-import');
   });
 
   // Receipt Cash Detail Voucher
@@ -1285,7 +1324,6 @@ Route::group([
   Route::post('/bank-receipts-voucher-by-invoice-reference', 'reference' )->name('-by-invoice-reference');
   });
 
-
   // Payment Bank Detail Voucher
   Route::group([
     'as' => 'bank-payment-voucher',
@@ -1303,6 +1341,20 @@ Route::group([
   Route::post('/bank-payment-voucher-by-invoice-get', 'get' )->name('-by-invoice-get');
   Route::post('/bank-payment-voucher-by-invoice-currency', 'currency' )->name('-by-invoice-currency');
   Route::post('/bank-payment-voucher-by-invoice-reference', 'reference' )->name('-by-invoice-reference');
+  });
+
+  // Transfer Bank Detail Voucher
+  Route::group([
+    'as' => 'bank-transfer-voucher',
+    'controller' => AccVoucherController::class
+  ],function () {
+  Route::post('/bank-transfer-voucher-get', 'get' )->name('-get');
+  Route::post('/bank-transfer-voucher-auto', 'auto' )->name('-auto');
+  Route::post('/bank-transfer-voucher-ai', 'ai' )->name('-ai');
+  Route::post('/bank-transfer-voucher-currency', 'currency' )->name('-currency');
+  Route::post('/bank-transfer-voucher-reference', 'reference' )->name('-reference');
+  Route::post('/bank-transfer-voucher-voucher-change', 'voucher_change' )->name('-voucher-change');
+  Route::post('/bank-transfer-voucher-load-voucher-change', 'load_voucher_change' )->name('-load-voucher-change');
   });
 
   // Receipt Cash Detail By Invoice

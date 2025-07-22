@@ -89,7 +89,7 @@ class AccBankReceiptsGeneralController extends Controller
                $detail->each(function ($d){
                     $d->update(['active'=>0]);
                     // Lưu số lại số tồn bên nợ
-                    if(substr($d->debit()->first()->code,0,3) == "111"){
+                    if(substr($d->debit()->first()->code,0,3) == "112"){
                         $ba = AccCurrencyCheck::get_type_first($d->debit,$d->currency,null);
                       if($ba){
                         $ba->amount = $ba->amount - $d->amount;
@@ -103,13 +103,14 @@ class AccBankReceiptsGeneralController extends Controller
                         $ca->amount = $ca->amount + $d->amount;
                         $ca->save();
                       }
-                    }else if(substr($d->credit()->first()->code,0,3) == "112"){
-                       $ca = AccCurrencyCheck::get_type_first($d->credit,$d->currency,$d->bank_account);
-                      if($ca){
-                        $ca->amount = $ca->amount + $d->amount;
-                        $ca->save();
-                      }
                     }
+                   // else if(substr($d->credit()->first()->code,0,3) == "112"){
+                   //    $ca = AccCurrencyCheck::get_type_first($d->credit,$d->currency,$d->bank_account);
+                   //   if($ca){
+                   //    $ca->amount = $ca->amount + $d->amount;
+                   //   $ca->save();
+                   //   }
+                   // }
                   
                 });
                 DB::connection(env('CONNECTION_DB_ACC'))->commit();
@@ -166,7 +167,7 @@ class AccBankReceiptsGeneralController extends Controller
                $detail->each(function ($d){
                     $d->update(['active'=>1]);
                     // Lưu số lại số tồn bên nợ
-                  if(substr($d->debit()->first()->code,0,3) == "111"){
+                  if(substr($d->debit()->first()->code,0,3) == "112"){
                     $ba = AccCurrencyCheck::get_type_first($d->debit,$d->currency,null);
                     if($ba){
                       $ba->amount = $ba->amount + $d->amount;
@@ -180,13 +181,14 @@ class AccBankReceiptsGeneralController extends Controller
                         $ca->amount = $ca->amount - $d->amount;
                         $ca->save();
                       }
-                    }else if(substr($d->credit()->first()->code,0,3) == "112"){
-                       $ca = AccCurrencyCheck::get_type_first($d->credit,$d->currency,$d->bank_account);
-                      if($ca){
-                        $ca->amount = $ca->amount - $d->amount;
-                        $ca->save();
-                      }
-                    }
+                     }
+                    //else if(substr($d->credit()->first()->code,0,3) == "112"){
+                    //   $ca = AccCurrencyCheck::get_type_first($d->credit,$d->currency,$d->bank_account);
+                    //  if($ca){
+                    //    $ca->amount = $ca->amount - $d->amount;
+                    //    $ca->save();
+                    //  }
+                    //}
 
                 });
                 DB::connection(env('CONNECTION_DB_ACC'))->commit();
@@ -359,7 +361,7 @@ class AccBankReceiptsGeneralController extends Controller
                
                foreach($detail as $d){
                 //Clear số tiền bên nợ
-                $b1 = AccCurrencyCheck::get_type_first($d->debit,$d->currency,null);
+                $b1 = AccCurrencyCheck::get_type_first($d->debit,$d->currency,$d->bank_account_debit);
                 if($b1){          
                   $b1->amount = $b1->amount - $d->amount;
                   $b1->save();

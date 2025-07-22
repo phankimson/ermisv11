@@ -96,13 +96,14 @@ class AccBankPaymentGeneralController extends Controller
                         $ba->amount = $ba->amount - $d->amount;
                         $ba->save();
                       }
-                    }else if(substr($d->debit()->first()->code,0,3) == "112"){
-                       $ba = AccCurrencyCheck::get_type_first($d->debit,$d->currency,$d->bank_account);
-                      if($ba){
-                        $ba->amount = $ba->amount - $d->amount;
-                        $ba->save();
-                      }
-                    }
+                     }
+                    //else if(substr($d->debit()->first()->code,0,3) == "112"){
+                    //   $ba = AccCurrencyCheck::get_type_first($d->debit,$d->currency,$d->bank_account);
+                    //  if($ba){
+                    //    $ba->amount = $ba->amount - $d->amount;
+                    //    $ba->save();
+                    //  }
+                    //}
                     // Lưu số lại số tồn bên có
                     if(substr($d->credit()->first()->code,0,3) == "112"){
                         $ca = AccCurrencyCheck::get_type_first($d->credit,$d->currency,$d->bank_account);
@@ -172,13 +173,14 @@ class AccBankPaymentGeneralController extends Controller
                         $ba->amount = $ba->amount + $d->amount;
                         $ba->save();
                       }
-                    }else if(substr($d->debit()->first()->code,0,3) == "112"){
-                       $ba = AccCurrencyCheck::get_type_first($d->debit,$d->currency,$d->bank_account);
-                      if($ba){
-                        $ba->amount = $ba->amount + $d->amount;
-                        $ba->save();
-                      }
-                    }
+                     }
+                    //else if(substr($d->debit()->first()->code,0,3) == "112"){
+                    //   $ba = AccCurrencyCheck::get_type_first($d->debit,$d->currency,$d->bank_account);
+                    //  if($ba){
+                    //    $ba->amount = $ba->amount + $d->amount;
+                    //    $ba->save();
+                    //  }
+                    //}
                     // Lưu số lại số tồn bên có
                     if(substr($d->credit()->first()->code,0,3) == "112"){
                         $ca = AccCurrencyCheck::get_type_first($d->credit,$d->currency,$d->bank_account);
@@ -364,7 +366,7 @@ class AccBankPaymentGeneralController extends Controller
                   $b1->save();
                 }
                 //Clear số tiền bên có
-                $b2 = AccCurrencyCheck::get_type_first($d->credit,$d->currency,null);
+                $b2 = AccCurrencyCheck::get_type_first($d->credit,$d->currency,$d->bank_account_credit);
                 if($b2){
                   $b2->amount = $b2->amount + $d->amount;
                   $b2->save();
