@@ -23,12 +23,10 @@ var Ermis = function() {
         ErmisKendoNumbericTemplate(".number", "n" + Ermis.decimal, null, null, null, 1);
         ErmisKendoNumbericTemplate(".number-price", "n" + Ermis.decimal, null, null, null, 1000);
         // KendoWindowTemplate
-        $kWindow1 = ErmisKendoWindowTemplate(myWindow1, "800px", "");
         $kWindow2 = ErmisKendoWindowTemplate(myWindow2, "1000px", "");
         $kWindow3 = ErmisKendoWindowTemplate(myWindow3, "1000px", "");
         $kWindow4 = ErmisKendoWindowTemplate(myWindow4, "400px", "");
         $kWindow5 = ErmisKendoWindowTemplate(myWindow5, "800px", "");
-        $kWindow1.title(Lang.get('acc_voucher.search_for_goods'));
         $kWindow2.title(Lang.get('acc_voucher.reference'));
         $kWindow3.title(Lang.get('acc_voucher.search_for_voucher'));
         $kWindow4.title(Lang.get('acc_voucher.attach'));
@@ -192,38 +190,6 @@ var Ermis = function() {
     };
 
 
-    var initKendoGridSubject = function() {
-        ErmisKendoGridVoucherTemplate($kGridSubject, {
-            data: []
-        }, "row", jQuery(window).height() * 0.5, true, Ermis.columns_subject);
-
-        $kGridSubject.dblclick(function(e) {
-            initChoose(e);
-        });
-
-    };
-
-    var initSearchGridSubject = function() {
-        jQuery('#search_data').on('click', function(e) {
-            var filter = GetAllDataForm('#form-window-filter', 2);
-            var c = GetDataAjax(filter.columns);
-            var postdata = {
-                data: JSON.stringify(c.obj)
-            };
-            ErmisTemplateAjaxPost0(e, postdata, Ermis.link + '-get', function(result) {
-                var grid = $kGridSubject.data("kendoGrid");
-                var ds = new kendo.data.DataSource({
-                    data: result.data
-                });
-                grid.setDataSource(ds);
-                grid.dataSource.page(1);
-            }, function(result) {
-                kendo.alert(result.message);
-            });
-        });
-
-    };
-
     var initTabsTrip = function() {
         var ts = jQuery("#tabstrip");
         var tabStrip = ts.kendoTabStrip().data("kendoTabStrip");
@@ -240,118 +206,7 @@ var Ermis = function() {
       }
     }
 
-    var initScanBarcode = function(e) {
-        var obj = {};
-        var $this = e.currentTarget ? e.currentTarget : e
-        obj.value = jQuery($this).val();
-        if (obj.value) {
-            obj.id = sessionStorage.dataId;
-            var postdata = {
-                data: JSON.stringify(obj)
-            };
-            ErmisTemplateAjaxPost0(e, postdata, Ermis.link + '-scan', function(result) {
-                var i = result.data;
-                var grid = $kGrid.data("kendoGrid");
-                var dataItem = grid.dataSource.get(i.id);
-                if (dataItem) {
-                    var row = grid.tbody.find("tr[data-uid='" + dataItem.uid + "']");
-                    var selectedItem = grid.dataItem(row);
-                    selectedItem.set("quantity", dataItem.quantity + 1);
-                } else {
-                    i.quantity = 1;
-                    grid.dataSource.insert(0, i);
-                }
-
-                setTimeout(function() {
-                    jQuery($this).val("");
-                    jQuery($this).focus();
-                }, 1);
-            }, function(result) {
-                kendo.alert(result.message);
-            });
-
-        }
-    }
-
-    var initKendoGridBarcode = function() {
-        var grid = $kGridBarcode.kendoGrid({
-            dataSource: {
-                data: []
-            },
-            selectable: "multiple, row",
-            height: jQuery(window).height() * 0.5,
-            sortable: true,
-            pageable: true,
-            filterable: true,
-            columns: Ermis.columns_barcode
-        }).data("kendoGrid");
-        grid.thead.kendoTooltip({
-            filter: "th",
-            content: function(e) {
-                var target = e.target; // element for which the tooltip is shown
-                return $(target).text();
-            }
-        });
-
-        grid.table.on("click", ".k-checkbox", selectRow);
-        //bind click event to the checkbox
-        //grid.table.on("click", ".k-checkbox" , selectRow);
-        jQuery('#header-chb-b').change(function(ev) {
-            var checked = ev.target.checked;
-            $kGridBarcode.find('.k-checkbox').not("#header-chb-b").each(function(idx, item) {
-                  if (checked) {
-                      if (!$(item).is(':checked')) {
-                          $(item).click();
-                      }
-                  } else {
-                      if ($(item).is(':checked')) {
-                          $(item).click();
-                      }
-                  }
-            });
-
-        });
-
-        jQuery(".choose_barcode").bind("click", function() {
-            var checked = [];
-            for (var i of checkedData) {
-                var grid = $kGrid.data("kendoGrid");
-                var dataItem = grid.dataSource.get(i.id);
-                if (dataItem) {
-                    var row = grid.tbody.find("tr[data-uid='" + dataItem.uid + "']");
-                    var selectedItem = grid.dataItem(row);
-                    selectedItem.set("quantity", dataItem.quantity + 1);
-                } else {
-                    i.quantity = 1;
-                    grid.dataSource.insert(0, i);
-                    $kGridBarcode.find('.k-checkbox[id="' + i.id + '"]').click();
-                }
-            }
-            $kWindow1.close();
-            checkedData = [];
-        });
-        var checkedData = [];
-
-        //on click of the checkbox:
-        function selectRow() {
-            var checked = this.checked,
-                row = $(this).closest("tr"),
-                grid = $kGridBarcode.data("kendoGrid"),
-                dataItem = grid.dataItem(row);
-            if (checked) {
-                checkedData.push(dataItem)
-                //-select the row
-                row.addClass("k-state-selected");
-            } else {
-                checkedData = checkedData.filter(x => x.id != dataItem.id)
-                //-remove selection
-                row.removeClass("k-state-selected");
-            }
-        }
-        jQuery("#barcode").on("blur", initScanBarcode)
-
-    };
-
+    
     var initKendoGridReference = function() {
         var array = [];
         ErmisKendoGridCheckboxTemplate($kGridReference, [] , jQuery(window).height() * 0.5,Ermis.page_size_1, "multiple, row", "reference","id", Ermis.columns_reference, function(checkedIds) {
@@ -464,7 +319,6 @@ var Ermis = function() {
             jQuery('.choose').on('click', initChoose);
             jQuery('.cancel-window').on('click', initClose);
             jQuery('.filter').on('click', initFilterForm);
-            jQuery('.barcode').on('click', initBarcodeForm);
             jQuery('.reference').on('click', initReferenceForm);
             jQuery('.attach').on('click', initAttachForm);
             jQuery('.voucher-change').on('click', initVoucherChangeForm);
@@ -492,7 +346,6 @@ var Ermis = function() {
             $kGrid.data('kendoGrid').dataSource.data([]);
             $kGrid.removeClass('disabled');
             $kGridReference.data('kendoGrid').dataSource.data([]);
-            $kGridBarcode.data('kendoGrid').dataSource.data([]);
             shortcut.add(key + "T", function(e) {
                 initDeleteRowAll(e);
             });
@@ -527,7 +380,6 @@ var Ermis = function() {
             jQuery('.cancel').on('click', initCancel);
             jQuery('.save').on('click', initSave);
             jQuery('.filter').on('click', initFilterForm);
-            jQuery('.barcode').on('click', initBarcodeForm);
             jQuery('.reference').on('click', initReferenceForm);
             jQuery('.attach').on('click', initAttachForm);
             jQuery('.voucher-change').on('click', initVoucherChangeForm);
@@ -658,7 +510,6 @@ var Ermis = function() {
           jQuery('.cancel').on('click', initCancel);
           jQuery('.save').on('click', initSave);
           jQuery('.filter').on('click', initFilterForm);
-          jQuery('.barcode').on('click', initBarcodeForm);
           jQuery('.reference').on('click', initReferenceForm);
           jQuery('.attach').on('click', initAttachForm);
           jQuery('.voucher-change').on('click', initVoucherChangeForm);
@@ -776,8 +627,7 @@ var Ermis = function() {
           ErmisTemplateAjaxPostAdd3(e,'#import-form',Ermis.link+'-import',arr,
         function(results){
             SetDataAjax(data.columns, results.data);    
-            initLoadGrid(results.data[0]);   
-            AddChooseObjectResult(results.data['object']);
+            initLoadGrid(results.data[0]);  
           },
          function(){},
          function(results){
@@ -822,28 +672,8 @@ var Ermis = function() {
         $rate.on("change", OnChangeRate);
     }   
 
-    var initChangeBank = function(){
-        function OnChangeBank(e){
-            var arr = {};
-            arr["value"] = this.value;
-            arr["text"] = jQuery(this).find("option:selected").text();
-            var grid = $kGrid.data("kendoGrid");
-            var r = grid.dataSource.data();
-            dataDefaultGrid.data["bank_account"] = arr; 
-            jQuery.each(r, function(l, k) {
-                initLoadDropdownGrid(k,"bank_account","value","text",arr);
-            });
-        }   
-        if($bank){
-        $bank.bind("change", OnChangeBank);  
-        }         
-    }
-
     var initFilterForm = function() {
         $kWindow.open();
-    };
-    var initBarcodeForm = function() {
-        $kWindow1.open();
     };
     var initReferenceForm = function() {
         $kWindow2.open();
@@ -859,21 +689,6 @@ var Ermis = function() {
             initLoadVoucherChange();
         }
         $kWindow5.open();
-    };
-
-    var initGetDataBarcode = function() {
-        jQuery('#search_barcode').on('click', function(e) {
-            var filter = GetAllDataForm('#form-window-barcode', 2);
-            var obj = GetDataAjax(filter.columns, filter.elem);
-            var postdata = {
-                data: JSON.stringify(obj)
-            };
-            ErmisTemplateAjaxPost0(e, postdata, Ermis.link + '-load', function(result) {
-                ErmisKendoGridAddData($kGridBarcode,result.data,Ermis.page_size_1,null);
-            }, function(result) {
-                kendo.alert(result.message);
-            });
-        });
     };
 
     var initGetDataReference = function() {
@@ -970,32 +785,28 @@ var Ermis = function() {
     var initSave = function(e) {
         var obj = {};
         obj.detail = $kGrid.data("kendoGrid").dataSource.view();
-        obj.tax = $kGridVat.data("kendoGrid").dataSource.data();
         obj.reference_by = reference_by;
         var crit1 = initValidationGrid(obj.detail,Ermis.field);
         var crit2 = initValidationGridColumnKey(obj.detail,Ermis.columns);
-        var crit3 = initValidationGrid(obj.tax,Ermis.field_tax);
-        var crit4 = initValidationGridColumnKey(obj.tax,Ermis.column_grid);
+        var crit3 = jQuery('.bank_account[name="bank_account_debit"]').data('kendoDropDownList').value();
+        var crit4 = jQuery('.bank_account[name="bank_account_credit"]').data('kendoDropDownList').value();
         var crit = crit1.concat(crit2);
-        var crit_tax = crit3.concat(crit4);
-        if(crit.length == 0 && crit_tax.length == 0){
+        if(crit.length == 0 && crit3 != "0" && crit4 != "0" && crit3 != crit4){
           obj.type = jQuery('#tabstrip').find('.k-state-active').attr("data-search");
           obj.total_number = ConvertNumber(jQuery('#quantity_total').html(),Ermis.decimal_symbol);
           obj.total_amount = ConvertNumber(jQuery('#amount_total').html(),Ermis.decimal_symbol);
           obj.total_amount_rate = ConvertNumber(jQuery('#amount_rate_total').html(),Ermis.decimal_symbol);
-          var tax_amount = ConvertNumber(jQuery('#total_amount').html(),Ermis.decimal_symbol);
-          var tax_amount_rate = ConvertNumber(jQuery('#total_amount_rate').html(),Ermis.decimal_symbol);
-          var message_confirmed = '';
-          if(tax_amount>0 && tax_amount_rate> 0 && tax_amount != obj.total_amount && tax_amount_rate != obj.total_amount_rate){
-              message_confirmed = Lang.get('messages.amount_diffirent_are_you_sure');  
-          }else{
-              message_confirmed = Lang.get('messages.are_you_sure');  
-          }    
+          var message_confirmed = Lang.get('messages.are_you_sure');         
               initSaveDetail(e,obj,message_confirmed);     
-        }else{        
+        }else{   
+            var mes2 = "";  
+            if(crit3 == crit4 && crit3 != "0"){
+                mes2 = Lang.get('messages.bank_transfer_is_duplicated');   
+            }else if(crit3 == "0" || crit4 == "0"){
+                mes2 = Lang.get('messages.bank_sender_or_bank_receive_is_empty');   
+            }   
              var mes1 = initShowValidationGrid(obj.detail,crit,$kGrid);        
-             var mes2 = initShowValidationGrid(obj.tax,crit_tax,$kGridVat);    
-             kendo.alert(mes1.join("</br>")+mes2.join("</br>"));
+             kendo.alert(mes1.join("</br>")+mes2);
         }
 
     };
@@ -1200,20 +1011,14 @@ var Ermis = function() {
           var dataItem = $kGridTab.data("kendoGrid").dataSource.data()[0];
           if (type == 0) {
               var dataGrid = dataDefaultGrid.data;
-          } else {
-              var dataGrid = dataDefaultGrid.vat;
           };
             $kGridTab.find(" tbody tr").removeClass("k-state-selected");
             if (e.keyCode === 13) {
-                if (e.target.id == "barcode") {
-                    initScanBarcode(e.target);
-                } else {
                   if(dataGrid.hasOwnProperty("description") || dataGrid.hasOwnProperty("subject_code")){
                      grid.dataSource.add(dataGrid);
                   }else{
                      grid.addRow();
-                  }
-                }
+                  }                
             } else if (e.keyCode === 45) {
                 var dataItem = grid.dataSource.data()[0];
                 if (dataItem) {
@@ -1430,19 +1235,14 @@ var Ermis = function() {
             initBackTo();
             initKeyCode();
             initChangeAuto();
-            initKendoGridSubject();
-            initSearchGridSubject();
             initKendoUiContextMenuGrid();
             initKendoGridReference();
-            initKendoGridBarcode();
             initKendoGridVoucher();
             initSearchGridVoucher();
-            initGetDataBarcode();
             initGetDataReference();
             initBindData();
             initGetStoredArrId();
             initChangeCurrency();
-            initChangeBank();
             initVoucherChange();
         }
 

@@ -54,7 +54,7 @@
       <tr>
       <td class="row-label"><label>@lang('acc_number_voucher.format_type')</label></td>
       <td>
-      <select class="droplist large" change-item="1" data-position="1" data-title="@lang('acc_number_voucher.format')" data-template="#= FormatDropList(format,'format') #" data-type="number" data-width="200px" name="format">
+      <select class="droplist get_option large" change-item="1" data-position="1" data-title="@lang('acc_number_voucher.format')" data-template="#= FormatDropList(format,'format') #" data-type="number" data-width="200px" name="format">
               <option readonly selected value="0">@lang('global.select')</option>              
                 @foreach($number_voucher_format as $k=>$m)
                    <option value="{{ $k }}"> {{ $m }}</option>

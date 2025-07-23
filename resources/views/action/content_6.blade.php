@@ -1,6 +1,6 @@
 <table>
     <tr>
-    <td class="row-label-responsive"><label>@lang('acc_voucher.bank_account_pay')</label></td>
+    <td class="row-label-responsive"><label>@lang('acc_voucher.bank_payer')</label></td>
         <td colspan="2">
             <select class="droplist read large xxlarge bank_account" name="bank_account_debit"  data-type="string" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.bank-account')}}" name="credit">
                           
@@ -24,7 +24,7 @@
     </tr>
 
     <tr>
-       <td class="row-label-responsive"><label>@lang('acc_voucher.bank_account_receive')</label></td>
+       <td class="row-label-responsive"><label>@lang('acc_voucher.bank_receiver')</label></td>
         <td colspan="2">
             <select class="droplist read large xxlarge bank_account" name="bank_account_credit"  data-type="string" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.bank-account')}}" name="credit">
                           

@@ -1257,7 +1257,7 @@ Route::group([
     // Transfer Bank Detail
   Route::group([
     'as' => 'bank-transfer-voucher',
-    'controller' => AccBankPaymentVoucherController::class
+    'controller' => AccBankTransferVoucherController::class
   ],function () {
   Route::get('/bank-transfer-voucher', 'show' )->name('');
   Route::post('/bank-transfer-voucher-save', 'save' )->name('-save');

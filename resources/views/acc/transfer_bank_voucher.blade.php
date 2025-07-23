@@ -15,9 +15,7 @@
 
 @section('form_window')
 <div id="print"></div>
-@include('window.window_1')
 @include('window.window_2')
-@include('window.window_3')
 @include('window.window_4')
 @include('window.window_5')
 @include('window.window_6')
@@ -43,11 +41,9 @@
 <div id="tabstrip">
     <ul style="display:none">
         <li class="k-state-active">@lang('acc_voucher.detail')</li>
-        <li>@lang('acc_voucher.vat')</li>
         <li>@lang('global.expand')</li>
     </ul>
     <div><div id="grid"></div> </div>
-    <div><div id="grid_vat"></div> </div>
     <div>
         <table>
             <tr>
