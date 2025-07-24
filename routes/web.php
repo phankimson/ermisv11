@@ -1403,6 +1403,14 @@ Route::post('/bank-payment-voucher-by-invoice-save', 'save' )->name('-save');
 Route::post('/bank-payment-voucher-by-invoice-bind', 'bind' )->name('-bind');
 });
 
+// Bank reconciliation auto
+Route::group([
+  'as' => 'bank-reconciliation',
+  'controller' => AccBankReconciliationController::class
+],function () {
+Route::get('/bank-reconciliation', 'show' )->name('');
+});
+
 });
 
 

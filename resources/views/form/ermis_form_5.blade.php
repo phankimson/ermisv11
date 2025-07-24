@@ -13,12 +13,7 @@
 @section('content')
 <div id="page_content">
 <div id="page_content_inner">
-<div id="export" aria-hidden="false"></div>
-<div id="form-window-extra" aria-hidden="false">
-    @stack('export_extra')
-</div>
     <div id="import" aria-hidden="false"></div>
-
     <div class="md-card uk-margin-medium-bottom">
         <div class="md-card-toolbar">
             <div class="md-card-toolbar-heading-text">
@@ -28,13 +23,16 @@
         </div>
         <div class="md-card-content">
             <div class="uk-grid">
+                <div id="form-action">
+                    @yield('content_add')
+                </div>
+            </div>
+            <div class="uk-grid">
                 <div class="uk-width-medium-2-4">
-                    <div id="grid"></div>
+                    <div id="grid_tab1"></div>
                 </div>
                 <div class="uk-width-medium-2-4">
-                    <div id="form-action">
-                        @yield('content_add')
-                    </div>
+                    <div id="grid_tab2"></div>                   
                 </div>
             </div>
                 @yield('tabs')
