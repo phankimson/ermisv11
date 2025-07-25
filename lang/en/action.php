@@ -51,4 +51,5 @@ return [
     "show" => "Show",
     "change" => "Change",
     "start" => "Start",
+    "check" => "Check",
 ];

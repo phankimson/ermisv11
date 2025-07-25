@@ -51,4 +51,5 @@ return [
     "show" => "Hiển thị",
     "change" => "Thay đổi",
     "start" => "Bắt đầu",
+    "check" => "Kiểm tra",
 ];

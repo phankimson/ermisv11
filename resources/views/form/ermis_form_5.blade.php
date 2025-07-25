@@ -11,6 +11,7 @@
 @endpush
 
 @section('content')
+@yield('form_window')
 <div id="page_content">
 <div id="page_content_inner">
     <div id="import" aria-hidden="false"></div>
@@ -29,9 +30,17 @@
             </div>
             <div class="uk-grid">
                 <div class="uk-width-medium-2-4">
+                        <span class="k-textbox k-space-right margin-bottom-20 medium">
+                            <input type="text" placeholder="@lang('messages.enter_search_keyword')" id="search_tab1" />
+                            <a href="javascript:;" style="right : 10px"  class="k-icon k-i-search" id="btn_search_tab1">&nbsp;</a>
+                        </span>
                     <div id="grid_tab1"></div>
                 </div>
                 <div class="uk-width-medium-2-4">
+                    <span class="k-textbox k-space-right margin-bottom-20 medium">
+                            <input type="text" placeholder="@lang('messages.enter_search_keyword')" id="search_tab2" />
+                            <a href="javascript:;" style="right : 10px"  class="k-icon k-i-search"id="btn_search_tab2">&nbsp;</a>
+                    </span>
                     <div id="grid_tab2"></div>                   
                 </div>
             </div>

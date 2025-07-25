@@ -123,4 +123,5 @@ return [
       "connect_fail"=>"Kết nối thất bại !",
       "bank_transfer_is_duplicated"=>"Ngân hàng chuyển nội bộ bị trùng !",
       "bank_sender_or_bank_receive_is_empty"=>"Ngân hàng nhận hoặc ngân hàng chuyển bị trống",
+      "enter_search_keyword"=>"Nhập từ khóa tìm kiếm",
 ];

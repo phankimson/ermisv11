@@ -122,4 +122,5 @@ return [
   "connect_fail"=>"Connect fail !",
   "bank_transfer_is_duplicated"=>"Bank transfer is duplicated !",
   "bank_sender_or_bank_receive_is_empty"=>"Bank sender or bank receive is empty !",
+  "enter_search_keyword"=>"Enter search keyword",
 ];

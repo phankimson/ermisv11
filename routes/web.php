@@ -1409,6 +1409,7 @@ Route::group([
   'controller' => AccBankReconciliationController::class
 ],function () {
 Route::get('/bank-reconciliation', 'show' )->name('');
+Route::post('/bank-reconciliation-load', 'load' )->name('-load');
 });
 
 });

@@ -7,7 +7,7 @@
             <ul class="uk-nav">
               <li><a class="load" href="javascript:;">@lang('action.load')</a></li>
               <li><a class="import" href="javascript:;">@lang('action.import')</a></li>
-              <li><a class="sync" href="javascript:;">@lang('action.sync')</a></li>
+              <li><a class="check" href="javascript:;">@lang('action.check')</a></li>
             </ul>
         </div>
     </div>
