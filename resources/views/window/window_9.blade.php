@@ -44,7 +44,7 @@
   
   <div class="uk-width-medium-4-4">
   <span>@lang('acc_voucher.bank_account') :</span>
- <select class="droplist read large" name="bank_account"  data-type="string" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.bank-account')}}" name="bank_account">                          
+ <select class="droplist read large" data-title="@lang('acc_voucher.bank_account')" data-nullable="true" data-type="string" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.bank-account')}}" name="bank_account">                          
   </select> 
 </div>
 

@@ -36,12 +36,16 @@
 <script src="{{ asset('library/kendoui/js/cultures/kendo.culture.en-DE.min.js') }}"></script>
 <script>kendo.culture('en-DE')</script>
 @endif
+<script id="template-dialog" type="text/x-kendo-template">
+  <form id="import-form" enctype="multipart/form-data" role="form" method="post"><div class="uk-width-medium-4-4"> <span>@lang('acc_voucher.bank_account') :</span><select class="droplist read large" data-title="@lang('acc_voucher.bank_account')" data-nullable="true" data-type="string" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.bank-account')}}" name="bank_account"></select></div></br><input name="files" id="files" type="file" /></form>
+</script>
 <script>
   jQuery(document).ready(function () { 
       Ermis.data = [];
       Ermis.per = <?= json_encode($per);?>;
       Ermis.flag = 1;
       Ermis.link = "{{$key}}";
+      Ermis.short_key = "{{ config('app.short_key')}}";
       Ermis.columns_tab1 = [ {  "title": 'Select All',headerTemplate: '<input type="checkbox" id="header-chb-tab1" class="k-checkbox"><label class="k-checkbox-label" for="header-chb-tab1"></label>',template: function(dataItem){                   
                                     return '<input type="checkbox" id="'+ dataItem.id+'" '+dataItem.checkbox+'  class="k-checkbox tab1"><label class="k-checkbox-label" for="'+ dataItem.id +'"></label>'
                                 },width: 50},
@@ -69,8 +73,8 @@
             voucher_date:     {field : "voucher_date",editable: false},
             voucher:     {field : "voucher",editable: false},
             description:     {field : "description",editable: false},
-            amount_debit:     {field : "amount_debit",type:"number" , defaultValue : 0 ,editable: false},
-            amount_credit:     {field : "amount_credit",type:"number" , defaultValue : 0 ,editable: false},
+            amount_debit:     {field : "amount_debit",editable: false,type:"number" , defaultValue : 0 ,editable: false},
+            amount_credit:     {field : "amount_credit",editable: false,type:"number" , defaultValue : 0 ,editable: false},
             subject:     {field : "subject", editable: false},                     
         };
         Ermis.aggregate = [ { field: "description", aggregate: "count" },

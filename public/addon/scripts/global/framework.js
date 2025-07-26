@@ -477,6 +477,17 @@ var initShowValidationGrid = function(data,crit_arr,$kGrid){
       return mes;      
 }
 
+var initShowValidationColumn = function(data){
+  var ret = [];
+   jQuery.each(data.columns, function (k, col) {
+    var value = jQuery(col.key+"[name='"+col.field+"']").val();
+      if(data.fields[col.field].nullable === true && (value == "" || value == "0" || value == 0)){
+        ret.push({"title" : col.title});
+      }
+   })
+   return ret;
+}
+
 var sort_by = function (field, reverse, primer) {
 
     var key = primer ?

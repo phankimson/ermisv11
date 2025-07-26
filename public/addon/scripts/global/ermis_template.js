@@ -1875,6 +1875,27 @@ var ErmisKendoDialogTemplate1 = function(elem, $width, $title, content, title1, 
     return dialog
 };
 
+var ErmisKendoDialogTemplate2 = function(elem, $width, $title, content, title1, title2, action1,initOpen) {
+    var dialog = jQuery(elem).kendoDialog({
+        width: $width,
+        title: $title,
+        closable: true,
+        content:  kendo.template(jQuery(content).html()),
+        modal: true,
+        initOpen: initOpen,
+        actions: [{
+                text: title1,
+                action: action1
+            },
+            {
+                text: title2,
+                primary: true
+            }
+        ]
+    });
+    return dialog
+};
+
 var ErmisKendoComboboxTemplate = function(elem, text, value, filter, data) {
     jQuery(elem).kendoComboBox({
         dataTextField: text,
