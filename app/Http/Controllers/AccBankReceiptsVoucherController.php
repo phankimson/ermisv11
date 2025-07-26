@@ -48,7 +48,7 @@ class AccBankReceiptsVoucherController extends Controller
  {
      $this->url =  $request->segment(3);
      $this->invoice_type = 2; // 1 Hóa đơn đầu vào , // 2 Hóa đơn đầu ra
-     $this->group = 1; // 1 Nhóm thu tiền mặt
+     $this->group = 3; // 1 Nhóm thu tiền NH
      $this->type_object = 2; // 2 Khách hàng (VD : 2,3 nếu nhiều đối tượng)
      $this->key = "bank-receipts-voucher";
      $this->menu = Menu::where('code', '=', $this->key)->first();
@@ -212,7 +212,7 @@ class AccBankReceiptsVoucherController extends Controller
              $detail->amount_rate = $d->amount * $d->rate;
              $detail->accounted_fast = $d->accounted_fast->value;  // Đổi từ id value dạng read
              $detail->department = $d->department->value; // Đổi từ id value dạng read
-             $detail->bank_account_credit = $arr->bank_account; 
+             $detail->bank_account_debit = $arr->bank_account; 
              $detail->case_code = $d->case_code->value;  // Đổi từ id value dạng read
              $detail->cost_code = $d->cost_code->value;  // Đổi từ id value dạng read
              $detail->statistical_code = $d->statistical_code->value;  // Đổi từ id value dạng read

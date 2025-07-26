@@ -61,7 +61,7 @@ var Ermis = function () {
         shortcut.remove(key + "C");
       if(flag == 1){
          jQuery('.load').on('click', initLoadForm);
-          jQuery('.get-data').on('click', initChoose);
+          jQuery('.get_data').on('click', initChoose);
           jQuery('.cancel-window').on('click', initClose);
           jQuery("#btn_search_tab1").on('click', btnSearchGrid('#search_tab1',Ermis.columns_tab1,$kGridTab1));
           jQuery("#btn_search_tab2").on('click', btnSearchGrid('#search_tab2',Ermis.columns_tab2,$kGridTab2));
@@ -92,17 +92,33 @@ var Ermis = function () {
 
     
     var initChoose = function(e) {
-          var filter = GetAllDataForm('#form-window-load', 2);
+          var filter = GetAllDataForm('#form-window-get-data', 2);
           var c = GetDataAjax(filter.columns, filter.elem);
           var postdata = {
               data: JSON.stringify(c.obj)
           };
           ErmisTemplateAjaxPost0(e, postdata, Ermis.link + '-load', function(result) {
-
+           initLoadGrid($kGridTab1,result.data1,Ermis.field,Ermis.aggregate);
+           $kWindow.close();
           }, function(result) {
               kendo.alert(result.message);
           });
       };
+
+      var initLoadGrid = function($kGrid,dataLoad,field,aggregate){
+          var grid = $kGrid.data("kendoGrid");
+          ds = new kendo.data.DataSource({
+              data: dataLoad,
+              schema: {
+                  model: {
+                      fields: field,
+                      id: "id"
+                  }
+              },
+              aggregate: aggregate
+          });
+          grid.setDataSource(ds);
+    }
 
 
     var initClose = function(e) {

@@ -16,13 +16,13 @@ class BankLoadReadResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'id' => $this->id,
+            'id' => $this->detail_id,
             'voucher' => $this->voucher,
             'voucher_date' => $this->voucher_date,
             'accounting_date' => $this->accounting_date,
             'description' => $this->description,
-            'debit_amount' => $this->bank_account_debit?$this->amount:0,
-            'credit_amount' => $this->bank_account_credit?$this->amount:0,
+            'debit_amount' => $this->bank_account_debit?$this->total_amount:0,
+            'credit_amount' => $this->bank_account_credit?$this->total_amount:0,
             'subject' => $this->object_name,
             'active' =>  $this->active,
         ];

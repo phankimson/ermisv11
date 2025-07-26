@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Model\Error;
 use App\Http\Model\AccGeneral;
+use App\Http\Model\Menu;
 use App\Http\Resources\BankLoadReadResource;
 use Exception;
 
@@ -22,6 +23,7 @@ class AccBankReconciliationController extends Controller
      $this->url =  $request->segment(3);
      $this->key = "bank-reconciliation";   
      $this->group = [3,4]; // 3,4 Thu chi bank 
+     $this->menu = Menu::where('code', '=', $this->key)->first();
   }
 
   public function show(){
@@ -32,10 +34,9 @@ class AccBankReconciliationController extends Controller
     $type = 10;
     try{
       $req = json_decode($request->data);
-      $data = new BankLoadReadResource(AccGeneral::get_data_load_group_bank_account_between($this->group,$req->startDate,$req->endDate,$req->bank_account,$req->active));
-      dd($data);
-      if($req && $data->count()>0 ){
-        return response()->json(['status'=>true,'data'=> $data]);
+      $data1 = BankLoadReadResource::collection(AccGeneral::get_data_load_group_bank_account_between($this->group,$req->start_date,$req->end_date,$req->bank_account,$req->active));
+      if($data1->count()>0){
+        return response()->json(['status'=>true,'data1'=> $data1]);
       }else{
         return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
       }
