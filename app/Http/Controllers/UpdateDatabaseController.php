@@ -34,20 +34,21 @@ class UpdateDatabaseController extends Controller
        $req = json_decode($request->data);
       if($req->database !="" && $req->host !=""){ 
           $params = array(
-                'driver'    => env('DB_CONNECTION', 'mysql4'),
+                'driver'    => 'mysql',
                 'host'      => $req->host,
+                'port' => env('DB_PORT', '3306'),
                 'database'  => $req->database,
                 'username'  => $req->username,
                 'password'  => $req->password==""?null:$req->password,
                 'charset'   => 'utf8',
                 'collation' => 'utf8_unicode_ci',
-                'prefix'    => '',
-                'strict'    => false,
+                'prefix' => '',
+                'strict' => true,
+                'engine' => null,
             );
             config(['database.connections.mysql4' => $params]);
-            $con = 'mysql4';
-            DB::connection($con);
-            $tables = DB::select('SHOW TABLES');
+            $con = 'mysql4';            
+            $tables = DB::connection($con)->select('SHOW TABLES');
             return response()->json(['status'=>true ,'message'=> trans('messages.connect_success'),'tables'=>$tables]);       
       }     
      }catch(Exception $e){

@@ -9,7 +9,6 @@ use App\Http\Model\AccHistoryAction;
 use App\Http\Model\Menu;
 use App\Http\Model\AccGeneral;
 use App\Http\Model\AccDetail;
-use App\Http\Model\AccVatDetail;
 use App\Http\Model\AccAttach;
 use App\Http\Model\AccPeriod;
 use App\Http\Model\AccSystems;
@@ -19,11 +18,9 @@ use App\Http\Model\AccCountVoucher;
 use App\Http\Model\AccPrintTemplate;
 use App\Http\Model\Error;
 use App\Classes\Convert;
-use App\Http\Model\AccObject;
-use App\Http\Model\AccObjectType;
-use App\Http\Resources\BankReceiptGeneralReadResource;
-use App\Http\Model\Imports\AccBankReceiptGeneralImport;
-use App\Http\Model\Imports\AccBankReceiptVoucherImport;
+use App\Http\Resources\BankTransferGeneralReadResource;
+use App\Http\Model\Imports\AccBankTransferGeneralImport;
+use App\Http\Model\Imports\AccBankTransferVoucherImport;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\File;
 use Maatwebsite\Excel\Facades\Excel;
@@ -32,34 +29,29 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 
-class AccBankReceiptsVoucherController extends Controller
+class AccBankTransferVoucherController extends Controller
 {
   protected $url;
   protected $key;
   protected $menu;
   protected $group;
   protected $print;
-  protected $type_object;
   protected $document;
   protected $path;
-  protected $invoice_type;
   protected $check_cash;
   public function __construct(Request $request)
  {
      $this->url =  $request->segment(3);
-     $this->invoice_type = 2; // 1 Hóa đơn đầu vào , // 2 Hóa đơn đầu ra
-     $this->group = 3; // 1 Nhóm thu tiền NH
-     $this->type_object = 2; // 2 Khách hàng (VD : 2,3 nếu nhiều đối tượng)
-     $this->key = "bank-receipts-voucher";
+     $this->group = 0; // Nhóm chuyển nội bộ
+     $this->key = "bank-transfer-voucher";
      $this->menu = Menu::where('code', '=', $this->key)->first();
-     $this->print = 'PT%';
-     $this->path = 'PATH_UPLOAD_BANK_RECEIPTS';
+     $this->print = 'BT%';
+     $this->path = 'PATH_UPLOAD_BANK_TRANSFER';
      $this->document = 'DOCUMENT_TAX';
      $this->check_cash = 'CHECK_CASH';
  }
 
   public function show(){
-    $ot = AccObjectType::get_filter($this->type_object);
     $voucher = AccNumberVoucher::get_menu($this->menu->id);
     $menu_tab =  Menu::get_menu_like_code($this->key.'%');
     //$setting_voucher = AccSettingVoucher::get_menu($this->menu->id);
@@ -84,10 +76,8 @@ class AccBankReceiptsVoucherController extends Controller
     //$subject_code = json_encode(ObjectDropDownListResource::collection(AccObject::active()->orderBy('code','asc')->get()));
     $voucher_list = AccNumberVoucher::all();
     $print = AccPrintTemplate::get_code($this->print);
-    return view('acc.receipt_bank_voucher',[ 'key' => $this->key , 'voucher' => $voucher, 'menu'=>$this->menu->id, 'menu_tab' => $menu_tab,                                    
+    return view('acc.transfer_bank_voucher',[ 'key' => $this->key , 'voucher' => $voucher, 'menu'=>$this->menu->id, 'menu_tab' => $menu_tab,                                    
                                         'voucher_list' => $voucher_list ,
-                                        'ot' => $ot,
-                                        'sg' => $ot,
                                         'print' => $print]);
   }
 
@@ -211,17 +201,8 @@ class AccBankReceiptsVoucherController extends Controller
              $detail->rate = $d->rate;
              $detail->amount_rate = $d->amount * $d->rate;
              $detail->accounted_fast = $d->accounted_fast->value;  // Đổi từ id value dạng read
-             $detail->department = $d->department->value; // Đổi từ id value dạng read
-             $detail->bank_account_debit = $arr->bank_account; 
-             $detail->case_code = $d->case_code->value;  // Đổi từ id value dạng read
-             $detail->cost_code = $d->cost_code->value;  // Đổi từ id value dạng read
-             $detail->statistical_code = $d->statistical_code->value;  // Đổi từ id value dạng read
-             $detail->work_code = $d->work_code->value;  // Đổi từ id value dạng read
-             $detail->lot_number = $d->lot_number;
-             $detail->contract = $d->contract;
-             $detail->order = $d->order;
-             $detail->subject_id_credit = $d->subject_code->value;// Đổi từ id value dạng read
-             $detail->subject_name_credit = $d->subject_code->text;// Đổi từ name text dạng read
+             $detail->bank_account_debit = $d->bank_account_debit->value;  // Đổi từ id value dạng read   
+             $detail->bank_account_credit = $d->bank_account_credit->value;  // Đổi từ id value dạng read             
              $detail->active = 1;
              $detail->status = 1;
              $detail->save();
@@ -230,7 +211,7 @@ class AccBankReceiptsVoucherController extends Controller
              $arr->detail[$k]->id = $detail->id;      
              // Lưu số tồn tiền bên Nợ
              if(substr($d->debit->text,0,3) === '112'){     
-               $balance = AccCurrencyCheck::get_type_first($d->debit->value,$arr->currency,$arr->bank_account);     
+               $balance = AccCurrencyCheck::get_type_first($d->debit->value,$arr->currency,$d->bank_account_debit->value);     
                if($balance){
                  $balance->amount = $balance->amount + ($d->amount * $d->rate);
                  $balance->save();
@@ -238,7 +219,7 @@ class AccBankReceiptsVoucherController extends Controller
                  $balance = new AccCurrencyCheck();
                  $balance->type = $d->debit->value;
                  $balance->currency = $arr->currency;
-                 $balance->bank_account = $arr->bank_account;
+                 $balance->bank_account = $d->bank_account_debit->value;
                  $balance->amount = $d->amount * $d->rate;
                  $balance->save();
                }
@@ -246,16 +227,16 @@ class AccBankReceiptsVoucherController extends Controller
                // End
            
                // Lưu số tồn tiền bên Có
-               if(substr($d->credit->text,0,3) === ('111' ||  '113')){                 
-                 $balance = AccCurrencyCheck::get_type_first($d->credit->value,$arr->currency,null);
+              if(substr($d->credit->text,0,3) == '112'){
+                 $balance = AccCurrencyCheck::get_type_first($d->credit->value,$arr->currency,$d->bank_account_credit->value);     
                  if($balance){
                    $balance->amount = $balance->amount - ($d->amount * $d->rate);
                    $balance->save();
-                 }else{
+                 }else{                  
                    $balance = new AccCurrencyCheck();
                    $balance->type = $d->credit->value;
                    $balance->currency = $arr->currency;
-                   $balance->bank_account = null;
+                   $balance->bank_account = $d->bank_account_credit->value;
                    $balance->amount = 0 - ($d->amount * $d->rate);
                    $balance->save();
                  }
@@ -264,91 +245,12 @@ class AccBankReceiptsVoucherController extends Controller
                     break;
                   }
                }
-               //else if(substr($d->credit->text,0,3) == '112'){
-               //  $balance = AccCurrencyCheck::get_type_first($d->credit->value,$arr->currency,$d->bank_account->value);     
-               //  if($balance){
-               //    $balance->amount = $balance->amount - ($d->amount * $d->rate);
-               //    $balance->save();
-               //  }else{                  
-               //    $balance = new AccCurrencyCheck();
-               //    $balance->type = $d->credit->value;
-               //    $balance->currency = $arr->currency;
-               //    $balance->bank_account = $d->bank_account->value;
-               //    $balance->amount = 0 - ($d->amount * $d->rate);
-               //    $balance->save();
-               //  }
-               //    if($ca->value == "1" && $balance->amount<0){
-               //     $acc = $d->credit->text;
-               //     break;
-               //   }
-              // }
                // End
            }
 
            // Xóa dòng chi tiết
            AccDetail::get_detail_whereNotIn_delete($general->id,$removeId);
-           $check_invoice = false;
-           $invoice = '';
-           // Lưu VAT
-           foreach($arr->tax as $l => $x){
-             $tax = collect([]);
-                // Kiểm tra có trùng MST, số hóa đơn 
-                $arr_check = array(
-                  ['invoice', '=',$x->invoice],
-                  ['invoice_symbol', '=',$x->invoice_symbol],
-                  //['invoice_form', '=',$x->invoice_form],
-                  ['tax_code', '=',$x->tax_code],
-                  ['id','<>',$x->id]
-                );
-                $tax_check = AccVatDetail::get_invoice($arr_check);
-                if($tax_check){
-                  $check_invoice = true;
-                    $invoice = $x->invoice;
-                    break;
-                }
-                // End
-                // Update mẫu, ký tự hóa đơn
-                $obj = AccObject::find($x->subject_id);
-                if($obj){
-                  $obj->invoice_form = $x->invoice_form;
-                  $obj->invoice_symbol = $x->invoice_symbol;
-                  $obj->save();
-                }
-                // End
-             if($x->id){
-               $tax = AccVatDetail::find($x->id);              
-             }else{
-               $tax = new AccVatDetail();
-             }
-             $total_amount = $x->amount+$x->tax;
-             $tax->general_id = $general->id;
-             $tax->date_invoice = $x->date_invoice;
-             $tax->invoice_type = $this->invoice_type;
-             $tax->invoice_form = $x->invoice_form;
-             $tax->invoice_symbol = $x->invoice_symbol;
-             $tax->invoice = $x->invoice;
-             $tax->subject_id = $x->subject_id;
-             $tax->subject_code = $x->subject_code;
-             $tax->subject_name = $x->subject_name;
-             $tax->tax_code = $x->tax_code;
-             $tax->address = $x->address;
-             $tax->description = $x->description;
-             $tax->vat_type = $x->vat_type->value;// Đổi từ id value dạng read
-             $tax->amount = $x->amount;
-             $tax->tax = $x->tax;
-             $tax->total_amount = $total_amount;
-             $tax->rate = $x->tax_rate;
-             $tax->total_amount_rate = $total_amount*$x->tax_rate;
-             $tax->status = 0;
-             $tax->active = 1;
-             $tax->save();
-             array_push($removeId_v,$tax->id);
-             $arr->tax[$l]->id = $tax->id;
-           }
-           // Xóa dòng chi tiết Vat
-           AccVatDetail::get_detail_whereNotIn_delete($general->id,$removeId_v);
-
-
+           
            // Lưu file
            if($request->hasFile('files')) {
              $files = $request->file('files');
@@ -379,10 +281,7 @@ class AccBankReceiptsVoucherController extends Controller
            'menu' => $this->menu->id,
            'url'  => $this->url,
            'dataz' => \json_encode($arr)]);
-          if($check_invoice == true){
-           DB::connection(env('CONNECTION_DB_ACC'))->rollBack();
-           return response()->json(['status'=>false,'message'=> trans('messages.invoice_number_duplicate',['invoice'=>$invoice])]);
-           }else if($acc != ""){
+           if($acc != ""){
             DB::connection(env('CONNECTION_DB_ACC'))->rollBack();
             return response()->json(['status'=>false,'message'=> trans('messages.account_negative',['account'=>$acc])]);
            }else{
@@ -417,7 +316,7 @@ class AccBankReceiptsVoucherController extends Controller
     $type = 10;
     try{
       $req = json_decode($request->data);
-      $data = new BankReceiptGeneralReadResource(AccGeneral::get_data_load_all($req));
+      $data = new BankTransferGeneralReadResource(AccGeneral::get_data_load_all($req));
       if($req && $data->count()>0 ){
         return response()->json(['status'=>true,'data'=> $data]);
       }else{
@@ -438,7 +337,7 @@ class AccBankReceiptsVoucherController extends Controller
   }
 
   public function DownloadExcel(){
-    return Storage::download('public/downloadFile/AccBankReceiptsVoucher.xlsx');
+    return Storage::download('public/downloadFile/AccBankTransferVoucher.xlsx');
   }
 
 
@@ -458,9 +357,9 @@ class AccBankReceiptsVoucherController extends Controller
         $file = $request->file;
         // Đổi dữ liệu Excel sang collect
         config(['excel.imports.read_only' => false]);
-        $data = new AccBankReceiptGeneralImport($this->menu);
+        $data = new AccBankTransferGeneralImport($this->menu);
         Excel::import($data , $file);
-        $detail = new AccBankReceiptVoucherImport;
+        $detail = new AccBankTransferVoucherImport;
         Excel::import($detail, $file); 
         $merged = collect($data->getData())->push($detail->getData());            
         return response()->json(['status'=>true,'message'=> trans('messages.success_import'),'data'=>$merged]);

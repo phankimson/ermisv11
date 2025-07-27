@@ -60,7 +60,7 @@
                                 { "field" : "description","title" : "@lang('acc_general.description') " ,"width" : "200px" ,aggregates: ['count'], footerTemplate: "<p>Total Count: #=count#</p>" },
                                 { "field" : "debit","title" : "@lang('acc_voucher.debit') " ,"width" : "100px" },
                                 { "field" : "credit","title" : "@lang('acc_voucher.credit') " ,"width" : "100px" },
-                                { "field" : "amount","title" : "@lang('acc_general.amount') " ,"width" : "150px", template: '#= FormatNumberDecimal(amount,{{$decimal}}) #'},
+                                { "field" : "amount","title" : "@lang('acc_general.amount') " ,"width" : "150px", template: '#= FormatNumberDecimal(amount,{{$decimal}}) #' ,aggregates: ['sum'] , footerTemplate:"#= FormatNumberDecimal(sum,{{$decimal}}) #"},
                                 { "field" : "rate","title" : "@lang('acc_voucher.rate') " ,"width" : "150px" ,template: '#= FormatNumberDecimal(amount,{{$decimal}}) #'},
                                 { "field" : "amount_rate","title" : "@lang('acc_voucher.amount_rate') " ,"width" : "150px" ,template: '#= FormatNumberDecimal(amount,{{$decimal}}) #'},
                                 { "field" : "lot_number","title" : "@lang('acc_general.lot_number') " ,"width" : "100px" },

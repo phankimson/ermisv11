@@ -22,7 +22,7 @@ use App\Http\Model\Error;
 use App\Http\Resources\BankGeneralResource;
 use App\Http\Resources\TypeGeneralResource;
 use App\Http\Resources\TypeListGeneralResource;
-use App\Http\Model\Imports\AccBankReceiptImport;
+use App\Http\Model\Imports\AccBankPaymentImport;
 use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
@@ -30,10 +30,11 @@ use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 
-class AccBankReceiptsGeneralController extends Controller
+class AccBankTransferGeneralController extends Controller
 {
   protected $url;
   protected $key;
+  protected $key_voucher;
   protected $menu;
   protected $group;
   protected $print;
@@ -42,16 +43,17 @@ class AccBankReceiptsGeneralController extends Controller
   public function __construct(Request $request)
  {
      $this->url =  $request->segment(3);
-     $this->group = 3; // 1 Nhóm thu ngân hàng
-     $this->key = "bank-receipts-general";
+     $this->group = 0; // Nhóm chuyển nội bộ
+     $this->key = "bank-transfer-general";
+     $this->key_voucher = "bank-transfer-voucher";
      $this->menu = Menu::where('code', '=', $this->key)->first();
-     $this->print = 'BC%';
+     $this->print = 'BT%';
      $this->date_range = "DATE_RANGE_GENERAL";
  }
 
   public function show(){
     $sys = AccSystems::get_systems($this->date_range);
-    $group =  TypeListGeneralResource::collection(Menu::get_menu_by_group($this->menu->type,$this->group));
+    $group =  TypeListGeneralResource::collection(Menu::get_menu_like_code($this->key_voucher));
     $action = new TypeGeneralResource($group->first());
     $end_date_default = Carbon::now();
     $start_date_default = Carbon::now()->subDays($sys->value);
@@ -59,7 +61,7 @@ class AccBankReceiptsGeneralController extends Controller
     $end_date = $end_date_default->format('d/m/Y');
     $start_date = $start_date_default->format('d/m/Y');
     $print = AccPrintTemplate::get_code($this->print);
-    return view('acc.receipt_bank_general',['data' => $data, 'group' =>$group ,'key' => $this->key, 'action' => $action , 'end_date' => $end_date ,'print' => $print, 'start_date'=>$start_date]);
+    return view('acc.transfer_bank_general',['data' => $data, 'group' =>$group ,'key' => $this->key, 'action' => $action , 'end_date' => $end_date ,'print' => $print, 'start_date'=>$start_date]);
   }
 
   public function unwrite(Request $request) {
@@ -85,33 +87,26 @@ class AccBankReceiptsGeneralController extends Controller
                'dataz' => \json_encode($data)]);
                $data->active = 0;
                $data->save();
+
                //DETAIL
                $detail->each(function ($d){
-                    $d->update(['active'=>0]);
+                    $d->update(['active'=>0]);                    
                     // Lưu số lại số tồn bên nợ
-                    if(substr($d->debit()->first()->code,0,3) == "112"){
-                        $ba = AccCurrencyCheck::get_type_first($d->debit,$d->currency,null);
+                  if(substr($d->debit()->first()->code,0,3) == "112"){
+                       $ba = AccCurrencyCheck::get_type_first($d->debit,$d->currency,$d->bank_account_debit);
                       if($ba){
                         $ba->amount = $ba->amount - $d->amount;
                         $ba->save();
                       }
                     }
                     // Lưu số lại số tồn bên có
-                    if(substr($d->credit()->first()->code,0,3) == ("111"||"113")){
-                        $ca = AccCurrencyCheck::get_type_first($d->credit,$d->currency,null);
+                    if(substr($d->credit()->first()->code,0,3) == "112"){
+                        $ca = AccCurrencyCheck::get_type_first($d->credit,$d->currency,$d->bank_account_credit);
                       if($ca){
                         $ca->amount = $ca->amount + $d->amount;
                         $ca->save();
                       }
                     }
-                   // else if(substr($d->credit()->first()->code,0,3) == "112"){
-                   //    $ca = AccCurrencyCheck::get_type_first($d->credit,$d->currency,$d->bank_account);
-                   //   if($ca){
-                   //    $ca->amount = $ca->amount + $d->amount;
-                   //   $ca->save();
-                   //   }
-                   // }
-                  
                 });
                 DB::connection(env('CONNECTION_DB_ACC'))->commit();
                return response()->json(['status'=>true,'message'=> trans('messages.unrecored_success')]);
@@ -166,30 +161,22 @@ class AccBankReceiptsGeneralController extends Controller
                //DETAIL
                $detail->each(function ($d){
                     $d->update(['active'=>1]);
-                    // Lưu số lại số tồn bên nợ
-                  if(substr($d->debit()->first()->code,0,3) == "112"){
-                    $ba = AccCurrencyCheck::get_type_first($d->debit,$d->currency,null);
-                    if($ba){
-                      $ba->amount = $ba->amount + $d->amount;
-                      $ba->save();
+                   // Lưu số lại số tồn bên nợ
+                   if(substr($d->debit()->first()->code,0,3) == "112"){
+                       $ba = AccCurrencyCheck::get_type_first($d->debit,$d->currency,$d->bank_account_debit);
+                      if($ba){
+                        $ba->amount = $ba->amount + $d->amount;
+                        $ba->save();
+                      }
                     }
-                  }
-                   // Lưu số lại số tồn bên có
-                    if(substr($d->credit()->first()->code,0,3) == ("111"||"113")){
-                        $ca = AccCurrencyCheck::get_type_first($d->credit,$d->currency,null);
+                    // Lưu số lại số tồn bên có
+                    if(substr($d->credit()->first()->code,0,3) == "112"){
+                        $ca = AccCurrencyCheck::get_type_first($d->credit,$d->currency,$d->bank_account_credit);
                       if($ca){
                         $ca->amount = $ca->amount - $d->amount;
                         $ca->save();
                       }
-                     }
-                    //else if(substr($d->credit()->first()->code,0,3) == "112"){
-                    //   $ca = AccCurrencyCheck::get_type_first($d->credit,$d->currency,$d->bank_account);
-                    //  if($ca){
-                    //    $ca->amount = $ca->amount - $d->amount;
-                    //    $ca->save();
-                    //  }
-                    //}
-
+                    }
                 });
                 DB::connection(env('CONNECTION_DB_ACC'))->commit();
                return response()->json(['status'=>true,'message'=> trans('messages.unrecored_success')]);
@@ -342,7 +329,7 @@ class AccBankReceiptsGeneralController extends Controller
          $permission = $request->session()->get('per');
          $arr = json_decode($request->data);
          if($arr){
-           $data = AccGeneral::get_id_with_detail($arr,['detail','tax','attach','vat_detail_payment']);           
+           $data = AccGeneral::get_id_with_detail($arr,['detail','attach']);           
            $period = AccPeriod::get_date(Carbon::parse($data->accounting_date)->format('Y-m'),1);
            if(!$period){
              if($permission['d'] == true){             
@@ -367,7 +354,7 @@ class AccBankReceiptsGeneralController extends Controller
                   $b1->save();
                 }
                 //Clear số tiền bên có
-                $b2 = AccCurrencyCheck::get_type_first($d->credit,$d->currency,null);
+                $b2 = AccCurrencyCheck::get_type_first($d->credit,$d->currency,$d->bank_account_credit);
                 if($b2){
                   $b2->amount = $b2->amount + $d->amount;
                   $b2->save();
@@ -439,7 +426,7 @@ class AccBankReceiptsGeneralController extends Controller
   }
 
     public function DownloadExcel(){
-      return Storage::download('public/downloadFile/AccBankReceipts.xlsx');
+      return Storage::download('public/downloadFile/AccBankPayment.xlsx');
     }
 
     
@@ -459,7 +446,7 @@ class AccBankReceiptsGeneralController extends Controller
 
       $file = $request->file;
       // Import dữ liệu
-      $import = new AccBankReceiptImport($this->menu->id,$this->group);
+      $import = new AccBankPaymentImport($this->menu->id,$this->group);
       Excel::import($import, $file);
       // Lấy lại dữ liệu
       //$array = AccGeneral::with('detail','tax')->get();

@@ -22,7 +22,7 @@
       <tr>
           <td class="row-label"><label>@lang('acc_bank_account.bank')</label></td>
           <td>
-            <select class="droplist read large" data-position="1" data-title="@lang('acc_bank_account.bank')" data-template="#= FormatDropListRead(bank_id,'bank_id') #" data-type="number" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.bank-account')}}" name="bank_id">                    
+            <select class="droplist read large" data-position="1" data-title="@lang('acc_bank_account.bank')" data-template="#= FormatDropListRead(bank_id,'bank_id') #" data-type="number" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.bank')}}" name="bank_id">                    
             </select>
           </td>
       </tr>

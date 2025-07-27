@@ -29,6 +29,7 @@ use App\Http\Model\AccCostCode;
 use App\Http\Model\AccStatisticalCode;
 use App\Http\Model\AccWorkCode;
 use App\Http\Model\AccBankAccount;
+use App\Http\Model\AccBank;
 use App\Http\Model\AccDepartment;
 use App\Http\Model\AccObject;
 use App\Http\Model\AccObjectGroup;
@@ -386,6 +387,24 @@ class AccDropDownListController extends Controller
       $data = BankDropDownResource::collection(AccBankAccount::active()->orderBy('bank_account','asc')->get());
       $data = $default->merge($data)->values();
     }  
+    return response()->json($data)->withCallback($request->input('callback'));
+  }
+
+   // Ngân hàng
+  public function bank_dropdown_list(Request $request){
+    $val = $request->input('value',null); 
+    if($val){
+      $rs = AccBank::find($val);
+      if(!$rs){
+        $data = collect($this->default);
+      }else{
+        $data = new LangDropDownResource($rs);
+      }      
+    }else{
+    $default = collect([$this->default]);
+    $data = LangDropDownResource::collection(AccBank::active()->orderBy('code','asc')->get());
+    $data = $default->merge($data)->values();
+    }         
     return response()->json($data)->withCallback($request->input('callback'));
   }
 
