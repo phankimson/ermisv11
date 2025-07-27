@@ -86,6 +86,13 @@
                     @endforeach
             </select>
         </td>
+        <td class="row-label-responsive"></td>
+        <td><label>So ton</label></td>
+        <td colspan="2">
+            <span class="k-textbox k-space-right medium">
+               123
+            </span>               
+        </td>
     </tr>
     <tr>
         <td><label>@lang('acc_voucher.automatic_ai')</label></td>

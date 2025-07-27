@@ -53,7 +53,7 @@
                <tr>
                <td class="row-label"><label>@lang('acc_excise.unit')</label></td>
                <td>
-               <select class="droplist read load_droplist large"  data-position="6" data-title="@lang('acc_excise.unit')" data-hidden="true"  data-template="#= FormatDropListRead(unit_id,'unit_id') #" data-type="number" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{env('URL_DROPDOWN').'/unit'}}" name="unit_id">
+               <select class="droplist read load_droplist large"  data-position="6" data-title="@lang('acc_excise.unit')" data-hidden="true"  data-template="#= FormatDropListRead(unit_id,'unit_id') #" data-type="number" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.unit')}}" name="unit_id">
                     
                </select>
                </td>
