@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Http\Traits\ScopesTraits;
 use App\Http\Traits\BootedTraits;
 use App\Http\Traits\OrderTraits;
+use App\Http\Model\Casts\Decimal;
 
 class AccBankReconciliation extends Model
 {
@@ -16,11 +17,19 @@ class AccBankReconciliation extends Model
       public $incrementing = false; // and it doesn't even have to be auto-incrementing!
       protected $guarded = []; //Thiếu dòng create bị lỗi Add [code] to fillable property to allow mass assignment on
 
+       protected $casts = [
+          'debit_amount'=> Decimal::class,   
+          'credit_amount'=> Decimal::class,
+      ];
+
       protected static function booted()
   {
       static::BootedBaseTrait();
       static::OrderByCreatedAtBaseTrait();
   }
-
+     static public function get_data_load_between($bank,$startDate,$endDate){
+        $result = AccBankReconciliation::where('bank_account',$bank)->whereBetween('accounting_date',[$startDate,$endDate])->orderBy('accounting_date', 'asc')->orderBy('created_at', 'asc')->get();
+        return $result;
+      }
 
 }

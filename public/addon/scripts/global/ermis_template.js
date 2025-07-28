@@ -629,7 +629,7 @@ var ErmisKendoGridVoucherTemplate = function($kGrid, dataSource, selectable, hei
     });
 };
 
-var ErmisKendoGridCheckboxTemplate = function($kGrid, data, height, pageSize, selectable, key, get, colunm, result) {
+var ErmisKendoGridCheckboxTemplate = function($kGrid, data, height, pageSize, selectable, key, get, colunm, result) { // Sử dụng page
     if ($kGrid.length > 0) {
         var grid = $kGrid.kendoGrid({
           dataSource: {
@@ -740,7 +740,7 @@ var ErmisKendoGridCheckboxTemplate = function($kGrid, data, height, pageSize, se
     }
 };
 
-var ErmisKendoGridCheckboxTemplate1 = function($kGrid, data, height, pageSize, column, onChange, onDataBound, get) {
+var ErmisKendoGridCheckboxTemplate1 = function($kGrid, data, height, pageSize, column, onChange, onDataBound, get) { // Sử dụng page
     var oldPageSize = 0;
     $kGrid.kendoGrid({
         dataSource: {
@@ -786,7 +786,7 @@ var ErmisKendoGridCheckboxTemplate1 = function($kGrid, data, height, pageSize, c
 
 }
 
-var ErmisKendoGridCheckboxTemplate2 = function($kGrid, data, height, pageSize, column, onChange, onDataBound, get) {
+var ErmisKendoGridCheckboxTemplate2 = function($kGrid, data, height, pageSize, column, onChange, onDataBound, get) { // Sử dụng scroll
     $kGrid.kendoGrid({
         dataSource: {
             pageSize: pageSize,
@@ -809,7 +809,7 @@ var ErmisKendoGridCheckboxTemplate2 = function($kGrid, data, height, pageSize, c
 
 }
 
-var ErmisKendoGridCheckboxTemplate3 = function($kGrid, data, aggregate, field, pageSize, editable, height, columns, onSave ,key ,onChecked,field_id = null) {
+var ErmisKendoGridCheckboxTemplate3 = function($kGrid, data, aggregate, field, pageSize, editable, height, columns, onSave ,key ,onChecked,field_id = null) { // Sử dụng page
     dataSource = new kendo.data.DataSource({       
         data: data,
         aggregate: aggregate,
@@ -893,6 +893,31 @@ var ErmisKendoGridCheckboxTemplate3 = function($kGrid, data, aggregate, field, p
         } 
        
     }
+
+    var ErmisKendoGridCheckboxTemplate4 = function($kGrid, data , aggregate, field, height, pageSize, column, onChange, onDataBound, get) { // Sử dụng scroll
+    $kGrid.kendoGrid({
+        dataSource: {
+            pageSize: pageSize,
+            aggregate: aggregate,
+            data: data,
+            schema: {
+                model: {
+                    id: get,
+                    fields: field
+                }
+            }
+        },
+        dataBound: onDataBound,
+        pageable: false,
+        scrollable: true,
+        persistSelection: true,
+        sortable: true,
+        height: height,
+        change: onChange,
+        columns: column
+    });
+
+}
 
 
 var ErmisKendoGridTemplate5 = function($kGrid, height, dataSource, scrollable, sortable, pageable, columns) {

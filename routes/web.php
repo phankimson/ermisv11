@@ -1410,6 +1410,7 @@ Route::group([
 ],function () {
 Route::get('/bank-reconciliation', 'show' )->name('');
 Route::post('/bank-reconciliation-load', 'load' )->name('-load');
+Route::post('/bank-reconciliation-import', 'import' )->name('-import');
 });
 
 });

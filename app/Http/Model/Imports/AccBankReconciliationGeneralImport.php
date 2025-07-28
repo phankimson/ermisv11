@@ -16,9 +16,10 @@ class AccBankReconciliationGeneralImport implements WithMappedCells,ToModel
   public function mapping(): array
   {
       return [
-              
+        'bank_account'    => $this->row['bank_account'],
+        'total_credit'    => $this->row['total_credit'],
+        'total_debit'    => $this->row['total_debit'],
         ];
-    
   } 
 
   public function setData($arr)
@@ -33,15 +34,16 @@ class AccBankReconciliationGeneralImport implements WithMappedCells,ToModel
 
   public function model(array $row)
   {            
-    
-      $arr =  [
-        'bank_account'    => $this->row['bank_account'],
-        'total_credit'    => $this->row['total_credit'],
-        'total_debit'    => $this->row['total_debit'],
+    if($this->row){
+        $arr =  [
+        'bank_account'    => $row['bank_account'],
+        'total_credit'    => $row['total_credit'],
+        'total_debit'    => $row['total_debit'],
       ]; 
- 
       AccBankReconciliationGeneralImport::setData($arr);      
       return ;
+    }
+    
    }
 
 }

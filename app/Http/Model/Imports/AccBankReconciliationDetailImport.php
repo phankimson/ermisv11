@@ -16,6 +16,7 @@ class AccBankReconciliationDetailImport implements ToModel, WithHeadingRow, With
    protected $bank_account;
    protected $start_row;
    protected $row;
+   private $rows = 0;
   function __construct($bank_account,$start_row,$row) { //this will NOT overwrite the parents construct
   $this->bank_account = $bank_account;
   $this->start_row = $start_row;
@@ -38,6 +39,11 @@ class AccBankReconciliationDetailImport implements ToModel, WithHeadingRow, With
         return self::$result;
     }   
 
+    public function getRowCount(): int
+    {
+        return $this->rows; // Return the total count of imported rows
+    }
+
 
   /**
     * @param array $row
@@ -46,11 +52,18 @@ class AccBankReconciliationDetailImport implements ToModel, WithHeadingRow, With
 
     public function model(array $row)
     {
-       
+        $code_check = AccBankReconciliation::WhereCheck('transaction_number',$row[$this->row['transaction_number']],'id',null)->first();
+        if($code_check == null && $row[$this->row['transaction_description']] && $row[$this->row['transaction_number']]){
+          ++$this->rows; // Increment the counter for each processed row
+          //Convert Datetime
+            // Convert the date string to a Unix timestamp
+            $timestamp = strtotime($row[$this->row['accounting_date']]);
+            // Format the timestamp into the desired yyyy-mm-dd format
+            $new_date_time = date("Y-m-d H:i:s", $timestamp);
           $arr = [
             'id'     => Str::uuid()->toString(),
             'bank_account' => $this->bank_account,
-            'accounting_date'    => $row[$this->row['accounting_date']],
+            'accounting_date'    =>  $new_date_time,
             'transaction_description'    => $row[$this->row['transaction_description']],
             'debit_amount'    => $row[$this->row['debit_amount']],
             'credit_amount'    => $row[$this->row['credit_amount']],
@@ -60,7 +73,8 @@ class AccBankReconciliationDetailImport implements ToModel, WithHeadingRow, With
           ];
           $data = new AccBankReconciliationDetailImport($this->bank_account,$this->start_row, $this->row);
           $data->setData($arr);
-        return new AccBankReconciliation($arr);      
+          return new AccBankReconciliation($arr);      
+        }
     }
 
     public function batchSize(): int

@@ -100,8 +100,10 @@ return [
       "please_tick_barcode" => "Xin vui lòng tick barcode phân quyền",
       "incurred_receipt" => "Đã phát sinh nhập kho ! Không thể thực hiện thao tác này",
       "not_closed_period" => "Chưa khóa kỳ ",
-      "total_code_imported" => "Tổng số => {count_sucess} mã đã import !",
-      "total_code_error" => "Tổng số => {count_error} mã lỗi !",
+      "total_code_imported" => "Tổng số => :count_sucess mã đã import !",
+      "total_code_error" => "Tổng số => :count_error mã lỗi !",
+      "total_imported" => "Tổng số => :count_sucess đã import !",
+      "total_error" => "Tổng số => :count_error lỗi !",
       'login_permission_1' =>"Bạn chưa đăng ký phần mềm này. Vui lòng liên hệ quản trị viên !",
       'login_permission_2' =>"Phần mềm của bạn đã hết hạn . Xin vui lòng gia hạn thêm !",
       'error' =>"Lỗi phần mềm !!!",
@@ -124,4 +126,5 @@ return [
       "bank_transfer_is_duplicated"=>"Ngân hàng chuyển nội bộ bị trùng !",
       "bank_sender_or_bank_receive_is_empty"=>"Ngân hàng nhận hoặc ngân hàng chuyển bị trống",
       "enter_search_keyword"=>"Nhập từ khóa tìm kiếm",
+      "bank_account_not_correct"=>"Tài khoản ngân hàng không đúng !",
 ];

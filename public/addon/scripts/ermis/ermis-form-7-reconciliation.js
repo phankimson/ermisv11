@@ -32,28 +32,15 @@ var Ermis = function () {
        //ContextMenu
         ErmisKendoContextMenuTemplate("#context-menu", ".md-card-content");
        // Grid
-        ErmisKendoGridCheckboxTemplate3($kGridTab1, Ermis.data, Ermis.aggregate, Ermis.field, Ermis.page_size , {
-            confirmation: false
-        }, jQuery(window).height() * 0.5, Ermis.columns_tab1,onSave,grid_header_key_1,onChecked,"id");       
-
-        ErmisKendoGridCheckboxTemplate3($kGridTab2, Ermis.data, Ermis.aggregate, Ermis.field, Ermis.page_size , {
-            confirmation: false
-        }, jQuery(window).height() * 0.5, Ermis.columns_tab2,onSave,grid_header_key_2,onChecked,"id");  
+       ErmisKendoGridCheckboxTemplate4($kGridTab1,Ermis.data,Ermis.aggregate, Ermis.field, jQuery(window).height() * 0.5 ,Ermis.page_size , Ermis.columns_tab1,onChange,onDataBound,"id")
+       ErmisKendoGridCheckboxTemplate4($kGridTab2,Ermis.data,Ermis.aggregate, Ermis.field, jQuery(window).height() * 0.5 ,Ermis.page_size , Ermis.columns_tab2,onChange,onDataBound,"ids")
     }
 
-     var onChecked = function(t,dataItem){        
-        if(t == 0){
-            dataItem.set("checkbox", "");       
-        }else{
-            dataItem.set("checkbox", "checked");              
-        };   
+    var onChange = function(data){  
+      
     }
-
-     var onSave = function(data){  
-        var grid = this;
-            setTimeout(function() {
-                grid.refresh();
-            });        
+    var onDataBound = function(data){  
+      
     }
 
     var initStatus = function(flag) {
@@ -111,6 +98,7 @@ var Ermis = function () {
             };
             ErmisTemplateAjaxPost0(e, postdata, Ermis.link + '-load', function(result) {
             initLoadGrid($kGridTab1,result.data1,Ermis.field,Ermis.aggregate);
+            initLoadGrid($kGridTab2,result.data2,Ermis.field,Ermis.aggregate);
             $kWindow.close();
             }, function(result) {
                 kendo.alert(result.message);
@@ -170,14 +158,19 @@ var Ermis = function () {
           arr.action = 'import';
           arr.com = Chat.com;
           arr.key = Ermis.link;
-          ErmisTemplateAjaxPostAdd3(e,'#import-form',Ermis.link+'-import',arr,
-        function(results){
-          kendo.alert(results.message);
-          },
-         function(){},
-         function(results){
-           kendo.alert(results.message);
-         });         
+          arr.crit = jQuery(Ermis.crit).data("kendoDropDownList").value();
+          if(arr.crit !="0"){
+             ErmisTemplateAjaxPostAdd3(e,'#import-form',Ermis.link+'-import',arr,
+                function(results){
+                kendo.alert(results.message);
+                },
+                function(){},
+                function(results){
+                kendo.alert(results.message);
+            });  
+          }else{
+            kendo.alert(Lang.get('messages.please_input_all_field_require'));
+          }              
          } 
         function initOpen(e) {
             jQuery('.droplist.read').each(function() {

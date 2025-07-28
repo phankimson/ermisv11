@@ -100,8 +100,10 @@ return [
   "please_tick_barcode" => "Please tick barcode permission",
   "incurred_receipt" => "Incurred receipt inventory ! This operation can not be performed",
   "not_closed_period" => "Not close period ",
-  "total_code_imported" => "Total {count_sucess} barcode imported !",
-  "total_code_error" => "Total {count_error} barcode error !",
+  "total_code_imported" => "Total :count_sucess barcode imported !",
+  "total_code_error" => "Total :count_error barcode error !",
+  "total_imported" => "Total :count_sucess imported !",
+  "total_error" => "Total :count_error error !",
   'login_permission_1' =>"You have not registered software. Please contact the administrator !",
   'login_permission_2' =>"Your software has expired. Please renew it!",
   'error' =>"Error !!!",
@@ -123,4 +125,5 @@ return [
   "bank_transfer_is_duplicated"=>"Bank transfer is duplicated !",
   "bank_sender_or_bank_receive_is_empty"=>"Bank sender or bank receive is empty !",
   "enter_search_keyword"=>"Enter search keyword",
+  "bank_account_not_correct"=>"Bank account not correct !",
 ];

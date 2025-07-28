@@ -10,8 +10,10 @@ use App\Http\Model\AccGeneral;
 use App\Http\Model\Menu;
 use App\Http\Model\AccBankAccount;
 use App\Http\Model\AccBank;
+use App\Http\Model\AccBankReconciliation;
 use Illuminate\Support\Facades\DB;
 use App\Http\Resources\BankLoadReadResource;
+use App\Http\Resources\BankReconciliationLoadReadResource;
 use App\Http\Model\Imports\AccBankReconciliationDetailImport;
 use App\Http\Model\Imports\AccBankReconciliationGeneralImport;
 use Maatwebsite\Excel\Facades\Excel;
@@ -41,8 +43,9 @@ class AccBankReconciliationController extends Controller
     try{
       $req = json_decode($request->data);
       $data1 = BankLoadReadResource::collection(AccGeneral::get_data_load_group_bank_account_between($this->group,$req->start_date,$req->end_date,$req->bank_account,$req->active));
+      $data2 = BankReconciliationLoadReadResource::collection(AccBankReconciliation::get_data_load_between($req->bank_account,$req->start_date,$req->end_date));
       if($data1->count()>0){
-        return response()->json(['status'=>true,'data1'=> $data1]);
+        return response()->json(['status'=>true,'data1'=> $data1,'data2'=>$data2]);
       }else{
         return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
       }
@@ -73,24 +76,30 @@ class AccBankReconciliationController extends Controller
                 'application/vnd.ms-excel',
       ]);
         $rs = json_decode($request->data);
-  
         $file = $request->file;
         // Đổi dữ liệu Excel sang collect
         config(['excel.imports.read_only' => false]);
-        $bank_account = AccBankAccount::find($rs->bank_account);
+        $bank_account = AccBankAccount::find($rs->crit);
         $bank = AccBank::find($bank_account->bank_id);
-        $start_row = 0;
-        $row = [];
         if($bank->name == "Vietinbank"){
           $start_row = 26;
           $row = ['accounting_date'=>1,'transaction_description'=>2,'debit_amount'=>3,'credit_amount'=>4,'transaction_number'=>6,'corresponsive_account'=>7,'corresponsive_name'=>8];
-          $row_gen = ['bank_account'=>'C12','total_credit'=>'C21','total_debit  '=>'E21'];
-        }
-        $general = new AccBankReconciliationGeneralImport($row_gen);
-        Excel::import($general, $file); 
-        $data = new AccBankReconciliationDetailImport($rs->bank_account,$start_row,$row);
-        Excel::import($data , $file);       
-        return response()->json(['status'=>true,'message'=> trans('messages.success_import')]);
+          $row_gen = ['bank_account'=>'C12','total_credit'=>'C21','total_debit'=>'E21'];
+          $general = new AccBankReconciliationGeneralImport($row_gen);
+          Excel::import($general, $file); 
+          $general_data = $general->getData();
+          if($general_data['bank_account'] == $bank_account->bank_account){
+            $data = new AccBankReconciliationDetailImport($rs->crit,$start_row,$row);
+            Excel::import($data , $file);  
+            $data_count = $data->getRowCount();
+            return response()->json(['status'=>true,'message'=> trans('messages.success_import')." ".trans('messages.total_imported',['count_sucess' => $data_count])]);   
+          }else{
+            return response()->json(['status'=>true,'message'=> trans('messages.bank_account_not_correct')]);   
+          }         
+        }else{
+          return response()->json(['status'=>true,'message'=> trans('messages.failed_import')]); 
+        }    
+       
       }else{
         return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
       }

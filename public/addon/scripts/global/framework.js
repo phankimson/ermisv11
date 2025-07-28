@@ -1303,6 +1303,14 @@ function FormatDate(container) {
     return result;
 }
 
+function FormatDateTimeKendo(container) {
+    var result = "";
+    if (container != null) {
+          result = kendo.toString(kendo.parseDate(container, 'yyyy-MM-dd HH:mm:ss'), 'dd/MM/yyyy HH:mm:ss');
+    }
+    return result;
+}
+
 function FormatMonth(container) {
     var result = "";
     if (container != null) {
