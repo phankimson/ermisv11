@@ -33,7 +33,7 @@ var Ermis = function () {
         ErmisKendoContextMenuTemplate("#context-menu", ".md-card-content");
        // Grid
        ErmisKendoGridCheckboxTemplate4($kGridTab1,Ermis.data,Ermis.aggregate, Ermis.field, jQuery(window).height() * 0.5 ,Ermis.page_size , Ermis.columns_tab1,onChange,onDataBound,"id")
-       ErmisKendoGridCheckboxTemplate4($kGridTab2,Ermis.data,Ermis.aggregate, Ermis.field, jQuery(window).height() * 0.5 ,Ermis.page_size , Ermis.columns_tab2,onChange,onDataBound,"ids")
+       ErmisKendoGridCheckboxTemplate4($kGridTab2,Ermis.data,Ermis.aggregate, Ermis.field, jQuery(window).height() * 0.5 ,Ermis.page_size , Ermis.columns_tab2,onChange,onDataBound,"id")
     }
 
     var onChange = function(data){  
