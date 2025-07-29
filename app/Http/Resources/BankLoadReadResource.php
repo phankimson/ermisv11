@@ -17,6 +17,7 @@ class BankLoadReadResource extends JsonResource
     {
         return [
             'id' => $this->detail_id,
+            'checkbox' => "",
             'voucher' => $this->voucher,
             'voucher_date' => $this->voucher_date,
             'accounting_date' => $this->accounting_date,
@@ -24,7 +25,7 @@ class BankLoadReadResource extends JsonResource
             'debit_amount' => $this->bank_account_debit?$this->total_amount:0,
             'credit_amount' => $this->bank_account_credit?$this->total_amount:0,
             'subject' => $this->object_name,
-            'active' =>  $this->active,
+            'is_checked' =>  $this->is_checked == 2 ? 1:0,
         ];
     }
 }

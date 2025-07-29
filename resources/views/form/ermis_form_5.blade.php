@@ -30,18 +30,22 @@
             </div>
             <div class="uk-grid">
                 <div class="uk-width-medium-2-4">
-                        <span class="k-textbox k-space-right margin-bottom-20 medium">
+                    <h4 class="heading_a uk-margin-medium-bottom">@lang('acc_voucher.accounted')</h4>
+                        <span class="k-textbox k-space-right margin-bottom-20 medium">                           
                             <input type="text" placeholder="@lang('messages.enter_search_keyword')" id="search_tab1" />
-                            <a href="javascript:;" style="right : 10px"  class="k-icon k-i-search" id="btn_search_tab1">&nbsp;</a>
-                        </span>
+                            <a href="javascript:;" style="right : 10px"  class="k-icon k-i-search" id="btn_search_tab1">&nbsp;</a>                                                   
+                        </span>                        
                     <div id="grid_tab1"></div>
+                            @yield('tab1_add')                        
                 </div>
                 <div class="uk-width-medium-2-4">
+                    <h4 class="heading_a uk-margin-medium-bottom">@lang('acc_voucher.compare')</h4>
                     <span class="k-textbox k-space-right margin-bottom-20 medium">
-                            <input type="text" placeholder="@lang('messages.enter_search_keyword')" id="search_tab2" />
-                            <a href="javascript:;" style="right : 10px"  class="k-icon k-i-search"id="btn_search_tab2">&nbsp;</a>
+                        <input type="text" placeholder="@lang('messages.enter_search_keyword')" id="search_tab2" />
+                        <a href="javascript:;" style="right : 10px"  class="k-icon k-i-search"id="btn_search_tab2">&nbsp;</a>
                     </span>
-                    <div id="grid_tab2"></div>                   
+                    <div id="grid_tab2"></div>  
+                        @yield('tab2_add')                                   
                 </div>
             </div>
                 @yield('tabs')

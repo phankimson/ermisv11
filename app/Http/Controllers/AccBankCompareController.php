@@ -10,16 +10,20 @@ use App\Http\Model\AccGeneral;
 use App\Http\Model\Menu;
 use App\Http\Model\AccBankAccount;
 use App\Http\Model\AccBank;
-use App\Http\Model\AccBankReconciliation;
+use App\Http\Model\AccPeriod;
+use App\Http\Model\AccDetail;
+use App\Http\Model\AccBankCompare;
+use App\Http\Model\AccHistoryAction;
 use Illuminate\Support\Facades\DB;
 use App\Http\Resources\BankLoadReadResource;
-use App\Http\Resources\BankReconciliationLoadReadResource;
-use App\Http\Model\Imports\AccBankReconciliationDetailImport;
-use App\Http\Model\Imports\AccBankReconciliationGeneralImport;
+use App\Http\Resources\BankCompareLoadReadResource;
+use App\Http\Model\Imports\AccBankCompareDetailImport;
+use App\Http\Model\Imports\AccBankCompareGeneralImport;
 use Maatwebsite\Excel\Facades\Excel;
+use Carbon\Carbon;
 use Exception;
 
-class AccBankReconciliationController extends Controller
+class AccBankCompareController extends Controller
 {
   protected $url;
   protected $key;
@@ -29,13 +33,13 @@ class AccBankReconciliationController extends Controller
   public function __construct(Request $request)
   {
      $this->url =  $request->segment(3);
-     $this->key = "bank-reconciliation";   
+     $this->key = "bank-compare";   
      $this->group = [3,4]; // 3,4 Thu chi bank 
      $this->menu = Menu::where('code', '=', $this->key)->first();
   }
 
   public function show(){
-    return view('acc.bank_reconciliation',['key' => $this->key ]);
+    return view('acc.bank_compare',['key' => $this->key ]);
   }
 
   public function load(Request $request){
@@ -43,7 +47,7 @@ class AccBankReconciliationController extends Controller
     try{
       $req = json_decode($request->data);
       $data1 = BankLoadReadResource::collection(AccGeneral::get_data_load_group_bank_account_between($this->group,$req->start_date,$req->end_date,$req->bank_account,$req->active));
-      $data2 = BankReconciliationLoadReadResource::collection(AccBankReconciliation::get_data_load_between($req->bank_account,$req->start_date,$req->end_date));
+      $data2 = BankCompareLoadReadResource::collection(AccBankCompare::get_data_load_between($req->bank_account,$req->start_date,$req->end_date));
       if($data1->count()>0){
         return response()->json(['status'=>true,'data1'=> $data1,'data2'=>$data2]);
       }else{
@@ -61,6 +65,58 @@ class AccBankReconciliationController extends Controller
           'check' => 0 ]);
         return response()->json(['status'=>false,'message'=> trans('messages.error').' '.$e->getMessage()]);
       }
+  }
+
+  public function check(Request $request) {
+    $type = 3;
+       try{
+        DB::connection(env('CONNECTION_DB_ACC'))->beginTransaction();
+         $permission = $request->session()->get('per');
+         $arr = json_decode($request->data);
+         if($arr){
+           if($permission['e'] == true){
+             $data = AccGeneral::find($arr);
+             $period = AccPeriod::get_date(Carbon::parse($data->accounting_date)->format('Y-m'),1);
+             if(!$period){
+               $detail = AccDetail::get_detail_active($data->id,0);
+               // Lưu lịch sử
+               $h = new AccHistoryAction();
+               $h ->create([
+               'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
+               'user' => Auth::id(),
+               'menu' => $this->menu->id,
+               'url'  => $this->url,
+               'dataz' => \json_encode($data)]);
+
+               //DETAIL
+               $detail->each(function ($d){
+                    $d->update(['status'=>2]);                  
+                });
+                DB::connection(env('CONNECTION_DB_ACC'))->commit();
+               return response()->json(['status'=>true,'message'=> trans('messages.unrecored_success')]);
+             }else{
+               return response()->json(['status'=>false,'message'=> trans('messages.locked_period')]);
+             }
+
+           }else{
+             return response()->json(['status'=>false,'message'=> trans('messages.you_are_not_permission_edit')]);
+           }
+        }else{
+          return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
+        }
+       }catch(Exception $e){
+        DB::connection(env('CONNECTION_DB_ACC'))->rollBack();
+         // Lưu lỗi
+         $err = new Error();
+         $err ->create([
+           'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
+           'user_id' => Auth::id(),
+           'menu_id' => $this->menu->id,
+           'error' => $e->getMessage(),
+           'url'  => $this->url,
+           'check' => 0 ]);
+         return response()->json(['status'=>false,'message'=> trans('messages.recored_fail').' '.$e->getMessage()]);
+       }
   }
 
   
@@ -85,11 +141,11 @@ class AccBankReconciliationController extends Controller
           $start_row = 26;
           $row = ['accounting_date'=>1,'transaction_description'=>2,'debit_amount'=>3,'credit_amount'=>4,'transaction_number'=>6,'corresponsive_account'=>7,'corresponsive_name'=>8];
           $row_gen = ['bank_account'=>'C12','total_credit'=>'C21','total_debit'=>'E21'];
-          $general = new AccBankReconciliationGeneralImport($row_gen);
+          $general = new AccBankCompareGeneralImport($row_gen);
           Excel::import($general, $file); 
           $general_data = $general->getData();
           if($general_data['bank_account'] == $bank_account->bank_account){
-            $data = new AccBankReconciliationDetailImport($rs->crit,$start_row,$row);
+            $data = new AccBankCompareDetailImport($rs->crit,$start_row,$row);
             Excel::import($data , $file);  
             $data_count = $data->getRowCount();
             return response()->json(['status'=>true,'message'=> trans('messages.success_import')." ".trans('messages.total_imported',['count_sucess' => $data_count])]);   

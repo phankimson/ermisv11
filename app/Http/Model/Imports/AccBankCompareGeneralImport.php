@@ -5,7 +5,7 @@ namespace App\Http\Model\Imports;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithMappedCells;
 
-class AccBankReconciliationGeneralImport implements WithMappedCells,ToModel
+class AccBankCompareGeneralImport implements WithMappedCells,ToModel
 {
   protected $row;
   public static $data = array();
@@ -40,7 +40,7 @@ class AccBankReconciliationGeneralImport implements WithMappedCells,ToModel
         'total_credit'    => $row['total_credit'],
         'total_debit'    => $row['total_debit'],
       ]; 
-      AccBankReconciliationGeneralImport::setData($arr);      
+      AccBankCompareGeneralImport::setData($arr);      
       return ;
     }
     

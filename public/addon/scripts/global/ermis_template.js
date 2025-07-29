@@ -894,7 +894,7 @@ var ErmisKendoGridCheckboxTemplate3 = function($kGrid, data, aggregate, field, p
        
     }
 
-    var ErmisKendoGridCheckboxTemplate4 = function($kGrid, data , aggregate, field, height, pageSize, column, onChange, onDataBound, get) { // Sử dụng scroll
+ var ErmisKendoGridCheckboxTemplate4 = function($kGrid, data , aggregate, field, height, pageSize, column, onChange, onDataBound, get) { // Sử dụng scroll
     $kGrid.kendoGrid({
         dataSource: {
             pageSize: pageSize,
@@ -916,8 +916,55 @@ var ErmisKendoGridCheckboxTemplate3 = function($kGrid, data, aggregate, field, p
         change: onChange,
         columns: column
     });
-
 }
+// Sử dụng scroll,page ko checkbox header
+var ErmisKendoGridCheckboxTemplate5 = function($kGrid, data, aggregate, field, pageSize, editable, height, columns, onDataBinding ,key ,onChecked) { 
+    dataSource = new kendo.data.DataSource({       
+        data: data,
+        aggregate: aggregate,
+        batch: true,
+        autoBind: true,
+        pageSize: pageSize,
+        schema: {
+            model: {
+                id: "id",
+                fields: field
+            }
+        }
+    });
+    var grid = $kGrid.kendoGrid({
+        dataSource: dataSource,
+        dataBinding: onDataBinding,
+        editable: editable,
+        height: height,
+        columns: columns,
+        navigatable: true
+    });
+    var grid = $kGrid.data("kendoGrid");
+ 
+    grid.thead.kendoTooltip({
+        filter: "th",
+        position: "top",
+        content: function(e) {
+            var target = e.target; // element for which the tooltip is shown
+            return $(target).text();
+        }
+    });
+
+    
+  // Click checkbox    
+    grid.tbody.on("click", ".k-checkbox." + key, selectRow);
+  
+    //on click of the checkbox:
+    function selectRow() {
+        var checked = this.checked,
+            row = $(this).closest("tr"),        
+            grid = $kGrid.data("kendoGrid"),
+            dataItem = grid.dataItem(row);
+            onChecked(checked,dataItem,$kGrid);
+        } 
+       
+    }
 
 
 var ErmisKendoGridTemplate5 = function($kGrid, height, dataSource, scrollable, sortable, pageable, columns) {

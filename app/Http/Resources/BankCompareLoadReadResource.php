@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class BankReconciliationLoadReadResource extends JsonResource
+class BankCompareLoadReadResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,12 +16,13 @@ class BankReconciliationLoadReadResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'checkbox' => "",
             'voucher_date' => $this->accounting_date,
             'description' => $this->transaction_description,
             'debit_amount' => $this->debit_amount?$this->debit_amount:0,
             'credit_amount' => $this->credit_amount?$this->credit_amount:0,
             'subject' => $this->corresponsive_name,
-            'active' =>  $this->detail_id?1:0,
+            'is_checked' =>  $this->status == 2?1:0,
         ];
     }
 }

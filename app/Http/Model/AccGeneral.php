@@ -75,7 +75,7 @@ class AccGeneral extends Model
         $result = AccGeneral::whereIn('acc_general.group',$group)->leftJoin('acc_detail', function ($join) {
         $join->on('acc_general.id', '=', 'acc_detail.general_id');})->leftJoin('object', function ($join) {
         $join->on('acc_general.subject', '=', 'object.id');})->orWhere([['acc_detail.bank_account_debit',$bank_account],['acc_detail.bank_account_credit',$bank_account]])
-        ->whereBetween('acc_general.accounting_date',[$startDate,$endDate])->where('acc_general.active',$active)->orderBy('acc_general.accounting_date', 'asc')->orderBy('acc_general.created_at', 'asc')->select('acc_general.*','acc_detail.general_id','acc_detail.bank_account_debit','acc_detail.bank_account_credit','object.id as object_id','object.name as object_name','acc_detail.id as detail_id')->get();
+        ->whereBetween('acc_general.accounting_date',[$startDate,$endDate])->where('acc_general.active',$active)->orderBy('acc_general.accounting_date', 'asc')->orderBy('acc_general.created_at', 'asc')->select('acc_general.*','acc_detail.general_id','acc_detail.bank_account_debit','acc_detail.bank_account_credit','object.id as object_id','object.name as object_name','acc_detail.id as detail_id','acc_detail.status as is_checked')->get();
         return $result;
       }
 

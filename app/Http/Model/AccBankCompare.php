@@ -8,12 +8,12 @@ use App\Http\Traits\BootedTraits;
 use App\Http\Traits\OrderTraits;
 use App\Http\Model\Casts\Decimal;
 
-class AccBankReconciliation extends Model
+class AccBankCompare extends Model
 {
   use ScopesTraits,BootedTraits,OrderTraits;
 
       protected $connection = 'mysql2';
-      protected $table = 'bank_reconciliation';
+      protected $table = 'bank_compare';
       public $incrementing = false; // and it doesn't even have to be auto-incrementing!
       protected $guarded = []; //Thiếu dòng create bị lỗi Add [code] to fillable property to allow mass assignment on
 
@@ -28,7 +28,7 @@ class AccBankReconciliation extends Model
       static::OrderByCreatedAtBaseTrait();
   }
      static public function get_data_load_between($bank,$startDate,$endDate){
-        $result = AccBankReconciliation::where('bank_account',$bank)->whereBetween('accounting_date',[$startDate,$endDate])->orderBy('accounting_date', 'asc')->orderBy('created_at', 'asc')->get();
+        $result = AccBankCompare::where('bank_account',$bank)->whereBetween('accounting_date',[$startDate,$endDate])->orderBy('accounting_date', 'asc')->orderBy('created_at', 'asc')->get();
         return $result;
       }
 

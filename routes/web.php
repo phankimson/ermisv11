@@ -1405,12 +1405,12 @@ Route::post('/bank-payment-voucher-by-invoice-bind', 'bind' )->name('-bind');
 
 // Bank reconciliation auto
 Route::group([
-  'as' => 'bank-reconciliation',
-  'controller' => AccBankReconciliationController::class
+  'as' => 'bank-compare',
+  'controller' => AccBankCompareController::class
 ],function () {
-Route::get('/bank-reconciliation', 'show' )->name('');
-Route::post('/bank-reconciliation-load', 'load' )->name('-load');
-Route::post('/bank-reconciliation-import', 'import' )->name('-import');
+Route::get('/bank-compare', 'show' )->name('');
+Route::post('/bank-compare-load', 'load' )->name('-load');
+Route::post('/bank-compare-import', 'import' )->name('-import');
 });
 
 });

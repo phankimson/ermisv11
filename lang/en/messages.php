@@ -126,4 +126,5 @@ return [
   "bank_sender_or_bank_receive_is_empty"=>"Bank sender or bank receive is empty !",
   "enter_search_keyword"=>"Enter search keyword",
   "bank_account_not_correct"=>"Bank account not correct !",
+  "debit_and_credit_amount_not_correct"=>"Debit and credit amount not correct !",
 ];

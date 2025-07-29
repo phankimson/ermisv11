@@ -127,4 +127,5 @@ return [
       "bank_sender_or_bank_receive_is_empty"=>"Ngân hàng nhận hoặc ngân hàng chuyển bị trống",
       "enter_search_keyword"=>"Nhập từ khóa tìm kiếm",
       "bank_account_not_correct"=>"Tài khoản ngân hàng không đúng !",
+      "debit_and_credit_amount_not_correct"=>"Số tiền nợ và có không khớp nhau !",
 ];

@@ -1248,7 +1248,7 @@ function FormatMultiSelectValueRow(container,row) {
 
 function FormatNumberHtml(container,decimal_symbol) {
   var result = 0;
-  if (container === null || container === "") {
+  if (container === null || container === "" || container === "0") {
       result = 0;
   } else {
       result = replaceAll(container,decimal_symbol, "");

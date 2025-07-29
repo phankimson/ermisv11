@@ -2,7 +2,7 @@
 
 namespace App\Http\Model\Imports;
 
-use App\Http\Model\AccBankReconciliation;
+use App\Http\Model\AccBankCompare;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
@@ -10,7 +10,7 @@ use Maatwebsite\Excel\Concerns\WithBatchInserts;
 use Maatwebsite\Excel\Concerns\WithLimit;
 use Maatwebsite\Excel\Concerns\WithStartRow;
 
-class AccBankReconciliationDetailImport implements ToModel, WithHeadingRow, WithBatchInserts, WithLimit, WithStartRow
+class AccBankCompareDetailImport implements ToModel, WithHeadingRow, WithBatchInserts, WithLimit, WithStartRow
 {
   private static $result = array();
    protected $bank_account;
@@ -52,7 +52,7 @@ class AccBankReconciliationDetailImport implements ToModel, WithHeadingRow, With
 
     public function model(array $row)
     {
-        $code_check = AccBankReconciliation::WhereCheck('transaction_number',$row[$this->row['transaction_number']],'id',null)->first();
+        $code_check = AccBankCompare::WhereCheck('transaction_number',$row[$this->row['transaction_number']],'id',null)->first();
         if($code_check == null && $row[$this->row['transaction_description']] && $row[$this->row['transaction_number']]){
           ++$this->rows; // Increment the counter for each processed row
           //Convert Datetime
@@ -71,9 +71,9 @@ class AccBankReconciliationDetailImport implements ToModel, WithHeadingRow, With
             'corresponsive_account'    => $row[$this->row['corresponsive_account']],
             'corresponsive_name'    => $row[$this->row['corresponsive_name']]
           ];
-          $data = new AccBankReconciliationDetailImport($this->bank_account,$this->start_row, $this->row);
+          $data = new AccBankCompareDetailImport($this->bank_account,$this->start_row, $this->row);
           $data->setData($arr);
-          return new AccBankReconciliation($arr);      
+          return new AccBankCompare($arr);      
         }
     }
 

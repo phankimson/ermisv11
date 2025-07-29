@@ -11,9 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('bank_reconciliation', function (Blueprint $table) {
+        Schema::create('bank_compare', function (Blueprint $table) {
             $table->uuid('id');
-            $table->uuid('detail_id');
             $table->uuid('bank_account');
             $table->dateTime('accounting_date');
             $table->decimal('debit_amount', total: 11, places: 2);
@@ -22,6 +21,7 @@ return new class extends Migration
             $table->string('transaction_number', length: 50);
             $table->string('corresponsive_account', length: 100);
             $table->string('corresponsive_name', length: 50);
+            $table->tinyInteger('status');
             $table->timestamps();          
             $table->index(['bank_account', 'accounting_date']);
         });
