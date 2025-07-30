@@ -30,6 +30,12 @@ class AccBankCompare extends Model
      static public function get_data_load_between($bank,$startDate,$endDate){
         $result = AccBankCompare::where('bank_account',$bank)->whereBetween('accounting_date',[$startDate,$endDate])->orderBy('accounting_date', 'asc')->orderBy('created_at', 'asc')->get();
         return $result;
-      }
+    }
+
+     static public function get_item_object($id){
+        $result = AccBankCompare::where('id',$id)->leftJoin('bank_account', function ($join) {
+        $join->on('bank_account.id', '=', 'bank_compare.bank_account');})->first();
+        return $result;
+    }
 
 }

@@ -17,6 +17,7 @@ use App\Http\Model\AccHistoryAction;
 use Illuminate\Support\Facades\DB;
 use App\Http\Resources\BankLoadReadResource;
 use App\Http\Resources\BankCompareLoadReadResource;
+use App\Http\Resources\BankCompareCreateGeneralVoucherResource;
 use App\Http\Model\Imports\AccBankCompareDetailImport;
 use App\Http\Model\Imports\AccBankCompareGeneralImport;
 use Maatwebsite\Excel\Facades\Excel;
@@ -246,6 +247,31 @@ class AccBankCompareController extends Controller
         'check' => 0 ]);
       return response()->json(['status'=>false,'message'=> trans('messages.failed_import').' '.$e->getMessage()]);
     }
+  }
+
+   public function create_voucher(Request $request){
+    $type = 10;
+    try{
+      $req = json_decode($request->data);
+      $data = new BankCompareCreateGeneralVoucherResource(AccBankCompare::get_item_object($req));
+      //$data = new BankCompareCreateGeneralVoucherResource(AccBankCompare::get_item_object($req))->DefaultValue('bar');
+      if($data){
+        return response()->json(['status'=>true,'data'=> $data]);
+      }else{
+        return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
+      }
+     }catch(Exception $e){
+        // Lưu lỗi
+        $err = new Error();
+        $err ->create([
+          'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
+          'user_id' => Auth::id(),
+          'menu_id' => $this->menu->id,
+          'error' => $e->getMessage(),
+          'url'  => $this->url,
+          'check' => 0 ]);
+        return response()->json(['status'=>false,'message'=> trans('messages.error').' '.$e->getMessage()]);
+      }
   }
 
 }

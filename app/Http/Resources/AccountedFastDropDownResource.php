@@ -2,7 +2,6 @@
 
 namespace App\Http\Resources;
 
-use App\Http\Model\User;
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Model\AccObject;
 

@@ -42,7 +42,7 @@ var Ermis = function () {
         ErmisKendoGridCheckboxTemplate5($kGridTab2, Ermis.data, Ermis.aggregate, Ermis.field, Ermis.page_size , {
             confirmation: false
         }, jQuery(window).height() * 0.5, Ermis.columns_tab2,onDataBinding,grid_header_key_2,onChecked);
-        initCreateDocument();
+        initCreateVoucher();
        //ErmisKendoGridCheckboxTemplate4($kGridTab1,Ermis.data,Ermis.aggregate, Ermis.field, jQuery(window).height() * 0.5 ,Ermis.page_size , Ermis.columns_tab1,onChange,onDataBound,"id")
        
     }
@@ -191,12 +191,12 @@ var Ermis = function () {
         })      
     }
 
-    var initCreateDocument = function(e){ 
+    var initCreateVoucher = function(e){ 
         var grid = $kGridTab2.data("kendoGrid");
-        jQuery(grid.tbody).on("click", ".create_document", function(e) {
+        jQuery(grid.tbody).on("click", ".create_voucher", function(e) {
             var dataId = jQuery(this).attr('data-id');
             var postdata = { data: JSON.stringify(dataId) };
-            ErmisTemplateAjaxPost0(e,postdata,Ermis.link+'-create-document',
+            ErmisTemplateAjaxPost0(e,postdata,Ermis.link+'-create-voucher',
                 function (result) {
                     var data_href = jQuery(this).attr('data-href');
                     window.open(data_href , '_blank');

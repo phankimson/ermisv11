@@ -59,7 +59,7 @@ return [
     "compare" =>"Compare",
     "compared" =>"Compared",
     "not_compared" =>"Not compared",
-    "create_documents"=>"Create documents",
+    "create_voucher"=>"Create Voucher",
     "department" =>"Department",
     "bank_account" =>"Bank account",
     "cost_code" => "Cost code",

@@ -99,8 +99,8 @@
                                 {"field" : "credit_amount","title" :  "@lang('acc_voucher.credit_amount')" ,template: '#= FormatNumberDecimal(credit_amount, {{$decimal}} )#',aggregates: ['sum'] ,footerTemplate:"#= FormatNumberDecimal(sum,{{$decimal}}) #" },
                                 {"field" : "subject","title" :  "@lang('acc_voucher.subject')" },
                                 {"field" : "action","title" :  "@lang('action.processed')", template: function(dataItem){
-                                                                                            if(!dataItem.is_checked && dataItem.debit_amount>0){return '<a data-href="{{route("acc.bank-receipts-voucher")}}" href="javascript:;" data-id="'+dataItem.id+'" class="create_document">@lang("acc_voucher.create_documents")</a>'}
-                                                                                            else if(!dataItem.is_checked && dataItem.credit_amount>0){return '<a data-href="{{route("acc.bank-payment-voucher")}} href="javascript:;" data-id="'+dataItem.id+'" class="create_document">@lang("acc_voucher.create_documents")</a>'}
+                                                                                            if(!dataItem.is_checked && dataItem.debit_amount>0){return '<a data-href="{{route("acc.bank-receipts-voucher")}}" href="javascript:;" data-id="'+dataItem.id+'" class="create_voucher">@lang("acc_voucher.create_voucher")</a>'}
+                                                                                            else if(!dataItem.is_checked && dataItem.credit_amount>0){return '<a data-href="{{route("acc.bank-payment-voucher")}} href="javascript:;" data-id="'+dataItem.id+'" class="create_voucher">@lang("acc_voucher.create_voucher")</a>'}
                                                                                             else{ return ""}                 
                                 } } ];
       Ermis.field = {

@@ -68,7 +68,7 @@ return [
     "compared" =>"Đã đối chiếu",
     "not_compared" =>"Chưa đối chiếu",
     "attach" => "Đính kèm",
-    "create_documents"=>"Lập chứng từ",
+    "create_voucher"=>"Lập chứng từ",
     "currency" => "Loại tiền",
     "rate" => "Tỷ giá",
     "amount_rate" => "Thành tiền quy đổi",
