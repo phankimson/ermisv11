@@ -6,6 +6,9 @@
       <a class="import"><i class="md-icon material-icons" data-uk-tooltip title="@lang('action.import') ({{ config('app.short_key')}}I)">archive</i>@lang('action.import')</a>
   </li>
   <li>
-      <a class="check"><i class="md-icon material-icons" data-uk-tooltip title="@lang('action.check')  ({{ config('app.short_key')}}D)">check_circle</i>@lang('action.check')</a>
+      <a class="check"><i class="md-icon material-icons" data-uk-tooltip title="@lang('action.check')  ({{ config('app.short_key')}}C)">check_circle</i>@lang('action.check')</a>
+  </li>
+  <li>
+      <a class="uncheck"><i class="md-icon material-icons" data-uk-tooltip title="@lang('action.uncheck')  ({{ config('app.short_key')}}U)">highlight_off</i>@lang('action.uncheck')</a>
   </li>
 </ul>

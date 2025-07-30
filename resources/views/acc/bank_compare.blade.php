@@ -27,12 +27,12 @@
 @section('tab1_add')
 <div class="k-space-right margin-top-20">
         <span>@lang('acc_voucher.debit_amount')
-          <input type="text" readonly disabled value="0" class="k-textbox" id="debit_amount_tab1" />
+          <input type="text" readonly disabled value="0" class="k-textbox amount" id="debit_amount_tab1" />
       </span>   
   </div>
   <div class="k-space-right margin-top-20">
       <span>@lang('acc_voucher.credit_amount')
-          <input type="text" readonly disabled value="0" class="k-textbox" id="credit_amount_tab1" />
+          <input type="text" readonly disabled value="0" class="k-textbox amount" id="credit_amount_tab1" />
       </span>                            
   </div>
 @endsection
@@ -40,12 +40,12 @@
 @section('tab2_add')
  <div class="k-space-right margin-top-20">
       <span>@lang('acc_voucher.debit_amount')
-        <input type="text" readonly disabled value="0" class="k-textbox" id="debit_amount_tab2" />
+        <input type="text" readonly disabled value="0" class="k-textbox amount" id="debit_amount_tab2" />
     </span>   
 </div>
 <div class="k-space-right margin-top-20">
     <span>@lang('acc_voucher.credit_amount')
-        <input type="text" readonly disabled value="0" class="k-textbox" id="credit_amount_tab2" />
+        <input type="text" readonly disabled value="0" class="k-textbox amount" id="credit_amount_tab2" />
     </span>                            
 </div>  
 @endsection
@@ -98,7 +98,10 @@
                                 {"field" : "debit_amount","title" :  "@lang('acc_voucher.debit_amount')" ,template: '#= FormatNumberDecimal(debit_amount, {{$decimal}} )#',aggregates: ['sum'] ,footerTemplate:"#= FormatNumberDecimal(sum,{{$decimal}}) #" },
                                 {"field" : "credit_amount","title" :  "@lang('acc_voucher.credit_amount')" ,template: '#= FormatNumberDecimal(credit_amount, {{$decimal}} )#',aggregates: ['sum'] ,footerTemplate:"#= FormatNumberDecimal(sum,{{$decimal}}) #" },
                                 {"field" : "subject","title" :  "@lang('acc_voucher.subject')" },
-                                {"field" : "action","title" :  "@lang('action.processed')", template: function(dataItem){if(!dataItem.is_checked ){return '<a href="" target="_blank">@lang("acc_voucher.create_documents")</a>'}                  
+                                {"field" : "action","title" :  "@lang('action.processed')", template: function(dataItem){
+                                                                                            if(!dataItem.is_checked && dataItem.debit_amount>0){return '<a data-href="{{route("acc.bank-receipts-voucher")}}" href="javascript:;" data-id="'+dataItem.id+'" class="create_document">@lang("acc_voucher.create_documents")</a>'}
+                                                                                            else if(!dataItem.is_checked && dataItem.credit_amount>0){return '<a data-href="{{route("acc.bank-payment-voucher")}} href="javascript:;" data-id="'+dataItem.id+'" class="create_document">@lang("acc_voucher.create_documents")</a>'}
+                                                                                            else{ return ""}                 
                                 } } ];
       Ermis.field = {
             id : {field :"id",editable: false},
@@ -109,7 +112,7 @@
             debit_amount:     {field : "debit_amount",editable: false,type:"number" },
             credit_amount:     {field : "credit_amount",editable: false,type:"number"},
             subject:     {field : "subject", editable: false}, 
-            is_checked:     {field : "is_checked", editable: false}, 
+            is_checked:     {field : "is_checked"}, 
             action:     {field : "action", editable: false},                    
         };
         Ermis.aggregate = [ { field: "description", aggregate: "count" },

@@ -52,4 +52,5 @@ return [
     "change" => "Thay đổi",
     "start" => "Bắt đầu",
     "check" => "Kiểm tra",
+    "uncheck" => "Bỏ kiểm tra",
 ];

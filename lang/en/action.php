@@ -52,4 +52,5 @@ return [
     "change" => "Change",
     "start" => "Start",
     "check" => "Check",
+    "uncheck" => "Uncheck",
 ];

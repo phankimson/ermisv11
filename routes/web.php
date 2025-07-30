@@ -1411,6 +1411,8 @@ Route::group([
 Route::get('/bank-compare', 'show' )->name('');
 Route::post('/bank-compare-load', 'load' )->name('-load');
 Route::post('/bank-compare-import', 'import' )->name('-import');
+Route::post('/bank-compare-check', 'check' )->name('-check');
+Route::post('/bank-compare-uncheck', 'uncheck' )->name('-uncheck');
 });
 
 });

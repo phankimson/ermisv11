@@ -75,10 +75,11 @@ class AccBankCompareController extends Controller
          $arr = json_decode($request->data);
          if($arr){
            if($permission['e'] == true){
-             $data = AccGeneral::find($arr);
+             $tab1 = $arr->tab1;
+             if(count($tab1)>0){
+             $data = AccDetail::find($tab1[0]);
              $period = AccPeriod::get_date(Carbon::parse($data->accounting_date)->format('Y-m'),1);
              if(!$period){
-               $detail = AccDetail::get_detail_active($data->id,0);
                // Lưu lịch sử
                $h = new AccHistoryAction();
                $h ->create([
@@ -86,14 +87,24 @@ class AccBankCompareController extends Controller
                'user' => Auth::id(),
                'menu' => $this->menu->id,
                'url'  => $this->url,
-               'dataz' => \json_encode($data)]);
+               'dataz' => \json_encode($arr)]);
 
                //DETAIL
-               $detail->each(function ($d){
-                    $d->update(['status'=>2]);                  
-                });
+               foreach($arr->tab1 as $k){
+                  $d = AccDetail::find($k);                 
+                  $d->status = 2;
+                  $d->save();
+               }
+               //compare
+               foreach($arr->tab2 as $l){
+                  $d = AccBankCompare::find($l);
+                  $d->status = 2;
+                  $d->save();
+               }              
                 DB::connection(env('CONNECTION_DB_ACC'))->commit();
-               return response()->json(['status'=>true,'message'=> trans('messages.unrecored_success')]);
+               return response()->json(['status'=>true,'message'=> trans('messages.check_success')]);
+             }
+             
              }else{
                return response()->json(['status'=>false,'message'=> trans('messages.locked_period')]);
              }
@@ -115,7 +126,70 @@ class AccBankCompareController extends Controller
            'error' => $e->getMessage(),
            'url'  => $this->url,
            'check' => 0 ]);
-         return response()->json(['status'=>false,'message'=> trans('messages.recored_fail').' '.$e->getMessage()]);
+         return response()->json(['status'=>false,'message'=> trans('messages.check_fail').' '.$e->getMessage()]);
+       }
+  }
+
+  public function uncheck(Request $request) {
+    $type = 3;
+       try{
+        DB::connection(env('CONNECTION_DB_ACC'))->beginTransaction();
+         $permission = $request->session()->get('per');
+         $arr = json_decode($request->data);
+         if($arr){
+           if($permission['e'] == true){
+             $tab1 = $arr->tab1;
+             if(count($tab1)>0){
+             $data = AccDetail::find($tab1[0]);
+             $period = AccPeriod::get_date(Carbon::parse($data->accounting_date)->format('Y-m'),1);
+             if(!$period){
+               // Lưu lịch sử
+               $h = new AccHistoryAction();
+               $h ->create([
+               'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
+               'user' => Auth::id(),
+               'menu' => $this->menu->id,
+               'url'  => $this->url,
+               'dataz' => \json_encode($arr)]);
+
+               //DETAIL
+               foreach($arr->tab1 as $k){
+                  $d = AccDetail::find($k);                 
+                  $d->status = 1;
+                  $d->save();
+               }
+               //compare
+               foreach($arr->tab2 as $l){
+                  $d = AccBankCompare::find($l);
+                  $d->status = 1;
+                  $d->save();
+               }              
+                DB::connection(env('CONNECTION_DB_ACC'))->commit();
+               return response()->json(['status'=>true,'message'=> trans('messages.uncheck_success')]);
+             }
+             
+             }else{
+               return response()->json(['status'=>false,'message'=> trans('messages.locked_period')]);
+             }
+
+           }else{
+             return response()->json(['status'=>false,'message'=> trans('messages.you_are_not_permission_edit')]);
+           }
+        }else{
+          return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
+        }
+       }catch(Exception $e){
+        DB::connection(env('CONNECTION_DB_ACC'))->rollBack();
+         // Lưu lỗi
+         $err = new Error();
+         $err ->create([
+           'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
+           'user_id' => Auth::id(),
+           'menu_id' => $this->menu->id,
+           'error' => $e->getMessage(),
+           'url'  => $this->url,
+           'check' => 0 ]);
+         return response()->json(['status'=>false,'message'=> trans('messages.uncheck_fail').' '.$e->getMessage()]);
        }
   }
 

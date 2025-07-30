@@ -39,7 +39,7 @@ class BankPaymentDetailReadResource extends JsonResource
             'work_code' =>  !$this->work_code ? DefaultDropDownResource::make($this->work_code) : LangDropDownResource::make($this->work_code()->first()),
             'accounted_fast' => !$this->accounted_fast ? DefaultDropDownResource::make($this->accounted_fast) : LangDropDownResource::make($this->accounted_fast()->first()),
             'department' =>  !$this->department ? DefaultDropDownResource::make($this->department) : LangDropDownResource::make($this->department()->first()),
-            'bank_account' =>  !$this->bank_account_debit ? DefaultDropDownResource::make($this->bank_account_debit) : BankDropDownResource::make($this->bank_account_debit()->first()),
+            'bank_account' =>  !$this->bank_account_credit ? DefaultDropDownResource::make($this->bank_account_credit) : BankDropDownResource::make($this->bank_account_credit()->first()),
             'status' =>  $this->status,
             'active' =>  $this->active,
         ];
