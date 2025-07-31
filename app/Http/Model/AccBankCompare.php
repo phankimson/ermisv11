@@ -25,7 +25,6 @@ class AccBankCompare extends Model
       protected static function booted()
   {
       static::BootedBaseTrait();
-      static::OrderByCreatedAtBaseTrait();
   }
      static public function get_data_load_between($bank,$startDate,$endDate){
         $result = AccBankCompare::where('bank_account',$bank)->whereBetween('accounting_date',[$startDate,$endDate])->orderBy('accounting_date', 'asc')->orderBy('created_at', 'asc')->get();
@@ -33,8 +32,12 @@ class AccBankCompare extends Model
     }
 
      static public function get_item_object($id){
-        $result = AccBankCompare::where('id',$id)->leftJoin('bank_account', function ($join) {
-        $join->on('bank_account.id', '=', 'bank_compare.bank_account');})->first();
+        $result = AccBankCompare::where('bank_compare.id',$id)
+        //->leftJoin('bank_account', function ($join) {$join->on('bank_account.id', '=', 'bank_compare.bank_account');})
+        ->leftJoin('object', function ($join) { $join->on('object.name', 'LIKE', 'bank_compare.corresponsive_name')
+             ->orWhere('object.name_1', 'LIKE', 'bank_compare.corresponsive_name');})
+             ->select('bank_compare.*','object.id as object_id')
+        ->first();
         return $result;
     }
 

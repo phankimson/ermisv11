@@ -194,12 +194,14 @@ var Ermis = function () {
     var initCreateVoucher = function(e){ 
         var grid = $kGridTab2.data("kendoGrid");
         jQuery(grid.tbody).on("click", ".create_voucher", function(e) {
-            var dataId = jQuery(this).attr('data-id');
-            var postdata = { data: JSON.stringify(dataId) };
+            var obj = {};
+            obj.id = jQuery(this).attr('data-id');
+            obj.href = jQuery(this).attr('data-href');
+            var postdata = { data: JSON.stringify(obj) };
             ErmisTemplateAjaxPost0(e,postdata,Ermis.link+'-create-voucher',
                 function (result) {
-                    var data_href = jQuery(this).attr('data-href');
-                    window.open(data_href , '_blank');
+                    sessionStorage.data = JSON.stringify(result.data);              
+                    window.open(obj.href , '_blank');
                 },
                 function (result) {
                     kendo.alert(result.message);

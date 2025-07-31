@@ -81,7 +81,7 @@ var Ermis = function() {
                 },
                 function() {
                     initStatus(7);
-                }); 
+        }); 
     };
 
     var initLoadGrid = function(dataLoad){
@@ -112,7 +112,12 @@ var Ermis = function() {
     }
 
         var initBindData = function() {
-        if (sessionStorage.dataId) {
+        if(sessionStorage.data){
+             var arr = JSON.parse(sessionStorage.data);
+             SetDataAjax(data.columns, arr);
+             initLoadGrid(arr);
+             initStatus(8);
+        }else if (sessionStorage.dataId) {
             var dataId = sessionStorage.dataId;
             if(sessionStorage.hasOwnProperty(Ermis.type)){
                 var storedId = JSON.parse(sessionStorage[Ermis.type]);
@@ -524,6 +529,7 @@ var Ermis = function() {
         dataDefaultGrid.vat = initGetDefaultKeyArray(Ermis.field_tax);
         if (flag === 1) { //ADD
             sessionStorage.removeItem("dataId");
+            sessionStorage.removeItem("data");
             jQuery('.cancel,.save,.choose,.cancel-window,.filter,.reference,.import,.advance_teacher,.advance_employee').removeClass('disabled');
             jQuery('.cancel').on('click', initCancel);
             jQuery('.save').on('click', initSave);
@@ -727,6 +733,7 @@ var Ermis = function() {
             $kGridVat.data('kendoGrid').dataSource.data([]);
         }else if (flag === 8) { // Copy
           sessionStorage.removeItem("dataId");
+          sessionStorage.removeItem("data");
           jQuery('.cancel,.save,.filter,.reference,.advance_teacher,.advance_employee').removeClass('disabled');
           jQuery('.cancel').on('click', initCancel);
           jQuery('.save').on('click', initSave);
@@ -1121,7 +1128,7 @@ var Ermis = function() {
         ErmisTemplateEvent0(e, Ermis.per.a,
             function() {
                 initStatus(1);
-                sessionStorage.removeItem('dataId');
+                //sessionStorage.removeItem('dataId');
             },
             function() {
                 kendo.alert(Lang.get('messages.you_not_permission_add'));
@@ -1132,7 +1139,7 @@ var Ermis = function() {
         ErmisTemplateEvent0(e, Ermis.per.a,
             function() {
                 initStatus(8);
-                sessionStorage.removeItem('dataId');
+                //sessionStorage.removeItem('dataId');
             },
             function() {
                 kendo.alert(Lang.get('messages.you_not_permission_add'));

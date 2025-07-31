@@ -100,7 +100,7 @@
                                 {"field" : "subject","title" :  "@lang('acc_voucher.subject')" },
                                 {"field" : "action","title" :  "@lang('action.processed')", template: function(dataItem){
                                                                                             if(!dataItem.is_checked && dataItem.debit_amount>0){return '<a data-href="{{route("acc.bank-receipts-voucher")}}" href="javascript:;" data-id="'+dataItem.id+'" class="create_voucher">@lang("acc_voucher.create_voucher")</a>'}
-                                                                                            else if(!dataItem.is_checked && dataItem.credit_amount>0){return '<a data-href="{{route("acc.bank-payment-voucher")}} href="javascript:;" data-id="'+dataItem.id+'" class="create_voucher">@lang("acc_voucher.create_voucher")</a>'}
+                                                                                            else if(!dataItem.is_checked && dataItem.credit_amount>0){return '<a data-href="{{route("acc.bank-payment-voucher")}}" href="javascript:;" data-id="'+dataItem.id+'" class="create_voucher">@lang("acc_voucher.create_voucher")</a>'}
                                                                                             else{ return ""}                 
                                 } } ];
       Ermis.field = {

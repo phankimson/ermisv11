@@ -28,7 +28,7 @@ class BankReceiptGeneralReadResource extends JsonResource
             'traders' => $this->traders,
             'subject_id' => $this->subject,
             'rate' => $this->rate,
-            'object' => new ObjectDropDownListResource($this->whenLoaded('object')),
+            'object' => $this->whenLoaded('object')?new ObjectDropDownListResource($this->whenLoaded('object')):new ObjectDropDownDefaultListResource(""),
             'total_amount' => $this->total_amount,
             'total_amount_rate' => $this->total_amount_rate,
             'reference' =>  $this->reference,

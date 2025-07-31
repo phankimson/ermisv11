@@ -1413,6 +1413,7 @@ Route::post('/bank-compare-load', 'load' )->name('-load');
 Route::post('/bank-compare-import', 'import' )->name('-import');
 Route::post('/bank-compare-check', 'check' )->name('-check');
 Route::post('/bank-compare-uncheck', 'uncheck' )->name('-uncheck');
+Route::post('/bank-compare-create-voucher', 'create_voucher' )->name('-create-voucher');
 });
 
 });

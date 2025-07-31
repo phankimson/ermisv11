@@ -12,6 +12,10 @@ use App\Http\Model\AccBankAccount;
 use App\Http\Model\AccBank;
 use App\Http\Model\AccPeriod;
 use App\Http\Model\AccDetail;
+use App\Http\Model\AccNumberVoucher;
+use App\Http\Model\AccSystems;
+use App\Http\Model\AccCurrency;
+use App\Http\Model\AccSettingVoucher;
 use App\Http\Model\AccBankCompare;
 use App\Http\Model\AccHistoryAction;
 use Illuminate\Support\Facades\DB;
@@ -31,12 +35,14 @@ class AccBankCompareController extends Controller
   protected $menu;
   protected $group;
   protected $page_system;
+  protected $currency_default;
   public function __construct(Request $request)
   {
      $this->url =  $request->segment(3);
      $this->key = "bank-compare";   
      $this->group = [3,4]; // 3,4 Thu chi bank 
      $this->menu = Menu::where('code', '=', $this->key)->first();
+     $this->currency_default = "CURRENCY_DEFAULT";   
   }
 
   public function show(){
@@ -253,8 +259,18 @@ class AccBankCompareController extends Controller
     $type = 10;
     try{
       $req = json_decode($request->data);
-      $data = new BankCompareCreateGeneralVoucherResource(AccBankCompare::get_item_object($req));
-      //$data = new BankCompareCreateGeneralVoucherResource(AccBankCompare::get_item_object($req))->DefaultValue('bar');
+      $url = explode("/",$req->href);
+      if(isset($url[5])){     
+        $menu_change = Menu::get_menu_like_code($url[5]);
+        //$voucher = AccNumberVoucher::get_menu($menu_change->first()->id); 
+        $currency_default = AccSystems::get_systems($this->currency_default);
+        $rate = AccCurrency::get_code($currency_default->value);
+        // Lấy định khoản mặc đinh
+        $setting_voucher = AccSettingVoucher::get_menu($menu_change->first()->id);
+        $data = new BankCompareCreateGeneralVoucherResource(AccBankCompare::get_item_object($req->id),['rate' =>$rate,'setting_voucher'=>$setting_voucher]);
+      }else{
+        $data = "";
+      }       
       if($data){
         return response()->json(['status'=>true,'data'=> $data]);
       }else{
