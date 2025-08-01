@@ -113,10 +113,13 @@ var Ermis = function() {
 
         var initBindData = function() {
         if(sessionStorage.data){
-             var arr = JSON.parse(sessionStorage.data);
-             SetDataAjax(data.columns, arr);
-             initLoadGrid(arr);
-             initStatus(8);
+             var arr = JSON.parse(sessionStorage.data);      
+             setTimeout(() => {
+                SetDataAjax(data.columns, arr);
+                initLoadGrid(arr);
+                initStatus(8);  
+                }, 2000);       
+                       
         }else if (sessionStorage.dataId) {
             var dataId = sessionStorage.dataId;
             if(sessionStorage.hasOwnProperty(Ermis.type)){
