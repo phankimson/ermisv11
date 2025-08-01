@@ -30,6 +30,11 @@ class AccObject extends Model
         return $result;
       }
 
+       static public function get_name($name){
+        $result = AccObject::where('name', $name)->orWhere('name_1',$name)->first();
+        return $result;
+      }
+
       static public function get_raw() {
         $result = AccObject::WithRowNumberDb(env('CONNECTION_DB_ACC'))->orderBy('row_number','desc')->with('object_type')->get()->pluckDistant('object_type', 'object_type');       
         return $result;

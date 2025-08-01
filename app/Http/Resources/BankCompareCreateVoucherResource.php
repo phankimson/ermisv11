@@ -43,7 +43,7 @@ class BankCompareCreateVoucherResource extends JsonResource
             'order' =>  "",
             'contract' =>  "",
             'subject_id' =>  $this->customData['object'] != null ?$this->customData['object']->id:"",
-            'subject_code' =>  $this->customData['object'] != null ? ObjectDropDownResource::make($this->customData['object']->code):DefaultDropDownResource::make(""),
+            'subject_code' =>  $this->customData['object'] != null ? ObjectDropDownResource::make($this->customData['object']):DefaultDropDownResource::make(""),
             'subject_name' =>  $this->corresponsive_name,
             'case_code' =>  DefaultDropDownResource::make(""),
             'cost_code' =>  DefaultDropDownResource::make(""),

@@ -259,17 +259,18 @@ class AccBankCompareController extends Controller
     $type = 10;
     try{
       $req = json_decode($request->data);
+      $bank_compare = AccBankCompare::find($req->id);
       $url = explode("/",$req->href);
-      if(isset($url[5])){     
+      if(isset($url[5])&& $bank_compare->status < 2){     
         $menu_change = Menu::get_menu_like_code($url[5]);
         //$voucher = AccNumberVoucher::get_menu($menu_change->first()->id); 
         $currency_default = AccSystems::get_systems($this->currency_default);
         $rate = AccCurrency::get_code($currency_default->value);
         // Lấy định khoản mặc đinh
         $setting_voucher = AccSettingVoucher::get_menu($menu_change->first()->id);
-        $data = new BankCompareCreateGeneralVoucherResource(AccBankCompare::get_item_object($req->id),['rate' =>$rate,'setting_voucher'=>$setting_voucher]);
+        $data = new BankCompareCreateGeneralVoucherResource($bank_compare,['rate' =>$rate,'setting_voucher'=>$setting_voucher]);
       }else{
-        $data = "";
+        $data = null;
       }       
       if($data){
         return response()->json(['status'=>true,'data'=> $data]);

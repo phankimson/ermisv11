@@ -733,7 +733,13 @@ var Ermis = function() {
             $kGridVat.data('kendoGrid').dataSource.data([]);
         }else if (flag === 8) { // Copy
           sessionStorage.removeItem("dataId");
-          sessionStorage.removeItem("data");
+          if(sessionStorage.data){
+            sessionStorage.removeItem("data");
+            jQuery(".end,.start").val(kendo.toString(kendo.parseDate(new Date()), 'dd/MM/yyyy'));
+          }else{
+            jQuery(".date-picker,.end,.start").val(kendo.toString(kendo.parseDate(new Date()), 'dd/MM/yyyy'));
+          }
+          
           jQuery('.cancel,.save,.filter,.reference,.advance_teacher,.advance_employee').removeClass('disabled');
           jQuery('.cancel').on('click', initCancel);
           jQuery('.save').on('click', initSave);
@@ -760,8 +766,7 @@ var Ermis = function() {
           $kGridVat.removeClass('disabled');
           shortcut.add(key + "T", function(e) {
               initDeleteRowAll(e);
-          });
-            jQuery(".date-picker,.end,.start").val(kendo.toString(kendo.parseDate(new Date()), 'dd/MM/yyyy'));
+          });            
             jQuery(".no_copy").val("");
             jQuery(".voucher").val(voucher);           
             jQuery(".no_copy_value").val(0);
