@@ -200,7 +200,8 @@ var Ermis = function () {
             var postdata = { data: JSON.stringify(obj) };
             ErmisTemplateAjaxPost0(e,postdata,Ermis.link+'-create-voucher',
                 function (result) {
-                    sessionStorage.data = JSON.stringify(result.data);              
+                    sessionStorage.data = JSON.stringify(result.data);
+                    sessionStorage.compare = result.compare;             
                     window.open(obj.href , '_blank');
                 },
                 function (result) {

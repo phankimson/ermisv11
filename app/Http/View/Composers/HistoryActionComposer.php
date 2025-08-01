@@ -5,6 +5,7 @@ namespace App\Http\View\Composers;
 use Illuminate\View\View;
 use App\Http\Model\HistoryAction;
 use App\Http\Model\AccHistoryAction;
+use App\Http\Model\SoftWare;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
@@ -26,9 +27,10 @@ class HistoryActionComposer
     public function __construct(Request $request)
     {
         $type = $request->session()->get('type');
+        $software = SoftWare::find($type);
         // Dependencies automatically resolved by service container...
         $user = Auth::id();
-        if($type==1){
+        if($software->url=="manage"){
           $data = HistoryAction::get_count($user);
           $this->data = $data;
         }else{

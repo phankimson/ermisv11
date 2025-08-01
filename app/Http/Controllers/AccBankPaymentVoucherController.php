@@ -19,6 +19,7 @@ use App\Http\Model\AccCountVoucher;
 use App\Http\Model\AccPrintTemplate;
 use App\Http\Model\Error;
 use App\Classes\Convert;
+use App\Http\Model\AccBankCompare;
 use App\Http\Model\AccObject;
 use App\Http\Model\AccObjectType;
 use App\Http\Resources\BankPaymentGeneralReadResource;
@@ -161,10 +162,18 @@ class AccBankPaymentVoucherController extends Controller
           $general->reference = $arr->reference;
           $general->total_amount = $arr->total_amount;
           $general->total_amount_rate = $arr->total_amount_rate;
+          $general->compare_id = $arr->compare;
           $general->status = 1;
           $general->active = 1;
           $general->group = $this->group;
           $general->save();
+          
+        // Kiểm tra và lưu trang thái và id detail
+          $compare = AccBankCompare::find($arr->compare);
+          if($compare){
+            $compare->status = 2;
+            $compare->save();
+          }
           
           // Tham chiếu / Reference
           // Ktra dòng dư tham chiếu
@@ -222,7 +231,7 @@ class AccBankPaymentVoucherController extends Controller
              $detail->subject_name_debit = $d->subject_code->text;// Đổi từ name text dạng read
              $detail->active = 1;
              $detail->status = 1;
-             $detail->save();
+             $detail->save();     
        
              array_push($removeId,$detail->id);
              $arr->detail[$k]->id = $detail->id;       
@@ -279,6 +288,8 @@ class AccBankPaymentVoucherController extends Controller
                }                  
                // End
            }
+
+           
 
            // Xóa dòng chi tiết
            AccDetail::get_detail_whereNotIn_delete($general->id,$removeId);

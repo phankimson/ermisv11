@@ -10,6 +10,7 @@ class Permission extends Model
 {
   use ScopesTraits,BootedTraits;
       protected $table = 'permission';
+      protected $connection = 'mysql';
       public $incrementing = false;
       protected $casts = [
         'id' => 'string'

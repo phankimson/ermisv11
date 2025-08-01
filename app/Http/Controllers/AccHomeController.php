@@ -15,7 +15,6 @@ class AccHomeController extends Controller
 
   public function profile(){
       $ha =  AccHistoryAction::get_menu(Auth::id(),10,[2,3,4]);
-      //return dd($ha);
       $country = Country::all();
       return view('global.profile',['history_action' => $ha ,'country' => $country]);
   }

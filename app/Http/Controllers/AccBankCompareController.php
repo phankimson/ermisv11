@@ -273,7 +273,7 @@ class AccBankCompareController extends Controller
         $data = null;
       }       
       if($data){
-        return response()->json(['status'=>true,'data'=> $data]);
+        return response()->json(['status'=>true,'data'=> $data ,'compare'=>$bank_compare->id]);
       }else{
         return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
       }

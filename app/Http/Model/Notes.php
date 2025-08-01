@@ -10,6 +10,7 @@ class Notes extends Model
 {
     use ScopesTraits,BootedTraits;
       protected $table = 'notes';
+      protected $connection = 'mysql';
       public $incrementing = false;
       protected $casts = [
         'id' => 'string'

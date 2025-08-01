@@ -39,7 +39,7 @@ class User extends Authenticatable
 
     protected $guarded = []; //Thiếu dòng create bị lỗi Add [code] to fillable property to allow mass assignment on
 
-    protected $dates = ['birthday'];
+    //protected $dates = ['birthday'];
 
     /**
      * The attributes that should be cast to native types.
@@ -48,7 +48,8 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'id' => 'string'
+        'id' => 'string',
+        'birthday'=>'date'
     ];
 
       protected static function booted()

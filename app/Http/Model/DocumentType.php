@@ -12,6 +12,7 @@ class DocumentType extends Model
 {
       use ScopesTraits,BootedTraits;
       protected $table = 'document_type';
+      protected $connection = 'mysql';
       public $incrementing = false; // and it doesn't even have to be auto-incrementing!
       protected $guarded = []; //Thiếu dòng create bị lỗi Add [code] to fillable property to allow mass assignment on
 

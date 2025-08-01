@@ -11,6 +11,7 @@ class Timeline extends Model
 {
   use ScopesTraits,BootedTraits;
   protected $table = 'timeline';
+  protected $connection = 'mysql';
   protected $fillable = ['message', 'user_id'];
   public $incrementing = false; // and it doesn't even have to be auto-incrementing!
 

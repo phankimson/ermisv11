@@ -27,7 +27,7 @@ class AccHistoryAction extends Model
       return $result;
     }
     static public function get_menu($user,$limit,$array_type) {
-      $result = AccHistoryAction::where('user',$user)->orderBy('created_at', 'desc')->whereIn('type', $array_type)->with('menus')->limit($limit);
+      $result = AccHistoryAction::where('user',$user)->orderBy('created_at', 'desc')->whereIn('type', $array_type)->with('menus')->take($limit)->get();
       return $result;
     }
     static public function get_type_all() {

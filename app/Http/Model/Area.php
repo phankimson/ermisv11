@@ -11,6 +11,7 @@ class Area extends Model
 {
       use ScopesTraits,BootedTraits;
       protected $table = 'area';
+      protected $connection = 'mysql';
       public $incrementing = false; // and it doesn't even have to be auto-incrementing!
       protected $guarded = []; //Thiếu dòng create bị lỗi Add [code] to fillable property to allow mass assignment on
       protected $hidden = array('created_at','updated_at');

@@ -533,6 +533,7 @@ var Ermis = function() {
         if (flag === 1) { //ADD
             sessionStorage.removeItem("dataId");
             sessionStorage.removeItem("data");
+            sessionStorage.removeItem("compare");
             jQuery('.cancel,.save,.choose,.cancel-window,.filter,.reference,.import,.advance_teacher,.advance_employee').removeClass('disabled');
             jQuery('.cancel').on('click', initCancel);
             jQuery('.save').on('click', initSave);
@@ -599,6 +600,7 @@ var Ermis = function() {
             jQuery('.delete').on('click', initDelete);
             $kGrid.addClass('disabled');
             $kGridVat.addClass('disabled');
+            sessionStorage.removeItem("compare");
             shortcut.remove(key + "T");
         } else if (flag === 3) { //EDIT
             jQuery('.cancel,.save,.filter,.reference,.advance_teacher,.advance_employee').removeClass('disabled');
@@ -1066,6 +1068,7 @@ var Ermis = function() {
 
     var initSave = function(e) {
         var obj = {};
+        obj.compare = sessionStorage.compare;
         obj.detail = $kGrid.data("kendoGrid").dataSource.view();
         obj.tax = $kGridVat.data("kendoGrid").dataSource.data();
         obj.reference_by = reference_by;

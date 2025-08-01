@@ -17,6 +17,7 @@ use App\Http\Model\AccCurrencyCheck;
 use App\Http\Model\AccNumberVoucher;
 use App\Http\Model\AccCountVoucher;
 use App\Http\Model\AccPrintTemplate;
+use App\Http\Model\AccBankCompare;
 use App\Http\Model\Error;
 use App\Classes\Convert;
 use App\Http\Model\AccObject;
@@ -161,10 +162,18 @@ class AccBankReceiptsVoucherController extends Controller
           $general->reference = $arr->reference;
           $general->total_amount = $arr->total_amount;
           $general->total_amount_rate = $arr->total_amount_rate;
+          $general->compare_id = $arr->compare;
           $general->status = 1;
           $general->active = 1;
           $general->group = $this->group;
           $general->save();
+
+           // Kiểm tra và lưu trang thái và id detail
+              $compare = AccBankCompare::find($arr->compare);
+              if($compare){
+                $compare->status = 2;
+                $compare->save();
+              }
           
           // Tham chiếu / Reference
           // Ktra dòng dư tham chiếu

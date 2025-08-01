@@ -10,6 +10,7 @@ class Jobs extends Model
 {
       use ScopesTraits;
       protected $table = 'jobs';
+      protected $connection = 'mysql';
       public $incrementing = true; // and it doesn't even have to be auto-incrementing!
       protected $guarded = []; //Thiếu dòng create bị lỗi Add [code] to fillable property to allow mass assignment on
       public $timestamps = FALSE;

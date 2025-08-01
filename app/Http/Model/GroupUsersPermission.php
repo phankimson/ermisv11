@@ -10,6 +10,7 @@ class GroupUsersPermission extends Model
 {
     use ScopesTraits,BootedTraits;
       protected $table = 'group_users_permission';
+      protected $connection = 'mysql';
       public $incrementing = false;
       protected $casts = [
         'id' => 'string'

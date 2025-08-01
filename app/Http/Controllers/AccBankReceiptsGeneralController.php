@@ -18,6 +18,7 @@ use App\Http\Model\AccCountVoucher;
 use App\Http\Model\AccCurrencyCheck;
 use App\Http\Model\AccPrintTemplate;
 use App\Http\Model\AccVatDetailPayment;
+use App\Http\Model\AccBankCompare;
 use App\Http\Model\Error;
 use App\Http\Resources\BankGeneralResource;
 use App\Http\Resources\TypeGeneralResource;
@@ -393,8 +394,14 @@ class AccBankReceiptsGeneralController extends Controller
                   $t->save();
                   }          
                 }               
-               }; 
-
+               };
+               
+               // Update lại trạng thái so sánh ngân hàng
+              $compare = AccBankCompare::find($data->compare_id);
+              if($compare){
+                $compare->status = 1;
+                $compare->save();
+              }
               
                 // Xóa các dòng thuế
                $data->tax()->delete();

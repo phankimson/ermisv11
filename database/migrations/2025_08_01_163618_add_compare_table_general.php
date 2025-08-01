@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-         Schema::table('bank_compare', function (Blueprint $table) {
-            $table->char('detail_id',length: 36)->after('status'); 
+        Schema::table('acc_general', function (Blueprint $table) {
+            $table->char('compare_id',length: 36)->after('reference_by'); 
         });
     }
 

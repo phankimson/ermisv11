@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 class Menu extends Model
 {
       use ScopesTraits,BootedTraits;
+      protected $connection = 'mysql';
       protected $table = 'menu';
       public $incrementing = false; // and it doesn't even have to be auto-incrementing!
       protected $guarded = []; //Thiếu dòng create bị lỗi Add [code] to fillable property to allow mass assignment on
