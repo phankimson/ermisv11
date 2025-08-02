@@ -28,12 +28,15 @@ class AccDepartmentController extends Controller
   protected $key;
   protected $menu;
   protected $page_system;
+  protected $download;
+
   public function __construct(Request $request)
   {
      $this->url =  $request->segment(3);
      $this->key = "department";
      $this->menu = Menu::where('code', '=', $this->key)->first();
      $this->page_system = "MAX_COUNT_CHANGE_PAGE";
+     $this->download = 'AccDepartment.xlsx';
  }
 
   public function show(Request $request){   
@@ -41,7 +44,7 @@ class AccDepartmentController extends Controller
     $count = AccDepartment::count();
     $sys_page = AccSystems::get_systems($this->page_system);
     $paging = $count>$sys_page->value?1:0;   
-    return view('acc.department',['paging' => $paging, 'key' => $this->key ]);
+    return view('acc.'.$this->key,['paging' => $paging, 'key' => $this->key ]);
   }
 
   public function data(Request $request){   
@@ -265,7 +268,7 @@ class AccDepartmentController extends Controller
  }
 
  public function DownloadExcel(){
-   return Storage::download('public/downloadFile/AccDepartment.xlsx');
+   return Storage::download('public/downloadFile/'.$this->download);
  }
 
  public function import(Request $request) {  
@@ -274,6 +277,7 @@ class AccDepartmentController extends Controller
     DB::connection(env('CONNECTION_DB_ACC'))->beginTransaction();
    $permission = $request->session()->get('per');
    if($permission['a'] && $request->hasFile('file')){
+     if($request->file->getClientOriginalName() == $this->download){
      //Check
      $request->validate([
          'file' => 'required|mimeTypes:'.
@@ -303,6 +307,9 @@ class AccDepartmentController extends Controller
      DB::connection(env('CONNECTION_DB_ACC'))->commit();
      broadcast(new \App\Events\DataSendCollection($merged));
      return response()->json(['status'=>true,'message'=> trans('messages.success_import')]);
+    }else{
+    return response()->json(['status'=>false,'message'=> trans('messages.incorrect_file')]);
+    } 
      }else{
        return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
      }

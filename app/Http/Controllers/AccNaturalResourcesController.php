@@ -26,17 +26,19 @@ class AccNaturalResourcesController extends Controller
   protected $url;
   protected $key;
   protected $menu;
+  protected $download;
   public function __construct(Request $request)
   {
      $this->url =  $request->segment(3);
      $this->key = "natural-resources";
      $this->menu = Menu::where('code', '=', $this->key)->first();
+     $this->download = 'AccNaturalResources.xlsx';
  }
 
   public function show(){    
     //$unit = collect(DropDownListResource::collection(AccUnit::active()->orderBy('code','asc')->get()));
     //$parent = collect(DropDownListResource::collection(AccNaturalResources::active()->orderBy('code','asc')->get()));
-    return view('acc.natural_resources',[ 'key' => $this->key ]);
+    return view('acc.'.str_replace("-", "_", $this->key),[ 'key' => $this->key ]);
   }
 
   public function data(){   
@@ -257,7 +259,7 @@ class AccNaturalResourcesController extends Controller
  }
 
  public function DownloadExcel(){
-   return Storage::download('public/downloadFile/AccNaturalResources.xlsx');
+   return Storage::download('public/downloadFile/'.$this->download);
  }
 
  public function import(Request $request) {

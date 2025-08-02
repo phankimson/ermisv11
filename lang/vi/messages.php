@@ -73,6 +73,7 @@ return [
       "success_upload" => "Upload thành công",
       "failed_upload" => "Upload thất bại",
       "success_import" => "Import thành công",
+      "incorrect_file" => "Không đúng file",
       "failed_import" => "Import thất bại",
       "failed_export" => "Export thất bại",
       "no_matching_records_found" => "Không tìm thấy dòng nào !",

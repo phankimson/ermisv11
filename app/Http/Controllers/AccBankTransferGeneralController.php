@@ -40,6 +40,7 @@ class AccBankTransferGeneralController extends Controller
   protected $print;
   protected $date_range;
   protected $action;
+  protected $download;
   public function __construct(Request $request)
  {
      $this->url =  $request->segment(3);
@@ -49,6 +50,7 @@ class AccBankTransferGeneralController extends Controller
      $this->menu = Menu::where('code', '=', $this->key)->first();
      $this->print = 'BT%';
      $this->date_range = "DATE_RANGE_GENERAL";
+     $this->download = 'AccBankPayment.xlsx';
  }
 
   public function show(){
@@ -426,7 +428,7 @@ class AccBankTransferGeneralController extends Controller
   }
 
     public function DownloadExcel(){
-      return Storage::download('public/downloadFile/AccBankPayment.xlsx');
+      return Storage::download('public/downloadFile/'.$this->download);
     }
 
     
@@ -436,6 +438,7 @@ class AccBankTransferGeneralController extends Controller
   DB::connection(env('CONNECTION_DB_ACC'))->beginTransaction();
   $permission = $request->session()->get('per');
   if($permission['a'] && $request->hasFile('file')){
+     if($request->file->getClientOriginalName() == $this->download){
     //Check
     $request->validate([
         'file' => 'required|mimeTypes:'.
@@ -511,6 +514,9 @@ class AccBankTransferGeneralController extends Controller
     //broadcast(new \App\Events\DataSendCollection($merged));
     DB::connection(env('CONNECTION_DB_ACC'))->commit();
     return response()->json(['status'=>true,'message'=> trans('messages.success_import'),'data' => $merged]);
+    }else{
+      return response()->json(['status'=>false,'message'=> trans('messages.incorrect_file')]);
+    }    
     }else{
       return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
     }

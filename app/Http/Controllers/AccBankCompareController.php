@@ -12,7 +12,6 @@ use App\Http\Model\AccBankAccount;
 use App\Http\Model\AccBank;
 use App\Http\Model\AccPeriod;
 use App\Http\Model\AccDetail;
-use App\Http\Model\AccNumberVoucher;
 use App\Http\Model\AccSystems;
 use App\Http\Model\AccCurrency;
 use App\Http\Model\AccSettingVoucher;
@@ -42,11 +41,11 @@ class AccBankCompareController extends Controller
      $this->key = "bank-compare";   
      $this->group = [3,4]; // 3,4 Thu chi bank 
      $this->menu = Menu::where('code', '=', $this->key)->first();
-     $this->currency_default = "CURRENCY_DEFAULT";   
+     $this->currency_default = "CURRENCY_DEFAULT";  
   }
 
   public function show(){
-    return view('acc.bank_compare',['key' => $this->key ]);
+    return view('acc.'.str_replace("-", "_", $this->key),['key' => $this->key ]);
   }
 
   public function load(Request $request){
@@ -200,7 +199,7 @@ class AccBankCompareController extends Controller
        }
   }
 
-  
+
   public function import(Request $request) {
    $type = 5;
     try{
@@ -218,7 +217,7 @@ class AccBankCompareController extends Controller
         config(['excel.imports.read_only' => false]);
         $bank_account = AccBankAccount::find($rs->crit);
         $bank = AccBank::find($bank_account->bank_id);
-        if($bank->name == "Vietinbank"){
+        if(strpos($bank->name, "Vietinbank") !== false){
           $start_row = 26;
           $row = ['accounting_date'=>1,'transaction_description'=>2,'debit_amount'=>3,'credit_amount'=>4,'transaction_number'=>6,'corresponsive_account'=>7,'corresponsive_name'=>8];
           $row_gen = ['bank_account'=>'C12','total_credit'=>'C21','total_debit'=>'E21'];

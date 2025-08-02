@@ -29,12 +29,14 @@ class AccAccountedAutoController extends Controller
   protected $key;
   protected $menu;
   protected $page_system;
+  protected $download;
   public function __construct(Request $request)
   {
      $this->url =  $request->segment(3);
      $this->key = "accounted-auto";
      $this->menu = Menu::where('code', '=', $this->key)->first();
      $this->page_system = "MAX_COUNT_CHANGE_PAGE";
+     $this->download = "AccAccountedAuto.xlsx";
  }
 
   public function show(){
@@ -51,7 +53,7 @@ class AccAccountedAutoController extends Controller
     //$statistical_code = json_encode(collect(LangDropDownListResource::collection(AccStatisticalCode::active()->OrderBy('code','asc')->get())));
     //$accounted_fast = json_encode(collect(AccountedFastDropDownListResource::collection(AccAccountedFast::active()->OrderBy('code','asc')->get())));
     //$object = json_encode(collect(DropDownListResource::collection(AccObject::active()->get())));
-    return view('acc.accounted_auto',['paging' => $paging,'key' => $this->key]);
+    return view('acc.'.str_replace("-", "_", $this->key),['paging' => $paging,'key' => $this->key]);
   }
 
 
@@ -359,7 +361,7 @@ class AccAccountedAutoController extends Controller
  }
 
  public function DownloadExcel(){
-   return Storage::download('public/downloadFile/AccAccountedAuto.xlsx');
+   return Storage::download('public/downloadFile/'.$this->download);
  }
 
  public function import(Request $request) {
@@ -368,6 +370,7 @@ class AccAccountedAutoController extends Controller
     DB::connection(env('CONNECTION_DB_ACC'))->beginTransaction();
    $permission = $request->session()->get('per');
    if($permission['a'] && $request->hasFile('file')){
+    if($request->file->getClientOriginalName() == $this->download){
      //Check
      $request->validate([
          'file' => 'required|mimeTypes:'.
@@ -397,6 +400,9 @@ class AccAccountedAutoController extends Controller
      DB::connection(env('CONNECTION_DB_ACC'))->commit();
      broadcast(new \App\Events\DataSendCollection($merged));
      return response()->json(['status'=>true,'message'=> trans('messages.success_import')]);
+    }else{
+     return response()->json(['status'=>false,'message'=> trans('messages.incorrect_file')]);
+    }    
      }else{
        return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
      }

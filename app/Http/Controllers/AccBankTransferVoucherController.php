@@ -39,6 +39,7 @@ class AccBankTransferVoucherController extends Controller
   protected $document;
   protected $path;
   protected $check_cash;
+  protected $download;
   public function __construct(Request $request)
  {
      $this->url =  $request->segment(3);
@@ -49,6 +50,7 @@ class AccBankTransferVoucherController extends Controller
      $this->path = 'PATH_UPLOAD_BANK_TRANSFER';
      $this->document = 'DOCUMENT_TAX';
      $this->check_cash = 'CHECK_CASH';
+     $this->download = 'AccBankTransferVoucher.xlsx';
  }
 
   public function show(){
@@ -337,7 +339,7 @@ class AccBankTransferVoucherController extends Controller
   }
 
   public function DownloadExcel(){
-    return Storage::download('public/downloadFile/AccBankTransferVoucher.xlsx');
+    return Storage::download('public/downloadFile/'.$this->download);
   }
 
 
@@ -346,6 +348,7 @@ class AccBankTransferVoucherController extends Controller
     try{
     $permission = $request->session()->get('per');
     if($permission['a'] && $request->hasFile('file')){
+       if($request->file->getClientOriginalName() == $this->download){
       //Check
       $request->validate([
           'file' => 'required|mimeTypes:'.
@@ -363,6 +366,9 @@ class AccBankTransferVoucherController extends Controller
         Excel::import($detail, $file); 
         $merged = collect($data->getData())->push($detail->getData());            
         return response()->json(['status'=>true,'message'=> trans('messages.success_import'),'data'=>$merged]);
+          }else{
+      return response()->json(['status'=>false,'message'=> trans('messages.incorrect_file')]);
+    }    
       }else{
         return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
       }

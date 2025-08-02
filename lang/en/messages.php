@@ -75,6 +75,7 @@ return [
   "success_upload" => "Upload Successful",
   "failed_upload" => "Upload Failed",
   "success_import" => "Import Successful",
+  "incorrect_file" => "Incorrect file",
   "failed_import" => "Import Failed",
   "failed_export" => "Export Failed",
   "no_matching_records_found" => "No matching records found !",

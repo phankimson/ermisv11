@@ -26,12 +26,14 @@ class AccGroupUsersController extends Controller
   protected $key;
   protected $menu;
   protected $page_system;
+  protected $download;
   public function __construct(Request $request)
   {
      $this->url =  $request->segment(3);
      $this->key = "group-users";
      $this->menu = Menu::where('code', '=', $this->key)->first();
      $this->page_system = "MAX_COUNT_CHANGE_PAGE";
+     $this->download = 'AccGroupUsers.xlsx';
  }
 
   public function show(Request $request){
@@ -40,7 +42,7 @@ class AccGroupUsersController extends Controller
     $count = AccGroupUsers::where('company_id',$com->id)->count();
     $sys_page = AccSystems::get_systems($this->page_system);
     $paging = $count>$sys_page->value?1:0;   
-    return view('acc.group_users',['paging' => $paging, 'key' => $this->key ]);
+    return view('acc.'.str_replace("-", "_", $this->key),['paging' => $paging, 'key' => $this->key ]);
   }
 
   public function data(Request $request){  
@@ -201,7 +203,7 @@ class AccGroupUsersController extends Controller
  }
 
  public function DownloadExcel(){
-   return Storage::download('public/downloadFile/AccGroupUsers.xlsx');
+   return Storage::download('public/downloadFile/'.$this->download);
  }
 
  public function import(Request $request) {  
@@ -210,6 +212,7 @@ class AccGroupUsersController extends Controller
     DB::beginTransaction();
    $permission = $request->session()->get('per');
    if($permission['a'] && $request->hasFile('file')){
+     if($request->file->getClientOriginalName() == $this->download){
      //Check
      $request->validate([
          'file' => 'required|mimeTypes:'.
@@ -239,6 +242,9 @@ class AccGroupUsersController extends Controller
      DB::commit();
      broadcast(new \App\Events\DataSendCollection($merged));
      return response()->json(['status'=>true,'message'=> trans('messages.success_import')]);
+    }else{
+    return response()->json(['status'=>false,'message'=> trans('messages.incorrect_file')]);
+    } 
      }else{
        return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
      }

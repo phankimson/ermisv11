@@ -9,13 +9,11 @@ use Illuminate\Support\Facades\Validator;
 use App\Http\Model\AccHistoryAction;
 use App\Http\Model\Menu;
 use App\Http\Model\AccCurrency;
-use App\Http\Model\AccAccountSystems;
 use App\Http\Model\CompanySoftware;
 use App\Http\Model\Company;
 use App\Http\Model\AccDenominations;
 use App\Http\Model\AccNumberCode;
 use App\Http\Model\AccSystems;
-use App\Http\Resources\DropDownListResource;
 use App\Http\Model\Error;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Model\Imports\AccCurrencyImport;
@@ -31,6 +29,7 @@ class AccCurrencyController extends Controller
   protected $key;
   protected $menu;
   protected $page_system;
+  protected $download;
 
   public function __construct(Request $request)
   {
@@ -38,6 +37,7 @@ class AccCurrencyController extends Controller
      $this->key = "currency";
      $this->menu = Menu::where('code', '=', $this->key)->first();
      $this->page_system = "MAX_COUNT_CHANGE_PAGE";
+     $this->download = 'AccCurrency.xlsx';
  }
 
   public function show(){    
@@ -46,7 +46,7 @@ class AccCurrencyController extends Controller
     $sys_page = AccSystems::get_systems($this->page_system);
     $paging = $count>$sys_page->value?1:0;
     //$account = collect(DropDownListResource::collection(AccAccountSystems::active()->OrderBy('code','asc')->doesntHave('account')->get()));
-    return view('acc.currency',['paging' => $paging, 'key' => $this->key ]);
+    return view('acc.'.$this->key,['paging' => $paging, 'key' => $this->key ]);
   }
 
   public function data(Request $request){   
@@ -344,7 +344,7 @@ class AccCurrencyController extends Controller
  }
 
  public function DownloadExcel(){
-   return Storage::download('public/downloadFile/AccCurrency.xlsx');
+   return Storage::download('public/downloadFile/'.$this->download);
  }
 
  public function import(Request $request) {
@@ -353,6 +353,7 @@ class AccCurrencyController extends Controller
     DB::connection(env('CONNECTION_DB_ACC'))->beginTransaction();
    $permission = $request->session()->get('per');
    if($permission['a'] && $request->hasFile('file')){
+   if($request->file->getClientOriginalName() == $this->download){
      //Check
      $request->validate([
          'file' => 'required|mimeTypes:'.
@@ -382,6 +383,9 @@ class AccCurrencyController extends Controller
      DB::connection(env('CONNECTION_DB_ACC'))->commit();
      broadcast(new \App\Events\DataSendCollection($merged));
      return response()->json(['status'=>true,'message'=> trans('messages.success_import')]);
+   }else{
+      return response()->json(['status'=>false,'message'=> trans('messages.incorrect_file')]);
+    } 
      }else{
        return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
      }

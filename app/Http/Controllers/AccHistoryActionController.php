@@ -27,12 +27,14 @@ class AccHistoryActionController extends Controller
     protected $key;
     protected $menu;
     protected $page_system;
+    protected $download;
     public function __construct(Request $request)
    {
        $this->url = $request->segment(3);
        $this->key = "history-action";
        $this->menu = Menu::where('code', '=', $this->key)->first();
        $this->page_system = "MAX_COUNT_CHANGE_PAGE";
+       $this->download = 'HistoryAction.xlsx';
    }
 
    public function show(){
@@ -40,7 +42,7 @@ class AccHistoryActionController extends Controller
       $data = AccHistoryAction::get_raw_type($type);
       $menu = collect(DropDownListResource::collection(Menu::all()));
       $user = collect(UserDropDownListResource::collection(User::all()));
-      return view('global.history_action',['data' => $data, 'user'=>$user, 'menu'=>$menu, 'key' => $this->key , 'type'=>$type]);
+      return view('global.'.str_replace("-", "_", $this->key),['data' => $data, 'user'=>$user, 'menu'=>$menu, 'key' => $this->key , 'type'=>$type]);
    }
 
    public function data(Request $request){   
@@ -215,7 +217,7 @@ class AccHistoryActionController extends Controller
        }
   }
   public function DownloadExcel(){
-    return Storage::download('public/downloadFile/HistoryAction.xlsx');
+    return Storage::download('public/downloadFile/'.$this->download);
   }
 
   public function import(Request $request) {
@@ -224,6 +226,7 @@ class AccHistoryActionController extends Controller
       DB::connection(env('CONNECTION_DB_ACC'))->beginTransaction();
     $permission = $request->session()->get('per');
     if($permission['a'] && $request->hasFile('file')){
+     if($request->file->getClientOriginalName() == $this->download){
       //Check
       $request->validate([
           'file' => 'required|mimeTypes:'.
@@ -253,6 +256,9 @@ class AccHistoryActionController extends Controller
       DB::connection(env('CONNECTION_DB_ACC'))->commit();
       broadcast(new \App\Events\DataSendCollection($merged));
       return response()->json(['status'=>true,'message'=> trans('messages.success_import')]);
+   }else{
+    return response()->json(['status'=>false,'message'=> trans('messages.incorrect_file')]);
+    } 
       }else{
         return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
       }

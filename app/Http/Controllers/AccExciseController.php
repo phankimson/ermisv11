@@ -26,18 +26,20 @@ class AccExciseController extends Controller
   protected $url;
   protected $key;
   protected $menu;
+  protected $download;
   public function __construct(Request $request)
   {
      $this->url =  $request->segment(3);
      $this->key = "excise";
      $this->menu = Menu::where('code', '=', $this->key)->first();
+     $this->download = 'AccExcise.xlsx';
  }
 
   public function show(){    
     //$unit = collect(DropDownListResource::collection(AccUnit::active()->orderBy('code','asc')->get()));
     //$parent = collect(DropDownListResource::collection(AccExcise::active()->orderBy('code','asc')->get()));
     //$data = AccExcise::get_raw();
-    return view('acc.excise',[ 'key' => $this->key ]);
+    return view('acc.'.$this->key,[ 'key' => $this->key ]);
   }
 
   
@@ -261,7 +263,7 @@ class AccExciseController extends Controller
  }
 
  public function DownloadExcel(){
-   return Storage::download('public/downloadFile/AccExcise.xlsx');
+   return Storage::download('public/downloadFile/'.$this->download);
  }
 
  public function import(Request $request) {
@@ -270,6 +272,7 @@ class AccExciseController extends Controller
     DB::connection(env('CONNECTION_DB_ACC'))->beginTransaction();
    $permission = $request->session()->get('per');
    if($permission['a'] && $request->hasFile('file')){
+     if($request->file->getClientOriginalName() == $this->download){
      //Check
      $request->validate([
          'file' => 'required|mimeTypes:'.
@@ -299,6 +302,9 @@ class AccExciseController extends Controller
      DB::connection(env('CONNECTION_DB_ACC'))->commit();
      broadcast(new \App\Events\DataSendCollection($merged));
      return response()->json(['status'=>true,'message'=> trans('messages.success_import')]);
+    }else{
+    return response()->json(['status'=>false,'message'=> trans('messages.incorrect_file')]);
+    } 
      }else{
        return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
      }
