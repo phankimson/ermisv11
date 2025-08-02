@@ -182,7 +182,9 @@ class AccUserManagerController extends Controller
         if ($arr->password != $old_password ) {
               $data->password = Hash::make($arr->password);
          }
-        $data->username = $prefix_username.'_'.$arr->username;
+        if(strpos($arr->username, $prefix_username) == false && $data->role>0){
+              $data->username = $prefix_username.'_'.$arr->username;
+         }
         $data->fullname = $arr->fullname;
         $data->firstname = $arr->firstname;
         $data->lastname = $arr->lastname;
@@ -202,7 +204,7 @@ class AccUserManagerController extends Controller
         $data->save();
          // Phân loại Sửa
          $arr->t = $type;
-         $arr->username = $prefix_username.'_'.$arr->username;
+         $arr->username = $data->username;
        // Lưu ảnh sửa
        if($request->hasFile('files')) {
          //Xóa ảnh cũ
