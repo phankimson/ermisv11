@@ -22,7 +22,7 @@ use Maatwebsite\Excel\Concerns\WithStartRow;
 use App\Classes\Convert;
 
 
-class AccBankReceiptImport implements  WithHeadingRow, WithMultipleSheets
+class AccBankTransferImport implements  WithHeadingRow, WithMultipleSheets
 { 
   protected $menu;
   protected $group;
@@ -99,7 +99,7 @@ class FirstSheetValImport implements ToModel, HasReferencesToOtherSheets, WithHe
 
     public function model(array $row)
     {
-      $data = new AccBankReceiptImport($this->type,$this->group);
+      $data = new AccBankTransferImport($this->type,$this->group);
       $currency_default = $data->getCurrencyDefault();
       $subject = AccObject::WhereDefault('code',$row['subject'])->first();
       $code_check = AccGeneral::WhereCheck('voucher',$row['voucher'],'id',null)->first();     
@@ -125,7 +125,7 @@ class FirstSheetValImport implements ToModel, HasReferencesToOtherSheets, WithHe
             'status'    => $row['status'] == null ? 1 : $row['status'], 
             'active'    => $row['active'] == null ? 1 : $row['active'],
           ];
-          $data = new AccBankReceiptImport($this->type,$this->group);
+          $data = new AccBankTransferImport($this->type,$this->group);
           $data->setDataFirst($arr);
           return new AccGeneral($arr);
       }
@@ -154,8 +154,8 @@ class SecondSheetImport implements ToModel, HasReferencesToOtherSheets, WithHead
 {
     public function model(array $row)
     {
-      if(substr($row['debit'],0,3) === "112"){
-        $data = new AccBankReceiptImport("","");
+      if(substr($row['debit'],0,3) === "112" && substr($row['credit'],0,3) === "112"){
+        $data = new AccBankTransferImport("","");
         $currency_default = $data->getCurrencyDefault();
         $general = AccGeneral::WhereDefault('voucher',$row['voucher'])->first();
         $debit = AccAccountSystems::WhereDefault('code',$row['debit'])->first();
@@ -192,7 +192,7 @@ class SecondSheetImport implements ToModel, HasReferencesToOtherSheets, WithHead
           'rate'    => $row['rate'],
           'amount_rate'    => $row['amount_rate'],  
         ];
-        $data = new AccBankReceiptImport("","");
+        $data = new AccBankTransferImport("","");
         $data->setDataSecond($arr);
         $data->setDataCrit($arr_crit);
         return new AccDetail($arr);      
@@ -257,7 +257,7 @@ class SecondSheetImport implements ToModel, HasReferencesToOtherSheets, WithHead
           'status'    => $row['status'] == null ? 1 : $row['status'], 
           'active'    => $row['active'] == null ? 1 : $row['active'],
         ];      
-        $data = new AccBankReceiptImport("","");
+        $data = new AccBankTransferImport("","");
         $data->setDataThird($arr);
         return new AccVatDetail($arr);
         }

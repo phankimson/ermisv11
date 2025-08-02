@@ -17,6 +17,7 @@ use App\Http\Model\AccAccountSystems;
 use App\Http\Model\AccDepartment;
 use App\Http\Model\AccBankAccount;
 use App\Http\Model\AccCurrency;
+use App\Http\Model\AccSystems;
 use Maatwebsite\Excel\Concerns\WithStartRow;
 use App\Classes\Convert;
 
@@ -28,6 +29,7 @@ class AccCashReceiptImport implements  WithHeadingRow, WithMultipleSheets
   public static $first = array();
   public static $second = array();
   public static $third = array();
+  public static $crit = array();
 
      public function __construct($menu,$group)
   {
@@ -64,14 +66,26 @@ class AccCashReceiptImport implements  WithHeadingRow, WithMultipleSheets
      {
          array_push(self::$third,$arr);
      }  
+         public function setDataCrit($arr)
+     {
+         array_push(self::$crit,$arr);
+     }  
      public function getData()
     {
        $data['general'] = self::$first;
        $data['detail'] = self::$second;
        $data['tax'] = self::$third;
+       $data['crit'] = self::$crit;
        return $data;
        //return array_merge(self::$first,self::$second,self::$third);
     }   
+        public function getCurrencyDefault()
+    {
+       $default = AccSystems::get_systems("CURRENCY_DEFAULT");
+       $currency_default = AccCurrency::get_code($default->value);
+       return $currency_default;
+    } 
+    
 }
 
 
@@ -86,6 +100,8 @@ class FirstSheetValImport implements ToModel, HasReferencesToOtherSheets, WithHe
 
     public function model(array $row)
     {
+      $data = new AccCashReceiptImport($this->type,$this->group);
+      $currency_default = $data->getCurrencyDefault();
       $subject = AccObject::WhereDefault('code',$row['subject'])->first();
       $code_check = AccGeneral::WhereCheck('voucher',$row['voucher'],'id',null)->first();
       $currency = AccCurrency::WhereDefault('code',$row['currency'])->first(); 
@@ -100,12 +116,12 @@ class FirstSheetValImport implements ToModel, HasReferencesToOtherSheets, WithHe
             'description'    => $row['description'],
             'voucher_date'    => $voucher_date,
             'accounting_date'    => $accounting_date,
-            'currency'    => $currency == null ? 0 : $currency->id,
+            'currency'    => $currency == null ? $currency_default->id : $currency->id,
             'traders'    => $row['traders'],
             'subject'    => $subject == null ? 0 : $subject->id,
             'total_amount'    => $row['total_amount'],
             'rate'    => $row['rate'],
-             'group'=>  $this->group,   
+            'group'=>  $this->group,   
             'total_amount_rate'    => $row['total_amount_rate'],        
             'status'    => $row['status'] == null ? 1 : $row['status'], 
             'active'    => $row['active'] == null ? 1 : $row['active'],
@@ -139,33 +155,52 @@ class SecondSheetImport implements ToModel, HasReferencesToOtherSheets, WithHead
 {
     public function model(array $row)
     {
-      $general = AccGeneral::WhereDefault('voucher',$row['voucher'])->first();
-      $debit = AccAccountSystems::WhereDefault('code',$row['debit'])->first();
-      $credit = AccAccountSystems::WhereDefault('code',$row['credit'])->first();
-      $subject_credit = AccObject::WhereDefault('code',$row['subject'])->first();
-      $department = AccDepartment::WhereDefault('code',$row['department'])->first();
-      $bank_account = AccBankAccount::WhereDefault('bank_account',$row['bank_account'])->first();
-      $currency = AccCurrency::WhereDefault('code',$row['currency'])->first();
-      $arr = [
-        'id'     => Str::uuid()->toString(),
-        'general_id'    => $general == null ? 0 : $general->id,
-        'description'    => $row['description'],
-        'debit'    => $debit == null ? 0 : $debit->id,
-        'credit'    => $credit == null ? 0 : $credit->id,
-        'currency' => $currency == null ? 0 : $currency->id,
-        'subject_credit'    => $subject_credit == null ? 0 : $subject_credit->id,
-        'subject_name_credit'    => $subject_credit == null ? 0 : $subject_credit->code." - ".$subject_credit->name,
-        'amount'    => $row['amount'],
-        'rate'    => $row['rate'],
-        'amount_rate'    => $row['amount_rate'],       
-        'department'    => $department == null ? 0 : $department->id,
-        'bank_account_credit'    => $bank_account == null ? 0 : $bank_account->id,         
-        'status'    => $row['status'] == null ? 1 : $row['status'], 
-        'active'    => $row['active'] == null ? 1 : $row['active'],
-      ];
-      $data = new AccCashReceiptImport("","");
-      $data->setDataSecond($arr);
-      return new AccDetail($arr);          
+        if(substr($row['debit'],0,3) === "111"){
+        $data = new AccCashReceiptImport("","");
+        $currency_default = $data->getCurrencyDefault();
+        $general = AccGeneral::WhereDefault('voucher',$row['voucher'])->first();
+        $debit = AccAccountSystems::WhereDefault('code',$row['debit'])->first();
+        $credit = AccAccountSystems::WhereDefault('code',$row['credit'])->first();
+        $subject_credit = AccObject::WhereDefault('code',$row['subject'])->first();
+        $department = AccDepartment::WhereDefault('code',$row['department'])->first();
+        $bank_account = AccBankAccount::WhereDefault('bank_account',$row['bank_account'])->first();
+        $currency = AccCurrency::WhereDefault('code',$row['currency'])->first();
+        $arr = [
+          'id'     => Str::uuid()->toString(),
+          'general_id'    => $general == null ? 0 : $general->id,
+          'description'    => $row['description'],
+          'debit'    => $debit == null ? 0 : $debit->id,
+          'credit'    => $credit == null ? 0 : $credit->id,
+          'currency' => $currency == null ? $currency_default->id : $currency->id,
+          'subject_id_credit'    => $subject_credit == null ? 0 : $subject_credit->id,
+          'subject_name_credit'    => $subject_credit == null ? 0 : $subject_credit->code." - ".$subject_credit->name,
+          'amount'    => $row['amount'],
+          'rate'    => $row['rate'],
+          'amount_rate'    => $row['amount_rate'],       
+          'department'    => $department == null ? 0 : $department->id,
+          'bank_account_credit'    => $bank_account == null ? 0 : $bank_account->id,         
+          'status'    => $row['status'] == null ? 1 : $row['status'], 
+          'active'    => $row['active'] == null ? 1 : $row['active'],
+        ];
+        $arr_crit = [
+          'debit'    => $row['debit'],
+          'debit_id'    => $debit == null ? 0 : $debit->id,
+          'credit'    => $row['credit'],
+          'credit_id'    => $credit == null ? 0 : $credit->id,
+          'currency' => $currency == null ? $currency_default->id : $currency->id,
+          'bank_account' => $bank_account->id,
+          'amount'    => $row['amount'],
+          'rate'    => $row['rate'],
+          'amount_rate'    => $row['amount_rate'],  
+        ];
+
+        $data = new AccCashReceiptImport("","");
+        $data->setDataSecond($arr);
+        $data->setDataCrit($arr_crit);
+        return new AccDetail($arr);    
+      }else{
+        return;
+      }      
     }
 
     public function batchSize(): int

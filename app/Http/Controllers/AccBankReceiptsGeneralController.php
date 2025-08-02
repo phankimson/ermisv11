@@ -483,7 +483,41 @@ class AccBankReceiptsGeneralController extends Controller
       //  $data->save();
       //  $arr->push($data);
       //}
-      $merged = collect($rs)->push($import->getData());
+      $data = $import->getData();
+      foreach($data['crit'] as $item){
+      // Lưu số tồn bên nợ
+      if(substr($item['debit'],0,3) === '112'){   
+         $balance = AccCurrencyCheck::get_type_first($item['debit_id'],$item['currency'],$item['bank_account']);
+        if($balance){
+              $balance->amount = $balance->amount + ($item['amount'] * $item['rate']);
+              $balance->save();
+            }else{
+              $balance = new AccCurrencyCheck();
+              $balance->type = $item['debit_id'];
+              $balance->currency = $item['currency'];
+              $balance->bank_account = $item['bank_account'];
+              $balance->amount = $item['amount'] * $item['rate'];
+              $balance->save();
+            }
+      }
+      // Lưu số tồn bên có
+      if(substr($item['credit'],0,3) === ('111' ||  '113')){                 
+              $balance = AccCurrencyCheck::get_type_first($item['credit_id'],$item['currency'],null);
+              if($balance){
+                $balance->amount = $balance->amount - ($item['amount'] * $item['rate']);
+                $balance->save();
+              }else{
+                $balance = new AccCurrencyCheck();
+                $balance->type = $item['credit_id'];
+                $balance->currency = $item['currency'];
+                $balance->bank_account = null;
+                $balance->amount = 0 - ($item['amount'] * $item['rate']);
+                $balance->save();
+              }                  
+            }
+      }    
+
+      $merged = collect($rs)->push($data);
       //dump($merged);
     // Lưu lịch sử
     $h = new AccHistoryAction();
