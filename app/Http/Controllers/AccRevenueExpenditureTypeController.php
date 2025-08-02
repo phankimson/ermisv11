@@ -28,12 +28,14 @@ class AccRevenueExpenditureTypeController extends Controller
   protected $key;
   protected $menu;
   protected $page_system;
+  protected $download;
   public function __construct(Request $request)
  {
      $this->url =  $request->segment(3);
      $this->key = "revenue-expenditure-type";
      $this->menu = Menu::where('code', '=', $this->key)->first();
      $this->page_system = "MAX_COUNT_CHANGE_PAGE";
+     $this->download = 'AccRevenueExpenditureType.xlsx';
  }
 
   public function show(Request $request){  
@@ -41,7 +43,7 @@ class AccRevenueExpenditureTypeController extends Controller
     $count = AccRevenueExpenditureType::count();
     $sys_page = AccSystems::get_systems($this->page_system);
     $paging = $count>$sys_page->value?1:0;   
-    return view('acc.revenue_expenditure_type',['paging' => $paging, 'key' => $this->key ]);
+    return view('acc.'.str_replace("-", "_", $this->key),['paging' => $paging, 'key' => $this->key ]);
   }
 
   public function data(Request $request){   
@@ -266,7 +268,7 @@ class AccRevenueExpenditureTypeController extends Controller
  }
 
  public function DownloadExcel(){
-   return Storage::download('public/downloadFile/AccRevenueExpenditureType.xlsx');
+   return Storage::download('public/downloadFile/'.$this->download);
  }
 
  public function import(Request $request) {
@@ -275,6 +277,7 @@ class AccRevenueExpenditureTypeController extends Controller
     DB::connection(env('CONNECTION_DB_ACC'))->beginTransaction();
    $permission = $request->session()->get('per');
    if($permission['a'] && $request->hasFile('file')){
+    if($request->file->getClientOriginalName() == $this->download){
      //Check
      $request->validate([
          'file' => 'required|mimeTypes:'.
@@ -303,6 +306,9 @@ class AccRevenueExpenditureTypeController extends Controller
      DB::connection(env('CONNECTION_DB_ACC'))->commit();
      broadcast(new \App\Events\DataSendCollection($merged));
      return response()->json(['status'=>true,'message'=> trans('messages.success_import')]);
+    }else{
+    return response()->json(['status'=>false,'message'=> trans('messages.incorrect_file')]);
+    } 
      }else{
        return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
      }

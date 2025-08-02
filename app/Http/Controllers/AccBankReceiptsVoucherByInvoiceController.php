@@ -62,7 +62,7 @@ class AccBankReceiptsVoucherByInvoiceController extends Controller
     $menu_tab =  Menu::get_menu_like_code($this->key.'%');   
     $voucher_list = AccNumberVoucher::all();
     $print = AccPrintTemplate::get_code($this->print);
-    return view('acc.receipt_bank_voucher_by_invoice',[ 'key' => $this->key_invoice , 'voucher' => $voucher, 'menu'=>$this->menu->id,  'menu_tab' => $menu_tab,                                        
+    return view('acc.'.str_replace("-", "_", $this->key_invoice),[ 'key' => $this->key_invoice , 'voucher' => $voucher, 'menu'=>$this->menu->id,  'menu_tab' => $menu_tab,                                        
                                         'voucher_list' => $voucher_list ,
                                         'ot' => $ot,
                                         'sg' => $ot,
