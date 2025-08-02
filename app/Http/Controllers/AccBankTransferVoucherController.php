@@ -359,7 +359,7 @@ class AccBankTransferVoucherController extends Controller
         config(['excel.imports.read_only' => false]);
         $data = new AccBankTransferGeneralImport($this->menu);
         Excel::import($data , $file);
-        $detail = new AccBankTransferVoucherImport;
+        $detail = new AccBankTransferVoucherImport($this->menu);
         Excel::import($detail, $file); 
         $merged = collect($data->getData())->push($detail->getData());            
         return response()->json(['status'=>true,'message'=> trans('messages.success_import'),'data'=>$merged]);

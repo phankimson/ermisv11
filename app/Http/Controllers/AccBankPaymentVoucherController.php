@@ -466,7 +466,7 @@ class AccBankPaymentVoucherController extends Controller
         config(['excel.imports.read_only' => false]);
         $data = new AccBankPaymentGeneralImport($this->menu);   
         Excel::import($data , $file);
-        $detail = new AccBankPaymentVoucherImport;
+        $detail = new AccBankPaymentVoucherImport($this->menu);   
         Excel::import($detail, $file); 
         $merged = collect($data->getData())->push($detail->getData());            
         return response()->json(['status'=>true,'message'=> trans('messages.success_import'),'data'=>$merged]);

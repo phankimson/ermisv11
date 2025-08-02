@@ -469,7 +469,7 @@ class AccBankReceiptsVoucherController extends Controller
         config(['excel.imports.read_only' => false]);
         $data = new AccBankReceiptGeneralImport($this->menu);
         Excel::import($data , $file);
-        $detail = new AccBankReceiptVoucherImport;
+        $detail = new AccBankReceiptVoucherImport($this->menu);
         Excel::import($detail, $file); 
         $merged = collect($data->getData())->push($detail->getData());            
         return response()->json(['status'=>true,'message'=> trans('messages.success_import'),'data'=>$merged]);
