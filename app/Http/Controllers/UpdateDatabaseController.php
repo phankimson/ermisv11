@@ -25,7 +25,7 @@ class UpdateDatabaseController extends Controller
    }
 
    public function show(){
-      return view('manage.update_database',['key' => $this->key]);
+      return view('manage.'.str_replace("-", "_", $this->key),['key' => $this->key]);
    }
 
    public function GetTableDatabase(Request $request){

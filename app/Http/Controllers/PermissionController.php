@@ -30,7 +30,7 @@ class PermissionController extends Controller
    public function show(Request $request){
       $com = $request->session()->get('com');
       $group_users = GroupUsers::ActiveCompany($com->id)->get();
-      return view('global.permission',['key' => $this->key,'group_users' =>$group_users]);
+      return view('global.'.$this->key,['key' => $this->key,'group_users' =>$group_users]);
    }
 
    public function load(Request $request) {

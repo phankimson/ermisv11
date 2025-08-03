@@ -32,6 +32,7 @@ class CompanySoftwareController extends Controller
   protected $menu;
   protected $page_system;
   protected $length_hash;
+  protected $download;
     public function __construct(Request $request)
    {
        $this->url = $request->segment(3);
@@ -39,6 +40,7 @@ class CompanySoftwareController extends Controller
        $this->menu = Menu::where('code', '=', $this->key)->first();
        $this->length_hash = 50;
        $this->page_system = "MAX_COUNT_CHANGE_PAGE";
+       $this->download = "CompanySoftware.xlsx"; // File download name
    }
 
    public function show(){
@@ -50,7 +52,7 @@ class CompanySoftwareController extends Controller
       $count = CompanySoftware::where('software_id',$type->id)->count();
       $sys_page = Systems::get_systems($this->page_system);
       $paging = $count>$sys_page->value?1:0; 
-      return view('manage.company_software',['paging' => $paging, 'software'=>$software, 'key' => $this->key , 'type' => $type->id]);
+      return view('manage.'.str_replace("-", "_", $this->key),['paging' => $paging, 'software'=>$software, 'key' => $this->key , 'type' => $type->id]);
    }
 
    public function data(Request $request){    
@@ -267,7 +269,7 @@ class CompanySoftwareController extends Controller
        }
   }
   public function DownloadExcel(){
-    return Storage::download('public/downloadFile/CompanySoftware.xlsx');
+    return Storage::download('public/downloadFile/'.$this->download);
   }
 
   public function import(Request $request) {
@@ -276,6 +278,7 @@ class CompanySoftwareController extends Controller
       DB::beginTransaction();
     $permission = $request->session()->get('per');
     if($permission['a'] && $request->hasFile('file')){
+      if($request->file->getClientOriginalName() == $this->download){
       //Check
       $request->validate([
           'file' => 'required|mimeTypes:'.
@@ -305,6 +308,9 @@ class CompanySoftwareController extends Controller
       DB::commit();
       broadcast(new \App\Events\DataSendCollection($merged));
       return response()->json(['status'=>true,'message'=> trans('messages.success_import')]);
+    }else{
+    return response()->json(['status'=>false,'message'=> trans('messages.incorrect_file')]);
+    } 
       }else{
         return response()->json(['status'=>false,'message'=> trans('messages.no_data')]);
       }

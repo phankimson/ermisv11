@@ -25,7 +25,7 @@ class QueryController extends Controller
    }
 
    public function show(){
-      return view('manage.query',['key' => $this->key]);
+      return view('manage.'.$this->key,['key' => $this->key]);
    }
 
    public function ChangeDatabase(Request $request){

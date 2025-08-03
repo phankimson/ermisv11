@@ -18,6 +18,7 @@ class NotesController extends Controller
   protected $url;
   protected $key;
   protected $menu;
+
   public function __construct(Request $request)
  {
      $this->url = $request->segment(3);
@@ -27,7 +28,7 @@ class NotesController extends Controller
     public function show(){
        $sys = Systems::get_systems('MAX_NOTES');
        $notes = Notes::get_notes(0,$sys->value);
-       return view('manage.notes',['notes' => $notes,'key' => $this->key]);
+       return view('manage.'.$this->key,['notes' => $notes,'key' => $this->key]);
    }
 
    public function load(Request $request) {

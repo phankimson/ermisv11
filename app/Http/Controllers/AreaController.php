@@ -25,13 +25,14 @@ class AreaController extends Controller
   protected $key;
   protected $menu;
   protected $page_system;
-
+  protected $download;
   public function __construct(Request $request)
  {
      $this->url =  $request->segment(3);
      $this->key = "area";
      $this->menu = Menu::where('code', '=', $this->key)->first();
      $this->page_system = "MAX_COUNT_CHANGE_PAGE";
+     $this->download = "Area.xlsx"; // File download name
  }
 
   public function show(){
@@ -40,7 +41,7 @@ class AreaController extends Controller
     $count = Area::count();
     $sys_page = Systems::get_systems($this->page_system);
     $paging = $count>$sys_page->value?1:0; 
-    return view('manage.area',['paging' => $paging, 'key' => $this->key ]);
+    return view('manage.'.$this->key,['paging' => $paging, 'key' => $this->key ]);
   }
 
   public function data(Request $request){    
@@ -202,7 +203,7 @@ class AreaController extends Controller
  }
 
  public function DownloadExcel(){
-   return Storage::download('public/downloadFile/Area.xlsx');
+   return Storage::download('public/downloadFile/'.$this->download);
  }
 
  public function import(Request $request) {
@@ -211,6 +212,7 @@ class AreaController extends Controller
     DB::beginTransaction();
    $permission = $request->session()->get('per');
    if($permission['a'] && $request->hasFile('file')){
+    if($request->file->getClientOriginalName() == $this->download){
      //Check
      $request->validate([
          'file' => 'required|mimeTypes:'.
@@ -240,6 +242,9 @@ class AreaController extends Controller
      DB::commit();
      broadcast(new \App\Events\DataSendCollection($merged));
      return response()->json(['status'=>true,'message'=> trans('messages.success_import')]);
+      }else{
+    return response()->json(['status'=>false,'message'=> trans('messages.incorrect_file')]);
+    } 
      }else{
        return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
      }

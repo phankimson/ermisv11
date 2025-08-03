@@ -13,7 +13,7 @@ use App\Http\Model\AccAccountedFast;
 use App\Http\Model\AccCurrency;
 use App\Http\Resources\ObjectDropDownListResource;
 use App\Http\Resources\DropDownListResource;
-use App\Http\Resources\CashReceiptGeneralResource;
+use App\Http\Resources\CashGeneralReadResource;
 use App\Http\Resources\AccountedAutoListResource;
 use App\Http\Resources\AccountedFastDropDownListResource;
 use App\Http\Model\AccObject;
@@ -104,7 +104,7 @@ class AccVoucherController extends Controller
         $reference_array = [0 , $req->general_id ] ;   
       }
       $number_voucher = AccNumberVoucher::find($req->filter_voucher);
-      $data = CashReceiptGeneralResource::collection(AccGeneral::get_data_load_between_reference($number_voucher->menu_id,$req->start_date,$req->end_date,$reference_array));
+      $data = CashGeneralReadResource::collection(AccGeneral::get_data_load_between_reference($number_voucher->menu_id,$req->start_date,$req->end_date,$reference_array));
       if($req && $data->count()>0 ){
         return response()->json(['status'=>true,'data'=> $data]);
       }else{
