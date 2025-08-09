@@ -28,6 +28,14 @@
    <section id="tabs_content" style="width : 100%" class="uk-switcher-hot uk-margin">
        <div class="uk-tab-content">
            <table>
+                 <tr>
+                   <td class="row-label"><label>@lang('acc_accounted_fast.profession') </label></td>
+                   <td>
+                     <select class="droplist read large render-hot" data-render-col="accounted_fast" data-position="3" data-title="@lang('acc_accounted_fast.profession')" data-template="#= FormatDropListRead(profession,'profession') #" data-type="string" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{!!route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.menu').'?pro='.$profession!!}" name="profession">
+                          
+                         </select>
+                   </td>
+               </tr>
                <tr>
                    <td class="row-label"><label>@lang('acc_accounted_auto.code') *</label></td>
                    <td>
@@ -81,7 +89,7 @@
 @endpush
 
 @section('tabs')
-<div id="accounted_fast_dropdown_list" class="hidden" data-url="{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.accounted-fast')}}" data-json=""></div>
+<div id="accounted_fast_dropdown_list" class="hidden" data-url="{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.accounted-fast')}}" data-url-add="?pro=" data-json=""></div>
 @endsection
 @section('scripts_up')
 <script>
@@ -100,15 +108,16 @@
       Ermis.decimal = "{{$decimal}}";
       Ermis.locales_hot = "{{ app()->getLocale() == 'vi' ? 'vi-VI' : 'en-US' }}";
       Ermis.columns_expend = [{ selectable: true, width: "50px" }, {"field" : "column","title" : "@lang('global.column_name')"}];
-      Ermis.data_expend = [{field : "code", column:  "@lang('acc_accounted_auto.code')" },
-                           {field : "name", column:  "@lang('acc_accounted_auto.name')" },
-                           {field : "name_en", column:  "@lang('acc_accounted_auto.name_en')" },
-                           {field : "description", column:  "@lang('acc_accounted_auto.description')" },
-                           {field : "active", column:  "@lang('action.active')" }];
+      Ermis.data_expend = [{field : "t.code", column:  "@lang('acc_accounted_auto.code')" },
+                           {field : "t.name", column:  "@lang('acc_accounted_auto.name')" },                         
+                           {field : "t.name_en", column:  "@lang('acc_accounted_auto.name_en')" },
+                           {field : "u.name as profession", column:  "@lang('acc_accounted_fast.profession')" },
+                           {field : "t.description", column:  "@lang('acc_accounted_auto.description')" },
+                           {field : "t.active", column:  "@lang('action.active')" }];
      Ermis.hot_field = "accounted_auto_detail";
      Ermis.ArrayColumn = [{data:'id',title:"@lang('global.column_name')", readOnly:true },
                          //{data:'accounted_fast',editor: 'chosen', chosenOptions: {data: jQuery('#accounted_fast_dropdown_list').data('json')} ,key : "afterChange",renderer: customDropdownRenderer, title:"@lang('acc_voucher.accounted_fast')",width : ( 0.1 * $(window).width() )},
-                         {data:'accounted_fast',editor: 'chosen', chosenOptions: {data: initDropDownListAjaxLoad("accounted-fast","{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.accounted-fast')}}")} ,key : "afterChange",renderer: customAjaxDropdownRenderer, title:"@lang('acc_voucher.accounted_fast')",width : ( 0.1 * $(window).width() )},
+                         {data:'accounted_fast',editor: 'chosen', chosenOptions: {data: initDropDownListAjaxLoad("accounted-fast",jQuery('#accounted_fast_dropdown_list').data('url'))} ,key : "afterChange",renderer: customAjaxDropdownRenderer, title:"@lang('acc_voucher.accounted_fast')",width : ( 0.1 * $(window).width() )},
                          {data:'description',title:"@lang('acc_voucher.description')",width : ( 0.2 * $(window).width() ), set : "1"},
                          {data:'debit',editor: 'chosen', chosenOptions: {data: initDropDownListAjaxLoad("account","{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.account')}}")},key : true ,renderer: customAjaxDropdownRenderer,title:"@lang('acc_voucher.debt_account')",width : ( 0.1 * $(window).width() ) , set : "2"},
                          {data:'credit',editor: 'chosen', chosenOptions: {data: initDropDownListAjaxLoad("account","{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.account')}}")} ,key : true ,renderer: customAjaxDropdownRenderer,title:"@lang('acc_voucher.credit_account')",width : ( 0.1 * $(window).width() ), set : "2"},

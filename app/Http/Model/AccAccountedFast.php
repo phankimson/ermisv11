@@ -37,6 +37,7 @@ class AccAccountedFast extends Model
       }
 
       static public function get_raw_export($select,$skip,$limit) {
+         $env = env("DB_DATABASE");
         $result = AccAccountedFast::WithRowNumberDb(env('CONNECTION_DB_ACC'))->orderBy('row_number','asc')->skip($skip)->take($limit)
         ->leftJoin('account_systems as a', 't.debit', '=', 'a.id')
         ->leftJoin('account_systems as b', 't.credit', '=', 'b.id')
@@ -48,7 +49,16 @@ class AccAccountedFast extends Model
         ->leftJoin('bank_account as n', 't.bank_account', '=', 'n.id')
         ->leftJoin('object as o', 't.subject_debit', '=', 'o.id')
         ->leftJoin('object as p', 't.subject_credit', '=', 'p.id')
+        ->leftJoin($env.'.menu as u', 't.profession', '=', 'u.id')
         ->get(['row_number',DB::raw($select)]);
+        return $result;
+      }      
+
+      static public function get_profession($profession) {
+        $result = AccAccountedFast::where(function($query) use ($profession) {
+                 $query->where('profession', "0")
+                       ->orWhere('profession', $profession);
+             })->where('active',1)->orderBy('code','asc')->get();
         return $result;
       }
 

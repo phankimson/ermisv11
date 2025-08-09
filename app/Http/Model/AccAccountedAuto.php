@@ -39,7 +39,10 @@ class AccAccountedAuto extends Model
       }
 
       static public function get_raw_export($select,$skip,$limit) {
-        $result =  AccAccountedAuto::WithRowNumberDb(env('CONNECTION_DB_ACC'))->orderBy('row_number','asc')->skip($skip)->take($limit)->get(['row_number',DB::raw($select)]);        
+        $env = env("DB_DATABASE");
+        $result =  AccAccountedAuto::WithRowNumberDb(env('CONNECTION_DB_ACC'))->orderBy('row_number','asc')->skip($skip)->take($limit)
+        ->leftJoin($env.'.menu as u', 't.profession', '=', 'u.id')
+        ->get(['row_number',DB::raw($select)]);       
         return $result;
       } 
 

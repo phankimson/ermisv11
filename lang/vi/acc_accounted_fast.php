@@ -26,4 +26,5 @@ return [
     "work_code" => "Mã công việc",
     "bank_account"=>"Tài khoản ngân hàng",
     "department"=>"Bộ phận",
+    "profession" =>"Nghiệp vụ",
 ];

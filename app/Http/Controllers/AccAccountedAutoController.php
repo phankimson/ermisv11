@@ -30,12 +30,14 @@ class AccAccountedAutoController extends Controller
   protected $menu;
   protected $page_system;
   protected $download;
+  protected $pro;
   public function __construct(Request $request)
   {
      $this->url =  $request->segment(3);
      $this->key = "accounted-auto";
      $this->menu = Menu::where('code', '=', $this->key)->first();
      $this->page_system = "MAX_COUNT_CHANGE_PAGE";
+     $this->pro = "1,2,3,4,5,6,7,8,9,10";
      $this->download = "AccAccountedAuto.xlsx";
  }
 
@@ -53,7 +55,7 @@ class AccAccountedAutoController extends Controller
     //$statistical_code = json_encode(collect(LangDropDownListResource::collection(AccStatisticalCode::active()->OrderBy('code','asc')->get())));
     //$accounted_fast = json_encode(collect(AccountedFastDropDownListResource::collection(AccAccountedFast::active()->OrderBy('code','asc')->get())));
     //$object = json_encode(collect(DropDownListResource::collection(AccObject::active()->get())));
-    return view('acc.'.str_replace("-", "_", $this->key),['paging' => $paging,'key' => $this->key]);
+    return view('acc.'.str_replace("-", "_", $this->key),['paging' => $paging,'key' => $this->key,'profession' => $this->pro]);
   }
 
 
@@ -160,6 +162,7 @@ class AccAccountedAutoController extends Controller
      if($permission['a'] == true && !$arr->id ){
        $type = 2;
        $data = new AccAccountedAuto();
+       $data->profession = $arr->profession;
        $data->code = $arr->code;
        $data->name = $arr->name;
        $data->name_en = $arr->name_en;
@@ -228,7 +231,7 @@ class AccAccountedAutoController extends Controller
          'url'  => $this->url,
          'dataz' => \json_encode($data)]);
       //
-
+      $data->profession = $arr->profession;
       $data->code = $arr->code;
       $data->name = $arr->name;
       $data->name_en = $arr->name_en;

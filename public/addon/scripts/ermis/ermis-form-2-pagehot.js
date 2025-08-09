@@ -43,6 +43,7 @@ var Ermis = function () {
          });
       }
     }
+    
 
     var initGlobalRegister = function(){
       // KendoStartPickerTemplate

@@ -603,9 +603,15 @@ class AccDropDownListController extends Controller
   // Hạch toán nhanh
   public function accounted_fast_dropdown_list(Request $request){    
     $val = $request->input('value',null);
+    $pro = $request->input('pro',null);
     if($val){
       $arr = AccAccountedFast::find($val);   
       $data = new AccountedFastDropDownResource($arr);
+    }else if($pro){
+      $default = collect([$this->default]);
+      $arr = AccAccountedFast::get_profession($pro);   
+      $data = AccountedFastDropDownResource::collection($arr);
+      $data = $default->merge($data)->values(); 
     }else{
       $default = collect([$this->default]);
       $arr = AccAccountedFast::active()->orderBy('code','asc')->get();   
@@ -636,8 +642,15 @@ class AccDropDownListController extends Controller
    // Danh mục ACC
    public function menu_dropdown_list(Request $request){
     $type = Software::get_url($this->type);
+    $pro = $request->input('pro',null); 
+    $array = explode(",", $pro);
     $default = collect([$this->default]);
-    $data = LangDropDownResource::collection(Menu::get_raw_type($type->id));
+    if($pro){
+      $data = LangDropDownResource::collection(Menu::get_menu_by_where_in_group($type->id,$array));
+    }else{
+      $data = LangDropDownResource::collection(Menu::get_raw_type($type->id));
+    }   
+
     $data = $default->merge($data)->values();
     return response()->json($data)->withCallback($request->input('callback'));
   }

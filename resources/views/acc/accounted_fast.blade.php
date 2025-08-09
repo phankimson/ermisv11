@@ -33,6 +33,14 @@
                    <td><input type="text" class="k-textbox large" data-position="2" data-title="@lang('acc_accounted_fast.name')" maxlength="100" data-width="200px" data-type="string" name="name" /></td>
                </tr>
                <tr>
+                   <td class="row-label"><label>@lang('acc_accounted_fast.profession') </label></td>
+                   <td>
+                     <select class="droplist read large" data-position="3" data-title="@lang('acc_accounted_fast.profession')" data-template="#= FormatDropListRead(profession,'profession') #" data-type="string" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{!!route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.menu').'?pro='.$profession!!}" name="profession">
+                          
+                         </select>
+                   </td>
+               </tr>
+               <tr>
                    <td class="row-label"><label>@lang('acc_accounted_fast.debit') </label></td>
                    <td>
                      <select class="droplist read large" data-position="7" data-title="@lang('acc_accounted_fast.debit')" data-template="#= FormatDropListRead(debit,'debit') #" data-type="string" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.account')}}" name="debit">
@@ -167,6 +175,7 @@
       Ermis.columns_expend = [{ selectable: true, width: "50px" }, {"field" : "column","title" : "@lang('global.column_name')"}];
       Ermis.data_expend = [{field : "t.code", column:  "@lang('acc_accounted_fast.code')" },
                            {field : "t.name", column:  "@lang('acc_accounted_fast.name')" },
+                           {field : "u.name as profession", column:  "@lang('acc_accounted_fast.profession')" },
                            {field : "a.code as debit", column:  "@lang('acc_accounted_fast.debit')" },
                            {field : "b.code as credit", column:  "@lang('acc_accounted_fast.credit')" },
                            {field : "c.name as case_code", column:  "@lang('acc_accounted_fast.case_code')" },

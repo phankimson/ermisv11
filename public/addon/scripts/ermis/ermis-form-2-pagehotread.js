@@ -44,6 +44,28 @@ var Ermis = function () {
       }
     };
 
+    var initRederHot = function(){
+      jQuery('.render-hot').on('change', function(e) {
+        var $this = jQuery(this);
+        var val = $this.val();
+        if(val){
+        var data_render = $this.attr('data-render-col');
+        var url = jQuery("#"+data_render+"_dropdown_list").data('url');
+        var url_add = jQuery("#"+data_render+"_dropdown_list").data('url-add');
+        jQuery.each(Ermis.ArrayColumn, function(index, value) {
+            if (value['data'] === data_render) {
+              var arrData = RequestURL(url+ url_add +val);
+              Ermis.ArrayColumn[index]['chosenOptions'] = {data: arrData};
+            }
+        });
+            hot.updateSettings({
+              columns: Ermis.ArrayColumn
+            });
+            hot.render();
+          }
+      })         
+    }
+
     var initGlobalRegister = function(){
       // KendoStartPickerTemplate
       ErmisKendoStartPickerTemplate("#start","dd/MM/yyyy");
@@ -754,6 +776,7 @@ var Ermis = function () {
             initFilterMultiSelect();
             initGlobalRegister();
             initLoadInputCrit();
+            initRederHot();
         }
 
     };

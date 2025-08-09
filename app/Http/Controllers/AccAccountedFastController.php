@@ -27,6 +27,7 @@ class AccAccountedFastController extends Controller
   protected $key;
   protected $menu;
   protected $page_system;
+  protected $pro;
   protected $download;
   public function __construct(Request $request)
   {
@@ -34,6 +35,7 @@ class AccAccountedFastController extends Controller
      $this->key = "accounted-fast";
      $this->menu = Menu::where('code', '=', $this->key)->first();
      $this->page_system = "MAX_COUNT_CHANGE_PAGE";
+     $this->pro = "1,2,3,4,5,6,7,8,9,10";
      $this->download = "AccAccountedFast.xlsx";
  }
 
@@ -50,7 +52,7 @@ class AccAccountedFastController extends Controller
     //$bank_account = collect(BankAccountDropDownListResource::collection(AccBankAccount::active()->orderBy('bank_account','asc')->get()));
     //$object = collect(DropDownListResource::collection(AccObject::active()->orderBy('code','asc')->get()));
     //$department = collect(DropDownListResource::collection(AccDepartment::active()->orderBy('code','asc')->get()));
-    return view('acc.'.str_replace("-", "_", $this->key),['paging' => $paging, 'key' => $this->key ]);
+    return view('acc.'.str_replace("-", "_", $this->key),['paging' => $paging, 'key' => $this->key ,'profession' => $this->pro]);
   }
 
   
@@ -133,6 +135,7 @@ class AccAccountedFastController extends Controller
      if($permission['a'] == true && !$arr->id ){
        $type = 2;
        $data = new AccAccountedFast();
+       $data->profession = $arr->profession;
        $data->code = $arr->code;
        $data->name = $arr->name;
        $data->debit = $arr->debit;
@@ -175,7 +178,7 @@ class AccAccountedFastController extends Controller
           'url'  => $this->url,
          'dataz' => \json_encode($data)]);
       //
-
+      $data->profession = $arr->profession;
       $data->code = $arr->code;
       $data->name = $arr->name;
       $data->debit = $arr->debit;

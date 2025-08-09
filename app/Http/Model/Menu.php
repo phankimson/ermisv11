@@ -36,6 +36,11 @@ class Menu extends Model
         return $result;
       }
 
+      static public function get_menu_by_where_in_group($type,$group) {
+        $result = Menu::where('type',$type)->whereIn('group',$group)->orderBy('created_at', 'asc')->get();
+        return $result;
+      }
+
       static public function get_raw_type($type) {
         $result = Menu::WithRowNumberWhereColumn('type',$type)->orderBy('row_number','desc')->get();
         return $result;

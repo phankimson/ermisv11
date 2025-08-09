@@ -26,4 +26,5 @@ return [
     "work_code" => "Work code",
     "bank_account"=>"Bank account",
     "department"=>"Department",
+    "profession" =>"Profession",
 ];

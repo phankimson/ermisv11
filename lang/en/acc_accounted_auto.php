@@ -18,4 +18,5 @@ return [
     "code" => "Code",
     "name_en" => "Name English",
     "description" => "Description",
+     "profession" =>"Profession",
 ];

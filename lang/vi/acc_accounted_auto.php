@@ -19,4 +19,5 @@ return [
     "name_en" => "Tên tiếng Anh",
     "description" => "Diễn giải",
     "accounted_auto" => "Hạch toán tự động",
+    "profession" =>"Nghiệp vụ",
 ];
