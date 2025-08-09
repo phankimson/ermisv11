@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Validator;
 use App\Http\Model\AccHistoryAction;
 use App\Http\Model\AccUser;
 use App\Http\Model\Menu;
-use App\Http\Model\Country;
 use App\Http\Model\AccGroupUsers;
 use App\Http\Model\Systems;
 use App\Http\Model\Error;
@@ -33,6 +32,7 @@ class AccUserManagerController extends Controller
   protected $menu;
   protected $page_system;
   protected $path;
+  protected $download;
   public function __construct(Request $request)
  {
      $this->url =  $request->segment(3);
@@ -40,6 +40,7 @@ class AccUserManagerController extends Controller
      $this->path = "PATH_UPLOAD_AVATAR";
      $this->menu = Menu::where('code', '=', $this->key)->first();
      $this->page_system = "MAX_COUNT_CHANGE_PAGE";
+     $this->download = "AccUser.xlsx";
  }
 
   public function show(Request $request){
@@ -51,7 +52,7 @@ class AccUserManagerController extends Controller
     $count = AccUser::where('company_default',$com->id)->count();
     $sys_page = AccSystems::get_systems($this->page_system);
     $paging = $count>$sys_page->value?1:0;  
-    return view('acc.users',['paging' => $paging, 'key' => $this->key , 'group_user'=>$group_user  ,'prefix_username'=>$prefix_username]);
+    return view('acc.'.$this->key,['paging' => $paging, 'key' => $this->key , 'group_user'=>$group_user  ,'prefix_username'=>$prefix_username]);
   }
 
   public function data(Request $request){  
@@ -182,7 +183,9 @@ class AccUserManagerController extends Controller
         if ($arr->password != $old_password ) {
               $data->password = Hash::make($arr->password);
          }
-        $data->username = $prefix_username.'_'.$arr->username;
+        if(strpos($arr->username, $prefix_username) == false && $data->role>0){
+              $data->username = $prefix_username.'_'.$arr->username;
+         }
         $data->fullname = $arr->fullname;
         $data->firstname = $arr->firstname;
         $data->lastname = $arr->lastname;
@@ -202,7 +205,7 @@ class AccUserManagerController extends Controller
         $data->save();
          // Phân loại Sửa
          $arr->t = $type;
-         $arr->username = $prefix_username.'_'.$arr->username;
+         $arr->username = $data->username;
        // Lưu ảnh sửa
        if($request->hasFile('files')) {
          //Xóa ảnh cũ
@@ -308,7 +311,7 @@ class AccUserManagerController extends Controller
  }
 
  public function DownloadExcel(){
-   return Storage::download('public/downloadFile/AccUser.xlsx');
+   return Storage::download('public/downloadFile/'.$this->download);
  }
 
  public function import(Request $request) {
@@ -317,6 +320,7 @@ class AccUserManagerController extends Controller
     DB::beginTransaction();
    $permission = $request->session()->get('per');
    if($permission['a'] && $request->hasFile('file')){
+      if($request->file->getClientOriginalName() == $this->download){
      //Check
      $request->validate([
          'file' => 'required|mimeTypes:'.
@@ -346,6 +350,9 @@ class AccUserManagerController extends Controller
      DB::commit();
      broadcast(new \App\Events\DataSendCollection($merged));
      return response()->json(['status'=>true,'message'=> trans('messages.success_import')]);
+    }else{
+    return response()->json(['status'=>false,'message'=> trans('messages.incorrect_file')]);
+    } 
      }else{
        return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
      }

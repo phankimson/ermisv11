@@ -42,7 +42,7 @@ class AccPeriodController extends Controller
     $count = AccPeriod::count();
     $sys_page = AccSystems::get_systems($this->page_system);
     $paging = $count>$sys_page->value?1:0;   
-    return view('acc.period',['paging' => $paging, 'key' => $this->key ]);
+    return view('acc.'.$this->key,['paging' => $paging, 'key' => $this->key ]);
   }
 
   

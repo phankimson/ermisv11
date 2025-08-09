@@ -16,6 +16,7 @@ class SettingController extends Controller
   protected $url;
   protected $key;
   protected $menu;
+  
     public function __construct(Request $request)
    {
        $this->url = $request->segment(3);
@@ -25,7 +26,7 @@ class SettingController extends Controller
 
    public function show(){
       $sys = Systems::all();
-      return view('global.setting',['sys' => $sys, 'key' => $this->key]);
+      return view('global.'.$this->key,['sys' => $sys, 'key' => $this->key]);
    }
 
   public function changeSetting(Request $request){

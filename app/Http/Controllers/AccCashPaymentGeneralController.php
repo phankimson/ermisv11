@@ -61,7 +61,7 @@ class AccCashPaymentGeneralController extends Controller
     $end_date = $end_date_default->format('d/m/Y');
     $start_date = $start_date_default->format('d/m/Y');
     $print = AccPrintTemplate::get_code($this->print);
-    return view('acc.payment_cash_general',['data' => $data, 'group' =>$group ,'key' => $this->key, 'action' => $action , 'end_date' => $end_date ,'print' => $print, 'start_date'=>$start_date]);
+    return view('acc.'.str_replace("-", "_", $this->key),['data' => $data, 'group' =>$group ,'key' => $this->key, 'action' => $action , 'end_date' => $end_date ,'print' => $print, 'start_date'=>$start_date]);
   }
 
   public function unwrite(Request $request) {

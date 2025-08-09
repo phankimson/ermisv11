@@ -9,12 +9,10 @@ use Illuminate\Support\Facades\Validator;
 use App\Http\Model\AccHistoryAction;
 use App\Http\Model\Menu;
 use App\Http\Model\AccSettingVoucher;
-use App\Http\Model\AccAccountSystems;
 use App\Http\Model\CompanySoftware;
 use App\Http\Model\Company;
 use App\Http\Model\Error;
 use App\Http\Model\AccSystems;
-use App\Http\Resources\DropDownListResource;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Model\Imports\AccSettingVoucherImport;
 use App\Http\Model\Exports\AccSettingVoucherExport;
@@ -32,6 +30,7 @@ class AccSettingVoucherController extends Controller
   protected $page_system;  
   protected $df_text;
   protected $cf_text;
+  protected $download;
   public function __construct(Request $request)
  {
      $this->url =  $request->segment(3);
@@ -41,6 +40,7 @@ class AccSettingVoucherController extends Controller
      $this->df_text = 'AccSettingVoucherDebit';
      $this->cf_text = 'AccSettingVoucherCredit';
      $this->page_system = "MAX_COUNT_CHANGE_PAGE";
+     $this->download = 'AccSettingVoucher.xlsx';
  }
 
   public function show(){    
@@ -51,7 +51,7 @@ class AccSettingVoucherController extends Controller
     $count = AccSettingVoucher::count();
     $sys_page = AccSystems::get_systems($this->page_system);
     $paging = $count>$sys_page->value?1:0;   
-    return view('acc.setting_voucher',['paging' => $paging, 'key' => $this->key  ]);
+    return view('acc.'.str_replace("-", "_", $this->key),['paging' => $paging, 'key' => $this->key  ]);
   }
 
   
@@ -343,7 +343,7 @@ class AccSettingVoucherController extends Controller
  }
 
  public function DownloadExcel(){
-   return Storage::download('public/downloadFile/AccSettingVoucher.xlsx');
+   return Storage::download('public/downloadFile/'.$this->download);
  }
 
  public function import(Request $request) {
@@ -352,6 +352,7 @@ class AccSettingVoucherController extends Controller
     DB::connection(env('CONNECTION_DB_ACC'))->beginTransaction();
    $permission = $request->session()->get('per');
    if($permission['a'] && $request->hasFile('file')){
+       if($request->file->getClientOriginalName() == $this->download){
      //Check
      $request->validate([
          'file' => 'required|mimeTypes:'.
@@ -380,6 +381,9 @@ class AccSettingVoucherController extends Controller
      DB::connection(env('CONNECTION_DB_ACC'))->commit();
      broadcast(new \App\Events\DataSendCollection($merged));
      return response()->json(['status'=>true,'message'=> trans('messages.success_import')]);
+      }else{
+    return response()->json(['status'=>false,'message'=> trans('messages.incorrect_file')]);
+    } 
      }else{
        return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
      }

@@ -28,6 +28,7 @@ class AccNumberCodeController extends Controller
   protected $key;
   protected $menu;
   protected $page_system;
+  protected $download;
   //protected $type;
   public function __construct(Request $request)
   {
@@ -36,6 +37,7 @@ class AccNumberCodeController extends Controller
      $this->menu = Menu::where('code', '=', $this->key)->first();
      //$this->type = "acc";
      $this->page_system = "MAX_COUNT_CHANGE_PAGE";
+     $this->download = 'AccNumberCode.xlsx';
  }
 
   public function show(Request $request){    
@@ -45,7 +47,7 @@ class AccNumberCodeController extends Controller
     $count = AccNumberCode::count();
     $sys_page = AccSystems::get_systems($this->page_system);
     $paging = $count>$sys_page->value?1:0;  
-    return view('acc.number_code',['paging' => $paging, 'key' => $this->key ]);
+    return view('acc.'.str_replace("-", "_", $this->key),['paging' => $paging, 'key' => $this->key ]);
   }
 
   
@@ -253,7 +255,7 @@ class AccNumberCodeController extends Controller
  }
 
  public function DownloadExcel(){
-   return Storage::download('public/downloadFile/AccNumberCode.xlsx');
+   return Storage::download('public/downloadFile/'.$this->download);
  }
 
  public function import(Request $request) {
@@ -262,6 +264,7 @@ class AccNumberCodeController extends Controller
     DB::connection(env('CONNECTION_DB_ACC'))->beginTransaction();
    $permission = $request->session()->get('per');
    if($permission['a'] && $request->hasFile('file')){
+    if($request->file->getClientOriginalName() == $this->download){
      //Check
      $request->validate([
          'file' => 'required|mimeTypes:'.
@@ -290,6 +293,9 @@ class AccNumberCodeController extends Controller
      DB::connection(env('CONNECTION_DB_ACC'))->commit();
      broadcast(new \App\Events\DataSendCollection($merged));
      return response()->json(['status'=>true,'message'=> trans('messages.success_import')]);
+      }else{
+    return response()->json(['status'=>false,'message'=> trans('messages.incorrect_file')]);
+    } 
      }else{
        return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
      }

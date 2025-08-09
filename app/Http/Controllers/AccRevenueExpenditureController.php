@@ -9,13 +9,11 @@ use Illuminate\Support\Facades\Validator;
 use App\Http\Model\AccHistoryAction;
 use App\Http\Model\Menu;
 use App\Http\Model\AccRevenueExpenditure;
-use App\Http\Model\AccRevenueExpenditureType;
 use App\Http\Model\CompanySoftware;
 use App\Http\Model\Company;
 use App\Http\Model\AccNumberCode;
 use App\Http\Model\Error;
 use App\Http\Model\AccSystems;
-use App\Http\Resources\DropDownListResource;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Model\Imports\AccRevenueExpenditureImport;
 use App\Http\Model\Exports\AccRevenueExpenditureExport;
@@ -30,12 +28,14 @@ class AccRevenueExpenditureController extends Controller
   protected $key;
   protected $menu;
   protected $page_system;
+  protected $download;
   public function __construct(Request $request)
  {
      $this->url =  $request->segment(3);
      $this->key = "revenue-expenditure";
      $this->menu = Menu::where('code', '=', $this->key)->first();
      $this->page_system = "MAX_COUNT_CHANGE_PAGE";
+     $this->download = 'AccRevenueExpenditure.xlsx';
  }
 
   public function show(){   
@@ -44,7 +44,7 @@ class AccRevenueExpenditureController extends Controller
     $sys_page = AccSystems::get_systems($this->page_system);
     $paging = $count>$sys_page->value?1:0;   
     //$type_revenue = collect(DropDownListResource::collection(AccRevenueExpenditureType::active()->get()));
-    return view('acc.revenue_expenditure',['paging' => $paging, 'key' => $this->key ]);
+    return view('acc.'.str_replace("-", "_", $this->key),['paging' => $paging, 'key' => $this->key ]);
   }
 
   
@@ -271,7 +271,7 @@ class AccRevenueExpenditureController extends Controller
  }
 
  public function DownloadExcel(){
-   return Storage::download('public/downloadFile/AccRevenueExpenditure.xlsx');
+   return Storage::download('public/downloadFile/'.$this->download);
  }
 
  public function import(Request $request) {
@@ -280,6 +280,7 @@ class AccRevenueExpenditureController extends Controller
     DB::connection(env('CONNECTION_DB_ACC'))->beginTransaction();
    $permission = $request->session()->get('per');
    if($permission['a'] && $request->hasFile('file')){
+     if($request->file->getClientOriginalName() == $this->download){
      //Check
      $request->validate([
          'file' => 'required|mimeTypes:'.
@@ -308,6 +309,9 @@ class AccRevenueExpenditureController extends Controller
      DB::connection(env('CONNECTION_DB_ACC'))->commit();
      broadcast(new \App\Events\DataSendCollection($merged));
      return response()->json(['status'=>true,'message'=> trans('messages.success_import')]);
+     }else{
+      return response()->json(['status'=>false,'message'=> trans('messages.incorrect_file')]);
+    } 
      }else{
        return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
      }
