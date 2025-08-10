@@ -35,7 +35,7 @@
 
 @section('content_add')
 <div class="uk-width-medium-4-4 search-table-outter">
-  @include('action.content_1',['voucher'=>$voucher])
+  @include('action.content_1',['voucher'=>$voucher,'menu'=>$menu])
 </div>
 @endsection
 
@@ -155,7 +155,7 @@
 
 
         Ermis.columns    = [{"field" :"id", hidden : true},
-                            { "field" : "accounted_fast","title" :"@lang('acc_voucher.accounted_fast')","url" : "{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.accounted-fast')}}" ,editor: ItemsReadDropDownEditor , "select" : "OnchangeCancel" ,template : "#=getUrlAjaxItemName(accounted_fast,'accounted_fast')#","width" : "150px" ,"set" : "5" },
+                            { "field" : "accounted_fast","title" :"@lang('acc_voucher.accounted_fast')","url" : "{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.accounted-fast').'?pro='.$menu}}" ,editor: ItemsReadDropDownEditor , "select" : "OnchangeCancel" ,template : "#=getUrlAjaxItemName(accounted_fast,'accounted_fast')#","width" : "150px" ,"set" : "5" },
                             { "field" : "description","title" : "@lang('acc_voucher.description')" ,"width" : "200px" ,aggregates: ['count'], footerTemplate: "<p>@lang('acc_voucher.total_count'): #=count#</p>","set" : "6"  },
                             { "field" : "debit","title" :"@lang('acc_voucher.debt_account')" ,"url" : "{!!route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.account-voucher-filter').'?menu='.$menu.'&type=1&option=true'!!}",editor: ItemsReadDropDownEditor , "select" : "OnchangeItem" ,template : "#=getUrlAjaxItemName(debit,'debit')#" ,"width" : "150px" ,"set" : "2" , "key" :true },
                             { "field" : "credit","title" :"@lang('acc_voucher.credit_account')" ,"url" : "{!!route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.account-voucher-filter').'?menu='.$menu.'&type=2&option=true'!!}",editor: ItemsReadDropDownEditor , "select" : "OnchangeItem" ,template : "#=getUrlAjaxItemName(credit,'credit')#" ,"width" : "150px","set" : "2" , "key" :true},

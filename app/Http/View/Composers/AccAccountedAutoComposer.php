@@ -4,9 +4,8 @@ namespace App\Http\View\Composers;
 
 use Illuminate\View\View;
 use App\Http\Model\AccAccountedAuto;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
-use App\Http\Resources\DropDownListResource;
+use App\Http\Resources\AccountAutoDropDownListResource;
 
 class AccAccountedAutoComposer
 {
@@ -26,7 +25,7 @@ class AccAccountedAutoComposer
     public function __construct(Request $request)
     {
         // Dependencies automatically resolved by service container...
-        $data = DropDownListResource::collection(AccAccountedAuto::active()->get());
+        $data = AccountAutoDropDownListResource::collection(AccAccountedAuto::active()->get());
         $this->data = $data;
     }
 

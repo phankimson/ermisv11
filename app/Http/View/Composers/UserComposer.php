@@ -26,7 +26,7 @@ class UserComposer
         // Dependencies automatically resolved by service container...
         $user = Auth::user();
         $t = User::get_company($user->company_default,1);
-        $this->user = $t;
+        $this->users = $t;
     }
 
     /**
@@ -37,6 +37,6 @@ class UserComposer
      */
     public function compose(View $view)
     {
-        $view->with('users_com',$this->user);
+        $view->with('users_com',$this->users);
     }
 }
