@@ -107,7 +107,7 @@ class FirstSheetValImport implements ToModel, HasReferencesToOtherSheets, WithHe
       $voucher_date = $row['voucher_date'] ? Convert::DateExcel($row['voucher_date']) : date("Y-m-d");
       $accounting_date = $row['accounting_date'] ? Convert::DateExcel($row['accounting_date']) : date("Y-m-d");
        $type = $this->type; //Payment bank
-        if($code_check == null){      
+         if($code_check == null && $row['voucher']){        
           $arr = [
             'id'     => Str::uuid()->toString(),
             'type'   => $type,

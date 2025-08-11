@@ -81,7 +81,7 @@ class AccCashReceiptImport implements  WithHeadingRow, WithMultipleSheets
     }   
         public function getCurrencyDefault()
     {
-       $default = AccSystems::get_systems("CURRENCY_DEFAULT");
+       $default = AccSystems::get_systems("CURRENCY_DEFAULT");  
        $currency_default = AccCurrency::get_code($default->value);
        return $currency_default;
     } 
@@ -100,15 +100,15 @@ class FirstSheetValImport implements ToModel, HasReferencesToOtherSheets, WithHe
 
     public function model(array $row)
     {
-      $data = new AccCashReceiptImport($this->type,$this->group);
+      $data = new AccCashReceiptImport($this->type,$this->group); 
       $currency_default = $data->getCurrencyDefault();
       $subject = AccObject::WhereDefault('code',$row['subject'])->first();
       $code_check = AccGeneral::WhereCheck('voucher',$row['voucher'],'id',null)->first();
       $currency = AccCurrency::WhereDefault('code',$row['currency'])->first(); 
       $voucher_date = $row['voucher_date'] ? Convert::DateExcel($row['voucher_date']) : date("Y-m-d");
       $accounting_date = $row['accounting_date'] ? Convert::DateExcel($row['accounting_date']) : date("Y-m-d");
-       $type = $this->type; //Payment Cash
-        if($code_check == null){      
+      $type = $this->type; //Payment Cash
+        if($code_check == null && $row['voucher']){         
           $arr = [
             'id'     => Str::uuid()->toString(),
             'type'   => $type,
@@ -143,11 +143,11 @@ class FirstSheetValImport implements ToModel, HasReferencesToOtherSheets, WithHe
         
     public function headingRow(): int
     {
-        return env("HEADING_ROW",1);
+        return env("HEADING_ROW",2);
     }
       public function startRow(): int
     {
-        return env("START_ROW",2);
+        return env("START_ROW",3);
     }
 }
 

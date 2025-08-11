@@ -457,7 +457,6 @@ class AccCashReceiptsGeneralController extends Controller
               'application/vnd.ms-excel',
     ]);
       $rs = json_decode($request->data);
-
       $file = $request->file;
       // Import dữ liệu
       $import = new AccCashReceiptImport($this->menu->id,$this->group);
