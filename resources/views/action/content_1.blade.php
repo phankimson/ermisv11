@@ -65,9 +65,7 @@
               <select class="droplist large xxlarge no_copy_value" id="accounted_auto" name="accounted_auto">
                       <option readonly selected value="0">--Select--</option>
                     @foreach($accounted_auto as $c)
-                    @if($c->profession == $menu)
                     <option value="{{ $c->id }}">{{ $c->code }} - {{ $c->name }}</option>
-                    @endif
                     @endforeach
               </select>
             </td>
