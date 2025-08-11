@@ -67,7 +67,6 @@
                     @foreach($accounted_auto as $c)
                     @if($c->profession == $menu)
                     <option value="{{ $c->id }}">{{ $c->code }} - {{ $c->name }}</option>
-                    @else
                     @endif
                     @endforeach
               </select>

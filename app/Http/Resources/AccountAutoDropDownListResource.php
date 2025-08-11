@@ -19,7 +19,7 @@ class AccountAutoDropDownListResource extends JsonResource
             'code' => $this->code,
             'name' => $this->name,
             'name_en' => $this->name_en,
-            'pro' => $this->profession,
+            'profession' => $this->profession,
         ];
     }
 }
