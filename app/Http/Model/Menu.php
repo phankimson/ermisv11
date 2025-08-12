@@ -22,7 +22,7 @@ class Menu extends Model
       }
 
       static public function get_menu_by_type($type,$parent_id) {
-        $result = Menu::where('type',$type)->where('parent_id',$parent_id)->where('active',1)->with('sub_menu')->orderBy('position', 'asc')->get();
+        $result = Menu::where('type',$type)->where('parent_id',$parent_id)->where('active',1)->orderBy('position', 'asc')->with('sub_menu')->get();
         return $result;
       }
 
@@ -77,10 +77,10 @@ class Menu extends Model
       }
 
       public function sub_menu(){
-      return $this->hasMany(Menu::class, 'parent_id')->with('sub_menu1')->where('active',1);
+      return $this->hasMany(Menu::class, 'parent_id')->with('sub_menu1')->orderBy('position', 'asc')->where('active',1);
     }
       public function sub_menu1(){
-      return $this->hasMany(Menu::class, 'parent_id')->where('active',1);
+      return $this->hasMany(Menu::class, 'parent_id')->orderBy('position', 'asc')->where('active',1);
     }
 
     public function parent(){

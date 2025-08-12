@@ -1203,6 +1203,30 @@ Route::group([
   Route::post('/bank-transfer-voucher-delete', 'delete' )->name('-delete'); 
 
   });  
+
+  // Entry General
+  Route::group([
+    'as' => 'entry-general',
+    'controller' => AccEntryGeneralController::class
+  ],function () {
+  Route::get('/entry-general', 'show' )->name('');
+  Route::post('/entry-general-get','find' )->name('-find');
+  Route::post('/entry-general-unwrite','unwrite' )->name('-unwrite');
+  Route::post('/entry-general-write','write' )->name('-write');
+  Route::post('/entry-general-revoucher', 'revoucher' )->name('-revoucher');
+  Route::post('/entry-general-start-voucher', 'start_voucher' )->name('-start-voucher');
+  Route::post('/entry-general-change-voucher', 'change_voucher' )->name('-change-voucher');
+  Route::get('/entry-general-DownloadExcel', 'DownloadExcel' )->name('-DownloadExcel');
+  Route::any('/entry-general-import', 'import')->name('-import');
+  Route::any('/entry-general-delete', 'delete')->name('-delete');
+
+  // Ghi , ko ghi , tìm chứng từ trang
+  Route::post('/entry-voucher-unwrite','unwrite' )->name('-unwrite');
+  Route::post('/entry-voucher-write','write' )->name('-write');
+  Route::post('/entry-voucher-find', 'find' )->name('-find');
+  Route::post('/entry-voucher-delete', 'delete' )->name('-delete'); 
+
+  });  
   
 
   // Receipt Cash Detail
