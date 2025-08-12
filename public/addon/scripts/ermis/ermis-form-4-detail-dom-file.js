@@ -46,10 +46,10 @@ var Ermis = function() {
     }
 
     var onSave = function(data){  
-        var grid = this;
-            setTimeout(function() {
-                grid.refresh();
-            });        
+        //var grid = this;
+        //    setTimeout(function() {
+                //grid.refresh();
+        //    });        
     }
 
     var onSaveVat = function(data){        
@@ -327,7 +327,7 @@ var Ermis = function() {
             }
             // finally, refresh the grid to show the changes
             // Không bỏ refresh được
-            if(e.action === "itemchange" && (e.field === "amount" || e.field === "vat_type" || e.field === "tax_amount_rate" || e.field === "tax_rate" ||  e.field === "tax_amount" )){
+            if(e.action === "itemchange" && (e.field === "amount" || e.field === "vat_type" || e.field === "tax_amount_rate"|| e.field === "tax" || e.field === "tax_rate" ||  e.field === "tax_amount" )){
                     gridVat.refresh();
             }            
         });
@@ -335,6 +335,25 @@ var Ermis = function() {
         jQuery("input[name='description']").on("change", function(e) {
             AddChangeDescriptionResult(jQuery(e.target).val());
         });
+    }
+
+    var initKendoGridChange = function() {
+        var grid = $kGrid.data("kendoGrid");
+        grid.dataSource.bind("change", function(e) {
+            // checks to see if the action is a change and the column being changed is what is expected
+            var item = e.items[0];
+            if (e.action === "itemchange" && (e.field === "amount" || e.field === "rate")) {
+                // here you can access model items using e.items[0].modelName;
+                item.rate == 0 ? item.set("amount_rate",0) : item.set("amount_rate",item.amount * item.rate);
+            }else if(e.action === "itemchange" && e.field === "amount_rate" ){
+                item.set("amount_rate",item.amount * item.rate);
+            }   
+            if(e.action === "itemchange" && (e.field === "amount_rate" || e.field === "rate" || e.field === "amount" )){
+                    grid.refresh();
+            }             
+        });
+         // finally, refresh the grid to show the changes
+         //grid.refresh();
     }
 
     var initKendoGridBarcode = function() {
@@ -429,23 +448,6 @@ var Ermis = function() {
         });
 
     };
-
-
-    var initKendoGridChange = function() {
-        var grid = $kGrid.data("kendoGrid");
-        grid.dataSource.bind("change", function(e) {
-            // checks to see if the action is a change and the column being changed is what is expected
-            var item = e.items[0];
-            if (e.action === "itemchange" && (e.field === "amount" || e.field === "rate")) {
-                // here you can access model items using e.items[0].modelName;
-                item.rate == 0 ? item.set("amount_rate",0) : item.set("amount_rate",item.amount * item.rate);
-            }else if(e.action === "itemchange" && e.field === "amount_rate" ){
-                item.set("amount_rate",item.amount * item.rate);
-            }           
-        });
-         // finally, refresh the grid to show the changes
-         //grid.refresh();
-    }
 
     var initKendoUiContextMenuGrid = function() {
         jQuery("#context-menu-grid").kendoContextMenu({

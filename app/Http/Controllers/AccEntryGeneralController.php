@@ -19,7 +19,7 @@ use App\Http\Model\Error;
 use App\Http\Resources\BankGeneralResource;
 use App\Http\Resources\TypeGeneralResource;
 use App\Http\Resources\TypeListGeneralResource;
-use App\Http\Model\Imports\AccEntryGeneralImport;
+use App\Http\Model\Imports\AccEntryImport;
 use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
@@ -375,7 +375,7 @@ class AccEntryGeneralController extends Controller
 
       $file = $request->file;
       // Import dữ liệu
-      $import = new AccEntryGeneralImport($this->menu->id,$this->group);
+      $import = new AccEntryImport($this->menu->id,$this->group);
       Excel::import($import, $file);
       // Lấy lại dữ liệu
       //$array = AccGeneral::with('detail','tax')->get();

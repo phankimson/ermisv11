@@ -158,12 +158,12 @@
                          </g>
                         </svg>
                             <dl>
-                                <dd><a class="text-center lazyload" data-uk-tooltip title="@lang('acc_index.receipt_bank_voucher')" href="{{url('')}}"><img src="{{url('addon/img/icon/notepad.png')}}" /></a><p>@lang('acc_index.receipt_bank_voucher')</p></dd>
-                                <dd><a class="text-center lazyload" data-uk-tooltip title="@lang('acc_index.payment_bank_voucher')" href="{{url('')}}"><img src="{{url('addon/img/icon/notes.png')}}" /></a><p>@lang('acc_index.payment_bank_voucher')</p></dd>
+                                <dd><a class="text-center lazyload" data-uk-tooltip title="@lang('acc_index.receipt_bank_voucher')" href="{{url($lang.'/acc/bank-receipts-general')}}"><img src="{{url('addon/img/icon/notepad.png')}}" /></a><p>@lang('acc_index.receipt_bank_voucher')</p></dd>
+                                <dd><a class="text-center lazyload" data-uk-tooltip title="@lang('acc_index.payment_bank_voucher')" href="{{url($lang.'/acc/bank-payment-general')}}"><img src="{{url('addon/img/icon/notes.png')}}" /></a><p>@lang('acc_index.payment_bank_voucher')</p></dd>
                                 <dd><a class="text-center lazyload" data-uk-tooltip title="@lang('acc_index.report_bank')" href="{{url('')}}"><img src="{{url('addon/img/icon/report.png')}}" /></a><p>@lang('acc_index.report_bank')</p></dd>
                                 <dd><a class="text-center lazyload" data-uk-tooltip title="@lang('acc_index.report_general_bank')" href="{{url('')}}x"><img src="{{url('addon/img/icon/notebook.png')}}" /></a><p>@lang('acc_index.report_general_bank')</p></dd>
-                                <dd><a class="text-center lazyload" data-uk-tooltip title="@lang('acc_index.bank')" href="{{url('')}}"><img src="{{url('addon/img/icon/checklist.png')}}" /></a><p>@lang('acc_index.bank')</p></dd>
-                                <dd><a class="text-center lazyload" data-uk-tooltip title="@lang('acc_index.bank_account')" href="{{url('')}}"><img src="{{url('addon/img/icon/list.png')}}" /></a><p>@lang('acc_index.bank_account')</p></dd>
+                                <dd><a class="text-center lazyload" data-uk-tooltip title="@lang('acc_index.bank')" href="{{url($lang.'/acc/bank')}}"><img src="{{url('addon/img/icon/checklist.png')}}" /></a><p>@lang('acc_index.bank')</p></dd>
+                                <dd><a class="text-center lazyload" data-uk-tooltip title="@lang('acc_index.bank_account')" href="{{url($lang.'/acc/bank-account')}}"><img src="{{url('addon/img/icon/list.png')}}" /></a><p>@lang('acc_index.bank_account')</p></dd>
                             </dl>
 
                         </div>
@@ -214,12 +214,12 @@
                            </g>
                           </svg>
                             <dl>
-                                <dd><a class="text-center lazyload" data-uk-tooltip title="@lang('acc_index.receipt_cash_voucher')" href="{{url('')}}"><img src="{{url('addon/img/icon/atm.png')}}" /></a><p>@lang('acc_index.receipt_cash_voucher')</p></dd>
-                                <dd><a class="text-center lazyload" data-uk-tooltip title="@lang('acc_index.payment_cash_voucher')" href="{{url('')}}"><img src="{{url('addon/img/icon/cash.png')}}" /></a><p>@lang('acc_index.payment_cash_voucher')</p></dd>
+                                <dd><a class="text-center lazyload" data-uk-tooltip title="@lang('acc_index.receipt_cash_voucher')" href="{{url($lang.'/acc/cash-receipts-general')}}"><img src="{{url('addon/img/icon/atm.png')}}" /></a><p>@lang('acc_index.receipt_cash_voucher')</p></dd>
+                                <dd><a class="text-center lazyload" data-uk-tooltip title="@lang('acc_index.payment_cash_voucher')" href="{{url($lang.'/acc/cash-payment-general')}}"><img src="{{url('addon/img/icon/cash.png')}}" /></a><p>@lang('acc_index.payment_cash_voucher')</p></dd>
                                 <dd><a class="text-center lazyload" data-uk-tooltip title="@lang('acc_index.report_cash')" href="{{url('')}}"><img src="{{url('addon/img/icon/financial-statement.png')}}" /></a><p>@lang('acc_index.report_cash')</p></dd>
                                 <dd><a class="text-center lazyload" data-uk-tooltip title="@lang('acc_index.report_cash_general')" href="{{url('')}}"><img src="{{url('addon/img/icon/paycheck.png')}}" /></a><p>@lang('acc_index.report_cash_general')</p></dd>
-                                <dd><a class="text-center lazyload" data-uk-tooltip title="@lang('acc_index.department')" href="{{url('')}}"><img src="{{url('addon/img/icon/teammate.png')}}" /></a><p>@lang('acc_index.department')</p></dd>
-                                <dd><a class="text-center lazyload" data-uk-tooltip title="@lang('acc_index.employee')" href="{{url('')}}"><img src="{{url('addon/img/icon/woman.png')}}" /></a><p>@lang('acc_index.employee')</p></dd>
+                                <dd><a class="text-center lazyload" data-uk-tooltip title="@lang('acc_index.department')" href="{{url($lang.'/acc/department')}}"><img src="{{url('addon/img/icon/teammate.png')}}" /></a><p>@lang('acc_index.department')</p></dd>
+                                <dd><a class="text-center lazyload" data-uk-tooltip title="@lang('acc_index.employee')" href="{{url($lang.'/acc/object')}}"><img src="{{url('addon/img/icon/woman.png')}}" /></a><p>@lang('acc_index.employee')</p></dd>
                             </dl>
 
                         </div>

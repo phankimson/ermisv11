@@ -1290,6 +1290,18 @@ Route::group([
   Route::any('/bank-transfer-voucher-import', 'import')->name('-import');
   });
 
+   // Entry General Detail
+  Route::group([
+    'as' => 'entry-general-voucher',
+    'controller' => AccEntryGeneralVoucherController::class
+  ],function () {
+  Route::get('/entry-general-voucher', 'show' )->name('');
+  Route::post('/entry-general-voucher-save', 'save' )->name('-save');
+  Route::post('/entry-general-voucher-bind', 'bind' )->name('-bind');
+  Route::get('/entry-general-voucher-DownloadExcel', 'DownloadExcel' )->name('-DownloadExcel');
+  Route::any('/entry-general-voucher-import', 'import')->name('-import');
+  });
+
   // Receipt Cash Detail Voucher
   Route::group([
     'as' => 'cash-receipts-voucher',
@@ -1381,6 +1393,20 @@ Route::group([
   Route::post('/bank-transfer-voucher-load-voucher-change', 'load_voucher_change' )->name('-load-voucher-change');
   });
 
+  // Entry General Voucher
+  Route::group([
+    'as' => 'entry-general-voucher',
+    'controller' => AccVoucherController::class
+  ],function () {
+  Route::post('/entry-general-voucher-get', 'get' )->name('-get');
+  Route::post('/entry-general-voucher-auto', 'auto' )->name('-auto');
+  Route::post('/entry-general-voucher-ai', 'ai' )->name('-ai');
+  Route::post('/entry-general-voucher-currency', 'currency' )->name('-currency');
+  Route::post('/entry-general-voucher-reference', 'reference' )->name('-reference');
+  Route::post('/entry-general-voucher-voucher-change', 'voucher_change' )->name('-voucher-change');
+  Route::post('/entry-general-voucher-load-voucher-change', 'load_voucher_change' )->name('-load-voucher-change');
+  });
+
   // Receipt Cash Detail By Invoice
 Route::group([
   'as' => 'cash-receipts-voucher-by-invoice',
@@ -1427,7 +1453,7 @@ Route::post('/bank-payment-voucher-by-invoice-save', 'save' )->name('-save');
 Route::post('/bank-payment-voucher-by-invoice-bind', 'bind' )->name('-bind');
 });
 
-// Bank reconciliation auto
+// Bank compare auto
 Route::group([
   'as' => 'bank-compare',
   'controller' => AccBankCompareController::class

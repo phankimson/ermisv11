@@ -54,10 +54,10 @@ var Ermis = function() {
     
 
     var onSave = function(data){  
-        var grid = this;
-            setTimeout(function() {
-                grid.refresh();
-            });        
+       // var grid = this;
+       //     setTimeout(function() {
+                //grid.refresh();
+       //     });        
     }
 
     var initLoadData = function(dataId) {
@@ -282,10 +282,13 @@ var Ermis = function() {
             }else if(e.action === "itemchange" && e.field === "payment_rate" ){
                 // here you can access model items using e.items[0].modelName;
                 item.set("payment_rate", item.payment * item.rate);
-            }           
+            }         
+            
+             if(e.action === "itemchange" && (e.field === "payment" || e.field === "payment_rate")){
+                    grid.refresh();
+            }  
         });
-         // finally, refresh the grid to show the changes
-         //grid.refresh();
+
     }
 
 
