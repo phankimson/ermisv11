@@ -188,7 +188,7 @@ class SecondSheetImport implements ToModel, HasReferencesToOtherSheets, WithHead
           'credit'    => $row['credit'],
           'credit_id'    => $credit == null ? 0 : $credit->id,
           'currency' => $currency == null ? $currency_default->id : $currency->id,
-          'bank_account' => $bank_account->id,
+          'bank_account' => $bank_account == null ? 0 : $bank_account->id,     
           'amount'    => $row['amount'],
           'rate'    => $row['rate'],
           'amount_rate'    => $row['amount_rate'],  
