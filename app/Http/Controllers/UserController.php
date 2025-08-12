@@ -90,9 +90,9 @@ class UserController extends Controller
          'type' => 9, // Add : 2 , Edit : 3 , Delete : 4
          'user_id' => Auth::id(),
          'menu_id' => 0,
-         'error' => $e->getMessage(),
+         'error' => $e->getMessage().' - Line '.$e->getLine(),
          'check' => 0 ]);
-       return response()->json(['status'=>false,'message'=> trans('messages.error').' '.$e->getMessage()]);
+       return response()->json(['status'=>false,'message'=> trans('messages.error').' '.$e->getMessage().' - Line '.$e->getLine()]);
      }
    }
 
@@ -172,9 +172,9 @@ class UserController extends Controller
         'type' => 2, // Add : 2 , Edit : 3 , Delete : 4
         'user_id' => Auth::id(),
         'menu_id' => 0,
-        'error' => $e->getMessage(),
+        'error' => $e->getMessage().' - Line '.$e->getLine(),
         'check' => 0 ]);
-      return response()->json(['status'=>false,'message'=> trans('messages.register_fail').' '.$e->getMessage()]);
+      return response()->json(['status'=>false,'message'=> trans('messages.register_fail').' '.$e->getMessage().' - Line '.$e->getLine()]);
     }
   }
 
@@ -211,9 +211,9 @@ class UserController extends Controller
             'type' => 9, // Add : 2 , Edit : 3 , Delete : 4
             'user_id' => Auth::id(),
             'menu_id' => 0,
-            'error' => $e->getMessage(),
+            'error' => $e->getMessage().' - Line '.$e->getLine(),
             'check' => 0 ]);
-          return response()->json(['status'=>false,'message'=> trans('messages.error').' '.$e->getMessage()]);
+          return response()->json(['status'=>false,'message'=> trans('messages.error').' '.$e->getMessage().' - Line '.$e->getLine()]);
         }
     }
 
@@ -245,9 +245,9 @@ class UserController extends Controller
           'type' => 3, // Add : 2 , Edit : 3 , Delete : 4
           'user_id' => Auth::id(),
           'menu_id' => 0,
-          'error' => $e->getMessage(),
+          'error' => $e->getMessage().' - Line '.$e->getLine(),
           'check' => 0 ]);
-        return response()->json(['status'=>false,'message'=> trans('messages.error').' '.$e->getMessage()]);
+        return response()->json(['status'=>false,'message'=> trans('messages.error').' '.$e->getMessage().' - Line '.$e->getLine()]);
       }
     }
 
@@ -275,9 +275,9 @@ class UserController extends Controller
        'type' => 3, // Add : 2 , Edit : 3 , Delete : 4
        'user_id' => Auth::id(),
        'menu_id' => 0,
-       'error' => $e->getMessage(),
+       'error' => $e->getMessage().' - Line '.$e->getLine(),
        'check' => 0 ]);
-     return response()->json(['status'=>false,'message'=> trans('messages.error').' '.$e->getMessage()]);
+     return response()->json(['status'=>false,'message'=> trans('messages.error').' '.$e->getMessage().' - Line '.$e->getLine()]);
    }
   }
 
@@ -328,9 +328,9 @@ class UserController extends Controller
           'type' => 3, // Add : 2 , Edit : 3 , Delete : 4
           'user_id' => Auth::id(),
           'menu_id' => 0,
-          'error' => $e->getMessage(),
+          'error' => $e->getMessage().' - Line '.$e->getLine(),
           'check' => 0 ]);
-        return response()->json(['status'=>false,'message'=> trans('messages.error').' '.$e->getMessage()]);
+        return response()->json(['status'=>false,'message'=> trans('messages.error').' '.$e->getMessage().' - Line '.$e->getLine()]);
       }
  }
 
@@ -351,9 +351,9 @@ class UserController extends Controller
        'type' => 9, // Add : 2 , Edit : 3 , Delete : 4
        'user_id' => Auth::id(),
        'menu_id' => 0,
-       'error' => $e->getMessage(),
+       'error' => $e->getMessage().' - Line '.$e->getLine(),
        'check' => 0 ]);
-     return response()->json(['status'=>false,'message'=> trans('messages.error') . $e->getMessage()]);
+     return response()->json(['status'=>false,'message'=> trans('messages.error') . $e->getMessage().' - Line '.$e->getLine()]);
    }
  }
 

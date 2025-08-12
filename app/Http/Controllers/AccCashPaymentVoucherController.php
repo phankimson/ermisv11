@@ -400,10 +400,10 @@ class AccCashPaymentVoucherController extends Controller
          'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
          'user_id' => Auth::id(),
          'menu_id' => $this->menu->id,
-         'error' => $e->getMessage(),
+         'error' => $e->getMessage().' - Line '.$e->getLine(),
          'url'  => $this->url,
          'check' => 0 ]);
-       return response()->json(['status'=>false,'message'=> trans('messages.error').' '.$e->getMessage()]);
+       return response()->json(['status'=>false,'message'=> trans('messages.error').' '.$e->getMessage().' - Line '.$e->getLine()]);
      }
   }
 
@@ -426,10 +426,10 @@ class AccCashPaymentVoucherController extends Controller
           'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
           'user_id' => Auth::id(),
           'menu_id' => $this->menu->id,
-          'error' => $e->getMessage(),
+          'error' => $e->getMessage().' - Line '.$e->getLine(),
           'url'  => $this->url,
           'check' => 0 ]);
-        return response()->json(['status'=>false,'message'=> trans('messages.error').' '.$e->getMessage()]);
+        return response()->json(['status'=>false,'message'=> trans('messages.error').' '.$e->getMessage().' - Line '.$e->getLine()]);
       }
   }
 
@@ -475,10 +475,10 @@ class AccCashPaymentVoucherController extends Controller
         'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
         'user_id' => Auth::id(),
         'menu_id' => $this->menu->id,
-        'error' => $e->getMessage(),
+        'error' => $e->getMessage().' - Line '.$e->getLine(),
         'url'  => $this->url,
         'check' => 0 ]);
-      return response()->json(['status'=>false,'message'=> trans('messages.failed_import').' '.$e->getMessage()]);
+      return response()->json(['status'=>false,'message'=> trans('messages.failed_import').' '.$e->getMessage().' - Line '.$e->getLine()]);
     }
   }
 
