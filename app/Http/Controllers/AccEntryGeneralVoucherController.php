@@ -145,8 +145,6 @@ class AccEntryGeneralVoucherController extends Controller
           $general->description = $arr->description;
           $general->voucher_date = $arr->voucher_date;
           $general->accounting_date = $arr->accounting_date;
-          $general->traders = $arr->traders;
-          $general->subject = $arr->subject_id;
           $general->reference = $arr->reference;
           $general->total_amount = $arr->total_amount;
           $general->total_amount_rate = $arr->total_amount_rate;
@@ -197,8 +195,10 @@ class AccEntryGeneralVoucherController extends Controller
              $detail->rate = $d->rate;
              $detail->amount_rate = $d->amount * $d->rate;
              $detail->accounted_fast = $d->accounted_fast->value;  // Đổi từ id value dạng read
-             $detail->bank_account_debit = $d->bank_account_debit->value;  // Đổi từ id value dạng read   
-             $detail->bank_account_credit = $d->bank_account_credit->value;  // Đổi từ id value dạng read             
+             $detail->subject_id_debit = $d->subject_debit->value;  // Đổi từ id value dạng read   
+             $detail->subject_name_debit = $d->subject_debit->text;  // Đổi từ id value dạng read   
+             $detail->subject_id_credit = $d->subject_credit->value;  // Đổi từ id value dạng read
+             $detail->subject_name_credit = $d->subject_credit->text;  // Đổi từ id value dạng read                  
              $detail->active = 1;
              $detail->status = 1;
              $detail->save();
