@@ -423,7 +423,11 @@ var initValidationGridColumnKey = function(data,arr_column){
               jQuery.each(d, function (m, n) {
                 if(m != "id" && m != "code" && m != "name"&& m != "value" && m != "text"){
                   if(m == 'object'){
-                    m = jQuery("input[data-get='object.code']").attr("data-find");
+                    if(col.field_check){
+                       m = col.field_check;
+                    }else{
+                       m = jQuery("input[data-get='object.code']").attr("data-find");
+                    }                   
                   }
                   var v = findObjectByKey(arr_column,'field', m);
                   if(v != null ){
@@ -458,9 +462,11 @@ var initValidationGridColumnKey = function(data,arr_column){
 
 var initShowValidationGrid = function(data,crit_arr,$kGrid){
   var grid = $kGrid.data("kendoGrid");
+  grid.tbody.find("td").removeClass('alert-danger');
   var columns = grid.options.columns;
   var mes = arrayColumn(crit_arr, "mes");
   jQuery.each(data, function (l, n) {
+     var row = grid.tbody.find("tr[data-uid='" + data[l].uid + "']");
       jQuery.each(crit_arr, function (k, col) {
         if(col.arr.includes(l) == true){
           var cell = -1;
@@ -468,8 +474,7 @@ var initShowValidationGrid = function(data,crit_arr,$kGrid){
             if (columns[i].field == col.key) {
                        cell = i;
             }
-          }
-          var row = grid.tbody.find("tr[data-uid='" + data[l].uid + "']");
+          }         
           row.children().eq(cell).addClass('alert-danger');
         }
       });

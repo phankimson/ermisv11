@@ -2,7 +2,11 @@
 <span>@lang('global.name')</span>
     <select class="droplist large" name="filter_voucher">
       @foreach($voucher_list as $x)
+      @if($x->code == $code)
+      <option selected value="{{ $x->id }}">{{ $x->code }} - {{ $lang == 'vi'? $x->name : $x->name_en }}</option>
+      @else
       <option value="{{ $x->id }}">{{ $x->code }} - {{ $lang == 'vi'? $x->name : $x->name_en }}</option>
+      @endif
       @endforeach
     </select>
 
