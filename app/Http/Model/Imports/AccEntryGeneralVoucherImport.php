@@ -10,12 +10,10 @@ use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 use Maatwebsite\Excel\Concerns\HasReferencesToOtherSheets;
 use Maatwebsite\Excel\Concerns\WithStartRow;
 use App\Http\Model\AccAccountSystems;
-use App\Http\Model\AccBankAccount;
+use App\Http\Model\AccObject;
 use App\Http\Model\AccSystems;
 use App\Http\Model\AccCurrency;
-use App\Http\Model\AccSettingVoucher;
 use App\Http\Resources\LangDropDownResource;
-use App\Http\Resources\BankDropDownResource;
 use App\Http\Resources\DefaultDropDownResource;
 
 class AccEntryGeneralVoucherImport implements  WithHeadingRow, WithMultipleSheets
@@ -56,11 +54,6 @@ class AccEntryGeneralVoucherImport implements  WithHeadingRow, WithMultipleSheet
        return $currency_default;
     } 
 
-     public function getSettingDefault()
-    {
-       $setting_voucher = AccSettingVoucher::get_menu($this->menu->id);
-       return $setting_voucher;
-    } 
 
   /**
     * @param array $row
@@ -81,20 +74,10 @@ class FirstSheetCritImport implements ToModel, HasReferencesToOtherSheets, WithH
       if($row['description'] && $row['no']){
       $data = new AccBankTransferVoucherImport($this->menu);
       $currency_default = $data->getCurrencyDefault();
-      $setting_default = $data->getSettingDefault();
-        if(substr($row['debit'],0,3) === "112"){
-        $debit = AccAccountSystems::WhereDefault('code',$row['debit'])->first();
-        }else{
-          $debit = AccAccountSystems::find($setting_default->debit);
-        }
-        if(substr($row['debit'],0,3) === "112"){
-        $credit = AccAccountSystems::WhereDefault('code',$row['credit'])->first(); 
-        }else{
-        $credit = AccAccountSystems::find($setting_default->credit);
-        }
-
-      $bank_account_debit = AccBankAccount::WhereDefault('bank_account_debit',$row['bank_account_debit'])->first();  
-      $bank_account_credit = AccBankAccount::WhereDefault('bank_account_credit',$row['bank_account_credit'])->first();
+      $debit = AccAccountSystems::WhereDefault('code',$row['debit'])->first();
+      $credit = AccAccountSystems::WhereDefault('code',$row['credit'])->first();      
+      $subject_debit = AccObject::WhereDefault('code',$row['subject_debit'])->first();  
+      $subject_credit = AccObject::WhereDefault('code',$row['subject_credit'])->first();
       $row['amount'] = $row['amount'] == null ? 0 : $row['amount'];
       $row['rate'] = $row['rate'] == null ? 0 : $row['rate'];
       $arr = [
@@ -106,8 +89,8 @@ class FirstSheetCritImport implements ToModel, HasReferencesToOtherSheets, WithH
         'rate'    => $row['rate'],
         'amount_rate'    => $row['amount_rate']== null ? $row['amount']*$row['rate'] : $row['amount_rate'],    
         'accounted_fast'    => DefaultDropDownResource::make(null),       
-        'bank_account_debit'    => $bank_account_debit ? BankDropDownResource::make($bank_account_debit) : DefaultDropDownResource::make(""),
-        'bank_account_credit'    => $bank_account_credit ? BankDropDownResource::make($bank_account_credit) : DefaultDropDownResource::make(""),     
+        'subject_debit'    => $subject_debit ? LangDropDownResource::make($subject_debit) : DefaultDropDownResource::make(""),    
+        'subject_credit'    => $subject_credit ? LangDropDownResource::make($subject_credit) : DefaultDropDownResource::make(""),                      
       ];
       $data = new AccEntryGeneralVoucherImport($this->menu);
       $data->setDataFirst($arr);

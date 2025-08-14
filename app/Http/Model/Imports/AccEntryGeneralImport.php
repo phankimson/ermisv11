@@ -95,7 +95,6 @@ class AccEntryGeneralImport implements WithMappedCells,ToModel
         'accounting_date'    => $row['accounting_date'],
         'currency'   => $currency?$currency->id:$currency_default->id,
         'rate'      =>$row['rate'],
-        'traders'    => $row['traders'],
       ]; 
  
       AccEntryGeneralImport::setData($arr);      

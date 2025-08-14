@@ -93,8 +93,8 @@ class FirstSheetCritImport implements ToModel, HasReferencesToOtherSheets, WithH
         $credit = AccAccountSystems::find($setting_default->credit);
         }
 
-      $bank_account_debit = AccBankAccount::WhereDefault('bank_account_debit',$row['bank_account_debit'])->first();  
-      $bank_account_credit = AccBankAccount::WhereDefault('bank_account_credit',$row['bank_account_credit'])->first();
+      $bank_account_debit = AccBankAccount::WhereDefault('bank_account',$row['bank_account_debit'])->first();  
+      $bank_account_credit = AccBankAccount::WhereDefault('bank_account',$row['bank_account_credit'])->first();
       $row['amount'] = $row['amount'] == null ? 0 : $row['amount'];
       $row['rate'] = $row['rate'] == null ? 0 : $row['rate'];
       $arr = [

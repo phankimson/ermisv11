@@ -470,7 +470,7 @@ class AccBankTransferGeneralController extends Controller
       foreach($data['crit'] as $item){
       // Lưu số tồn bên nợ
       if(substr($item['debit'],0,3) === '112'){   
-         $balance = AccCurrencyCheck::get_type_first($item['debit_id'],$item['currency'],$item['bank_account']);
+         $balance = AccCurrencyCheck::get_type_first($item['debit_id'],$item['currency'],$item['bank_account_debit']);
         if($balance){
               $balance->amount = $balance->amount + ($item['amount'] * $item['rate']);
               $balance->save();
@@ -478,14 +478,14 @@ class AccBankTransferGeneralController extends Controller
               $balance = new AccCurrencyCheck();
               $balance->type = $item['debit_id'];
               $balance->currency = $item['currency'];
-              $balance->bank_account = $item['bank_account'];
+              $balance->bank_account = $item['bank_account_debit'];
               $balance->amount = $item['amount'] * $item['rate'];
               $balance->save();
             }
       }
       // Lưu số tồn bên có
       if(substr($item['credit'],0,3) === '112'){                 
-              $balance = AccCurrencyCheck::get_type_first($item['credit_id'],$item['currency'],$item['bank_account']);
+              $balance = AccCurrencyCheck::get_type_first($item['credit_id'],$item['currency'],$item['bank_account_credit']);
               if($balance){
                 $balance->amount = $balance->amount - ($item['amount'] * $item['rate']);
                 $balance->save();
@@ -493,7 +493,7 @@ class AccBankTransferGeneralController extends Controller
                 $balance = new AccCurrencyCheck();
                 $balance->type = $item['credit_id'];
                 $balance->currency = $item['currency'];
-                $balance->bank_account = $item['bank_account'];
+                $balance->bank_account = $item['bank_account_credit'];
                 $balance->amount = 0 - ($item['amount'] * $item['rate']);
                 $balance->save();
               }                  

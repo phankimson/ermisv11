@@ -160,9 +160,9 @@ class SecondSheetImport implements ToModel, HasReferencesToOtherSheets, WithHead
         $general = AccGeneral::WhereDefault('voucher',$row['voucher'])->first();
         $debit = AccAccountSystems::WhereDefault('code',$row['debit'])->first();
         $credit = AccAccountSystems::WhereDefault('code',$row['credit'])->first();
-        $subject_credit = AccObject::WhereDefault('code',$row['subject'])->first();
         $department = AccDepartment::WhereDefault('code',$row['department'])->first();
-        $bank_account = AccBankAccount::WhereDefault('bank_account',$row['bank_account'])->first();
+        $bank_account_debit = AccBankAccount::WhereDefault('bank_account',$row['bank_account_debit'])->first();
+        $bank_account_credit = AccBankAccount::WhereDefault('bank_account',$row['bank_account_credit'])->first();
         $currency = AccCurrency::WhereDefault('code',$row['currency'])->first();
         $arr = [
           'id'     => Str::uuid()->toString(),
@@ -170,14 +170,13 @@ class SecondSheetImport implements ToModel, HasReferencesToOtherSheets, WithHead
           'description'    => $row['description'],
           'debit'    => $debit == null ? 0 : $debit->id,
           'credit'    => $credit == null ? 0 : $credit->id,
-          'currency' => $currency == null ? $currency_default->id : $currency->id,
-          'subject_id_credit'    => $subject_credit == null ? 0 : $subject_credit->id,
-          'subject_name_credit'    => $subject_credit == null ? 0 : $subject_credit->code." - ".$subject_credit->name,
+          'currency' => $currency == null ? $currency_default->id : $currency->id,         
           'amount'    => $row['amount'],
           'rate'    => $row['rate'],
           'amount_rate'    => $row['amount_rate'],       
           'department'    => $department == null ? 0 : $department->id,
-          'bank_account_credit'    => $bank_account == null ? 0 : $bank_account->id,         
+          'bank_account_debit'    => $bank_account_debit == null ? 0 : $bank_account_debit->id,   
+          'bank_account_credit'    => $bank_account_credit == null ? 0 : $bank_account_credit->id,         
           'status'    => $row['status'] == null ? 1 : $row['status'], 
           'active'    => $row['active'] == null ? 1 : $row['active'],
         ];
@@ -187,7 +186,8 @@ class SecondSheetImport implements ToModel, HasReferencesToOtherSheets, WithHead
           'credit'    => $row['credit'],
           'credit_id'    => $credit == null ? 0 : $credit->id,
           'currency' => $currency == null ? $currency_default->id : $currency->id,
-          'bank_account' => $bank_account == null ? 0 : $bank_account->id,
+          'bank_account_debit' => $bank_account_debit == null ? 0 : $bank_account_debit->id,
+          'bank_account_credit' => $bank_account_credit == null ? 0 : $bank_account_credit->id,
           'amount'    => $row['amount'],
           'rate'    => $row['rate'],
           'amount_rate'    => $row['amount_rate'],  
