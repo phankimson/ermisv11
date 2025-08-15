@@ -9,6 +9,8 @@ use App\Http\Model\AccHistoryAction;
 use App\Http\Model\Menu;
 use App\Http\Model\AccGeneral;
 use App\Http\Model\AccDetail;
+use App\Http\Model\AccVatDetail;
+use App\Http\Model\AccObject;
 use App\Http\Model\AccAttach;
 use App\Http\Model\AccPeriod;
 use App\Http\Model\AccSystems;
@@ -210,6 +212,67 @@ class AccEntryGeneralVoucherController extends Controller
 
            // Xóa dòng chi tiết
            AccDetail::get_detail_whereNotIn_delete($general->id,$removeId);
+
+           $check_invoice = false;
+           $invoice = '';
+           // Lưu VAT
+           foreach($arr->tax as $l => $x){
+             $tax = collect([]);
+                // Kiểm tra có trùng MST, số hóa đơn 
+                $arr_check = array(
+                  ['invoice', '=',$x->invoice],
+                  ['invoice_symbol', '=',$x->invoice_symbol],
+                  //['invoice_form', '=',$x->invoice_form],
+                  ['tax_code', '=',$x->tax_code],
+                  ['id','<>',$x->id]
+                );
+                $tax_check = AccVatDetail::get_invoice($arr_check);
+                if($tax_check){
+                  $check_invoice = true;
+                    $invoice = $x->invoice;
+                    break;
+                }
+                // End
+                // Update mẫu, ký tự hóa đơn
+                $obj = AccObject::find($x->subject_id);
+                if($obj){
+                  $obj->invoice_form = $x->invoice_form;
+                  $obj->invoice_symbol = $x->invoice_symbol;
+                  $obj->save();
+                }
+                // End
+             if($x->id){
+               $tax = AccVatDetail::find($x->id);              
+             }else{
+               $tax = new AccVatDetail();
+             }
+             $total_amount = $x->amount+$x->tax;
+             $tax->general_id = $general->id;
+             $tax->date_invoice = $x->date_invoice;
+             $tax->invoice_type = $x->invoice_type;
+             $tax->invoice_form = $x->invoice_form;
+             $tax->invoice_symbol = $x->invoice_symbol;
+             $tax->invoice = $x->invoice;
+             $tax->subject_id = $x->subject_id;
+             $tax->subject_code = $x->subject_code;
+             $tax->subject_name = $x->subject_name;
+             $tax->tax_code = $x->tax_code;
+             $tax->address = $x->address;
+             $tax->description = $x->description;
+             $tax->vat_type = $x->vat_type->value;// Đổi từ id value dạng read
+             $tax->amount = $x->amount;
+             $tax->tax = $x->tax;
+             $tax->total_amount = $total_amount;
+             $tax->rate = $x->tax_rate;
+             $tax->total_amount_rate = $total_amount*$x->tax_rate;
+             $tax->status = 0;
+             $tax->active = 1;
+             $tax->save();
+             array_push($removeId_v,$tax->id);
+             $arr->tax[$l]->id = $tax->id;
+           }
+           // Xóa dòng chi tiết Vat
+           AccVatDetail::get_detail_whereNotIn_delete($general->id,$removeId_v);
            
            // Lưu file
            if($request->hasFile('files')) {
@@ -241,9 +304,13 @@ class AccEntryGeneralVoucherController extends Controller
            'menu' => $this->menu->id,
            'url'  => $this->url,
            'dataz' => \json_encode($arr)]);
+            if($check_invoice == true){
+           DB::connection(env('CONNECTION_DB_ACC'))->rollBack();
+           return response()->json(['status'=>false,'message'=> trans('messages.invoice_number_duplicate',['invoice'=>$invoice])]);
+           }else{
            DB::connection(env('CONNECTION_DB_ACC'))->commit();
            return response()->json(['status'=>true,'message'=> trans('messages.update_success'), 'voucher_name' => $v , 'dataId' => $general->id ,  'data' => $arr ]);
-           
+           }
            //
       }else{
           return response()->json(['status'=>false,'message'=> trans('messages.locked_period')]);

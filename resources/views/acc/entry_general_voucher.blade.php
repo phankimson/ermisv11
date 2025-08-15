@@ -136,6 +136,7 @@
         
         Ermis.column_grid = [{ "field" : "id",hidden: true },
                             { "field" : "date_invoice","title" : "@lang('acc_voucher.date_invoice')", type:"date" ,editor : DatePickerEditor ,template: '#= FormatDate(date_invoice) #' ,width : '150px'},
+                            { "field" : "invoice_type","title" : "@lang('acc_voucher.invoice_type')"  ,width : '150px'},
                             { "field" : "invoice_form","title" : "@lang('acc_voucher.invoice_form')"  ,width : '150px'},
                             { "field" : "invoice_symbol","title" : "@lang('acc_voucher.invoice_symbol')"  ,width : '150px'},
                             { "field" : "invoice","title" : "@lang('acc_voucher.invoice')"  ,width : '150px'},
@@ -175,6 +176,7 @@
          Ermis.field_tax = {
             id : {field :"id" ,defaultValue: 0},
             date_invoice : {field :"date_invoice" , defaultValue : "{{ Carbon\Carbon::now()->format('Y-m-d') }}" },
+            invoice_type:     {field : "invoice_type"},
             invoice_form:     {field : "invoice_form"},
             invoice_symbol:     {field : "invoice_symbol"},
             invoice:     {field : "invoice"},

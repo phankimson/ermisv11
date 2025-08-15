@@ -1810,7 +1810,24 @@ function DefaultValueField(){
         value = model.text; 
         return value;       
       }
- 
+      
+   AddChooseObjectResult2 = function(dataItem,key_rs,field){
+    var gridVat = $kGridVat.data("kendoGrid");
+    var rs = gridVat.dataSource.data();
+    var arr = [ "id", "code", "name"];
+    jQuery.each( arr, function( i, val ) {
+       dataDefaultGrid.vat[key_rs+"_"+val] = dataItem[field][key_rs+"_"+val];
+    });   
+     jQuery.each(rs, function(l, k) {
+        if(!k[key_rs]){
+          jQuery.each( arr, function( i, val ) {
+            k[key_rs+"_"+val] = dataItem[field][key_rs+"_"+val];
+          });
+        }
+      });
+      // Không bỏ được refresh
+      gridVat.refresh();
+   }
 
    AddChooseObjectResult1 = function(dataItem){
     jQuery.each(Ermis.columns_subject, function(i, v) {

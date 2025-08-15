@@ -312,7 +312,9 @@ var Ermis = function() {
                 item.rate == 0 ? item.set("amount_rate",0) : item.set("amount_rate",item.amount * item.rate);
             }else if(e.action === "itemchange" && e.field === "amount_rate" ){
                 item.set("amount_rate",item.amount * item.rate);
-            }   
+            }else if(e.action === "itemchange" && e.field.substring(0,7) === "subject" ){
+                AddChooseObjectResult2(item,e.field.substring(0,7),e.field);
+            } 
               if(e.action === "itemchange" && (e.field === "amount_rate" || e.field === "rate" || e.field === "amount" )){
                     grid.refresh();
             }               
