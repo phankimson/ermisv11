@@ -46,6 +46,7 @@ return [
     "tax"=>"Vat tax",
     "invoice"=>"Invoice",
     "date_invoice"=>"Date invoice",
+    "invoice_type"=>"Invoice type",
     "invoice_form"=>"Invoice form",
     "invoice_symbol"=>"Invoice symbol",
     "vat_type"=>"Vat type",
@@ -82,4 +83,6 @@ return [
     "total_payment" => "Total payment",
     "exceed_the_amount_is" => "exceed the amount is",
     "receipt_from_invoice" => "Receipt from invoice", 
+    "output_invoice" => "Output invoice",
+    "input_invoice" => "Input invoice",
 ];

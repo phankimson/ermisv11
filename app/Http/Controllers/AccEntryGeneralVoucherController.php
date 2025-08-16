@@ -249,7 +249,7 @@ class AccEntryGeneralVoucherController extends Controller
              $total_amount = $x->amount+$x->tax;
              $tax->general_id = $general->id;
              $tax->date_invoice = $x->date_invoice;
-             $tax->invoice_type = $x->invoice_type;
+             $tax->invoice_type = $x->invoice_type->value;
              $tax->invoice_form = $x->invoice_form;
              $tax->invoice_symbol = $x->invoice_symbol;
              $tax->invoice = $x->invoice;

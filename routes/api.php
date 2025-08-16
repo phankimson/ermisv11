@@ -59,6 +59,7 @@ Route::group([
       Route::get(env("URL_DROPDOWN").'/supplies-goods-group', 'supplies_goods_group_dropdown_list')->name('supplies-goods-group');
       Route::get(env("URL_DROPDOWN").'/warranty-period', 'warranty_period_dropdown_list')->name('warranty-period');
       Route::get(env("URL_DROPDOWN").'/stock', 'stock_dropdown_list')->name('stock');
+      Route::get(env("URL_DROPDOWN").'/invoice-type', 'invoice_type_dropdown_list')->name('invoice-type');
       Route::get(env("URL_DROPDOWN").'/vat-tax', 'vat_tax_dropdown_list')->name('vat-tax');
       Route::get(env("URL_DROPDOWN").'/excise-tax', 'excise_tax_dropdown_list')->name('excise-tax');
       Route::get(env("URL_DROPDOWN").'/natural-resources', 'natural_resources_dropdown_list')->name('natural-resources');

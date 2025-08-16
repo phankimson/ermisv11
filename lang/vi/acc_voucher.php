@@ -46,6 +46,7 @@ return [
     "tax"=>"Thuế",
     "invoice"=>"Hóa đơn",
     "date_invoice"=>"Ngày hóa đơn",
+    "invoice_type"=>"Loại hóa đơn",
     "invoice_form"=>"Mẫu hóa đơn",
     "invoice_symbol"=>"Ký hiệu hóa đơn",
     "vat_type"=>"Loại thuế VAT",
@@ -82,4 +83,6 @@ return [
     "total_payment" => "Tổng thanh toán",
     "exceed_the_amount_is" => "vượt quá số tiền là",
     "receipt_from_invoice" => "Thu tiền từ hóa đơn",
+    "output_invoice" => "Hóa đơn đầu ra",
+    "input_invoice" => "Hóa đơn đầu vào",
 ];

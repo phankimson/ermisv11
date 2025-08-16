@@ -1045,16 +1045,22 @@ Route::group([
   Route::post('/cash-payment-general-detail','detail');  
   Route::post('/bank-receipts-general-detail','detail');  
   Route::post('/bank-payment-general-detail','detail');  
+  Route::post('/bank-transfer-general-detail','detail');  
+  Route::post('/entry-general-detail','detail');  
   // In Phiếu trang tổng hợp
   Route::post('/cash-receipts-general-print','prints');  
   Route::post('/cash-payment-general-print','prints'); 
   Route::post('/bank-receipts-general-print','prints');  
   Route::post('/bank-payment-general-print','prints'); 
+  Route::post('/bank-transfer-general-print','prints'); 
+  Route::post('/entry-general-print','prints'); 
   // In Phiếu trang chi tiết
   Route::post('/cash-receipts-voucher-print','prints');  
   Route::post('/cash-payment-voucher-print','prints');  
   Route::post('/bank-receipts-voucher-print','prints');  
   Route::post('/bank-payment-voucher-print','prints');  
+  Route::post('/bank-transfer-voucher-print','prints');  
+  Route::post('/entry-general-voucher-print','prints');  
   // In Phiếu trang thu tiền theo hóa đơn
   Route::post('/cash-receipts-voucher-by-invoice-print','prints');  
   Route::post('/cash-payment-voucher-by-invoice-print','prints');

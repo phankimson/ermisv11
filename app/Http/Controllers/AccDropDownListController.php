@@ -214,6 +214,14 @@ class AccDropDownListController extends Controller
     }     
     return response()->json($data)->withCallback($request->input('callback'));
   }
+  // Loại hóa đơn Droplist
+  public function invoice_type_dropdown_list(Request $request){
+    $default = collect([$this->default]);
+    $data = collect([["value" => "1","text" => trans('acc_voucher.input_invoice')],["value" => "2","text" => trans('acc_voucher.output_invoice')]]);
+    $data = $default->merge($data)->values();
+    return response()->json($data)->withCallback($request->input('callback'));
+  }
+
   // Thuế VAT Droplist
   public function vat_tax_dropdown_list(Request $request){
     $default = collect([$this->default]);
