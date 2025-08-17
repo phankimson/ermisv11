@@ -11,7 +11,7 @@
 |
 */
 
-//Test
+//Test -  Thử nghiệm
 
 Route::controller(TestController::class)->group(function () {
 Route::get('/test1', 'test1');
@@ -32,13 +32,13 @@ Route::get('logout','doLogout')->name('logout');
 Route::post('register', 'doRegister');
 Route::post('check-register', 'checkRegister');
 });
-// Manage
+// Manage -  Quản lý
 Route::group([
   'prefix'=>'manage',
   'as' => 'manage.'
 ],function () {
 
-  // Globals
+  // Globals - Quản lý chung
   Route::controller(HomeController::class)->group(function () {
   Route::get('/index', 'show');
   Route::get('/block','block' )->name('block');
@@ -62,7 +62,7 @@ Route::group([
   Route::post('/load-history-action', 'loadHistoryAction' );
   });
 
-  // Setting
+  // Setting - Cài đặt
   Route::group([
     'as' => 'setting',
     'controller' => SettingController::class
@@ -71,7 +71,7 @@ Route::group([
   Route::post('/setting-change',  'changeSetting')->name('-change');
   });
 
-  // Query
+  // Query -  Truy vấn
   Route::group([
     'as' => 'query',
     'controller' => QueryController::class
@@ -81,7 +81,7 @@ Route::group([
   Route::post('/query-change-database','ChangeDatabase')->name('-change-database');
   });
 
-   // Update Database
+   // Update Database - Cập nhật cơ sở dữ liệu
   Route::group([
     'as' => 'update-database',
     'controller' => UpdateDatabaseController::class
@@ -91,7 +91,7 @@ Route::group([
   Route::post('/load-database','GetTableDatabase')->name('-load-database');
   });
 
-  // Notes
+  // Notes - Ghi chú
   Route::group([
     'as' => 'notes',
     'controller' => NotesController::class
@@ -102,7 +102,7 @@ Route::group([
   Route::post('/notes-delete', 'delete' )->name('-delete');
   });
 
-  // Permission
+  // Permission - Quyền
   Route::group([
     'as' => 'permission',
     'controller' => PermissionController::class
@@ -113,7 +113,7 @@ Route::group([
   Route::post('/permission-save','save')->name('-save');
   });
 
-  // History Action
+  // History Action - Lịch sử hoạt động
   Route::group([
     'as' => 'history-action',
     'controller' => HistoryActionController::class
@@ -128,7 +128,7 @@ Route::group([
   Route::get('/history-action-DownloadExcel','DownloadExcel')->name('-DownloadExcel');
   });
 
-  // Error
+  // Error - Lỗi 
   Route::group([
     'as' => 'error',
     'controller' => ErrorController::class
@@ -143,7 +143,7 @@ Route::group([
   Route::get('/error-DownloadExcel', 'DownloadExcel' )->name('-DownloadExcel');
   });
 
-   // Jobs
+   // Jobs - Công việc
    Route::group([
     'as' => 'jobs',
     'controller' => JobsController::class
@@ -157,7 +157,7 @@ Route::group([
   Route::get('/jobs-DownloadExcel', 'DownloadExcel' )->name('-DownloadExcel');
   });
 
-  // Menu
+  // Menu - Danh mục
   Route::group([
     'as' => 'menu',
     'controller' => MenuController::class
@@ -172,7 +172,7 @@ Route::group([
   Route::get('/menu-DownloadExcel','DownloadExcel' )->name('-DownloadExcel');
   });
 
-  // Software
+  // Software - Phần mềm
   Route::group([
     'as' => 'software',
     'controller' => SoftwareController::class
@@ -187,7 +187,7 @@ Route::group([
   Route::get('/software-DownloadExcel', 'DownloadExcel')->name('-DownloadExcel');
   });
 
-  // License
+  // License - Giấy phép
   Route::group([
     'as' => 'license',
     'controller' => LicenseController::class
@@ -203,7 +203,7 @@ Route::group([
   Route::post('/license-load',  'load' )->name('-load');
   });
 
-  // System
+  // System - Hệ thống
   Route::group([
     'as' => 'systems',
     'controller' => SystemsController::class
@@ -218,7 +218,7 @@ Route::group([
   Route::get('/systems-DownloadExcel', 'DownloadExcel')->name('-DownloadExcel');
   });
 
-  // GroupUsers
+  // GroupUsers - Nhóm người dùng
   Route::group([
     'as' => 'group-users',
     'controller' => GroupUsersController::class
@@ -233,7 +233,7 @@ Route::group([
   Route::get('/group-users-DownloadExcel', 'DownloadExcel' )->name('-DownloadExcel');
   });
 
-  // Country
+  // Country - Quốc gia
   Route::group([
     'as' => 'country',
     'controller' => CountryController::class
@@ -248,7 +248,7 @@ Route::group([
   Route::get('/country-DownloadExcel','DownloadExcel')->name('-DownloadExcel');
   });
 
-  // Regions
+  // Regions - Vùng miền
   Route::group([
     'as' => 'regions',
     'controller' => RegionsController::class
@@ -263,7 +263,7 @@ Route::group([
   Route::get('/regions-DownloadExcel', 'DownloadExcel' )->name('-DownloadExcel');
   });
 
-  // Key Ai
+  // Key Ai - Khóa AI
   Route::group([
     'as' => 'key-ai',
     'controller' => KeyAiController::class
@@ -278,7 +278,7 @@ Route::group([
   Route::get('/key-ai-DownloadExcel', 'DownloadExcel' )->name('-DownloadExcel');
   });
 
-  // Area
+  // Area - Khu vực
   Route::group([
     'as' => 'area',
     'controller' => AreaController::class
@@ -293,7 +293,7 @@ Route::group([
   Route::get('/area-DownloadExcel', 'DownloadExcel' )->name('-DownloadExcel');
   });
 
-  // Distric
+  // Distric - Quận huyện
   Route::group([
     'as' => 'distric',
     'controller' => DistricController::class
@@ -308,7 +308,7 @@ Route::group([
   Route::get('/distric-DownloadExcel',  'DownloadExcel' )->name('-DownloadExcel');
   });
 
-  // Document Type
+  // Document Type - Loại tài liệu
   Route::group([
     'as' => 'document-type',
     'controller' => DocumentTypeController::class
@@ -322,7 +322,7 @@ Route::group([
   Route::get('/document-type-DownloadExcel', 'DownloadExcel' )->name('-DownloadExcel');
   });
 
-  // Document
+  // Document - Tài liệu
   Route::group([
     'as' => 'document',
     'controller' => DocumentController::class
@@ -336,7 +336,7 @@ Route::group([
   Route::get('/document-DownloadExcel', 'DownloadExcel' )->name('-DownloadExcel');
   });
 
-  // Company
+  // Company - Công ty
   Route::group([
     'as' => 'company',
     'controller' => CompanyController::class
@@ -351,7 +351,7 @@ Route::group([
   Route::get('/company-DownloadExcel', 'DownloadExcel' )->name('-DownloadExcel');
   });
 
-  // Company Software
+  // Company Software - Phần mềm công ty
   Route::group([
     'as' => 'company-software',
     'controller' => CompanySoftwareController::class
@@ -366,7 +366,7 @@ Route::group([
   Route::get('/company-software-DownloadExcel', 'DownloadExcel' )->name('-DownloadExcel');
   });
 
-  // Users
+  // Users - Người dùng
   Route::group([
     'as' => 'users',
     'controller' => UserManagerController::class
@@ -412,7 +412,7 @@ Route::group([
   Route::post('chat', 'doChat' );
   });
 
-  // Permission
+  // Permission - Quyền
   Route::group([
     'as' => 'permission',
     'controller' => PermissionController::class
@@ -423,7 +423,7 @@ Route::group([
   Route::post('/permission-save', 'save' )->name('-save');
   });
 
-  // System
+  // System - Hệ thống
   Route::group([
     'as' => 'systems',
     'controller' => AccSystemsController::class
@@ -439,7 +439,7 @@ Route::group([
   Route::post('/systems-change-database', 'ChangeDatabase' )->name('-change-database');
   });
 
-  // Number Voucher
+  // Number Voucher - Số chứng từ
   Route::group([
     'as' => 'number-voucher',
     'controller' => AccNumberVoucherController::class
@@ -455,7 +455,7 @@ Route::group([
   Route::post('/number-voucher-change-database', 'ChangeDatabase')->name('-change-database');
   });
 
-    // Number Voucher Format
+    // Number Voucher Format - Định dạng số chứng từ
     Route::group([
       'as' => 'count-voucher',
       'controller' => AccCountVoucherController::class
@@ -471,7 +471,7 @@ Route::group([
     Route::post('/count-voucher-change-database', 'ChangeDatabase')->name('-change-database');
     });
 
-  // Number Code
+  // Number Code -  Mã số
   Route::group([
     'as' => 'number-code',
     'controller' => AccNumberCodeController::class
@@ -487,7 +487,7 @@ Route::group([
   Route::post('/number-code-change-database',  'ChangeDatabase' )->name('-change-database');
   });
 
-  // Setting Voucher
+  // Setting Voucher - Cài đặt bút toán
   Route::group([
     'as' => 'setting-voucher',
     'controller' => AccSettingVoucherController::class
@@ -503,7 +503,7 @@ Route::group([
   Route::post('/setting-voucher-change-database',  'ChangeDatabase' )->name('-change-database');
   });
 
-  // Excise Tax
+  // Excise Tax - Thuế tiêu thụ đặc biệt
   Route::group([
     'as' => 'excise',
     'controller' => AccExciseController::class
@@ -520,7 +520,7 @@ Route::group([
   Route::post('/excise-change-database', 'ChangeDatabase' )->name('-change-database');
   });
 
-  // Natural Resources Tax
+  // Natural Resources Tax - Thuế tài nguyên
   Route::group([
     'as' => 'natural-resources',
     'controller' => AccNaturalResourcesController::class
@@ -537,7 +537,7 @@ Route::group([
   Route::post('/natural-resources-change-database', 'ChangeDatabase' )->name('-change-database');
   });
 
-  // Vat
+  // Vat - Thuế giá trị gia tăng
   Route::group([
     'as' => 'vat',
     'controller' => AccVatController::class
@@ -554,7 +554,7 @@ Route::group([
   Route::post('/vat-change-database', 'ChangeDatabase')->name('-change-database');
   });
 
-  // Bank
+  // Bank - Ngân hàng
   Route::group([
     'as' => 'bank',
     'controller' => AccBankController::class
@@ -571,7 +571,7 @@ Route::group([
   Route::post('/bank-change-database', 'ChangeDatabase')->name('-change-database');
   });
 
-  // Bank Account
+  // Bank Account - Tài khoản ngân hàng
   Route::group([
     'as' => 'bank-account',
     'controller' => AccBankAccountController::class
@@ -587,7 +587,7 @@ Route::group([
   Route::post('/bank-account-change-database','ChangeDatabase')->name('-change-database');
   });
 
-  // Case Code
+  // Case Code - Mã trường hợp
   Route::group([
     'as' => 'case-code',
     'controller' => AccCaseCodeController::class
@@ -604,7 +604,7 @@ Route::group([
   Route::post('/case-code-change-database', 'ChangeDatabase')->name('-change-database');
   });
 
-  // Cost Code
+  // Cost Code - Mã chi phí
   Route::group([
     'as' => 'cost-code',
     'controller' => AccCostCodeController::class
@@ -621,7 +621,7 @@ Route::group([
   Route::post('/cost-code-change-database', 'ChangeDatabase')->name('-change-database');
   });
 
-  // Statistical Code
+  // Statistical Code - Mã thống kê
   Route::group([
     'as' => 'statistical-code',
     'controller' => AccStatisticalCodeController::class
@@ -638,7 +638,7 @@ Route::group([
   Route::post('/statistical-code-change-database',  'ChangeDatabase')->name('-change-database');
   });
 
-  // Work Code
+  // Work Code - Mã công việc
   Route::group([
     'as' => 'work-code',
     'controller' => AccWorkCodeController::class
@@ -655,7 +655,7 @@ Route::group([
   Route::post('/work-code-change-database', 'ChangeDatabase' )->name('-change-database');
   });
 
-  // Revenue Expenditure Type
+  // Revenue Expenditure Type - Loại thu chi
   Route::group([
     'as' => 'revenue-expenditure-type',
     'controller' => AccRevenueExpenditureTypeController::class
@@ -672,7 +672,7 @@ Route::group([
   Route::post('/revenue-expenditure-type-change-database', 'ChangeDatabase')->name('-change-database');
   });
 
-  // Revenue Expenditure
+  // Revenue Expenditure - Thu chi
   Route::group([
     'as' => 'revenue-expenditure',
     'controller' => AccRevenueExpenditureController::class
@@ -689,7 +689,7 @@ Route::group([
   Route::post('/revenue-expenditure-change-database', 'ChangeDatabase')->name('-change-database');
   });
 
-  // Unit
+  // Unit - Đơn vị
   Route::group([
     'as' => 'unit',
     'controller' => AccUnitController::class
@@ -706,7 +706,7 @@ Route::group([
   Route::post('/unit-change-database', 'ChangeDatabase')->name('-change-database');
   });
 
-  // Warranty Period
+  // Warranty Period - Thời gian bảo hành
   Route::group([
     'as' => 'warranty-period',
     'controller' => AccWarrantyPeriodController::class
@@ -723,7 +723,7 @@ Route::group([
   Route::post('/warranty-period-change-database', 'ChangeDatabase')->name('-change-database');
   });
 
-  // Stock
+  // Stock - Kho
   Route::group([
     'as' => 'stock',
     'controller' => AccStockController::class
@@ -740,7 +740,7 @@ Route::group([
   Route::post('/stock-change-database','ChangeDatabase')->name('-change-database');
   });
 
-  // Supplies Goods Type
+  // Supplies Goods Type - Quản lý loại hàng hóa
   Route::group([
     'as' => 'supplies-goods-type',
     'controller' => AccSuppliesGoodsTypeController::class
@@ -757,7 +757,7 @@ Route::group([
   Route::post('/supplies-goods-type-change-database', 'ChangeDatabase')->name('-change-database');
   });
 
-  // Supplies Goods
+  // Supplies Goods - Quản lý hàng hóa
   Route::group([
     'as' => 'supplies-goods',
     'controller' => AccSuppliesGoodsController::class
@@ -774,7 +774,7 @@ Route::group([
   Route::post('/supplies-goods-change-database','ChangeDatabase')->name('-change-database');
   });
 
-  // Supplies Goods Group
+  // Supplies Goods Group - Quản lý nhóm hàng hóa
   Route::group([
     'as' => 'supplies-goods-group',
     'controller' => AccSuppliesGoodsGroupController::class
@@ -791,7 +791,7 @@ Route::group([
   Route::post('/supplies-goods-group-change-database', 'ChangeDatabase')->name('-change-database');
   });
 
-  // Object Type
+  // Object Type - Quản lý loại đối tượng
   Route::group([
     'as' => 'object-type',
     'controller' => AccObjectTypeController::class
@@ -808,7 +808,7 @@ Route::group([
   Route::post('/object-type-change-database', 'ChangeDatabase')->name('-change-database');
   });
 
-  // Object Group
+  // Object Group - Quản lý nhóm đối tượng
   Route::group([
     'as' => 'object-group',
     'controller' => AccObjectGroupController::class
@@ -825,7 +825,7 @@ Route::group([
   Route::post('/object-group-change-database', 'ChangeDatabase')->name('-change-database');
   });
 
-  // Department
+  // Department - Quản lý phòng ban
   Route::group([
     'as' => 'department',
     'controller' => AccDepartmentController::class
@@ -842,7 +842,7 @@ Route::group([
   Route::post('/department-change-database', 'ChangeDatabase')->name('-change-database');
   });
 
-  // Object
+  // Object - Quản lý đối tượng
   Route::group([
     'as' => 'object',
     'controller' => AccObjectController::class
@@ -859,7 +859,7 @@ Route::group([
   Route::post('/object-change-database', 'ChangeDatabase')->name('-change-database');
   });
 
-  // Currency
+  // Currency - Quản lý loại tiền tệ
   Route::group([
     'as' => 'currency',
     'controller' => AccCurrencyController::class
@@ -876,7 +876,7 @@ Route::group([
   Route::post('/currency-change-database', 'ChangeDatabase')->name('-change-database');
   });
 
-  // GroupUsers
+  // GroupUsers - Quản lý nhóm người dùng
   Route::group([
     'as' => 'group-users',
     'controller' => AccGroupUsersController::class
@@ -890,7 +890,7 @@ Route::group([
   Route::get('/group-users-DownloadExcel', 'DownloadExcel')->name('-DownloadExcel');
   });
 
-  // Users
+  // Users - Quản lý người dùng
   Route::group([
     'as' => 'users',
     'controller' => AccUserManagerController::class
@@ -904,7 +904,7 @@ Route::group([
   Route::get('/users-DownloadExcel', 'DownloadExcel')->name('-DownloadExcel');
   });
 
-  // System
+  // System - Hệ thông
   Route::group([
     'as' => 'account-systems',
     'controller' => AccAccountSystemsController::class
@@ -920,7 +920,24 @@ Route::group([
   Route::post('/account-systems-change-database', 'ChangeDatabase')->name('-change-database');
   });
 
-  // Account Fast
+    // Account transfer - Kết chuyển tài khoản
+  Route::group([
+    'as' => 'account-transfer',
+    'controller' => AccAccountTransferController::class
+  ],function () {
+  Route::get('/account-transfer', 'show')->name('');
+  Route::get('/account-transfer-data', 'data')->name('-data');
+  Route::post('/account-transfer-load', 'load')->name('-load');
+  Route::post('/account-transfer-get', 'get')->name('-get');
+  Route::post('/account-transfer-save', 'save' )->name('-save');
+  Route::post('/account-transfer-delete','delete')->name('-delete');
+  Route::any('/account-transfer-import', 'import')->name('-import');
+  Route::get('/account-transfer-export', 'export' )->name('-export');
+  Route::get('/account-transfer-DownloadExcel','DownloadExcel' )->name('-DownloadExcel');
+  Route::post('/account-transfer-change-database','ChangeDatabase' )->name('-change-database');
+  });
+
+  // Account Fast - Tài khoản nhanh
   Route::group([
     'as' => 'accounted-fast',
     'controller' => AccAccountedFastController::class
@@ -937,7 +954,7 @@ Route::group([
   Route::post('/accounted-fast-change-database','ChangeDatabase' )->name('-change-database');
   });
 
-  // Account Auto
+  // Account Auto - Tài khoản tự động
   Route::group([
     'as' => 'accounted-auto',
     'controller' => AccAccountedAutoController::class
@@ -954,7 +971,7 @@ Route::group([
   Route::post('/accounted-auto-change-database','ChangeDatabase' )->name('-change-database');
   });
 
-  // Print Template
+  // Print Template - Mẫu in
   Route::group([
     'as' => 'print-template',
     'controller' => AccPrintTemplateController::class
@@ -971,7 +988,7 @@ Route::group([
   Route::post('/print-template-change-database','ChangeDatabase' )->name('-change-database');
   });
 
-  // Setting Account Group
+  // Setting Account Group - Cài đặt nhóm tài khoản
   Route::group([
     'as' => 'setting-account-group',
     'controller' => AccSettingAccountGroupController::class
@@ -987,7 +1004,7 @@ Route::group([
   Route::post('/setting-account-group-change-database','ChangeDatabase' )->name('-change-database');
   });
 
-  // AccountType
+  // AccountType - Loại tài khoản
   Route::group([
     'as' => 'account-type',
     'controller' => AccAccountTypeController::class
@@ -1004,7 +1021,7 @@ Route::group([
   Route::post('/account-type-change-database','ChangeDatabase' )->name('-change-database');
   });
 
-  // Account Nature
+  // Account Nature - Bản chất tài khoản
   Route::group([
     'as' => 'account-nature',
     'controller' => AccAccountNatureController::class
@@ -1021,7 +1038,7 @@ Route::group([
     Route::post('/account-nature-change-database','ChangeDatabase' )->name('-change-database');
   });
 
-  // Period
+  // Period - Kỳ kế toán
   Route::group([
     'as' => 'period',
     'controller' => AccPeriodController::class
@@ -1039,7 +1056,7 @@ Route::group([
   Route::post('/period-change-database','ChangeDatabase')->name('-change-database');
   });
 
-  // Receipt Cash General
+  // Receipt Cash General - Phiếu thu tiền
   Route::controller(AccGeneralController::class)->group(function () {
   Route::post('/cash-receipts-general-detail','detail');  
   Route::post('/cash-payment-general-detail','detail');  
@@ -1069,7 +1086,7 @@ Route::group([
   
   });
 
-  // Receipt Cash General
+  // Receipt Cash General - Thu tiền
   Route::group([
     'as' => 'cash-receipts-general',
     'controller' => AccCashReceiptsGeneralController::class
@@ -1098,7 +1115,7 @@ Route::group([
   Route::post('/cash-receipts-voucher-by-invoice-delete', 'delete' )->name('-by-invoice-delete'); 
   });  
 
-  // Payment Cash General
+  // Payment Cash General - Chi tiền
   Route::group([
     'as' => 'cash-payment-general',
     'controller' => AccCashPaymentGeneralController::class
@@ -1128,7 +1145,7 @@ Route::group([
   });  
 
 
-   // Receipt Bank General
+   // Receipt Bank General - Phiếu thu tiền ngân hàng
   Route::group([
     'as' => 'bank-receipts-general',
     'controller' => AccBankReceiptsGeneralController::class
@@ -1157,7 +1174,7 @@ Route::group([
   Route::post('/bank-receipts-voucher-by-invoice-delete', 'delete' )->name('-by-invoice-delete'); 
   });  
 
-  // Payment Bank General
+  // Payment Bank General - Phiếu chi tiền ngân hàng
   Route::group([
     'as' => 'bank-payment-general',
     'controller' => AccBankPaymentGeneralController::class
@@ -1186,7 +1203,7 @@ Route::group([
   Route::post('/bank-payment-voucher-by-invoice-delete', 'delete' )->name('-by-invoice-delete'); 
   });  
 
-// Transfer Bank General
+// Transfer Bank General - Chuyển khoản ngân hàng
   Route::group([
     'as' => 'bank-transfer-general',
     'controller' => AccBankTransferGeneralController::class
@@ -1210,7 +1227,7 @@ Route::group([
 
   });  
 
-  // Entry General
+  // Entry General - Phiếu kế toán chung
   Route::group([
     'as' => 'entry-general',
     'controller' => AccEntryGeneralController::class
@@ -1235,7 +1252,7 @@ Route::group([
   });  
   
 
-  // Receipt Cash Detail
+  // Receipt Cash Detail -  Phiếu thu tiền
   Route::group([
     'as' => 'cash-receipts-voucher',
     'controller' => AccCashReceiptsVoucherController::class
@@ -1247,7 +1264,7 @@ Route::group([
   Route::any('/cash-receipts-voucher-import', 'import')->name('-import');
   });
 
-  // Payyment Cash Detail
+  // Payyment Cash Detail - Phiếu chi tiền
   Route::group([
     'as' => 'cash-payment-voucher',
     'controller' => AccCashPaymentVoucherController::class
@@ -1259,7 +1276,7 @@ Route::group([
   Route::any('/cash-payment-voucher-import', 'import')->name('-import');
   });
 
-  // Receipt Bank Detail
+  // Receipt Bank Detail - Phiếu thu tiền ngân hàng
   Route::group([
     'as' => 'bank-receipts-voucher',
     'controller' => AccBankReceiptsVoucherController::class
@@ -1271,7 +1288,7 @@ Route::group([
   Route::any('/bank-receipts-voucher-import', 'import')->name('-import');
   });
 
-  // Payyment Bank Detail
+  // Payyment Bank Detail - Phiếu chi tiền ngân hàng
   Route::group([
     'as' => 'bank-payment-voucher',
     'controller' => AccBankPaymentVoucherController::class
@@ -1284,7 +1301,7 @@ Route::group([
   });
 
 
-    // Transfer Bank Detail
+    // Transfer Bank Detail - Phiếu chuyển khoản ngân hàng
   Route::group([
     'as' => 'bank-transfer-voucher',
     'controller' => AccBankTransferVoucherController::class
@@ -1296,7 +1313,7 @@ Route::group([
   Route::any('/bank-transfer-voucher-import', 'import')->name('-import');
   });
 
-   // Entry General Detail
+   // Entry General Detail - Phiếu kế toán chung chi tiết
   Route::group([
     'as' => 'entry-general-voucher',
     'controller' => AccEntryGeneralVoucherController::class
@@ -1308,7 +1325,7 @@ Route::group([
   Route::any('/entry-general-voucher-import', 'import')->name('-import');
   });
 
-  // Receipt Cash Detail Voucher
+  // Receipt Cash Detail Voucher -  Phiếu thu tiền chi tiết
   Route::group([
     'as' => 'cash-receipts-voucher',
     'controller' => AccVoucherController::class
@@ -1328,7 +1345,7 @@ Route::group([
   });
 
 
-  // Payment Cash Detail Voucher
+  // Payment Cash Detail Voucher -  Phiếu chi tiền chi tiết
   Route::group([
     'as' => 'cash-payment-voucher',
     'controller' => AccVoucherController::class
@@ -1347,7 +1364,7 @@ Route::group([
   Route::post('/cash-payment-voucher-by-invoice-reference', 'reference' )->name('-by-invoice-reference');
   });
 
-  // Receipt Bank Detail Voucher
+  // Receipt Bank Detail Voucher -  Phiếu thu tiền ngân hàng chi tiết
   Route::group([
     'as' => 'bank-receipts-voucher',
     'controller' => AccVoucherController::class
@@ -1366,7 +1383,7 @@ Route::group([
   Route::post('/bank-receipts-voucher-by-invoice-reference', 'reference' )->name('-by-invoice-reference');
   });
 
-  // Payment Bank Detail Voucher
+  // Payment Bank Detail Voucher -  Phiếu chi tiền ngân hàng chi tiết
   Route::group([
     'as' => 'bank-payment-voucher',
     'controller' => AccVoucherController::class
@@ -1385,7 +1402,7 @@ Route::group([
   Route::post('/bank-payment-voucher-by-invoice-reference', 'reference' )->name('-by-invoice-reference');
   });
 
-  // Transfer Bank Detail Voucher
+  // Transfer Bank Detail Voucher -  Phiếu chuyển khoản ngân hàng chi tiết
   Route::group([
     'as' => 'bank-transfer-voucher',
     'controller' => AccVoucherController::class
@@ -1399,7 +1416,7 @@ Route::group([
   Route::post('/bank-transfer-voucher-load-voucher-change', 'load_voucher_change' )->name('-load-voucher-change');
   });
 
-  // Entry General Voucher
+  // Entry General Voucher -  Phiếu kế toán chung chi tiết
   Route::group([
     'as' => 'entry-general-voucher',
     'controller' => AccVoucherController::class
@@ -1413,7 +1430,7 @@ Route::group([
   Route::post('/entry-general-voucher-load-voucher-change', 'load_voucher_change' )->name('-load-voucher-change');
   });
 
-  // Receipt Cash Detail By Invoice
+  // Receipt Cash Detail By Invoice - Phiếu thu tiền theo hóa đơn
 Route::group([
   'as' => 'cash-receipts-voucher-by-invoice',
   'controller' => AccCashReceiptsVoucherByInvoiceController::class
@@ -1425,7 +1442,7 @@ Route::post('/cash-receipts-voucher-by-invoice-bind', 'bind' )->name('-bind');
 });
 
 
-  // Payment Cash Detail By Invoice
+  // Payment Cash Detail By Invoice - Phiếu chi tiền theo hóa đơn
 Route::group([
   'as' => 'cash-payment-voucher-by-invoice',
   'controller' => AccCashPaymentVoucherByInvoiceController::class
@@ -1436,7 +1453,7 @@ Route::post('/cash-payment-voucher-by-invoice-save', 'save' )->name('-save');
 Route::post('/cash-payment-voucher-by-invoice-bind', 'bind' )->name('-bind');
 });
 
-  // Receipt Bank Detail By Invoice
+  // Receipt Bank Detail By Invoice - Phiếu thu tiền ngân hàng theo hóa đơn
 Route::group([
   'as' => 'bank-receipts-voucher-by-invoice',
   'controller' => AccBankReceiptsVoucherByInvoiceController::class
@@ -1448,7 +1465,7 @@ Route::post('/bank-receipts-voucher-by-invoice-bind', 'bind' )->name('-bind');
 });
 
 
-  // Payment Bank Detail By Invoice
+  // Payment Bank Detail By Invoice - Phiếu chi tiền ngân hàng theo hóa đơn
 Route::group([
   'as' => 'cash-payment-voucher-by-invoice',
   'controller' => AccBankPaymentVoucherByInvoiceController::class
@@ -1459,7 +1476,7 @@ Route::post('/bank-payment-voucher-by-invoice-save', 'save' )->name('-save');
 Route::post('/bank-payment-voucher-by-invoice-bind', 'bind' )->name('-bind');
 });
 
-// Bank compare auto
+// Bank compare auto -  So sánh ngân hàng tự động
 Route::group([
   'as' => 'bank-compare',
   'controller' => AccBankCompareController::class

@@ -2,7 +2,6 @@
 
 @push('css_up')
  <link rel="stylesheet" href="{{ asset('library/handsontable/dist/handsontable.min.css') }}" media="all">
- <link rel="stylesheet" href="{{ asset('library/chosen/chosen.min.css') }}" media="all">
 @endpush
 
 @push('action')
@@ -18,69 +17,100 @@
 @endpush
 @section('content_add')
 <div class="uk-grid uk-margin-left-10 uk-grid-medium">
-  <ul id="uk_tab_modal" class="uk-tab" data-uk-tab>
-      <li class="uk-active" data-id ="0"><a href="javascript:;">@lang('acc_accounted_auto.info')</a></li>
-      <li data-id ="1"><a href="javascript:;">@lang('acc_accounted_auto.account')</a></li>
-      <li data-id ="4"><a href="javascript:;">@lang('global.expand')</a></li>
-  </ul>
-
-
-   <section id="tabs_content" style="width : 100%" class="uk-switcher-hot uk-margin">
-       <div class="uk-tab-content">
+   <ul class="uk-tab" data-uk-tab="{connect:'#tabs_anim', animation:'slide-left', swiping: false}">
+       <li class="uk-active"><a href="javascript:;">@lang('acc_account_transfer.info')</a></li>
+       <li><a href="javascript:;">@lang('global.expand')</a></li>
+   </ul>
+   <section id="tabs_anim" class="uk-switcher uk-margin">
+       <div>
            <table>
-                 <tr>
-                   <td class="row-label"><label>@lang('acc_accounted_fast.profession') </label></td>
+               <tr>
+                   <td class="row-label"><label>@lang('acc_account_transfer.code') *</label></td>
+                   <td><input type="text" class="k-textbox medium" data-position="1" data-title="@lang('acc_account_transfer.code')" maxlength="50" data-width="200px" data-type="string" name="code" /></td>
+               </tr>
+               <tr>
+                   <td class="row-label"><label>@lang('acc_account_transfer.name') *</label></td>
+                   <td><input type="text" class="k-textbox large" data-position="2" data-title="@lang('acc_account_transfer.name')" maxlength="100" data-width="200px" data-type="string" name="name" /></td>
+               </tr>
+                <tr>
+                   <td class="row-label"><label>@lang('acc_account_transfer.name_en') *</label></td>
+                   <td><input type="text" class="k-textbox large" data-position="3" data-title="@lang('acc_account_transfer.name_en')" maxlength="100" data-width="200px" data-type="string" name="name_en" /></td>
+               </tr>
+               <tr>
+                <td class="row-label"><label>@lang('acc_account_transfer.type')</label></td>
+                <td>
+                <select class="droplist large" data-position="1" data-title="@lang('acc_account_transfer.type')" data-template="#= FormatDropList(type,'type') #" data-type="number" data-width="200px" name="type">
+                        <option readonly selected value="0">--Select--</option>
+                        <option value="1">@lang('acc_account_transfer.debit_to_credit')</option>
+                        <option value="2">@lang('acc_account_transfer.credit_to_debit')</option>
+                </select>
+                </td>
+                </tr>              
+               <tr>
+                   <td class="row-label"><label>@lang('acc_account_transfer.debit') </label></td>
                    <td>
-                     <select class="droplist read large render-hot" data-render-col="accounted_fast" data-position="3" data-title="@lang('acc_accounted_fast.profession')" data-template="#= FormatDropListRead(profession,'profession') #" data-type="string" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{!!route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.menu').'?pro='.$profession!!}" name="profession">
+                     <select class="droplist read large" data-position="4" data-title="@lang('acc_account_transfer.debit')" data-template="#= FormatDropListRead(debit,'debit') #" data-type="string" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.account')}}" name="debit">
+                             
+                     </select>
+                   </td>
+               </tr>
+               <tr>
+                   <td class="row-label"><label>@lang('acc_account_transfer.credit') </label></td>
+                   <td>
+                     <select class="droplist read large" data-position="5" data-title="@lang('acc_account_transfer.credit')" data-template="#= FormatDropListRead(credit,'credit') #" data-type="string" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.account')}}" name="credit">
                           
                          </select>
                    </td>
                </tr>
                <tr>
-                   <td class="row-label"><label>@lang('acc_accounted_auto.code') *</label></td>
-                   <td>
-                     <span class="k-textbox k-space-right medium">
-                           <input type="text" data-position="1" data-title="@lang('acc_accounted_auto.code')" data-width="200px" maxlength="50" data-type="string" name="code" id="icon-right">
-                           <a href="javascript:;" class="k-icon k-i-rotate load">&nbsp;</a>
-                     </span>
-                   </td>
+                   <td><label>@lang('acc_account_transfer.object')</label></td>
+                   <td class="row-height"><input type="checkbox" data-md-icheck="" data-position="10" data-title="@lang('acc_account_transfer.object')" data-value="1" data-width="100px" data-type="string" data-template="#= FormatCheckBox(object) #" name="object" /></td>
+               </tr>
+                <tr>
+                   <td><label>@lang('acc_account_transfer.case_code')</label></td>
+                   <td class="row-height"><input type="checkbox" data-md-icheck="" data-position="10" data-title="@lang('acc_account_transfer.case_code')" data-value="1" data-width="100px" data-type="string" data-template="#= FormatCheckBox(case_code) #" name="case_code" /></td>
+               </tr>
+                <tr>
+                   <td><label>@lang('acc_account_transfer.cost_code')</label></td>
+                   <td class="row-height"><input type="checkbox" data-md-icheck="" data-position="10" data-title="@lang('acc_account_transfer.cost_code')" data-value="1" data-width="100px" data-type="string" data-template="#= FormatCheckBox(cost_code) #" name="cost_code" /></td>
                </tr>
                  <tr>
-                     <td class="row-label"><label>@lang('acc_accounted_auto.name') *</label></td>
-                     <td><input type="text" class="k-textbox large" data-position="2" data-title="@lang('acc_accounted_auto.name')" maxlength="100" data-width="200px" data-type="string" name="name" /></td>
-                 </tr>
+                   <td><label>@lang('acc_account_transfer.statistical_code')</label></td>
+                   <td class="row-height"><input type="checkbox" data-md-icheck="" data-position="10" data-title="@lang('acc_account_transfer.statistical_code')" data-value="1" data-width="100px" data-type="string" data-template="#= FormatCheckBox(statistical_code) #" name="statistical_code" /></td>
+               </tr>
                  <tr>
-                     <td class="row-label"><label>@lang('acc_accounted_auto.name_en')</label></td>
-                     <td><input type="text" class="k-textbox large" data-position="4" data-title="@lang('acc_accounted_auto.name_en')" maxlength="100" data-width="200px" data-type="string" name="name_en" /></td>
-                 </tr>
-
+                   <td><label>@lang('acc_account_transfer.work_code')</label></td>
+                   <td class="row-height"><input type="checkbox" data-md-icheck="" data-position="10" data-title="@lang('acc_account_transfer.work_code')" data-value="1" data-width="100px" data-type="string" data-template="#= FormatCheckBox(work_code) #" name="work_code" /></td>
+               </tr>
+                <tr>
+                   <td><label>@lang('acc_account_transfer.department')</label></td>
+                   <td class="row-height"><input type="checkbox" data-md-icheck="" data-position="10" data-title="@lang('acc_account_transfer.department')" data-value="1" data-width="100px" data-type="string" data-template="#= FormatCheckBox(department) #" name="department" /></td>
+               </tr>
                  <tr>
-                     <td class="row-label"><label>@lang('acc_accounted_auto.description')</label></td>
-                     <td><textarea type="text" class="k-textbox medium" data-position="8" data-title="@lang('acc_accounted_auto.description')" data-width="200px" data-hidden="true" data-type="string" name="description" /></textarea></td>
-                 </tr>
-
-                 <tr>
-                     <td><label>@lang('action.active')</label></td>
-                     <td class="row-height"><input type="checkbox" data-md-icheck="" data-position="14" data-title="@lang('action.active')" data-value="1" data-width="100px" data-type="string" data-template="#= FormatCheckBox(active) #" name="active" /></td>
-                 </tr>
+                    <td class="row-label"><label>@lang('acc_account_transfer.position')</label></td>
+                    <td><input type="number" class="k-textbox medium" data-position="3" step="1" min="0" data-title="@lang('acc_account_transfer.position')" data-width="200px" data-type="string" name="position" /></td>
+                </tr>
+               <tr>
+                   <td><label>@lang('action.active')</label></td>
+                   <td class="row-height"><input type="checkbox" data-md-icheck="" data-position="10" data-title="@lang('action.active')" data-value="1" data-width="100px" data-type="string" data-template="#= FormatCheckBox(active) #" name="active" /></td>
+               </tr>
            </table>
        </div>
-       <div class="uk-tab-content">
-           <div id="ermis-hot"></div>
+       <div>
+         <table>
+
+         </table>
        </div>
-       <div class="uk-tab-content">
-
-           <table>
-
-           </table>
-
-       </div>
-   </section>
-</div>
+   </div>
+</section>
 <div class="uk-margin" style="float : right">
    <a href="javascript:;" class="k-button k-primary save" data-uk-tooltip title="@lang('action.save')  ({{ config('app.short_key')}}S)"><i class="md-18 material-icons md-color-white">save</i>@lang('action.save')</a>
    <a href="javascript:;" class="k-button k-primary cancel" data-uk-tooltip title="@lang('action.cancel')  ({{ config('app.short_key')}}C)"><i class="md-18 material-icons md-color-white">cancel</i>@lang('action.cancel')</a>
 </div>
+
+<script id="template_img" type="text/x-kendo-template">
+<img class="img-thumbnail" alt="Ermis" src="#=value#">
+</script>
 
 @endsection
 
@@ -89,7 +119,7 @@
 @endpush
 
 @section('tabs')
-<div id="accounted_fast_dropdown_list" class="hidden" data-url="{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.accounted-fast')}}" data-url-add="?pro=" data-json=""></div>
+
 @endsection
 @section('scripts_up')
 <script>
@@ -100,35 +130,28 @@
       Ermis.paging = "{{$paging}}";
       Ermis.page_size = "{{$page_size}}";
       Ermis.export_limit = '{{ env("EXPORT_LIMIT") }}';
+      Ermis.fieldload = 'code';
       Ermis.short_key = "{{ config('app.short_key')}}";
+      Ermis.image_upload = '#avatar';
       Ermis.row_multiselect = 0;
       Ermis.elem = "#form-action";
-      Ermis.data = [];
-      Ermis.fieldload = 'code';
       Ermis.decimal = "{{$decimal}}";
       Ermis.locales_hot = "{{ app()->getLocale() == 'vi' ? 'vi-VI' : 'en-US' }}";
       Ermis.columns_expend = [{ selectable: true, width: "50px" }, {"field" : "column","title" : "@lang('global.column_name')"}];
-      Ermis.data_expend = [{field : "t.code", column:  "@lang('acc_accounted_auto.code')" },
-                           {field : "t.name", column:  "@lang('acc_accounted_auto.name')" },                         
-                           {field : "t.name_en", column:  "@lang('acc_accounted_auto.name_en')" },
+      Ermis.data_expend = [{field : "t.code", column:  "@lang('acc_accounted_fast.code')" },
+                           {field : "t.name", column:  "@lang('acc_accounted_fast.name')" },
                            {field : "u.name as profession", column:  "@lang('acc_accounted_fast.profession')" },
-                           {field : "t.description", column:  "@lang('acc_accounted_auto.description')" },
+                           {field : "a.code as debit", column:  "@lang('acc_accounted_fast.debit')" },
+                           {field : "b.code as credit", column:  "@lang('acc_accounted_fast.credit')" },
+                           {field : "c.name as case_code", column:  "@lang('acc_accounted_fast.case_code')" },
+                           {field : "d.name as cost_code", column:  "@lang('acc_accounted_fast.cost_code')" },
+                           {field : "e.name as statistical_code", column:  "@lang('acc_accounted_fast.statistical_code')" },
+                           {field : "f.name as work_code", column:  "@lang('acc_accounted_fast.work_code')" },
+                           {field : "m.name as department", column:  "@lang('acc_accounted_fast.department')" },
+                           {field : "n.bank_account as bank_account", column:  "@lang('acc_accounted_fast.bank_account')" },
+                           {field : "o.name as subject_debit", column:  "@lang('acc_accounted_fast.subject_debit')" },
+                           {field : "p.name as subject_credit", column:  "@lang('acc_accounted_fast.subject_credit')" },
                            {field : "t.active", column:  "@lang('action.active')" }];
-     Ermis.hot_field = "accounted_auto_detail";
-     Ermis.ArrayColumn = [{data:'id',title:"@lang('global.column_name')", readOnly:true },
-                         //{data:'accounted_fast',editor: 'chosen', chosenOptions: {data: jQuery('#accounted_fast_dropdown_list').data('json')} ,key : "afterChange",renderer: customDropdownRenderer, title:"@lang('acc_voucher.accounted_fast')",width : ( 0.1 * $(window).width() )},
-                         {data:'accounted_fast',editor: 'chosen', chosenOptions: {data: initDropDownListAjaxLoad("accounted-fast",jQuery('#accounted_fast_dropdown_list').data('url'))} ,key : "afterChange",renderer: customAjaxDropdownRenderer, title:"@lang('acc_voucher.accounted_fast')",width : ( 0.1 * $(window).width() )},
-                         {data:'description',title:"@lang('acc_voucher.description')",width : ( 0.2 * $(window).width() ), set : "1"},
-                         {data:'debit',editor: 'chosen', chosenOptions: {data: initDropDownListAjaxLoad("account","{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.account')}}")},key : true ,renderer: customAjaxDropdownRenderer,title:"@lang('acc_voucher.debt_account')",width : ( 0.1 * $(window).width() ) , set : "2"},
-                         {data:'credit',editor: 'chosen', chosenOptions: {data: initDropDownListAjaxLoad("account","{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.account')}}")} ,key : true ,renderer: customAjaxDropdownRenderer,title:"@lang('acc_voucher.credit_account')",width : ( 0.1 * $(window).width() ), set : "2"},
-                         {data:'subject_debit',editor: 'chosen', chosenOptions: {data: initDropDownListAjaxLoad("object","{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.object')}}")} ,renderer: customAjaxDropdownRenderer,title:"@lang('acc_accounted_fast.subject_debit')",width : ( 0.1 * $(window).width() ) , set : "2"},
-                         {data:'subject_credit',editor: 'chosen', chosenOptions: {data: initDropDownListAjaxLoad("object","{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.object')}}")} ,renderer: customAjaxDropdownRenderer,title:"@lang('acc_accounted_fast.subject_credit')",width : ( 0.1 * $(window).width() ), set : "2"},
-                         {data:'department',editor: 'chosen', chosenOptions: {data: initDropDownListAjaxLoad("department","{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.department')}}")} ,renderer: customAjaxDropdownRenderer,title:"@lang('acc_voucher.department')",width : ( 0.1 * $(window).width() ), set : "2"},
-                         {data:'bank_account',editor: 'chosen', chosenOptions: {data: initDropDownListAjaxLoad("bank-account","{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.bank-account')}}")} ,renderer: customAjaxDropdownRenderer ,title:"@lang('acc_voucher.bank_account')",width : ( 0.1 * $(window).width() ), set : "2"},
-                         {data:'cost_code',editor: 'chosen', chosenOptions: {data: initDropDownListAjaxLoad("cost-code","{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.cost-code')}}")} ,renderer: customAjaxDropdownRenderer,title:"@lang('acc_voucher.cost_code')",width : ( 0.1 * $(window).width() ), set : "2"},
-                         {data:'case_code',editor: 'chosen', chosenOptions: {data: initDropDownListAjaxLoad("case-code","{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.case-code')}}")} ,renderer: customAjaxDropdownRenderer, title:"@lang('acc_voucher.case_code')",width : ( 0.1 * $(window).width() ), set : "2"},
-                         {data:'statistical_code',editor: 'chosen', chosenOptions: {data: initDropDownListAjaxLoad("statistical-code","{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.statistical-code')}}")} ,renderer: customAjaxDropdownRenderer,title:"@lang('acc_voucher.statistical_code')",width : ( 0.1 * $(window).width() ), set : "2"},
-                         {data:'work_code',editor: 'chosen', chosenOptions: {data: initDropDownListAjaxLoad("work-code","{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.work-code')}}")} ,renderer: customAjaxDropdownRenderer,title:"@lang('acc_voucher.work_code')",width : ( 0.1 * $(window).width() ), set : "2"}  ];
   });
   </script>
 @endsection
@@ -137,12 +160,5 @@
 <script src="{{ asset('library/kendoui/js/cultures/kendo.culture.en-DE.min.js') }}"></script>
 <script>kendo.culture('en-DE')</script>
 @endif
-<script src="{{ url('library/handsontable/dist/handsontable.full.min.js') }}"></script>
-<script src="{{ url('library/chosen/chosen.jquery.js') }}"></script>
-<script src="{{ url('library/handsontable/dist/handsontable-chosen-editor-ajax.js') }}"></script>
-<script src="{{ url('library/handsontable/dist/numbro/languages.min.js') }}"></script>
-@if(app()->getLocale() == 'vi')
-<script src="{{ url('library/handsontable/dist/languages/vi-VI.js') }}"></script>
-@endif
-<script src="{{ url('addon/scripts/ermis/ermis-form-2-pagehotread.js') }}"></script>
+<script src="{{ url('addon/scripts/ermis/ermis-form-2-page.js') }}"></script>
 @endsection
