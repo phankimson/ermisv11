@@ -17,9 +17,17 @@
 @include('action.toolbar_9')
 @endpush
 @section('tab_add')
-<li class="uk-active"><a href="javascript:;">Active</a></li>
-<li><a href="javascript:;">Item</a></li>
-<li><a href="javascript:;">Item</a></li>
+<li class="uk-active"><a href="javascript:;">@lang('acc_open_balance.account')</a></li>
+<li><a href="javascript:;">@lang('acc_open_balance.bank')</a></li>
+<li><a href="javascript:;">@lang('acc_open_balance.goods')</a></li>
+<li><a href="javascript:;">@lang('acc_open_balance.materials')</a></li>
+<li><a href="javascript:;">@lang('acc_open_balance.upfront_costs')</a></li>
+<li><a href="javascript:;">@lang('acc_open_balance.tools')</a></li>
+<li><a href="javascript:;">@lang('acc_open_balance.asset')</a></li>
+<li><a href="javascript:;">@lang('acc_open_balance.supplier')</a></li>
+<li><a href="javascript:;">@lang('acc_open_balance.customer')</a></li>
+<li><a href="javascript:;">@lang('acc_open_balance.employee')</a></li>
+<li><a href="javascript:;">@lang('acc_open_balance.other')</a></li>
 <li class="uk-disabled"><a href="javascript:;">Disabled</a></li>
 @endsection
 
@@ -28,6 +36,14 @@
     <li>Content 2</li>
     <li>Content 3</li>
     <li>Content 4</li>
+    <li>Content 5</li>
+    <li>Content 6</li>
+    <li>Content 7</li>
+    <li>Content 8</li>
+    <li>Content 9</li>
+    <li>Content 10</li>
+    <li>Content 11</li>
+    <li>Content 12</li>
 @endsection
 
 @push('context_action')
