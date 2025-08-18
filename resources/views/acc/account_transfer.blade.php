@@ -24,9 +24,18 @@
    <section id="tabs_anim" class="uk-switcher uk-margin">
        <div>
            <table>
+                <tr>
+                    <td class="row-label"><label>@lang('acc_account_transfer.position')</label></td>
+                    <td><input type="number" class="k-textbox medium" data-position="3" step="1" min="0" data-title="@lang('acc_account_transfer.position')" data-width="200px" data-type="string" name="position" /></td>
+                </tr>
                <tr>
                    <td class="row-label"><label>@lang('acc_account_transfer.code') *</label></td>
-                   <td><input type="text" class="k-textbox medium" data-position="1" data-title="@lang('acc_account_transfer.code')" maxlength="50" data-width="200px" data-type="string" name="code" /></td>
+                     <td>
+                     <span class="k-textbox k-space-right medium">
+                           <input type="text" data-position="1" data-title="@lang('acc_account_transfer.code')" data-width="200px" maxlength="50" data-type="string" name="code" id="icon-right">
+                           <a href="javascript:;" class="k-icon k-i-rotate load">&nbsp;</a>
+                     </span>
+                   </td>
                </tr>
                <tr>
                    <td class="row-label"><label>@lang('acc_account_transfer.name') *</label></td>
@@ -49,7 +58,7 @@
                <tr>
                    <td class="row-label"><label>@lang('acc_account_transfer.debit') </label></td>
                    <td>
-                     <select class="droplist read large" data-position="4" data-title="@lang('acc_account_transfer.debit')" data-template="#= FormatDropListRead(debit,'debit') #" data-type="string" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.account')}}" name="debit">
+                     <select class="droplist read large" data-position="4" data-title="@lang('acc_account_transfer.debit')" data-template="#= FormatDropListRead(debit,'debit') #" data-type="string" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.account').'?nature='.$nature}}" name="debit">
                              
                      </select>
                    </td>
@@ -57,39 +66,36 @@
                <tr>
                    <td class="row-label"><label>@lang('acc_account_transfer.credit') </label></td>
                    <td>
-                     <select class="droplist read large" data-position="5" data-title="@lang('acc_account_transfer.credit')" data-template="#= FormatDropListRead(credit,'credit') #" data-type="string" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.account')}}" name="credit">
+                     <select class="droplist read large" data-position="5" data-title="@lang('acc_account_transfer.credit')" data-template="#= FormatDropListRead(credit,'credit') #" data-type="string" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.account').'?nature='.$nature}}" name="credit">
                           
                          </select>
                    </td>
                </tr>
                <tr>
                    <td><label>@lang('acc_account_transfer.object')</label></td>
-                   <td class="row-height"><input type="checkbox" data-md-icheck="" data-position="10" data-title="@lang('acc_account_transfer.object')" data-value="1" data-width="100px" data-type="string" data-template="#= FormatCheckBox(object) #" name="object" /></td>
+                   <td class="row-height"><input type="checkbox" data-md-icheck="" data-position="10" data-title="@lang('acc_account_transfer.object')" data-value="0" data-width="100px" data-type="string" data-template="#= FormatCheckBox(object) #" name="object" /></td>
                </tr>
                 <tr>
                    <td><label>@lang('acc_account_transfer.case_code')</label></td>
-                   <td class="row-height"><input type="checkbox" data-md-icheck="" data-position="10" data-title="@lang('acc_account_transfer.case_code')" data-value="1" data-width="100px" data-type="string" data-template="#= FormatCheckBox(case_code) #" name="case_code" /></td>
+                   <td class="row-height"><input type="checkbox" data-md-icheck="" data-position="10" data-title="@lang('acc_account_transfer.case_code')" data-value="0" data-width="100px" data-type="string" data-template="#= FormatCheckBox(case_code) #" name="case_code" /></td>
                </tr>
                 <tr>
                    <td><label>@lang('acc_account_transfer.cost_code')</label></td>
-                   <td class="row-height"><input type="checkbox" data-md-icheck="" data-position="10" data-title="@lang('acc_account_transfer.cost_code')" data-value="1" data-width="100px" data-type="string" data-template="#= FormatCheckBox(cost_code) #" name="cost_code" /></td>
+                   <td class="row-height"><input type="checkbox" data-md-icheck="" data-position="10" data-title="@lang('acc_account_transfer.cost_code')" data-value="0" data-width="100px" data-type="string" data-template="#= FormatCheckBox(cost_code) #" name="cost_code" /></td>
                </tr>
                  <tr>
                    <td><label>@lang('acc_account_transfer.statistical_code')</label></td>
-                   <td class="row-height"><input type="checkbox" data-md-icheck="" data-position="10" data-title="@lang('acc_account_transfer.statistical_code')" data-value="1" data-width="100px" data-type="string" data-template="#= FormatCheckBox(statistical_code) #" name="statistical_code" /></td>
+                   <td class="row-height"><input type="checkbox" data-md-icheck="" data-position="10" data-title="@lang('acc_account_transfer.statistical_code')" data-value="0" data-width="100px" data-type="string" data-template="#= FormatCheckBox(statistical_code) #" name="statistical_code" /></td>
                </tr>
                  <tr>
                    <td><label>@lang('acc_account_transfer.work_code')</label></td>
-                   <td class="row-height"><input type="checkbox" data-md-icheck="" data-position="10" data-title="@lang('acc_account_transfer.work_code')" data-value="1" data-width="100px" data-type="string" data-template="#= FormatCheckBox(work_code) #" name="work_code" /></td>
+                   <td class="row-height"><input type="checkbox" data-md-icheck="" data-position="10" data-title="@lang('acc_account_transfer.work_code')" data-value="0" data-width="100px" data-type="string" data-template="#= FormatCheckBox(work_code) #" name="work_code" /></td>
                </tr>
                 <tr>
                    <td><label>@lang('acc_account_transfer.department')</label></td>
-                   <td class="row-height"><input type="checkbox" data-md-icheck="" data-position="10" data-title="@lang('acc_account_transfer.department')" data-value="1" data-width="100px" data-type="string" data-template="#= FormatCheckBox(department) #" name="department" /></td>
+                   <td class="row-height"><input type="checkbox" data-md-icheck="" data-position="10" data-title="@lang('acc_account_transfer.department')" data-value="0" data-width="100px" data-type="string" data-template="#= FormatCheckBox(department) #" name="department" /></td>
                </tr>
-                 <tr>
-                    <td class="row-label"><label>@lang('acc_account_transfer.position')</label></td>
-                    <td><input type="number" class="k-textbox medium" data-position="3" step="1" min="0" data-title="@lang('acc_account_transfer.position')" data-width="200px" data-type="string" name="position" /></td>
-                </tr>
+                 
                <tr>
                    <td><label>@lang('action.active')</label></td>
                    <td class="row-height"><input type="checkbox" data-md-icheck="" data-position="10" data-title="@lang('action.active')" data-value="1" data-width="100px" data-type="string" data-template="#= FormatCheckBox(active) #" name="active" /></td>
@@ -138,19 +144,19 @@
       Ermis.decimal = "{{$decimal}}";
       Ermis.locales_hot = "{{ app()->getLocale() == 'vi' ? 'vi-VI' : 'en-US' }}";
       Ermis.columns_expend = [{ selectable: true, width: "50px" }, {"field" : "column","title" : "@lang('global.column_name')"}];
-      Ermis.data_expend = [{field : "t.code", column:  "@lang('acc_accounted_fast.code')" },
-                           {field : "t.name", column:  "@lang('acc_accounted_fast.name')" },
-                           {field : "u.name as profession", column:  "@lang('acc_accounted_fast.profession')" },
-                           {field : "a.code as debit", column:  "@lang('acc_accounted_fast.debit')" },
-                           {field : "b.code as credit", column:  "@lang('acc_accounted_fast.credit')" },
-                           {field : "c.name as case_code", column:  "@lang('acc_accounted_fast.case_code')" },
-                           {field : "d.name as cost_code", column:  "@lang('acc_accounted_fast.cost_code')" },
-                           {field : "e.name as statistical_code", column:  "@lang('acc_accounted_fast.statistical_code')" },
-                           {field : "f.name as work_code", column:  "@lang('acc_accounted_fast.work_code')" },
-                           {field : "m.name as department", column:  "@lang('acc_accounted_fast.department')" },
-                           {field : "n.bank_account as bank_account", column:  "@lang('acc_accounted_fast.bank_account')" },
-                           {field : "o.name as subject_debit", column:  "@lang('acc_accounted_fast.subject_debit')" },
-                           {field : "p.name as subject_credit", column:  "@lang('acc_accounted_fast.subject_credit')" },
+      Ermis.data_expend = [{field : "t.code", column:  "@lang('acc_account_transfer.code')" },
+                           {field : "t.name", column:  "@lang('acc_account_transfer.name')" },
+                           {field : "t.name_en", column:  "@lang('acc_account_transfer.name_en')" },
+                           {field : "t.type", column:  "@lang('acc_account_transfer.type')" },
+                           {field : "a.code as debit", column:  "@lang('acc_account_transfer.debit')" },
+                           {field : "b.code as credit", column:  "@lang('acc_account_transfer.credit')" },
+                           {field : "t.case_code", column:  "@lang('acc_account_transfer.case_code')" },
+                           {field : "t.cost_code", column:  "@lang('acc_account_transfer.cost_code')" },
+                           {field : "t.statistical_code", column:  "@lang('acc_account_transfer.statistical_code')" },
+                           {field : "t.work_code", column:  "@lang('acc_account_transfer.work_code')" },
+                           {field : "t.department", column:  "@lang('acc_account_transfer.department')" },
+                           {field : "t.object", column:  "@lang('acc_account_transfer.object')" },
+                           {field : "t.position", column:  "@lang('acc_account_transfer.position')" },                           
                            {field : "t.active", column:  "@lang('action.active')" }];
   });
   </script>

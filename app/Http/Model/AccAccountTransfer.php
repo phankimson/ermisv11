@@ -38,7 +38,10 @@ class AccAccountTransfer extends Model
       }
 
       static public function get_raw_export($select,$skip,$limit) {
-        $result =  AccAccountTransfer::WithRowNumberDb(env('CONNECTION_DB_ACC'))->orderBy('row_number','asc')->skip($skip)->take($limit)->get(['row_number',DB::raw($select)]);        
+        $result =  AccAccountTransfer::WithRowNumberDb(env('CONNECTION_DB_ACC'))->orderBy('row_number','asc')->skip($skip)->take($limit)
+        ->leftJoin('account_systems as a', 't.debit', '=', 'a.id')
+        ->leftJoin('account_systems as b', 't.credit', '=', 'b.id')
+        ->get(['row_number',DB::raw($select)]);        
         return $result;
       } 
 }

@@ -29,12 +29,14 @@ class AccAccountTransferController extends Controller
   protected $menu;
   protected $page_system;
   protected $download;
+  protected $nature_none;
   public function __construct(Request $request)
   {
      $this->url =  $request->segment(3);
      $this->key = "account-transfer";
      $this->menu = Menu::where('code', '=', $this->key)->first();
      $this->page_system = "MAX_COUNT_CHANGE_PAGE";
+     $this->nature_none = "ACCOUNT_NATURE_NONE";
      $this->download = "AccAccountTransfer.xlsx";
  }
 
@@ -43,7 +45,8 @@ class AccAccountTransferController extends Controller
     $count = AccAccountTransfer::count();
     $sys_page = AccSystems::get_systems($this->page_system);
     $paging = $count>$sys_page->value?1:0;   
-    return view('acc.'.str_replace("-", "_", $this->key),['paging' => $paging, 'key' => $this->key ]);
+    $sys_nature = AccSystems::get_systems($this->nature_none);
+    return view('acc.'.str_replace("-", "_", $this->key),['paging' => $paging, 'key' => $this->key ,'nature'=>$sys_nature->value]);
   }
 
   public function data(Request $request){   

@@ -53,6 +53,11 @@ class AccAccountSystems extends Model
         return $result;
       }
 
+        static public function get_nature($nature) {
+        $result = AccAccountSystems::orderBy('code','asc')->where('nature',$nature)->get();
+        return $result;
+      }
+
 
       static public function get_raw() {
         $result = AccAccountSystems::WithRowNumberDb(env('CONNECTION_DB_ACC'))->orderBy('row_number','desc')->get();

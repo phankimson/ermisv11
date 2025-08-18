@@ -214,6 +214,7 @@ class AccDropDownListController extends Controller
     }     
     return response()->json($data)->withCallback($request->input('callback'));
   }
+
   // Loại hóa đơn Droplist
   public function invoice_type_dropdown_list(Request $request){
     $default = collect([$this->default]);
@@ -514,13 +515,22 @@ class AccDropDownListController extends Controller
 
   // List tài khoản
   public function account_dropdown_list(Request $request){
+    // Lấy tài khoản theo tính chất
+    $nature = $request->input('nature',null);
+    // Lấy tài khoản không có default
     $multiple = $request->input('multiple',null);
+    // Lấy tất cả tài khoản
     $full = $request->input('full',null);       
       if($multiple){
        $data = LangDropDownResource::collection(AccAccountSystems::active()->orderBy('code','asc')->doesntHave('account')->get());
       }else if($full){
         $default = collect([$this->default]);
         $data = LangDropDownResource::collection(AccAccountSystems::orderBy('code','asc')->get());
+        $data = $default->merge($data)->values();  
+      }else if($nature){
+        $default = collect([$this->default]);
+        $account_nature = AccAccountNature::get_code($nature);
+        $data = LangDropDownResource::collection(AccAccountSystems::get_nature($account_nature->id));
         $data = $default->merge($data)->values();  
       }else{
         $default = collect([$this->default]);

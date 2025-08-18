@@ -41,4 +41,9 @@ class AccAccountNature extends Model
         $result =  AccAccountNature::WithRowNumberDb(env('CONNECTION_DB_ACC'))->orderBy('row_number','asc')->skip($skip)->take($limit)->get(['row_number',DB::raw($select)]);        
         return $result;
       } 
+
+        static public function get_code($code) {
+        $result = AccAccountNature::where('code',$code)->first();
+        return $result;
+      }
 }
