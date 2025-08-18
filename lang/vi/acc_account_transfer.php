@@ -24,7 +24,6 @@ return [
     "cost_code" => "Mã chi phí",
     "statistical_code" => "Mã thống kê",
     "work_code" => "Mã công việc",
-    "bank_account"=>"Tài khoản ngân hàng",
     "department"=>"Bộ phận",
     "position"=>"Vị trí bút toán",
     "debit_to_credit"=>"Tk nợ kết chuyển sang Tk có",

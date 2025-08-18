@@ -54,7 +54,7 @@ class AccAccountSystems extends Model
       }
 
         static public function get_nature($nature) {
-        $result = AccAccountSystems::orderBy('code','asc')->where('nature',$nature)->get();
+        $result = AccAccountSystems::orderBy('code','asc')->where('nature',$nature)->doesntHave('account')->get();
         return $result;
       }
 

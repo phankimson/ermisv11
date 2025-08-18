@@ -24,7 +24,6 @@ return [
     "cost_code" => "Cost code",
     "statistical_code" => "Statistical code",
     "work_code" => "Work code",
-    "bank_account"=>"Bank account",
     "department"=>"Department",
     "position"=>"Position",
     "debit_to_credit"=>"Account transfer debit to credit",

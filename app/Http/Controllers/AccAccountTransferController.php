@@ -154,6 +154,16 @@ class AccAccountTransferController extends Controller
        $data->code = $arr->code;
        $data->name = $arr->name;
        $data->name_en = $arr->name_en;
+       $data->type = $arr->type;
+       $data->debit = $arr->debit;
+       $data->credit = $arr->credit;
+       $data->object = $arr->object;
+       $data->case_code = $arr->case_code;
+       $data->cost_code = $arr->cost_code;
+       $data->statistical_code = $arr->statistical_code;
+       $data->work_code = $arr->work_code;
+       $data->department = $arr->department;
+       $data->position = $arr->position;
        $data->active = $arr->active;
        $data->save();
 
@@ -193,6 +203,16 @@ class AccAccountTransferController extends Controller
       $data->code = $arr->code;
       $data->name = $arr->name;
       $data->name_en = $arr->name_en;
+      $data->type = $arr->type;
+      $data->debit = $arr->debit;
+      $data->credit = $arr->credit;
+      $data->object = $arr->object;
+      $data->case_code = $arr->case_code;
+      $data->cost_code = $arr->cost_code;
+      $data->statistical_code = $arr->statistical_code;
+      $data->work_code = $arr->work_code;
+      $data->department = $arr->department;
+      $data->position = $arr->position;
       $data->active = $arr->active;
       $data->save();
        // Phân loại Sửa

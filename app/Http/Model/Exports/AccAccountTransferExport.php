@@ -32,7 +32,7 @@ class AccAccountTransferExport implements FromCollection, ShouldAutoSize, WithEv
           }else if($item == 'row_number'){
             return trans('global.'.$item);
           }else{
-            return trans('acc_accounted_transfer.'.$item);
+            return trans('acc_account_transfer.'.$item);
           }
         });
         $b->prepend($key_trans);
