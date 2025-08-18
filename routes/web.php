@@ -1489,6 +1489,14 @@ Route::post('/bank-compare-uncheck', 'uncheck' )->name('-uncheck');
 Route::post('/bank-compare-create-voucher', 'create_voucher' )->name('-create-voucher');
 });
 
+// open balance -  Số dư đầu kỳ
+Route::group([
+  'as' => 'open-balance',
+  'controller' => AccOpenBalanceController::class
+],function () {
+Route::get('/open-balance', 'show' )->name('');
+});
+
 });
 
 
