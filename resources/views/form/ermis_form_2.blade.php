@@ -14,7 +14,7 @@
 <div id="page_content">
 <div id="page_content_inner">
 <div id="export" aria-hidden="false"></div>
-<div id="form-window-extra" aria-hidden="false">
+<div id="form-window-extra" style="display:none" aria-hidden="false">
     @stack('export_extra')
 </div>
     <div id="import" aria-hidden="false"></div>

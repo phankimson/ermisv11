@@ -32,18 +32,18 @@
 @endsection
 
 @section('content_tab_add')
-    <li>Content 1</li>
-    <li>Content 2</li>
-    <li>Content 3</li>
-    <li>Content 4</li>
-    <li>Content 5</li>
-    <li>Content 6</li>
-    <li>Content 7</li>
-    <li>Content 8</li>
-    <li>Content 9</li>
-    <li>Content 10</li>
-    <li>Content 11</li>
-    <li>Content 12</li>
+    <li><div id="grid_tab1"></div></li>
+    <li><div id="grid_tab2"></div></li>
+    <li><div id="grid_tab3"></div></li>
+    <li><div id="grid_tab4"></div></li>
+    <li><div id="grid_tab5"></div></li>
+    <li><div id="grid_tab6"></div></li>
+    <li><div id="grid_tab7"></div></li>
+    <li><div id="grid_tab8"></div></li>
+    <li><div id="grid_tab9"></div></li>
+    <li><div id="grid_tab10"></div></li>
+    <li><div id="grid_tab11"></div></li>
+    <li><div id="grid_tab12"></div></li>
 @endsection
 
 @push('context_action')
@@ -67,7 +67,27 @@
       Ermis.row_multiselect = 0;
       Ermis.elem = "#form-action";
       Ermis.decimal = "{{$decimal}}";
-      Ermis.columns_expend = [{ selectable: true, width: "50px" }, {"field" : "column","title" : "@lang('global.column_name')"}];
+
+      Ermis.columns_account = [{"field" : "id",hidden: true },
+                               {"field" : "balance_id",hidden: true },
+                               {"field" : "code","title" : "@lang('acc_account_systems.code')" },
+                               {"field" : "name","title" : "@lang('acc_account_systems.name')" },
+                               {"field" : "name_en","title" : "@lang('acc_account_systems.name_en')" },
+                               {"field" : "parent_id",hidden: true  },
+                               {"field" : "debit_amount","title" :  "@lang('acc_voucher.debit_amount')" ,template: '#= FormatNumberDecimal(debit_amount, {{$decimal}} )#' },
+                               {"field" : "credit_amount","title" :  "@lang('acc_voucher.credit_amount')" ,template: '#= FormatNumberDecimal(credit_amount, {{$decimal}} )#' }];
+
+      Ermis.fields_account = {
+              id : {field :"id",nullable: false, editable : false},
+              balance_id : {field : "balance_id", defaultValue: 0},
+              code : {field : "code", editable : false},
+              name : {field : "name" , editable : false },
+              name_en :{field : "name_en" , editable : false },
+              parent_id :{field : "parent_id",nullable: true, type:"string" },
+              debit_amount :{field : "debit_amount" , type: "number" },
+              credit_amount :{field : "credit_amount" , type: "number"},
+    },
+
       Ermis.data_expend = [{field : "t.code", column:  "@lang('group_users.code')" },
                            {field : "t.name", column:  "@lang('group_users.name')" },
                            {field : "t.active", column:  "@lang('action.active')" }];
@@ -79,5 +99,5 @@
 <script src="{{ asset('library/kendoui/js/cultures/kendo.culture.en-DE.min.js') }}"></script>
 <script>kendo.culture('en-DE')</script>
 @endif
-<script src="{{ url('addon/scripts/ermis/ermis-form-1-scrolltt.js') }}"></script>
+<script src="{{ url('addon/scripts/ermis/ermis-form-8-balance.js') }}"></script>
 @endsection

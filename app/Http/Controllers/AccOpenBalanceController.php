@@ -11,7 +11,9 @@ use App\Http\Model\Error;
 use Illuminate\Support\Facades\Storage;
 use App\Classes\Convert;
 use App\Http\Model\AccAccountBalance;
+use App\Http\Model\AccAccountSystems;
 use App\Http\Model\AccSystems;
+use App\Http\Resources\OpenBalanceResource;
 use Maatwebsite\Excel\Facades\Excel;
 use Exception;
 use Illuminate\Support\Facades\DB;
@@ -38,6 +40,15 @@ class AccOpenBalanceController extends Controller
     $sys_page = AccSystems::get_systems($this->page_system);
     $paging = $count>$sys_page->value?1:0;   
     return view('acc.'.str_replace("-", "_", $this->key),['paging' => $paging, 'key' => $this->key ]);
+  }
+
+  public function data(){  
+    $data = OpenBalanceResource::collection(AccAccountSystems::get_raw());       
+    if($data){
+      return response()->json($data);
+    }else{
+      return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
+    }
   }
 
 

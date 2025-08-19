@@ -14,7 +14,7 @@
 <div id="page_content">
 <div id="page_content_inner">
 <div id="export" aria-hidden="false"></div>
-<div id="form-window-extra" aria-hidden="false">
+<div id="form-window-extra" style="display:none" aria-hidden="false">
     @stack('export_extra')
 </div>
     <div id="import" aria-hidden="false"></div>
@@ -27,7 +27,7 @@
             @stack('toolbar_action')
         </div>
         <div class="md-card-content">
-              <ul class="uk-tab uk-tab-grid" data-uk-tab="{connect:'#tabs'}">
+              <ul id="tabs_li" class="uk-tab uk-tab-grid" data-uk-tab="{connect:'#tabs'}">
                  @yield('tab_add')            
             </ul>
             <ul id="tabs" class="uk-switcher uk-margin">

@@ -1830,6 +1830,46 @@ var ErmisKendoTreeViewTemplate = function($kGrid, data, parentId, expanded, onCh
     });
 };
 
+var ErmisKendoTreeViewApiTemplate1 = function($kGrid, url, parentId, expanded,editable, onChange, selectable, height, pageable, fields, columns) {
+    var dataSource = new kendo.data.TreeListDataSource({
+        transport: {
+            read: {
+                url: url,
+                dataType: "json",
+            },       
+        },
+        schema: {
+            model: {
+                id: "id",
+                parentId: parentId,
+                fields: fields,
+                expanded: expanded
+            },
+
+        }
+    });
+    var grid = $kGrid.kendoTreeList({
+        dataSource: dataSource,
+        change: onChange,
+        selectable: selectable,
+        height: height,
+        groupable: true,
+        sortable: true,
+        pageable: pageable,
+        filterable: true,
+        columns: columns,
+        editable: editable
+    });
+
+    grid.data("kendoTreeList").thead.kendoTooltip({
+        filter: "th",
+        content: function(e) {
+            var target = e.target; // element for which the tooltip is shown
+            return $(target).text();
+        }
+    });
+};
+
 
 var ErmisKendoTreeViewApiTemplate = function($kGrid, url, parentId, expanded, onChange, selectable, height, pageable, fields, columns) {
     var dataSource = new kendo.data.TreeListDataSource({
