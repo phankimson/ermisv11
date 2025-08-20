@@ -2040,3 +2040,7 @@ function convertValues(value) {
 function daysInMonth (month, year) {
   return new Date(year, month, 0).getDate();
 }
+
+function isNumeric(value) {
+    return /^-?\d+$/.test(value);
+}

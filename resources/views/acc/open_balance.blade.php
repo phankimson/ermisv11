@@ -74,19 +74,26 @@
                                {"field" : "name","title" : "@lang('acc_account_systems.name')" },
                                {"field" : "name_en","title" : "@lang('acc_account_systems.name_en')" },
                                {"field" : "parent_id",hidden: true  },
-                               {"field" : "debit_amount","title" :  "@lang('acc_voucher.debit_amount')" ,template: '#= FormatNumberDecimal(debit_amount, {{$decimal}} )#' },
-                               {"field" : "credit_amount","title" :  "@lang('acc_voucher.credit_amount')" ,template: '#= FormatNumberDecimal(credit_amount, {{$decimal}} )#' }];
+                               {"field" : "debit_amount","title" :  "@lang('acc_voucher.debit_amount')" ,format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" ,template: '#= FormatNumberDecimal(debit_amount, {{$decimal}} )#',aggregates: ['sum'] ,footerTemplate: "#=FormatNumberDecimal(sum,{{$decimal}})#"},
+                               {"field" : "credit_amount","title" :  "@lang('acc_voucher.credit_amount')" ,format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" ,template: '#= FormatNumberDecimal(credit_amount, {{$decimal}} )#' ,aggregates: ['sum'] ,footerTemplate: "#=FormatNumberDecimal(sum,{{$decimal}})#"}
+                            ];
+
+      Ermis.aggregates_account = [
+          { field: "debit_amount", aggregate: "sum" },
+          { field: "credit_amount", aggregate: "sum" }
+      ];                      
 
       Ermis.fields_account = {
-              id : {field :"id",nullable: false, editable : false},
-              balance_id : {field : "balance_id", defaultValue: 0},
-              code : {field : "code", editable : false},
-              name : {field : "name" , editable : false },
-              name_en :{field : "name_en" , editable : false },
-              parent_id :{field : "parent_id",nullable: true, type:"string" },
-              debit_amount :{field : "debit_amount" , type: "number" },
-              credit_amount :{field : "credit_amount" , type: "number"},
+              id : {field :"id",nullable: false ,editable : false},
+              balance_id : {field : "balance_id", defaultValue: 0 ,editable : false},
+              code : {field : "code" ,editable : false},
+              name : {field : "name" ,editable : false},
+              name_en :{field : "name_en" ,editable : false },
+              parent_id :{field : "parent_id",nullable: true, type:"string" ,editable : false},
+              debit_amount :{field : "debit_amount" , defaultValue : 0 , type: "number" },
+              credit_amount :{field : "credit_amount" , defaultValue : 0 , type: "number" },
     },
+
 
       Ermis.data_expend = [{field : "t.code", column:  "@lang('group_users.code')" },
                            {field : "t.name", column:  "@lang('group_users.name')" },

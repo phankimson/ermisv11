@@ -1830,7 +1830,7 @@ var ErmisKendoTreeViewTemplate = function($kGrid, data, parentId, expanded, onCh
     });
 };
 
-var ErmisKendoTreeViewApiTemplate1 = function($kGrid, url, parentId, expanded,editable, onChange, selectable, height, pageable, fields, columns) {
+var ErmisKendoTreeViewApiTemplate1 = function($kGrid, url, parentId, expanded, editable , onChange, height, pageable, fields, columns,aggregates) {
     var dataSource = new kendo.data.TreeListDataSource({
         transport: {
             read: {
@@ -1846,20 +1846,20 @@ var ErmisKendoTreeViewApiTemplate1 = function($kGrid, url, parentId, expanded,ed
                 expanded: expanded
             },
 
-        }
+        },
+        aggregate: aggregates,
+        change: onChange
     });
     var grid = $kGrid.kendoTreeList({
         dataSource: dataSource,
-        change: onChange,
-        selectable: selectable,
         height: height,
         groupable: true,
         sortable: true,
         pageable: pageable,
         filterable: true,
-        columns: columns,
-        editable: editable
+        columns: columns
     });
+    
 
     grid.data("kendoTreeList").thead.kendoTooltip({
         filter: "th",
@@ -1868,6 +1868,52 @@ var ErmisKendoTreeViewApiTemplate1 = function($kGrid, url, parentId, expanded,ed
             return $(target).text();
         }
     });
+
+    // In-cell editing
+    if(editable == "incell"){
+       var elem = ''; 
+       var itemToUpdate = '';
+       var column = '';
+       var cellElement = '';
+     $kGrid.on("dblclick", "td", function(e) {
+        var treeList = $kGrid.data("kendoTreeList");      
+        elem = treeList.element[0].id;
+        cellElement = jQuery(this);       
+        var row = cellElement.closest("tr"); 
+        var columnIndex = cellElement.index(); // Get the index of the clicked cell within its row
+        // Access the column object using the index
+        column = treeList.columns[columnIndex];
+        var field = fields[column.field];
+        if(field.editable == false || row.hasClass("k-treelist-group")){
+            return;
+        }else{            
+            itemToUpdate = treeList.dataItem(row);
+            var val = itemToUpdate.get(column.field);
+            cellElement.html(""); 
+            if(field.type == "string"){
+                var input = jQuery("<input type='text' class='k-textbox create-"+editable+elem+"' value='"+val+"' name='" + column.field + "'/>");
+            }else{
+                var input = jQuery("<input type='"+field.type+"' class='k-textbox create-"+editable+elem+"' value='"+val+"' name='" + column.field + "'/>");
+            }       
+            // append it to the container
+            input.appendTo(cellElement);   
+            input.focus();
+                      
+        }
+        jQuery('.create-'+editable+elem).on("blur",function (e) { 
+            var val = jQuery(this).val();
+             if(isNumeric(val)){
+                val = kendo.toString(parseInt(val), "n"+column.decimals)
+            }
+            if(val == "0"){
+                cellElement.html("0"); 
+            }else{
+                itemToUpdate.set(column.field, val); 
+            }          
+            jQuery(this).remove();
+        });
+    }); 
+    }
 };
 
 
