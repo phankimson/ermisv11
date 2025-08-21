@@ -13,16 +13,16 @@ class OpenBalanceResource extends JsonResource
      * @return array
      */
     public function toArray($request)
-    {
+    {   
         return [
             'id' => $this->id,
-            'balance_id' => '',
+            'balance_id' => $this->balance->count()>0 ? $this->balance->first()->id : "",
             'code' => $this->code,
             'name' => $this->name,
             'name_en' => $this->name_en,
             'parent_id' => $this->parent_id,
-            'debit_amount' => 0,
-            'credit_amount' => 0,
+            'debit_amount' => $this->balance->count()>0? $this->balance->first()->debit_close : 0,
+            'credit_amount' => $this->balance->count()>0 ? $this->balance->first()->credit_close : 0,
         ];
     }
 }

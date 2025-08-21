@@ -1845,7 +1845,6 @@ var ErmisKendoTreeViewApiTemplate1 = function($kGrid, url, parentId, expanded, e
                 fields: fields,
                 expanded: expanded
             },
-
         },
         aggregate: aggregates,
         change: onChange
@@ -1910,6 +1909,7 @@ var ErmisKendoTreeViewApiTemplate1 = function($kGrid, url, parentId, expanded, e
                 cellElement.html("0"); 
             }else{
                 itemToUpdate.set(column.field, val); 
+                cellElement.html(val); 
             }          
             jQuery(this).remove();
         });

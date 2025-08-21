@@ -17,7 +17,7 @@
 @include('action.toolbar_9')
 @endpush
 @section('tab_add')
-<li class="uk-active"><a href="javascript:;">@lang('acc_open_balance.account')</a></li>
+<li class="uk-active" data-key="account"><a href="javascript:;">@lang('acc_open_balance.account')</a></li>
 <li><a href="javascript:;">@lang('acc_open_balance.bank')</a></li>
 <li><a href="javascript:;">@lang('acc_open_balance.goods')</a></li>
 <li><a href="javascript:;">@lang('acc_open_balance.materials')</a></li>

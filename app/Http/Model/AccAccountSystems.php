@@ -65,6 +65,14 @@ class AccAccountSystems extends Model
         return $result;
       } 
 
+      static public function get_with_balance_period($period) {
+        $result = AccAccountSystems::with(['balance' => function ($query) use ($period) {
+            $query->where('period', $period);
+        }])->orderBy('code','desc')->get();
+        //$result = DB::select(DB::raw("SELECT t.* from (SELECT @i:=@i+1 as row_number, s.* FROM country s, (SELECT @i:=0) AS temp order by s.created_at asc) t order by t.row_number desc"));
+        return $result;
+      } 
+
       static public function get_raw_skip_page($skip,$limit,$orderBy,$asc) {
         $result = AccAccountSystems::WithRowNumberDb(env('CONNECTION_DB_ACC'),$orderBy,$asc)->orderBy('row_number','desc')->skip($skip)->take($limit)->get();  
         return $result;
@@ -90,6 +98,11 @@ class AccAccountSystems extends Model
       public function account()
     {
         return $this->hasMany(AccAccountSystems::class,'parent_id','id');
+    }
+
+    public function balance()
+    {
+        return $this->hasMany(AccAccountBalance::class,'account_systems','id');
     }
 
     public function parent(){

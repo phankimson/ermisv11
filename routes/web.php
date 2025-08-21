@@ -1495,7 +1495,7 @@ Route::group([
   'controller' => AccOpenBalanceController::class
 ],function () {
 Route::get('/open-balance', 'show' )->name('');
-Route::get('/open-balance-data', 'data' )->name('-data');
+Route::get('/open-balance-data-account', 'data_account' )->name('-data-account');
 });
 
 });

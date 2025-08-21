@@ -116,5 +116,10 @@ trait ScopesTraits
       {
         return $query->where($column,$value)->where(function($query) use ($column1,$value1) {$query->where($column1,$value1)->where($column1,"!=","");})->WhereNot($column2,$value2);
       }
+
+      public function scopeWithWhereHas($query, $relation, $constraint){
+        return $query->whereHas($relation, $constraint)
+        ->with([$relation => $constraint]);
+        }
     
 }
