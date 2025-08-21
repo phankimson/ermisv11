@@ -36,20 +36,28 @@ var Ermis = function () {
                 var tab = active.index();
                 $kGridTab = jQuery("#grid_tab"+(tab+1));
                 if($kGridTab.data("kendoTreeList") === undefined && tab ==0){
-                    ErmisKendoTreeViewApiTemplate1($kGridTab, Ermis.link+'-data', "parent_id", true, "incell",onChangeTreeList, jQuery(window).height() * 0.75, true, Ermis.fields_account, Ermis.columns_account,Ermis.aggregates_account);    
-                    jQuery("tr.k-footer-template").addClass("hidden");       
+                    ErmisKendoTreeViewApiTemplate1($kGridTab, Ermis.link+'-data', "parent_id", true, "incell",onChangeTreeList,onDataBoundTreeList, jQuery(window).height() * 0.75, true, Ermis.fields_account, Ermis.columns_account,Ermis.aggregates_account); 
                 }
             });
-    }    
+    }   
+      var onDataBoundTreeList = function(){
+         $kGridTab.find("tr.k-footer-template:not(:last)").addClass("hidden");  
+      }  
+    
       var onChangeTreeList = function (e) {
             if(e.items.length == 1){
               var treeList = $kGridTab.data("kendoTreeList");
               var item = e.items[0];
               var parentId =  item.parentId;
+              if(parentId){
               var parentDataItem = treeList.dataSource.get(parentId);  
               var aggregates = treeList.dataSource.aggregates();
               var aggregate = aggregates[parentId];
-               parentDataItem.set(item.dirtyFields,aggregate[item.dirtyFields]);
+              var key = Object.keys(item.dirtyFields);
+                jQuery.each(key, function(i, item) {
+                    parentDataItem.set(item,aggregate[item]["sum"]);
+                })              
+              }              
             }            
         };    
    

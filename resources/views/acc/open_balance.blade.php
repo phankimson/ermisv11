@@ -71,7 +71,7 @@
       Ermis.columns_account = [{"field" : "id",hidden: true },
                                {"field" : "balance_id",hidden: true },
                                {"field" : "code","title" : "@lang('acc_account_systems.code')" },
-                               {"field" : "name","title" : "@lang('acc_account_systems.name')" },
+                               {"field" : "name","title" : "@lang('acc_account_systems.name')" ,  footerTemplate: "<p>@lang('acc_voucher.total'):</p>" },
                                {"field" : "name_en","title" : "@lang('acc_account_systems.name_en')" },
                                {"field" : "parent_id",hidden: true  },
                                {"field" : "debit_amount","title" :  "@lang('acc_voucher.debit_amount')" ,format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" ,template: '#= FormatNumberDecimal(debit_amount, {{$decimal}} )#',aggregates: ['sum'] ,footerTemplate: "#=FormatNumberDecimal(sum,{{$decimal}})#"},

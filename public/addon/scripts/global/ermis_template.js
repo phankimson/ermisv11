@@ -1830,7 +1830,7 @@ var ErmisKendoTreeViewTemplate = function($kGrid, data, parentId, expanded, onCh
     });
 };
 
-var ErmisKendoTreeViewApiTemplate1 = function($kGrid, url, parentId, expanded, editable , onChange, height, pageable, fields, columns,aggregates) {
+var ErmisKendoTreeViewApiTemplate1 = function($kGrid, url, parentId, expanded, editable , onChange,onDataBound, height, pageable, fields, columns,aggregates) {
     var dataSource = new kendo.data.TreeListDataSource({
         transport: {
             read: {
@@ -1857,7 +1857,8 @@ var ErmisKendoTreeViewApiTemplate1 = function($kGrid, url, parentId, expanded, e
         sortable: true,
         pageable: pageable,
         filterable: true,
-        columns: columns
+        columns: columns,
+        dataBound : onDataBound
     });
     
 

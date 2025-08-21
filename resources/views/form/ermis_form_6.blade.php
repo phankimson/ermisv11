@@ -27,7 +27,7 @@
             @stack('toolbar_action')
         </div>
         <div class="md-card-content">
-              <ul id="tabs_li" class="uk-tab uk-tab-grid" data-uk-tab="{connect:'#tabs'}">
+              <ul id="tabs_li" class="uk-tab" data-uk-tab="{connect:'#tabs'}">
                  @yield('tab_add')            
             </ul>
             <ul id="tabs" class="uk-switcher uk-margin">
