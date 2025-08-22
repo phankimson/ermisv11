@@ -18,16 +18,16 @@
 @endpush
 @section('tab_add')
 <li class="uk-active" data-key="account"><a href="javascript:;">@lang('acc_open_balance.account')</a></li>
-<li><a href="javascript:;">@lang('acc_open_balance.bank')</a></li>
-<li><a href="javascript:;">@lang('acc_open_balance.goods')</a></li>
-<li><a href="javascript:;">@lang('acc_open_balance.materials')</a></li>
-<li><a href="javascript:;">@lang('acc_open_balance.upfront_costs')</a></li>
-<li><a href="javascript:;">@lang('acc_open_balance.tools')</a></li>
-<li><a href="javascript:;">@lang('acc_open_balance.asset')</a></li>
-<li><a href="javascript:;">@lang('acc_open_balance.supplier')</a></li>
-<li><a href="javascript:;">@lang('acc_open_balance.customer')</a></li>
-<li><a href="javascript:;">@lang('acc_open_balance.employee')</a></li>
-<li><a href="javascript:;">@lang('acc_open_balance.other')</a></li>
+<li data-key="bank"><a href="javascript:;">@lang('acc_open_balance.bank')</a></li>
+<li data-key="goods"><a href="javascript:;">@lang('acc_open_balance.goods')</a></li>
+<li data-key="materials"><a href="javascript:;">@lang('acc_open_balance.materials')</a></li>
+<li data-key="upfront_costs"><a href="javascript:;">@lang('acc_open_balance.upfront_costs')</a></li>
+<li data-key="tools"><a href="javascript:;">@lang('acc_open_balance.tools')</a></li>
+<li data-key="asset"><a href="javascript:;">@lang('acc_open_balance.asset')</a></li>
+<li data-key="supplier"><a href="javascript:;">@lang('acc_open_balance.supplier')</a></li>
+<li data-key="customer"><a href="javascript:;">@lang('acc_open_balance.customer')</a></li>
+<li data-key="employee"><a href="javascript:;">@lang('acc_open_balance.employee')</a></li>
+<li data-key="other"><a href="javascript:;">@lang('acc_open_balance.other')</a></li>
 <li class="uk-disabled"><a href="javascript:;">Disabled</a></li>
 @endsection
 
@@ -93,6 +93,28 @@
               debit_amount :{field : "debit_amount" , defaultValue : 0 , type: "number" },
               credit_amount :{field : "credit_amount" , defaultValue : 0 , type: "number" },
     },
+
+     Ermis.columns_bank = [{"field" : "id",hidden: true },
+                          {"field" : "balance_id",hidden: true },
+                          {"field" : "bank_name","title" : "@lang('acc_bank_account.bank_name')" },
+                          {"field" : "bank_account","title" : "@lang('acc_bank_account.bank_account')" ,  footerTemplate: "<p>@lang('acc_voucher.total'):</p>" },
+                          {"field" : "bank","title" : "@lang('acc_bank_account.bank')" },
+                          {"field" : "branch","title" : "@lang('acc_bank_account.branch')" },
+                          {"field" : "debit_amount","title" :  "@lang('acc_voucher.debit_amount')" ,format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" ,template: '#= FormatNumberDecimal(debit_amount, {{$decimal}} )#',aggregates: ['sum'] ,footerTemplate: "#=FormatNumberDecimal(sum,{{$decimal}})#"},
+                          {"field" : "credit_amount","title" :  "@lang('acc_voucher.credit_amount')" ,format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" ,template: '#= FormatNumberDecimal(credit_amount, {{$decimal}} )#' ,aggregates: ['sum'] ,footerTemplate: "#=FormatNumberDecimal(sum,{{$decimal}})#"}
+                      ];
+
+      Ermis.fields_bank = {
+              id : {field :"id" ,editable : false},
+              balance_id : {field : "balance_id", defaultValue: 0 ,editable : false},
+              bank_name : {field : "bank_name" ,editable : false},
+              bank_account : {field : "bank_account" ,editable : false},
+              bank :{field : "bank" ,editable : false },
+              branch :{field : "branch" ,editable : false },
+              debit_amount :{field : "debit_amount" , defaultValue : 0 , type: "number" },
+              credit_amount :{field : "credit_amount" , defaultValue : 0 , type: "number" },
+      },
+                
 
 
       Ermis.data_expend = [{field : "t.code", column:  "@lang('group_users.code')" },

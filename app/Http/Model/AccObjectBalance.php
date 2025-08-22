@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Http\Traits\ScopesTraits;
 use App\Http\Traits\BootedTraits;
 use Illuminate\Support\Facades\DB;
+use App\Http\Model\Casts\Decimal;
 
 class AccObjectBalance extends Model
 {
@@ -20,6 +21,16 @@ class AccObjectBalance extends Model
       static::BootedBaseTrait();
   }
 
+    protected $casts = [
+          'debit_open'=> Decimal::class,
+          'credit_open'=> Decimal::class,
+          'debit'=> Decimal::class,    
+          'credit'=> Decimal::class,
+          'debit_close'=> Decimal::class,
+          'credit_close'=> Decimal::class,
+      ];
+
+    
 
       static public function get_raw() {
         $result = AccObjectBalance::WithRowNumberDb(env('CONNECTION_DB_ACC'))->orderBy('row_number','desc')->get();       

@@ -18,6 +18,7 @@ use App\Http\Model\Company;
 use App\Http\Model\Error;
 use App\Http\Model\AccSystems;
 use App\Classes\Convert;
+use App\Http\Model\AccBankAccountBalance;
 use App\Http\Model\AccStock;
 use Carbon\Carbon;
 use Exception;
@@ -299,6 +300,52 @@ public function saveDetail(Request $request){
          ];     
          AccObjectBalance::create($arr);
     }; 
+
+
+    // Lưu chi tiết Ngân hàng chốt kỳ theo tháng
+   // Tổng phát sinh nợ
+    $bank_account_debit_sum =  $detail->whereNotIn('bank_account_debit', ['',0])->groupBy('bank_account_debit')->map(function ($row) {
+               return $row->sum('amount_rate');
+    });
+     // Tổng phát sinh có
+    $bank_account_credit_sum = $detail->whereNotIn('bank_account_credit', ['',0])->groupBy('bank_account_credit')->map(function ($row) {
+               return $row->sum('amount_rate');
+      }); 
+    $bank_account_merged_account = $bank_account_debit_sum->merge($bank_account_credit_sum);
+    foreach ($bank_account_merged_account as $key=>$item ){
+     $do = 0; // Nợ đầu kỳ  
+     $co = 0; // Có đầu kỳ    
+     $de = 0; // Nợ cuối kỳ
+     $ce = 0; // Có cuối kỳ
+     $debit_sum_fi = $bank_account_debit_sum[$key]?? 0;// Tìm số tiền tài khoản nợ
+     $credit_sum_fi = $bank_account_credit_sum[$key]?? 0;// Tìm số tiền tài khoản có
+     if($period_last){
+       // Lấy bảng chi tiết đã lưu của kỳ trước (số đầu kỳ)
+       $bank_account_balance = AccBankAccountBalance::get_bank_account($period_last,$key);        
+     }else{
+       // Lấy số dư đầu kỳ
+       $bank_account_balance = AccBankAccountBalance::get_bank_account(0,$key);         
+     };
+     if($bank_account_balance){ // Nếu có phát sinh lấy nợ có
+       $do = $bank_account_balance->debit_close;
+       $co = $bank_account_balance->credit_close;
+       }
+     // Tính số nợ có cuối kỳ
+     $de = max($do - $co + $debit_sum_fi - $credit_sum_fi,0) ;
+     $ce = max($co - $do - $debit_sum_fi + $credit_sum_fi,0 );
+           $arr = [
+             'period' => $dataId,
+             'bank_account' => $key,
+             'debit_open' => $do,
+             'credit_open' => $co,
+             'debit' => $debit_sum_fi,
+             'credit' => $credit_sum_fi,
+             'debit_close' => $de,
+             'credit_close' => $ce,
+         ];     
+         AccBankAccountBalance::create($arr);
+    }; 
+
    
    // Lưu tồn kho chốt kỳ theo tháng
    $stock = AccStock::all();

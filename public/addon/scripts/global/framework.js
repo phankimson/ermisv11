@@ -248,6 +248,14 @@ var initDeleteTree = function(id,$kGrid){
 //
 
 // Select Action Kendo
+var initEdit = function(rs,grid,columns){
+  jQuery.each(rs, function (k, v) {
+  var dataItem  = grid.dataSource.get(v.id);
+    jQuery.each(columns, function (k, col) {
+      dataItem.set(col.field, v[col.field]);
+    });
+   });
+};
 
 var initAddSelect = function(rd,field){
   var ddl = jQuery('select[name="' + field + '"]').data("kendoDropDownList");

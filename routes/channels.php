@@ -21,6 +21,12 @@ Broadcast::channel('data-{action}-{key}-{com}', function ($user,$action,$key,$co
         }
 });
 
+Broadcast::channel('data-{action}-{key}-{type}-{com}', function ($user,$action,$key,$type,$com) {
+        if((string)$user->company_default = (string)$com){
+          return ['id' => $user->id ];
+        }
+});
+
 Broadcast::channel('chat-room-{com}', function ($user,$com) {
         if((string)$user->company_default = (string)$com){
           return ['id' => $user->id , 'name' => $user->username];

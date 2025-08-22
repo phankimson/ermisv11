@@ -8,11 +8,11 @@ use App\Http\Traits\BootedTraits;
 use Illuminate\Support\Facades\DB;
 use App\Http\Model\Casts\Decimal;
 
-class AccAccountBalance extends Model
+class AccBankAccountBalance extends Model
 {
   use ScopesTraits,BootedTraits;
       protected $connection = 'mysql2';
-      protected $table = 'account_balance';
+      protected $table = 'bank_account_balance';
       public $incrementing = false; // and it doesn't even have to be auto-incrementing!
       protected $guarded = []; //Thiếu dòng create bị lỗi Add [code] to fillable property to allow mass assignment on
 
@@ -21,7 +21,7 @@ class AccAccountBalance extends Model
       static::BootedBaseTrait();
   }
 
-   protected $casts = [
+    protected $casts = [
           'debit_open'=> Decimal::class,
           'credit_open'=> Decimal::class,
           'debit'=> Decimal::class,    
@@ -30,22 +30,23 @@ class AccAccountBalance extends Model
           'credit_close'=> Decimal::class,
       ];
 
+    
 
       static public function get_raw() {
-        $result = AccAccountBalance::WithRowNumberDb(env('CONNECTION_DB_ACC'))->orderBy('row_number','desc')->get();       
+        $result = AccBankAccountBalance::WithRowNumberDb(env('CONNECTION_DB_ACC'))->orderBy('row_number','desc')->get();       
         return $result;
       }
 
       static public function get_raw_export($select) {
-        $result = AccAccountBalance::WithRowNumberDb(env('CONNECTION_DB_ACC'))->orderBy('row_number','asc')
+        $result = AccBankAccountBalance::WithRowNumberDb(env('CONNECTION_DB_ACC'))->orderBy('row_number','asc')
         ->leftJoin('account_systems as a', 't.type_id', '=', 'a.id')
         ->leftJoin('period as b', 't.period', '=', 'b.id')
         ->get(['row_number',DB::raw($select)]);
         return $result;
       }
 
-      static public function get_account($period,$account_systems) {
-        $result = AccAccountBalance::where('period',$period)->where('account_systems',$account_systems)->first();
+      static public function get_bank_account($period,$bank_account) {
+        $result = AccBankAccountBalance::where('period',$period)->where('bank_account',$bank_account)->first();
         return $result;
       }
 

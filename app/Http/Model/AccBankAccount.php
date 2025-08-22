@@ -45,4 +45,17 @@ class AccBankAccount extends Model
         //$result = DB::select(DB::raw("SELECT t.row_number,{$select} from (SELECT @i:=@i+1 as row_number, s.* FROM country s, (SELECT @i:=0) AS temp order by s.created_at asc) t order by t.row_number asc"));
         return $result;
       }
+
+      static public function get_with_balance_period($period) {
+        $result = AccBankAccount::with(['balance' => function ($query) use ($period) {
+            $query->where('period', $period);
+        }])->orderBy('bank_account','desc')->leftJoin('bank', 'bank_account.bank_id', '=', 'bank.id')->get();
+        //$result = DB::select(DB::raw("SELECT t.* from (SELECT @i:=@i+1 as row_number, s.* FROM country s, (SELECT @i:=0) AS temp order by s.created_at asc) t order by t.row_number desc"));
+        return $result;
+      } 
+
+       public function balance()
+    {
+        return $this->hasMany(AccBankAccountBalance::class,'bank_account','id');
+    }
 }

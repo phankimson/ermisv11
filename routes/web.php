@@ -1496,6 +1496,7 @@ Route::group([
 ],function () {
 Route::get('/open-balance', 'show' )->name('');
 Route::get('/open-balance-data-account', 'data_account' )->name('-data-account');
+Route::get('/open-balance-data-bank', 'data_bank' )->name('-data-bank');
 Route::post('/open-balance-save', 'save' )->name('-save');
 });
 

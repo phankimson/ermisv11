@@ -29,19 +29,34 @@ var Ermis = function () {
        
       }else{
                 
-            } 
+      } 
     }
 
     var initClickTab = function(){
        jQuery('#tabs_li').on('change.uk.tab', function(e, active, previous) {
                 var tab = active.index();
+                if(tab_key != ""){
+                 initClientLeave(tab_key);   
+                };
                 tab_key = active.attr("data-key");
                 $kGridTab = jQuery("#grid_tab"+(tab+1));
                 if($kGridTab.data("kendoTreeList") === undefined && tab_key == "account"){
                     ErmisKendoTreeViewApiTemplate1($kGridTab, Ermis.link+'-data-'+tab_key, parent_id_tree, true, "incell",onChangeTreeList,onDataBoundTreeList, jQuery(window).height() * 0.75, true, Ermis.fields_account, Ermis.columns_account,Ermis.aggregates_account); 
+                }else if($kGridTab.data("kendoGrid") === undefined && tab_key == "bank"){
+                    ErmisKendoGridTemplateApi1($kGridTab, Ermis.page_size , Ermis.link+'-data-'+tab_key, onChangeGrid, false , jQuery(window).height() * 0.75, {
+                        numeric: false,
+                        previousNext: false
+                    }, true ,  Ermis.fields_bank, Ermis.columns_bank,Ermis.aggregates_account);
+                }else{
+
                 }
+                initClientReceive(tab_key);
             });
     }   
+        var onChangeGrid = function(){
+            
+        }
+
       var onDataBoundTreeList = function(){
         if(!$kGridTab.find("tr.k-footer-template:first").hasClass("hidden")){
           $kGridTab.find("tr.k-footer-template:not(:last)").addClass("hidden");  
@@ -80,11 +95,14 @@ var Ermis = function () {
 
         var initSave = function(e){
             var obj = {};
+            obj.action = 'save';
+            obj.com = Chat.com;
+            obj.key = Ermis.link;
             obj.type = tab_key;
             if (obj.type === "account") {
                 obj.dataSource = $kGridTab.data("kendoTreeList").dataSource.data();
             }
-            var postdata = "{ data:" + JSON.stringify(obj) + "}";
+            var postdata = { data: JSON.stringify(obj) };
             ErmisTemplateAjaxPost0(e,postdata, Ermis.link+'-save', 
                 function(result){
                     kendo.alert(result.message);
@@ -94,9 +112,18 @@ var Ermis = function () {
                 })
         }
 
+        var initSaveComplete = function(rd){
+            if(rd.type === "account"){
+                var grid = $kGridTab.data("kendoTreeList");
+                initEdit(rd.arr,grid,Ermis.columns_account);
+            }else{
+
+            }           
+        }
+
         var initCancel = function () {
              if (tab_key === "account") {
-                var grid = $kGridTab.data("kendoTreeList");
+                 var grid = $kGridTab.data("kendoTreeList");
                  var ds = new kendo.data.TreeListDataSource({
                         transport: {
                             read: {
@@ -116,7 +143,44 @@ var Ermis = function () {
                         change: onChangeTreeList
                     });
                     grid.setDataSource(ds);
+                 }else if(tab_key === "bank"){
+                    var grid = $kGridTab.data("kendoGrid");
+                    var ds = new kendo.data.DataSource({
+                        transport: {
+                            read: {
+                                url: Ermis.link+'-data-'+tab_key,
+                                dataType: "json",
+                            },       
+                        },
+                        pageSize: parseInt(Ermis.page_size),      
+                        schema: {
+                            model: {
+                                id: "id",
+                                fields: Ermis.fields_bank
+                            }
+                        },
+                        aggregate: Ermis.aggregates_account,
+                    });
+                    grid.setDataSource(ds);
+             }else{
+
              }
+        }
+
+        var initClientReceive = function(tab_key){      
+        Echo.private('data-save-'+Ermis.link+'-'+tab_key+'-'+Chat.com)
+          .listen('DataSendCollectionTabs', (rs) => {
+              initSaveComplete(rs.data);
+          });
+        Echo.private('data-import-'+Ermis.link+'-'+tab_key+'-'+Chat.com)
+           .listen('DataSendCollectionTabs', (rs) => {
+               initSaveComplete(rs.data);
+           });
+        }
+        
+        var initClientLeave = function(tab_key){
+            Echo.leave('data-save-'+Ermis.link+'-'+tab_key+'-'+Chat.com); 
+            Echo.leave('data-import-'+Ermis.link+'-'+tab_key+'-'+Chat.com);
         }
    
     

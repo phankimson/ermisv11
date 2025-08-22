@@ -1254,6 +1254,48 @@ var ErmisKendoGridTemplatePageApi0 = function($kGrid, pageSize , url, onChange, 
     
 };
 
+var ErmisKendoGridTemplateApi1 = function($kGrid, pageSize , url, onChange, selectable ,height, pageable , editable ,fields, columns,aggregate) {
+    var dataSource = new kendo.data.DataSource({
+        transport: {
+            read: {
+                url: url,
+                dataType: "json",
+            },           
+        },
+        pageSize: parseInt(pageSize),      
+         schema: {
+            model: {
+                id: "id",
+                fields: fields
+            }
+        },
+         aggregate: aggregate,     
+    });
+
+    var grid = $kGrid.kendoGrid({
+        dataSource: dataSource,
+        change: onChange,
+        selectable: selectable,
+        height: height,     
+        scrollable: {
+            endless: true
+        },
+        pageable: pageable,
+        groupable: true,
+        sortable: true,
+        filterable: true,     
+        columns: columns,
+        editable: editable
+    });
+    grid.data("kendoGrid").thead.kendoTooltip({
+        filter: "th",
+        content: function(e) {
+            var target = e.target; // element for which the tooltip is shown
+            return $(target).text();
+        }
+    });
+};
+
 var ErmisKendoGridTemplateApi0 = function($kGrid, pageSize , url, onChange, selectable ,height, pageable ,fields, columns) {
     var dataSource = new kendo.data.DataSource({
         transport: {

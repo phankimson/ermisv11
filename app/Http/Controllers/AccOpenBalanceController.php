@@ -10,9 +10,11 @@ use App\Http\Model\Menu;
 use App\Http\Model\Error;
 use App\Http\Model\AccAccountBalance;
 use App\Http\Model\AccAccountSystems;
+use App\Http\Model\AccBankAccount;
 use App\Http\Model\AccSystems;
 use App\Http\Model\AccHistoryAction;
 use App\Http\Resources\OpenBalanceResource;
+use App\Http\Resources\BankOpenBalanceResource;
 use Exception;
 use Illuminate\Support\Facades\DB;
 
@@ -49,6 +51,15 @@ class AccOpenBalanceController extends Controller
     }
   }
 
+  public function data_bank(){  
+    $data = BankOpenBalanceResource::collection(AccBankAccount::get_with_balance_period("0"));       
+    if($data){
+      return response()->json($data);
+    }else{
+      return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
+    }
+  }
+
 
    public function save(Request $request){   
     $type = 0;
@@ -57,31 +68,44 @@ class AccOpenBalanceController extends Controller
       $permission = $request->session()->get('per');
       $rq = json_decode($request->data);
       $arr = $rq->dataSource;
+      $rs = collect();
       $validator = Validator::make(collect($rq)->toArray(),[
             'type' => 'required',
         ]);
      $check_perrmission = true;
      if($validator->passes()){
-       foreach($arr as $k => $a){
-        if($permission['a'] == true && !$a->balance_id ){
-          $type = 2;
-          $data = new AccAccountBalance();
-          $data->period = 0;
-          $data->account_systems = $a->id;  
-          
-          // Lưu lại id vào array
-          $arr[$k]->id = $data->id;
-        }else if($permission['e'] == true && $a->balance_id){
-          $type = 3;
-          $data = AccAccountBalance::find($a->balance_id);
-        }else{
-          $check_perrmission = false;
+      if($rq->type == "account"){
+          foreach($arr as $k => $a){
+          if($permission['a'] == true && !$a->balance_id ){
+            $type = 2;
+            $data = new AccAccountBalance();
+            $data->period = 0;
+            $data->account_systems = $a->id;  
+          }else if($permission['e'] == true && $a->balance_id){
+            $type = 3;
+            $data = AccAccountBalance::find($a->balance_id);
+          }else{
+            $check_perrmission = false;
+          }
+          if($a->debit_amount>0 || $a->credit_amount>0){
+            $data->debit_close = $a->debit_amount;
+            $data->credit_close = $a->credit_amount;
+            $data->save();
+            // Lưu lại id vào array
+            $a->balance_id = $data->id;
+            // Lưu vào collect mới
+            $rs[$k] = $a;
+          }            
         }
-          $data->debit_close = $a->debit_amount;
-          $data->credit_close = $a->credit_amount;
-          $data->save();   
-          
-            // Lưu lịch sử
+      }else{
+
+      }
+       
+      // Xóa phần datasource cho đỡ nặng
+      unset($rq->dataSource);
+      // Cho vào array để đẩy lại event realtime
+      $rq->arr = $rs;
+       // Lưu lịch sử
         $h = new AccHistoryAction();
         $h ->create([
           'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -90,9 +114,8 @@ class AccOpenBalanceController extends Controller
           'url'  => $this->url,
           'dataz' => \json_encode($arr)]);
         //
-
-      }
       if($check_perrmission == true){
+        broadcast(new \App\Events\DataSendCollectionTabs($rq));
         DB::connection(env('CONNECTION_DB_ACC'))->commit();
         return response()->json(['status'=>true,'message'=> trans('messages.update_success')]);
       }else{

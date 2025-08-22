@@ -305,6 +305,9 @@ height:auto!important;
 .disabled>span.k-state-default{
     background-color: #fafafa!important;
 }
+.k-treelist-group{
+    font-weight: bold;
+}
 .k-dropdown .k-state-default{
     background-color: #fff!important;
 }

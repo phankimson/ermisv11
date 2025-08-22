@@ -21,7 +21,7 @@ class AccObject extends Model
       protected static function booted()
       {
           static::BootedBaseTrait();
-      }
+      }      
       
       static public function get_type($type){
         $result = AccObject::whereHas('object_type', function (Builder $query) use ($type) {
