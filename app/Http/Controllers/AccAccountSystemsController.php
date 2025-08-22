@@ -149,7 +149,7 @@ class AccAccountSystemsController extends Controller
          $arr->t = $type;
          DB::connection(env('CONNECTION_DB_ACC'))->commit();
          broadcast(new \App\Events\DataSend($arr));
-         return response()->json(['status'=>true,'message'=> trans('messages.update_success')]);
+         return response()->json(['status'=>true,'message'=> trans('messages.add_success')]);
        }else{
          return response()->json(['status'=>false,'message'=> trans('messages.account_is_already')]);
        }

@@ -207,6 +207,8 @@ var Ermis = function () {
             shortcut.add(key + "I", function (e) { initImport(e); });
             shortcut.add(key + "Q", function (e) { initExport(e); });
             shortcut.add(key + "L", function (e) { altair_main_header.search_show();});
+        }else{
+
         }
     };
 
@@ -686,6 +688,8 @@ var Ermis = function () {
              arr.push([row,v.data,  dataItem[v.data] ? FormatNumber(parseInt(dataItem[v.data])) : 0 ]);
            }else if (v.set === "4") {
              arr.push([row,v.data, 1]);
+           }else{
+            
            }
        });
         hot.setDataAtRowProp(arr);

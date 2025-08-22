@@ -161,7 +161,7 @@ class AccUserManagerController extends Controller
        //
        DB::commit();
        broadcast(new \App\Events\DataSend($arr));
-       return response()->json(['status'=>true,'message'=> trans('messages.update_success')]);
+       return response()->json(['status'=>true,'message'=> trans('messages.add_success')]);
        }else{
           return response()->json(['status'=>false,'message'=> trans('messages.username_is_already_taken')]);
        }

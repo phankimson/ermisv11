@@ -111,6 +111,8 @@ class AccCashReceiptsGeneralController extends Controller
                         $ca->amount = $ca->amount + $d->amount;
                         $ca->save();
                       }
+                    }else{
+                      
                     }
                   
                 });
@@ -188,6 +190,8 @@ class AccCashReceiptsGeneralController extends Controller
                         $ca->amount = $ca->amount - $d->amount;
                         $ca->save();
                       }
+                    }else{
+
                     }
 
                 });
@@ -520,6 +524,8 @@ class AccCashReceiptsGeneralController extends Controller
                 $balance->amount = 0 - ($item['amount'] * $item['rate']);
                 $balance->save();
               }                  
+             }else{
+
              }
           }
       $merged = collect($rs)->push($data);

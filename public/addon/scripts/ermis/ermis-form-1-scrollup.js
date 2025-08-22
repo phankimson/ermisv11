@@ -176,6 +176,8 @@ var Ermis = function () {
             shortcut.add(key + "Q", function (e) { initExport(e); });
             shortcut.add(key + "W", function (e) { initExportExtra(e); });
             shortcut.add(key + "L", function (e) { altair_main_header.search_show();});
+        }else{
+          
         }
     };
 

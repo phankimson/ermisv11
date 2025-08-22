@@ -164,7 +164,7 @@ class CompanySoftwareController extends Controller
               $arr->password = $data->password;
               DB::commit();   
               broadcast(new \App\Events\DataSend($arr));
-              return response()->json(['status'=>true,'message'=> trans('messages.update_success')]);
+              return response()->json(['status'=>true,'message'=> trans('messages.add_success')]);
           }else{
               return response()->json(['status'=>false,'message'=> trans('messages.no_database_found')]);
           }

@@ -86,6 +86,7 @@ class AccEntryGeneralVoucherController extends Controller
 
   public function save(Request $request){
     $type = 0;
+    $action = '';
     try{
       DB::connection(env('CONNECTION_DB_ACC'))->beginTransaction();
       $arr = json_decode($request->data);
@@ -96,13 +97,16 @@ class AccEntryGeneralVoucherController extends Controller
           $removeId = [];
           $removeId_v = [];
           $permission = $request->session()->get('per');
+          $check_permission = true;
           $user = Auth::user();
           if($permission['e'] == true && $arr->id ){
             $general = AccGeneral::find($arr->id);
             $v = $general->voucher;
             $type = 3;
+            $action = 'update';
           }else if($permission['a'] == true && !$arr->id){
             $type = 2;
+            $action = 'add';
             $general = new AccGeneral();
             $general->user = $user->id;
             // Lưu số nhảy
@@ -139,6 +143,8 @@ class AccEntryGeneralVoucherController extends Controller
                   $voucher->number = $number;
                 $v = Convert::VoucherMasker1($voucher,$prefix);
                 $voucher->save();
+          }else{
+            $check_permission = false;
           }
           $general->type = $this->menu->id;
           $general->voucher = $v;
@@ -304,12 +310,15 @@ class AccEntryGeneralVoucherController extends Controller
            'menu' => $this->menu->id,
            'url'  => $this->url,
            'dataz' => \json_encode($arr)]);
-            if($check_invoice == true){
+           if($check_invoice == true){
            DB::connection(env('CONNECTION_DB_ACC'))->rollBack();
            return response()->json(['status'=>false,'message'=> trans('messages.invoice_number_duplicate',['invoice'=>$invoice])]);
+           }else if($check_permission == false){
+           DB::connection(env('CONNECTION_DB_ACC'))->rollBack();
+           return response()->json(['status'=>false,'message'=> trans('messages.you_are_not_permission')]);
            }else{
            DB::connection(env('CONNECTION_DB_ACC'))->commit();
-           return response()->json(['status'=>true,'message'=> trans('messages.update_success'), 'voucher_name' => $v , 'dataId' => $general->id ,  'data' => $arr ]);
+           return response()->json(['status'=>true,'message'=> trans('messages.'.$action.'_success'), 'voucher_name' => $v , 'dataId' => $general->id ,  'data' => $arr ]);
            }
            //
       }else{

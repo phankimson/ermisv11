@@ -290,6 +290,8 @@ class AccVoucherController extends Controller
           return response()->json(['status'=>true,'data'=> $end_key,'field'=>$rs->content]);
         }else if($rs->content == 'remove_row'){
           return response()->json(['status'=>true,'data'=> $end_key,'field'=>$rs->content]);
+        }else{
+          return response()->json(['status'=>false,'message'=> trans('messages.no_content')]);  
         }
       }else{
       return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);

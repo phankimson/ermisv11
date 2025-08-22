@@ -278,10 +278,14 @@ var Ermis = function() {
                      item.set("checkbox", ""); 
                      var checkHeader = false;
                      jQuery('#header-chb-' + grid_header_key)[0].checked = checkHeader;   
+                }else{
+
                 }                                    
             }else if(e.action === "itemchange" && e.field === "payment_rate" ){
                 // here you can access model items using e.items[0].modelName;
                 item.set("payment_rate", item.payment * item.rate);
+            }else{
+
             }         
             
              if(e.action === "itemchange" && (e.field === "payment" || e.field === "payment_rate")){
@@ -537,6 +541,8 @@ var Ermis = function() {
             jQuery(".voucher").val(voucher);           
             jQuery(".no_copy_value").val(0);
             initDefaultIdGrid();
+        }else{
+
         }
     };
 
@@ -1036,6 +1042,8 @@ var Ermis = function() {
                 $kWindow3.close();
             } else if ($kWindow6.element.is(":hidden") === false) {
                 $kWindow6.close();
+            }else{
+
             }
         });
     };
@@ -1094,6 +1102,8 @@ var Ermis = function() {
                 data[v.field] = 1;
             } else if (v.set === "6") {
                 data[v.field] = dataItem[v.field];
+            }else{
+                
             }
            
         }); 

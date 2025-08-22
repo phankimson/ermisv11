@@ -27,7 +27,9 @@ var Ermis = function () {
         
       }else if(flag == 3){
        
-      }
+      }else{
+                
+            } 
     }
 
     var initClickTab = function(){

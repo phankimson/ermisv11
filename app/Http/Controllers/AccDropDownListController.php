@@ -285,6 +285,8 @@ class AccDropDownListController extends Controller
         $account = AccAccountSystems::get_code_like($doc->id,$setting->account_group);
       }else if($setting && $setting->account_filter){
         $account = AccAccountSystems::get_wherein_id($doc->id,$setting->account_filter->pluck('account_systems'));
+      }else{
+
       }    
     } 
     $data = LangDropDownResource::collection($account);
@@ -561,6 +563,8 @@ class AccDropDownListController extends Controller
            $credit_default = new LangDropDownResource(AccAccountSystems::find($setting_voucher->credit));
          } 
          $data = $credit_default;
+      }else{
+
       }      
      
      return response()->json($data)->withCallback($request->input('callback'));
@@ -591,6 +595,8 @@ class AccDropDownListController extends Controller
       }
       
       $data = $credit_account;
+    }else{
+      
     }  
     if($val){
       $data = $data->filter(function ($item) use ($val) {

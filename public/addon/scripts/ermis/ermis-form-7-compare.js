@@ -119,7 +119,9 @@ var Ermis = function () {
          shortcut.add(key + "C", function(e) {
             initUnCheck(e);
         });
-      }
+      }else{
+                
+             } 
     }
 
     var btnFilterGrid = function(){
@@ -175,7 +177,9 @@ var Ermis = function () {
                             operator: "contains",
                             value   : searchValue_tab
                         });
-                    }             
+                    }else{
+                
+                     }              
                 });
                 $kGrid.data("kendoGrid").dataSource.filter({
                     logic: "and",

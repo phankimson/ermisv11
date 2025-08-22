@@ -49,6 +49,8 @@ var Ermis = function () {
         jQuery('.delete').on('click', initDelete);
       }else if ( flag === 4 ){// CANCEL , SAVE
 
+      }else{
+
       }
     }
 
@@ -148,6 +150,8 @@ var Ermis = function () {
                         }else{
                           mySwitch.prop('checked', false).trigger("click");
                         }
+                      }else{
+                        
                       }
                     });
               altair_md.card_show_hide($card_note, void 0, t, void 0);
@@ -202,6 +206,8 @@ var Ermis = function () {
           }else if (rs.data.type == 3){ // Remove
             var c = jQuery('.note_link[data-note-id='+rs.data.id+']');
             c.find('span.md-list-heading').text(rs.data.title);
+          }else{
+
           }
 
         });

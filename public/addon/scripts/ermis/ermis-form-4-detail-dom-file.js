@@ -324,6 +324,8 @@ var Ermis = function() {
                 item.set("tax_amount_rate", item.tax_amount * item.tax_rate );
             }else if(e.action === "itemchange" && (e.field === "tax_amount_rate" || e.field === "tax_rate") ){
                 item.set("tax_amount_rate", item.tax_amount * item.tax_rate );
+            }else{
+
             }
             // finally, refresh the grid to show the changes
             // Không bỏ refresh được
@@ -347,6 +349,8 @@ var Ermis = function() {
                 item.rate == 0 ? item.set("amount_rate",0) : item.set("amount_rate",item.amount * item.rate);
             }else if(e.action === "itemchange" && e.field === "amount_rate" ){
                 item.set("amount_rate",item.amount * item.rate);
+            }else{
+
             }   
             if(e.action === "itemchange" && (e.field === "amount_rate" || e.field === "rate" || e.field === "amount" )){
                     grid.refresh();
@@ -488,6 +492,8 @@ var Ermis = function() {
                             grid.cancelChanges(); // CLOSE ALL
                         }
                     });
+                }else{
+
                 }
             }
         });
@@ -779,6 +785,8 @@ var Ermis = function() {
             jQuery(".no_copy_value").val(0);
             initDefaultIdGrid();
             reference_by =[];
+        }else{
+            
         }
     };
 
@@ -1291,6 +1299,8 @@ var Ermis = function() {
                 //$kGrid.data("kendoGrid").cancelChanges(); // CLOSE ALL
                 //$kGrid.data("kendoGrid").closeCell();
                 $kGridTab.data("kendoGrid").cancelRow();
+            }else{
+
             }
         });
     };
@@ -1332,6 +1342,8 @@ var Ermis = function() {
                 } else {
                     kendo.alert(Lang.get('messages.no_row'));
                 }
+            }else{
+
             }
         });
     };
@@ -1374,6 +1386,8 @@ var Ermis = function() {
                 $kWindow4.close();
             } else if ($kWindow5.element.is(":hidden") === false) {
                 $kWindow5.close();
+            }else{
+
             }
         });
     };
@@ -1439,6 +1453,8 @@ var Ermis = function() {
                 data.set(v.field,1);
             } else if (v.set === "6") {
                 data.set(v.field,dataItem[v.field]);                
+            }else{
+
             }
            
         }); 

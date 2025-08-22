@@ -104,6 +104,8 @@ class AccCashPaymentGeneralController extends Controller
                         $ba->amount = $ba->amount - $d->amount;
                         $ba->save();
                       }
+                    }else{
+
                     }
                     // Lưu số lại số tồn bên có
                     if(substr($d->credit()->first()->code,0,3) == "111"){
@@ -180,6 +182,8 @@ class AccCashPaymentGeneralController extends Controller
                         $ba->amount = $ba->amount + $d->amount;
                         $ba->save();
                       }
+                    }else{
+
                     }
                     // Lưu số lại số tồn bên có
                     if(substr($d->credit()->first()->code,0,3) == "111"){
@@ -505,6 +509,8 @@ class AccCashPaymentGeneralController extends Controller
                 $balance->amount = $item['amount'] * $item['rate'];
                 $balance->save();
               }                  
+             }else{
+              
              }
             // Lưu số tồn bên Có
             if(substr($item['credit'],0,3) === '111'){   

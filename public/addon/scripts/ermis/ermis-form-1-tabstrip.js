@@ -206,6 +206,8 @@ var Ermis = function () {
             //enable the items
             tabstrip.enable(items,true);
             }
+        }else{
+          
         }
     };
 

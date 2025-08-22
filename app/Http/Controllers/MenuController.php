@@ -139,7 +139,7 @@ class MenuController extends Controller
         $arr->t = $type;
         DB::commit();  
         broadcast(new \App\Events\DataSend($arr));
-        return response()->json(['status'=>true,'message'=> trans('messages.update_success')]);
+        return response()->json(['status'=>true,'message'=> trans('messages.add_success')]);
       }else if($permission['e'] == true && $arr->id){
         $type = 3;
         $data = Menu::find($arr->id);

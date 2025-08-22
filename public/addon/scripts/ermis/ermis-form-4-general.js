@@ -188,6 +188,8 @@ var Ermis = function () {
             //shortcut.add(key + "W", function (e) { initWrite(e); });
             shortcut.add(key + "D", function (e) { initDelete(e); });
             //shortcut.add(key + "E", function (e) { initUnWrite(e); });
+        }else{
+          
         }
     };
 

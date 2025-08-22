@@ -129,7 +129,7 @@ class AccHistoryActionController extends Controller
         $arr->t = $type;
         DB::connection(env('CONNECTION_DB_ACC'))->commit();
         broadcast(new \App\Events\DataSend($arr));
-        return response()->json(['status'=>true,'message'=> trans('messages.update_success')]);
+        return response()->json(['status'=>true,'message'=> trans('messages.add_success')]);
       }else if($permission['e'] == true && $arr->id){
         $type = 3;
         $data = AccHistoryAction::find($arr->id);

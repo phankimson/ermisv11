@@ -98,6 +98,8 @@ class Convert
     }else if(strpos($format, "YYYY")!== false || strpos($format, "YY")!== false){
       $obj['start_date'] = Carbon::parse($date_val)->format('Y-01-01');
       $obj['end_date'] = Carbon::parse($date_val)->format('Y-12-t');
+    }else{
+      
     }
     return $obj;    
   }

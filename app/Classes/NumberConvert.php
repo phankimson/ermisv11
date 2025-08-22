@@ -166,6 +166,8 @@ static public function Word($amount,$lang)
     {
         // throw new Exception('numberOfDecimals: ' . $value . ' is not a number!');
         return false;
+    }else{
+       return false;
     }
 
     return strlen($value) - strrpos($value, '.') - 1;
