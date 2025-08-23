@@ -24,6 +24,11 @@ var Chat = function () {
       }
     };
 
+    var initUrlRead = function(){
+      url_read = window.location.pathname;
+      console.log(url_read);
+    }
+
 
     var initCheckStatus = function(){
       Echo.join('chat-room-'+Chat.com)
@@ -359,6 +364,7 @@ var Chat = function () {
             initEndChatAi();
             initSendChatAI();
             loadModal();
+            initUrlRead();
         }
 
     };
