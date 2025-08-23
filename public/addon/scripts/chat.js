@@ -25,8 +25,11 @@ var Chat = function () {
     };
 
     var initUrlRead = function(){
-      url_read = window.location.pathname;
-      console.log(url_read);
+      var pathname = window.location.pathname;
+      var arr = pathname.split("/");
+      if(arr.length >= 3){
+        url_read = UrlString(arr[1]+'/'+arr[2]);
+      }
     }
 
 
@@ -61,7 +64,7 @@ var Chat = function () {
            arr['page'] = k;
            arr['com'] = Chat.com;
            var postdata = { data: JSON.stringify(arr) };       
-           ErmisTemplateAjaxPost0(e,postdata,url_read+'load-chat-user',
+           ErmisTemplateAjaxPost0(e,postdata,url_read+'/load-chat-user',
            function(result){
              jQuery.each(result.data, function (k, v) {
                if(v.user_send == user_receipt && v.user_receipt == user_receipt){
@@ -97,7 +100,7 @@ var Chat = function () {
         arr['page'] = k;
         arr['com'] = Chat.com;
         var postdata = { data: JSON.stringify(arr) };
-        ErmisTemplateAjaxPost0(e,postdata,url_read+'load-chat-user',
+        ErmisTemplateAjaxPost0(e,postdata,url_read+'/load-chat-user',
         function(result){
           jQuery.each(result.data, function (k, v) {
             if(v.user_send == user_receipt && v.user_receipt == user_receipt){
@@ -126,7 +129,7 @@ var Chat = function () {
            arr['user_send'] = jQuery("#session_user").val();
            arr['com'] = Chat.com;
            var postdata = { data: JSON.stringify(arr) };
-           ErmisTemplateAjaxPost0(e,postdata,url_read+'chat',
+           ErmisTemplateAjaxPost0(e,postdata,url_read+'/chat',
            function(result){
              jQuery("#content_message").val("");
              bindDataUser(arr,'prepend',2);
@@ -190,7 +193,7 @@ var Chat = function () {
            arr['message'] = jQuery("#editor").data("kendoEditor").value();
            arr['com'] = Chat.com;
            var postdata = { data: JSON.stringify(arr) };
-           ErmisTemplateAjaxPost0(e,postdata,url_read+'timeline',
+           ErmisTemplateAjaxPost0(e,postdata,url_read+'/timeline',
            function(result){
 
            },function(result){
@@ -272,7 +275,7 @@ var Chat = function () {
         jQuery("#view_more").on("click",function(e){
           e.preventDefault();
           var postdata = { data: JSON.stringify(i) };
-          ErmisTemplateAjaxPost0(e,postdata,url_read+'view-more-timeline',
+          ErmisTemplateAjaxPost0(e,postdata,url_read+'/view-more-timeline',
           function(result){
             jQuery.each(result.data, function (k, v) {
               bindData(v,"append");
@@ -313,7 +316,7 @@ var Chat = function () {
            var arr = {}
            arr['message'] = jQuery("#content_message_ai").val();
            var postdata = { data: JSON.stringify(arr) };
-           ErmisTemplateAjaxPost0(e,postdata,url_read+'chat-ai',
+           ErmisTemplateAjaxPost0(e,postdata,url_read+'/chat-ai',
            function(result){
              jQuery("#content_message_ai").val("");
              bindMessageAi(result.content,arr['message']);
