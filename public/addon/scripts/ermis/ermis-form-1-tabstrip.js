@@ -99,7 +99,7 @@ var Ermis = function () {
         if (flag === 1) {//DEFAULT
             jQuery('.save,.cancel').addClass('disabled');
             jQuery('.save,.cancel').off('click');
-            jQuery('input,textarea').not('.header_main_search_input').not('#content_message').not('#files').not('.k-filter-menu input').addClass('disabled');
+            jQuery('input,textarea').not('.header_main_search_input').not('#content_message').not('#content_message_ai').not('#files').not('.k-filter-menu input').addClass('disabled');
             jQuery(".droplist").not("#action-event").not(".not_disabled").addClass('disabled');
             jQuery('input:checkbox').parent().addClass('disabled');
             jQuery('.k-select,.k-datepicker').addClass('disabled');
