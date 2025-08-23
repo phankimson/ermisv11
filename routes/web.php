@@ -54,6 +54,10 @@ Route::group([
   Route::post('chat', 'doChat');
   });
 
+  Route::controller(ChatBotAiController::class)->group(function () {
+  Route::post('chat-ai', 'doChatBotAI' );
+  });
+
   Route::controller(UserController::class)->group(function () {
   Route::post('login','doLogin');
   Route::post('/profile','updateProfile' );
@@ -410,6 +414,10 @@ Route::group([
   Route::post('view-more-timeline', 'viewMore' );
   Route::post('load-chat-user', 'loadChatUser' );
   Route::post('chat', 'doChat' );
+  });
+
+  Route::controller(ChatBotAiController::class)->group(function () {
+  Route::post('chat-ai', 'doChatBotAI' );
   });
 
   // Permission - Quyền

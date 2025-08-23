@@ -41,4 +41,6 @@ return [
     "diagrams"=>"Diagrams",
     "analytic"=>"Analytic",
     'failed_jobs'=>"Failed jobs",
+    'begin_assitant_ai'=>"Begin with Bot Assitant Ai",
+    'end_conversation'=>"End of conversation",
 ];

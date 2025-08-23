@@ -66,7 +66,7 @@
                   <li data-user="{{ $u->id }}">
                       <div class="md-list-addon-element">
                           <span class="element-status"></span>
-                          <img class="md-user-image md-list-addon-avatar" src="{{ $u->avatar != "" ? url($u->avatar) : url('addon/img/avatar.png')  }}" alt="Avatar"/>
+                          <img class="md-user-image md-list-addon-avatar" src="{{ $u->avatar != '' ? url($u->avatar) : url('addon/img/avatar.png')  }}" alt="Avatar"/>
                       </div>
                       <div class="md-list-content">
                           <div class="md-list-action-placeholder"></div>
@@ -92,67 +92,63 @@
                     </div>
                 </li>
                 <li>
-                    <h4 class="heading_c uk-margin-small-bottom uk-margin-top">General Settings</h4>
-                    <ul class="md-list">
-                        <li>
-                            <div class="md-list-content">
-                                <div class="uk-float-right">
-                                    <input type="checkbox" data-switchery data-switchery-size="small" checked id="settings_site_online" name="settings_site_online" />
-                                </div>
-                                <span class="md-list-heading">Site Online</span>
-                                <span class="uk-text-muted uk-text-small">Lorem ipsum dolor sit amet&hellip;</span>
+                    <div id="chat-box-ai-begin">
+                        <img src="{{url('addon/img/ai-chatbox.png')}}">
+                        <div class="uk-flex uk-height-medium uk-background-muted uk-margin uk-text-center">       
+                                <div class="uk-margin-auto uk-margin-auto-vertical uk-width-1-2@s uk-card uk-card-default uk-card-body">      
+                            <a class="md-btn md-btn-primary md-btn-mini md-btn-wave-light md-btn-icon" id="begin" href="javascript:void(0)">
+                                <i class="uk-icon-star"></i>
+                                @lang('index.begin_assitant_ai')
+                            </a>
+                        </div>
+                        </div>
+                    </div>             
+                    <div id="chat-box-ai-open" style="display:none">
+                            <div class="uk-input-group">
+                                <input type="text" class="md-input" name="content_message_ai" id="content_message_ai" placeholder="Send message">
+                                <span class="uk-input-group-addon">
+                                    <a href="javascript:;" id="submit_message_ai"><i class="material-icons md-24">&#xE163;</i></a>
+                                </span>
                             </div>
-                        </li>
-                        <li>
-                            <div class="md-list-content">
-                                <div class="uk-float-right">
-                                    <input type="checkbox" data-switchery data-switchery-size="small" id="settings_seo" name="settings_seo" />
+                            
+                            <div class="uk-margin chat_box_small" id="chat_ai">
+                                    <div style="display:none" class="md-card uk-margin-medium-bottom chat_message_ai_load">
+                                    <div class="md-card-toolbar">
+                                        <div class="md-card-toolbar-actions">
+                                             <a class="load-data-modal" href="javascript:;"><i class="md-icon material-icons">open_in_new</i></a>
+                                            <!--<i class="md-icon material-icons md-card-toggle">&#xE316;</i>
+                                           <i class="md-icon material-icons md-card-close">&#xE14C;</i>-->
+                                        </div>
+                                        <h3 class="md-card-toolbar-heading-text">
+                                            Panel 2
+                                        </h3>
+                                    </div>
+                                    <div class="md-card-content">
+                                        <pre class="content-ai">
+                                            Xin chào. 
+                                        </pre>                                                             
+                                    </div>
                                 </div>
-                                <span class="md-list-heading">Search Engine Friendly URLs</span>
-                                <span class="uk-text-muted uk-text-small">Lorem ipsum dolor sit amet&hellip;</span>
+                                  
                             </div>
-                        </li>
-                        <li>
-                            <div class="md-list-content">
-                                <div class="uk-float-right">
-                                    <input type="checkbox" data-switchery data-switchery-size="small" id="settings_url_rewrite" name="settings_url_rewrite" />
+
+                            <div id="modal_overflow" class="uk-modal">
+                                <div class="uk-modal-dialog uk-modal-dialog-large">
+                                    <button type="button" class="uk-modal-close uk-close"></button>   
+                                    <h2 class="heading_a">Panel 1</h2>                              
+                                    <div class="uk-overflow-container">
+                                        <pre class="content-ai">
+                                             Test Xin chào. 
+                                        </pre>
+                                    </div>
                                 </div>
-                                <span class="md-list-heading">Use URL rewriting</span>
-                                <span class="uk-text-muted uk-text-small">Lorem ipsum dolor sit amet&hellip;</span>
                             </div>
-                        </li>
-                    </ul>
-                    <hr class="md-hr">
-                    <h4 class="heading_c uk-margin-small-bottom uk-margin-top">Other Settings</h4>
-                    <ul class="md-list">
-                        <li>
-                            <div class="md-list-content">
-                                <div class="uk-float-right">
-                                    <input type="checkbox" data-switchery data-switchery-size="small" data-switchery-color="#7cb342" checked id="settings_top_bar" name="settings_top_bar" />
+                            <div class="uk-flex uk-height-medium uk-background-muted uk-margin uk-text-center">
+                                 <div class="uk-margin-auto uk-margin-auto-vertical uk-width-1-2@s uk-card uk-card-default uk-card-body">
+                                <a id="end_conversation" class="k-button k-primary" >@lang('index.end_conversation')</a>
                                 </div>
-                                <span class="md-list-heading">Top Bar Enabled</span>
-                                <span class="uk-text-muted uk-text-small">Lorem ipsum dolor sit amet&hellip;</span>
                             </div>
-                        </li>
-                        <li>
-                            <div class="md-list-content">
-                                <div class="uk-float-right">
-                                    <input type="checkbox" data-switchery data-switchery-size="small" data-switchery-color="#7cb342" id="settings_api" name="settings_api" />
-                                </div>
-                                <span class="md-list-heading">Api Enabled</span>
-                                <span class="uk-text-muted uk-text-small">Lorem ipsum dolor sit amet&hellip;</span>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="md-list-content">
-                                <div class="uk-float-right">
-                                    <input type="checkbox" data-switchery data-switchery-size="small" data-switchery-color="#d32f2f" id="settings_minify_static" checked name="settings_minify_static" />
-                                </div>
-                                <span class="md-list-heading">Minify JS files automatically</span>
-                                <span class="uk-text-muted uk-text-small">Lorem ipsum dolor sit amet&hellip;</span>
-                            </div>
-                        </li>
-                    </ul>
+                    </div>    
                 </li>
             </ul>
         </div>

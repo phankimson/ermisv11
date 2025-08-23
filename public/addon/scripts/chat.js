@@ -2,6 +2,7 @@ var Chat = function () {
     var i = 1,
     k = 1,
     user_receipt = "",
+    sw ="",
     crit_load = false;
 
     let channel = Echo.private('chat-user');
@@ -39,7 +40,7 @@ var Chat = function () {
               UIkitshowNotify ("<a href='javascript:;' class='notify-action'>x</a>"+ user.name + " " + Lang.get('messages.offline') , null , 0 , null,"top-right");
               initStatusChat(user.id,0);
         });
-    };
+    };  
 
     var initLoadChatUserScroll = function(){
       $(".scrollbar-inner").on("scroll",function(e){
@@ -54,8 +55,8 @@ var Chat = function () {
            arr['user_receipt'] = user_receipt;
            arr['page'] = k;
            arr['com'] = Chat.com;
-           var postdata = { data: JSON.stringify(arr) };
-           ErmisTemplateAjaxPost0(e,postdata,'load-chat-user',
+           var postdata = { data: JSON.stringify(arr) };       
+           ErmisTemplateAjaxPost0(e,postdata,sw+'load-chat-user',
            function(result){
              jQuery.each(result.data, function (k, v) {
                if(v.user_send == user_receipt && v.user_receipt == user_receipt){
@@ -91,7 +92,7 @@ var Chat = function () {
         arr['page'] = k;
         arr['com'] = Chat.com;
         var postdata = { data: JSON.stringify(arr) };
-        ErmisTemplateAjaxPost0(e,postdata,'load-chat-user',
+        ErmisTemplateAjaxPost0(e,postdata,sw+'load-chat-user',
         function(result){
           jQuery.each(result.data, function (k, v) {
             if(v.user_send == user_receipt && v.user_receipt == user_receipt){
@@ -120,7 +121,7 @@ var Chat = function () {
            arr['user_send'] = jQuery("#session_user").val();
            arr['com'] = Chat.com;
            var postdata = { data: JSON.stringify(arr) };
-           ErmisTemplateAjaxPost0(e,postdata,'chat',
+           ErmisTemplateAjaxPost0(e,postdata,sw+'chat',
            function(result){
              jQuery("#content_message").val("");
              bindDataUser(arr,'prepend',2);
@@ -184,7 +185,7 @@ var Chat = function () {
            arr['message'] = jQuery("#editor").data("kendoEditor").value();
            arr['com'] = Chat.com;
            var postdata = { data: JSON.stringify(arr) };
-           ErmisTemplateAjaxPost0(e,postdata,'timeline',
+           ErmisTemplateAjaxPost0(e,postdata,sw+'timeline',
            function(result){
 
            },function(result){
@@ -223,6 +224,7 @@ var Chat = function () {
             jQuery(".chat_box.chat_box_colors_a").append(item);
         }
       }
+
       var bindData = function(data,position){
         var item = jQuery(".timeline_item").first().clone(true);
         item.find(".timeline_icon").removeClass("timeline_icon_success");
@@ -265,8 +267,7 @@ var Chat = function () {
         jQuery("#view_more").on("click",function(e){
           e.preventDefault();
           var postdata = { data: JSON.stringify(i) };
-
-          ErmisTemplateAjaxPost0(e,postdata,'view-more-timeline',
+          ErmisTemplateAjaxPost0(e,postdata,sw+'view-more-timeline',
           function(result){
             jQuery.each(result.data, function (k, v) {
               bindData(v,"append");
@@ -279,6 +280,71 @@ var Chat = function () {
         })
       };
 
+
+      var initBeginChatAi = function(){
+        jQuery('#begin').click(function(){
+          jQuery("#chat-box-ai-begin").fadeOut( "slow", function() {
+              jQuery("#chat-box-ai-open").fadeIn( "slow", function() {
+                jQuery("#content_message_ai").blur()
+            });
+          });
+        })
+      };
+
+      var initEndChatAi = function(){
+        jQuery('#end_conversation').click(function(){
+          jQuery("#chat-box-ai-open").fadeOut( "slow", function() {
+            jQuery("#chat-box-ai-begin").fadeIn( "slow", function() {
+              jQuery(".item_load").remove();
+            });
+           });
+        })        
+      };
+
+
+      var initSendChatAI = function(){
+        jQuery("#submit_message_ai").on("click",function(e){
+           e.preventDefault();
+           var arr = {}
+           arr['message'] = jQuery("#content_message_ai").val();
+           var postdata = { data: JSON.stringify(arr) };
+           ErmisTemplateAjaxPost0(e,postdata,sw+'chat-ai',
+           function(result){
+             jQuery("#content_message_ai").val("");
+             bindMessageAi(result.content,arr['message']);
+             jQuery("#content_message_ai").blur();
+           },function(result){
+             kendo.alert(result.message);
+           })
+        })
+    };
+
+    var bindMessageAi = function(data,user,position){
+        var item = jQuery(".chat_message_ai_load").first().clone(true);
+        item.removeAttr("style");
+        item.addClass("item_load");
+        item.find('.md-card-toolbar-heading-text').text(user);
+        item.find('.content-ai').text(data);
+        if(position == 'prepend'){
+            jQuery("#chat_ai").prepend(item);
+        }else{
+            jQuery("#chat_ai").append(item);
+        }
+        item.find('.load-data-modal').click();
+      }
+
+    var loadModal = function(){
+        jQuery('.load-data-modal').click(function(e){
+          var data = jQuery(this).parents(".chat_message_ai_load");
+          var item_modal = jQuery("#modal_overflow");
+          item_modal.find(".heading_a").text(data.find('.md-card-toolbar-heading-text').text());
+          item_modal.find(".content-ai").text(data.find('.content-ai').text());
+          var modal = UIkit.modal("#modal_overflow");
+          modal.show();
+        })         
+    }
+
+
     return {
 
         init: function () {
@@ -289,6 +355,10 @@ var Chat = function () {
             initLoadChatUserScroll();
             initSendChatUser();
             initTypeChat();
+            initBeginChatAi();
+            initEndChatAi();
+            initSendChatAI();
+            loadModal();
         }
 
     };

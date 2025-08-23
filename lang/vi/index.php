@@ -40,4 +40,6 @@ return [
     "diagrams"=>"Sơ đồ",
     "analytic"=>"Biểu đồ",
     'failed_jobs'=>"Jobs thất bại",
+    'begin_assitant_ai'=>"Bắt đầu với trợ lý ảo",
+    'end_conversation'=>"Kết thúc trò chuyện",
 ];
