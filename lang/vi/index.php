@@ -18,6 +18,7 @@ return [
     'logout' => 'Đăng xuất',
     'add_event' => 'Thêm sự kiện',
     'view_more' => 'Xem thêm',
+    'view_answer' => 'Xem câu trả lời',
     'my_profile' => 'Thông tin cá nhân',
     "change_info" =>"Thay đổi thông tin",
     "change_password" =>"Thay đổi mật khẩu",

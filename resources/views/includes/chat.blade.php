@@ -112,19 +112,13 @@
                             </div>
                             
                             <div class="uk-margin chat_box_small" id="chat_ai">
-                                    <div style="display:none" class="md-card uk-margin-medium-bottom chat_message_ai_load">
-                                    <div class="md-card-toolbar">
-                                        <div class="md-card-toolbar-actions">
-                                             <a class="load-data-modal" href="javascript:;"><i class="md-icon material-icons">open_in_new</i></a>
-                                            <!--<i class="md-icon material-icons md-card-toggle">&#xE316;</i>
-                                           <i class="md-icon material-icons md-card-close">&#xE14C;</i>-->
-                                        </div>
-                                        <h3 class="md-card-toolbar-heading-text">
-                                            Panel 2
-                                        </h3>
-                                    </div>
+                                    <div style="display:none" class="md-card md-card-primary chat_message_ai_load">                                   
                                     <div class="md-card-content">
-                                        <pre class="content-ai">
+                                        <p class="md-card-toolbar-heading-text uk-switcher">
+                                            Panel 2
+                                        </p>                                       
+                                        <a class="load-data-modal" href="javascript:;">@lang('index.view_answer')<i class="md-icon material-icons">open_in_new</i></a>                                       
+                                        <pre style="display:none" class="content-ai">
                                             Xin chào. 
                                         </pre>                                                             
                                     </div>
