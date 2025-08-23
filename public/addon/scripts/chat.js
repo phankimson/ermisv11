@@ -55,7 +55,7 @@ var Chat = function () {
            arr['page'] = k;
            arr['com'] = Chat.com;
            var postdata = { data: JSON.stringify(arr) };       
-           ErmisTemplateAjaxPost0(e,postdata,'load-chat-user',
+           ErmisTemplateAjaxPost0(e,postdata,'/load-chat-user',
            function(result){
              jQuery.each(result.data, function (k, v) {
                if(v.user_send == user_receipt && v.user_receipt == user_receipt){
@@ -91,7 +91,7 @@ var Chat = function () {
         arr['page'] = k;
         arr['com'] = Chat.com;
         var postdata = { data: JSON.stringify(arr) };
-        ErmisTemplateAjaxPost0(e,postdata,'load-chat-user',
+        ErmisTemplateAjaxPost0(e,postdata,'/load-chat-user',
         function(result){
           jQuery.each(result.data, function (k, v) {
             if(v.user_send == user_receipt && v.user_receipt == user_receipt){
@@ -120,7 +120,7 @@ var Chat = function () {
            arr['user_send'] = jQuery("#session_user").val();
            arr['com'] = Chat.com;
            var postdata = { data: JSON.stringify(arr) };
-           ErmisTemplateAjaxPost0(e,postdata,'chat',
+           ErmisTemplateAjaxPost0(e,postdata,'/chat',
            function(result){
              jQuery("#content_message").val("");
              bindDataUser(arr,'prepend',2);
@@ -184,7 +184,7 @@ var Chat = function () {
            arr['message'] = jQuery("#editor").data("kendoEditor").value();
            arr['com'] = Chat.com;
            var postdata = { data: JSON.stringify(arr) };
-           ErmisTemplateAjaxPost0(e,postdata,'timeline',
+           ErmisTemplateAjaxPost0(e,postdata,'/timeline',
            function(result){
 
            },function(result){
@@ -266,7 +266,7 @@ var Chat = function () {
         jQuery("#view_more").on("click",function(e){
           e.preventDefault();
           var postdata = { data: JSON.stringify(i) };
-          ErmisTemplateAjaxPost0(e,postdata,'view-more-timeline',
+          ErmisTemplateAjaxPost0(e,postdata,'/view-more-timeline',
           function(result){
             jQuery.each(result.data, function (k, v) {
               bindData(v,"append");
@@ -307,7 +307,7 @@ var Chat = function () {
            var arr = {}
            arr['message'] = jQuery("#content_message_ai").val();
            var postdata = { data: JSON.stringify(arr) };
-           ErmisTemplateAjaxPost0(e,postdata,'chat-ai',
+           ErmisTemplateAjaxPost0(e,postdata,'/chat-ai',
            function(result){
              jQuery("#content_message_ai").val("");
              bindMessageAi(result.content,arr['message']);
