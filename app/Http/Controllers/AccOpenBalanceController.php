@@ -99,7 +99,6 @@ class AccOpenBalanceController extends Controller
           }            
         }
       }else if($rq->type == "bank"){
-        dd($arr);
         foreach($arr as $k => $a){        
           if($permission['a'] == true && !$a->balance_id ){
             $type = 2;
