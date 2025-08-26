@@ -41,20 +41,22 @@ var Ermis = function () {
                 tab_key = active.attr("data-key");
                 $kGridTab = jQuery("#grid_tab"+(tab+1));
                 if($kGridTab.data("kendoTreeList") === undefined && tab_key == "account"){
-                    ErmisKendoTreeViewApiTemplate1($kGridTab, Ermis.link+'-data-'+tab_key, parent_id_tree, true, "incell",onChangeTreeList,onDataBoundTreeList, jQuery(window).height() * 0.75, true, Ermis.fields_account, Ermis.columns_account,Ermis.aggregates_account); 
+                    ErmisKendoTreeViewApiTemplate1($kGridTab, Ermis.link+'-data-'+tab_key, parent_id_tree, true, "incell",onChangeTreeList,onDataBoundTreeList, jQuery(window).height() * 0.75, true, Ermis.fields_account, Ermis.columns_account,Ermis.aggregates); 
                 }else if($kGridTab.data("kendoGrid") === undefined && tab_key == "bank"){
                     ErmisKendoGridTemplateApi1($kGridTab, Ermis.page_size , Ermis.link+'-data-'+tab_key, onChangeGrid, false , jQuery(window).height() * 0.75, {
                         numeric: false,
                         previousNext: false
-                    }, true ,  Ermis.fields_bank, Ermis.columns_bank,Ermis.aggregates_account);
+                    }, true ,  Ermis.fields_bank, Ermis.columns_bank,Ermis.aggregates);
                 }else{
 
                 }
                 initClientReceive(tab_key);
             });
     }   
-        var onChangeGrid = function(){
-            
+        var onChangeGrid = function(e){
+            setTimeout(function() {
+                $kGridTab.data("kendoGrid").refresh();
+            }, 0);
         }
 
       var onDataBoundTreeList = function(){
@@ -101,6 +103,10 @@ var Ermis = function () {
             obj.type = tab_key;
             if (obj.type === "account") {
                 obj.dataSource = $kGridTab.data("kendoTreeList").dataSource.data();
+            }else if(obj.type === "bank"){
+                obj.dataSource = $kGridTab.data("kendoGrid").dataSource.data();
+            }else{
+
             }
             var postdata = { data: JSON.stringify(obj) };
             ErmisTemplateAjaxPost0(e,postdata, Ermis.link+'-save', 

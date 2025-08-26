@@ -1269,12 +1269,12 @@ var ErmisKendoGridTemplateApi1 = function($kGrid, pageSize , url, onChange, sele
                 fields: fields
             }
         },
-         aggregate: aggregate,     
+         aggregate: aggregate,
+         change: onChange    
     });
 
     var grid = $kGrid.kendoGrid({
-        dataSource: dataSource,
-        change: onChange,
+        dataSource: dataSource,    
         selectable: selectable,
         height: height,     
         scrollable: {

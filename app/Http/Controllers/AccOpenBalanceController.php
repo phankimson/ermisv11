@@ -11,6 +11,7 @@ use App\Http\Model\Error;
 use App\Http\Model\AccAccountBalance;
 use App\Http\Model\AccAccountSystems;
 use App\Http\Model\AccBankAccount;
+use App\Http\Model\AccBankAccountBalance;
 use App\Http\Model\AccSystems;
 use App\Http\Model\AccHistoryAction;
 use App\Http\Resources\OpenBalanceResource;
@@ -87,9 +88,9 @@ class AccOpenBalanceController extends Controller
           }else{
             $check_perrmission = false;
           }
-          if($a->debit_amount>0 || $a->credit_amount>0){
-            $data->debit_close = $a->debit_amount;
-            $data->credit_close = $a->credit_amount;
+          if($a->debit_balance>0 || $a->credit_balance>0){
+            $data->debit_close = $a->debit_balance;
+            $data->credit_close = $a->credit_balance;
             $data->save();
             // Lưu lại id vào array
             $a->balance_id = $data->id;
@@ -97,6 +98,32 @@ class AccOpenBalanceController extends Controller
             $rs[$k] = $a;
           }            
         }
+      }else if($rq->type == "bank"){
+        dd($arr);
+        foreach($arr as $k => $a){        
+          if($permission['a'] == true && !$a->balance_id ){
+            $type = 2;
+            $data = new AccBankAccountBalance();
+            $data->period = 0;
+            $data->bank_account = $a->id;  
+          }else if($permission['e'] == true && $a->balance_id){
+            $type = 3;
+            $data = AccBankAccountBalance::find($a->balance_id);
+          }else{
+            $check_perrmission = false;
+          }
+          if($a->debit_balance>0 || $a->credit_balance>0){
+            $data->debit_close = $a->debit_balance;
+            $data->credit_close = $a->credit_balance;
+            $data->save();
+            // Lưu lại id vào array
+            $a->balance_id = $data->id;
+            // Lưu vào collect mới
+            $rs[$k] = $a;
+          }            
+        }
+
+
       }else{
 
       }

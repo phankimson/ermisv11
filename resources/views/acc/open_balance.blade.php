@@ -74,13 +74,13 @@
                                {"field" : "name","title" : "@lang('acc_account_systems.name')" ,  footerTemplate: "<p>@lang('acc_voucher.total'):</p>" },
                                {"field" : "name_en","title" : "@lang('acc_account_systems.name_en')" },
                                {"field" : "parent_id",hidden: true  },
-                               {"field" : "debit_amount","title" :  "@lang('acc_voucher.debit_amount')" ,format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" ,template: '#= FormatNumberDecimal(debit_amount, {{$decimal}} )#',aggregates: ['sum'] ,footerTemplate: "#=FormatNumberDecimal(sum,{{$decimal}})#"},
-                               {"field" : "credit_amount","title" :  "@lang('acc_voucher.credit_amount')" ,format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" ,template: '#= FormatNumberDecimal(credit_amount, {{$decimal}} )#' ,aggregates: ['sum'] ,footerTemplate: "#=FormatNumberDecimal(sum,{{$decimal}})#"}
+                               {"field" : "debit_balance","title" :  "@lang('acc_voucher.debit_balance')" ,format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" ,template: '#= FormatNumberDecimal(debit_balance, {{$decimal}} )#',aggregates: ['sum'] ,footerTemplate: "#=FormatNumberDecimal(sum,{{$decimal}})#"},
+                               {"field" : "credit_balance","title" :  "@lang('acc_voucher.credit_balance')" ,format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" ,template: '#= FormatNumberDecimal(credit_balance, {{$decimal}} )#' ,aggregates: ['sum'] ,footerTemplate: "#=FormatNumberDecimal(sum,{{$decimal}})#"}
                             ];
 
-      Ermis.aggregates_account = [
-          { field: "debit_amount", aggregate: "sum" },
-          { field: "credit_amount", aggregate: "sum" }
+      Ermis.aggregates = [
+          { field: "debit_balance", aggregate: "sum" },
+          { field: "credit_balance", aggregate: "sum" }
       ];                      
 
       Ermis.fields_account = {
@@ -90,8 +90,8 @@
               name : {field : "name" ,editable : false},
               name_en :{field : "name_en" ,editable : false },
               parent_id :{field : "parent_id",nullable: true, type:"string" ,editable : false},
-              debit_amount :{field : "debit_amount" , defaultValue : 0 , type: "number" },
-              credit_amount :{field : "credit_amount" , defaultValue : 0 , type: "number" },
+              debit_balance :{field : "debit_balance" , defaultValue : 0 , type: "number" },
+              credit_balance :{field : "credit_balance" , defaultValue : 0 , type: "number" },
     },
 
      Ermis.columns_bank = [{"field" : "id",hidden: true },
@@ -100,8 +100,8 @@
                           {"field" : "bank_account","title" : "@lang('acc_bank_account.bank_account')" ,  footerTemplate: "<p>@lang('acc_voucher.total'):</p>" },
                           {"field" : "bank","title" : "@lang('acc_bank_account.bank')" },
                           {"field" : "branch","title" : "@lang('acc_bank_account.branch')" },
-                          {"field" : "debit_amount","title" :  "@lang('acc_voucher.debit_amount')" ,format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" ,template: '#= FormatNumberDecimal(debit_amount, {{$decimal}} )#',aggregates: ['sum'] ,footerTemplate: "#=FormatNumberDecimal(sum,{{$decimal}})#"},
-                          {"field" : "credit_amount","title" :  "@lang('acc_voucher.credit_amount')" ,format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" ,template: '#= FormatNumberDecimal(credit_amount, {{$decimal}} )#' ,aggregates: ['sum'] ,footerTemplate: "#=FormatNumberDecimal(sum,{{$decimal}})#"}
+                          {"field" : "debit_balance","title" :  "@lang('acc_voucher.debit_balance')" ,format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" ,template: '#= FormatNumberDecimal(debit_balance, {{$decimal}} )#',aggregates: ['sum'] ,footerTemplate: "#=FormatNumberDecimal(sum,{{$decimal}})#"},
+                          {"field" : "credit_balance","title" :  "@lang('acc_voucher.credit_balance')" ,format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" ,template: '#= FormatNumberDecimal(credit_balance, {{$decimal}} )#' ,aggregates: ['sum'] ,footerTemplate: "#=FormatNumberDecimal(sum,{{$decimal}})#"}
                       ];
 
       Ermis.fields_bank = {
@@ -111,11 +111,10 @@
               bank_account : {field : "bank_account" ,editable : false},
               bank :{field : "bank" ,editable : false },
               branch :{field : "branch" ,editable : false },
-              debit_amount :{field : "debit_amount" , defaultValue : 0 , type: "number" },
-              credit_amount :{field : "credit_amount" , defaultValue : 0 , type: "number" },
+              debit_balance :{field : "debit_balance" , defaultValue : 0 , type: "number" },
+              credit_balance :{field : "credit_balance" , defaultValue : 0 , type: "number" },
       },
-                
-
+                              
 
       Ermis.data_expend = [{field : "t.code", column:  "@lang('group_users.code')" },
                            {field : "t.name", column:  "@lang('group_users.name')" },
