@@ -16,8 +16,10 @@ use App\Http\Model\AccSystems;
 use App\Http\Model\AccHistoryAction;
 use App\Http\Resources\OpenBalanceResource;
 use App\Http\Resources\BankOpenBalanceResource;
+use App\Http\Model\Exports\AccAccountSystemsExport;
 use Exception;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 
 class AccOpenBalanceController extends Controller
 {
@@ -165,6 +167,38 @@ class AccOpenBalanceController extends Controller
         'check' => 0 ]);
       return response()->json(['status'=>false,'message'=> trans('messages.error').' '.$e->getMessage().' - Line '.$e->getLine()]);
     }
+ }
+
+
+  public function export(Request $request) {
+   $type = 6;
+   try{
+      $arr = $request->data;
+      $page = $request->page;
+      $type = $request->type;
+       //return (new HistoryActionExport($arr))->download('HistoryActionExportErmis.xlsx');
+       //$myFile = Excel::download(new HistoryActionExport($arr), 'HistoryActionExportErmis.xlsx');
+       if($type == "account"){
+        $myFile = Excel::raw(new AccAccountSystemsExport($arr,$page), \Maatwebsite\Excel\Excel::XLSX);
+       }       
+       $response =  array(
+         'status' =>true,
+         'name' => "AccAccountNatureExportErmis", //no extention needed
+         'file' => "data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,".base64_encode($myFile) //mime type of used format
+      );
+      return response()->json($response);
+   }catch(Exception $e){
+     // Lưu lỗi
+     $err = new Error();
+     $err ->create([
+       'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
+       'user_id' => Auth::id(),
+       'menu_id' => $this->menu->id,
+       'error' => $e->getMessage().' - Line '.$e->getLine(),
+       'url'  => $this->url,
+       'check' => 0 ]);
+     return response()->json(['status'=>false,'message'=> trans('messages.failed_export').' '.$e->getMessage().' - Line '.$e->getLine()]);
+   }
  }
 
 

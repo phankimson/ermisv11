@@ -95,6 +95,17 @@ class AccAccountSystems extends Model
         return $result;
       }   
 
+      static public function get_raw_balance_export($select,$skip,$limit) {
+        $result = AccAccountSystems::WithRowNumberDb(env('CONNECTION_DB_ACC'))->orderBy('row_number','asc')
+        ->leftJoin('account_systems as p', 't.parent_id', '=', 'p.id')
+        ->with(['balance' => function ($query){
+            $query->where('period', 0);
+        }])
+        ->skip($skip)->take($limit)
+        ->get(['row_number',DB::raw($select)]);
+        return $result;
+      }   
+
       public function account()
     {
         return $this->hasMany(AccAccountSystems::class,'parent_id','id');

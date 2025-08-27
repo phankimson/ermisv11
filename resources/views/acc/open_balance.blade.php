@@ -74,8 +74,8 @@
                                {"field" : "name","title" : "@lang('acc_account_systems.name')" ,  footerTemplate: "<p>@lang('acc_voucher.total'):</p>" },
                                {"field" : "name_en","title" : "@lang('acc_account_systems.name_en')" },
                                {"field" : "parent_id",hidden: true  },
-                               {"field" : "debit_balance","title" :  "@lang('acc_voucher.debit_balance')" ,format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" ,template: '#= FormatNumberDecimal(debit_balance, {{$decimal}} )#',aggregates: ['sum'] ,footerTemplate: "#=FormatNumberDecimal(sum,{{$decimal}})#"},
-                               {"field" : "credit_balance","title" :  "@lang('acc_voucher.credit_balance')" ,format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" ,template: '#= FormatNumberDecimal(credit_balance, {{$decimal}} )#' ,aggregates: ['sum'] ,footerTemplate: "#=FormatNumberDecimal(sum,{{$decimal}})#"}
+                               {"field" : "debit_balance","title" :  "@lang('acc_voucher.debit_balance')" ,format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" ,template: '#= FormatNumberDecimal(debit_balance, {{$decimal}} )#',aggregates: ['sum'] ,footerTemplate: "#=FormatNumberDecimal(typeof sum !== 'undefined'?sum:0,{{$decimal}})#"},
+                               {"field" : "credit_balance","title" :  "@lang('acc_voucher.credit_balance')" ,format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" ,template: '#= FormatNumberDecimal(credit_balance, {{$decimal}} )#' ,aggregates: ['sum'] ,footerTemplate: "#=FormatNumberDecimal(typeof sum !== 'undefined'?sum:0,{{$decimal}})#"}
                             ];
 
       Ermis.aggregates = [
@@ -115,10 +115,19 @@
               credit_balance :{field : "credit_balance" , defaultValue : 0 , type: "number" },
       },
                               
+      Ermis.columns_expend = [{ selectable: true, width: "50px" }, {"field" : "column","title" : "@lang('global.column_name')"}];
+      Ermis.data_expend_account = [{field : "code", column:  "@lang('acc_account_systems.code')" },
+                                   {field : "name", column:  "@lang('acc_account_systems.name')" },
+                                   {field : "name_en", column:  "@lang('acc_account_systems.name_en')" },
+                                   {field : "debit_balance", column:  "@lang('acc_voucher.debit_balance')" },
+                                   {field : "credit_balance", column:  "@lang('acc_voucher.credit_balance')" }];
 
-      Ermis.data_expend = [{field : "t.code", column:  "@lang('group_users.code')" },
-                           {field : "t.name", column:  "@lang('group_users.name')" },
-                           {field : "t.active", column:  "@lang('action.active')" }];
+      Ermis.data_expend_bank = [{field : "bank_name", column:  "@lang('acc_bank_account.bank_name')" },
+                                   {field : "bank_account", column:  "@lang('acc_bank_account.bank_account')" },
+                                   {field : "bank", column:  "@lang('acc_bank_account.bank')" },
+                                   {field : "branch", column:  "@lang('acc_bank_account.branch')" },
+                                   {field : "debit_balance", column:  "@lang('acc_voucher.debit_balance')" },
+                                   {field : "credit_balance", column:  "@lang('acc_voucher.credit_balance')" }];                             
   });
   </script>
 @endsection
