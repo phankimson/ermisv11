@@ -1503,9 +1503,11 @@ Route::group([
   'controller' => AccOpenBalanceController::class
 ],function () {
 Route::get('/open-balance', 'show' )->name('');
-Route::get('/open-balance-data-account', 'data_account' )->name('-data-account');
-Route::get('/open-balance-data-bank', 'data_bank' )->name('-data-bank');
+Route::get('/open-balance-data', 'data' )->name('-data');
 Route::post('/open-balance-save', 'save' )->name('-save');
+Route::any('/open-balance-import', 'import')->name('-import');
+Route::get('/open-balance-export', 'export')->name('-export');
+Route::get('/open-balance-DownloadExcel', 'DownloadExcel')->name('-DownloadExcel');
 });
 
 });

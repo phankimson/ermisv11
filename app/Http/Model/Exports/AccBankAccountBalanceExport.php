@@ -1,13 +1,13 @@
 <?php
 namespace App\Http\Model\Exports;
 
-use App\Http\Model\AccAccountSystems;
+use App\Http\Model\AccBankAccount;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Events\AfterSheet;
 
-class AccAccountSystemsBalanceExport implements FromCollection, ShouldAutoSize, WithEvents
+class AccBankAccountBalanceExport implements FromCollection, ShouldAutoSize, WithEvents
 {
   protected $select;
   protected $page;
@@ -22,7 +22,7 @@ class AccAccountSystemsBalanceExport implements FromCollection, ShouldAutoSize, 
       $skip = ($this->page - 1) * env("EXPORT_LIMIT");
       $limit = $this->page * env("EXPORT_LIMIT");
       $period = 0;
-        $a = AccAccountSystems::get_raw_balance_export($this->select,$skip,$limit,$period);
+        $a = AccBankAccount::get_raw_balance_export($this->select,$skip,$limit,$period);
         $b = collect($a);
         if($b->count()>0){
         $key = collect($a[0])->keys();
@@ -34,7 +34,7 @@ class AccAccountSystemsBalanceExport implements FromCollection, ShouldAutoSize, 
           }else if(substr($item,0,-6) == 'debit' || substr($item,0,-6) == 'credit'){
             return trans('acc_voucher.'.substr($item,0,-6).'_balance');
           }else{
-            return trans('acc_account_systems.'.$item);
+            return trans('acc_bank_account.'.$item);
           }
         });
         $b->prepend($key_trans);

@@ -95,12 +95,11 @@ class AccAccountSystems extends Model
         return $result;
       }   
 
-      static public function get_raw_balance_export($select,$skip,$limit) {
+      static public function get_raw_balance_export($select,$skip,$limit,$period) {
         $result = AccAccountSystems::WithRowNumberDb(env('CONNECTION_DB_ACC'))->orderBy('row_number','asc')
         ->leftJoin('account_systems as p', 't.parent_id', '=', 'p.id')
-        ->with(['balance' => function ($query){
-            $query->where('period', 0);
-        }])
+        ->leftJoin('account_balance as s', 't.id', '=', 's.account_systems')
+        ->where('s.period',$period)
         ->skip($skip)->take($limit)
         ->get(['row_number',DB::raw($select)]);
         return $result;

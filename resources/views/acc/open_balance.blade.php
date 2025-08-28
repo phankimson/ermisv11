@@ -116,18 +116,18 @@
       },
                               
       Ermis.columns_expend = [{ selectable: true, width: "50px" }, {"field" : "column","title" : "@lang('global.column_name')"}];
-      Ermis.data_expend_account = [{field : "code", column:  "@lang('acc_account_systems.code')" },
-                                   {field : "name", column:  "@lang('acc_account_systems.name')" },
-                                   {field : "name_en", column:  "@lang('acc_account_systems.name_en')" },
-                                   {field : "debit_balance", column:  "@lang('acc_voucher.debit_balance')" },
-                                   {field : "credit_balance", column:  "@lang('acc_voucher.credit_balance')" }];
+      Ermis.data_expend_account = [{field : "t.code", column:  "@lang('acc_account_systems.code')" },
+                                   {field : "t.name", column:  "@lang('acc_account_systems.name')" },
+                                   {field : "t.name_en", column:  "@lang('acc_account_systems.name_en')" },
+                                   {field : "s.debit_close", column:  "@lang('acc_voucher.debit_balance')" },
+                                   {field : "s.credit_close", column:  "@lang('acc_voucher.credit_balance')" }];
 
-      Ermis.data_expend_bank = [{field : "bank_name", column:  "@lang('acc_bank_account.bank_name')" },
-                                   {field : "bank_account", column:  "@lang('acc_bank_account.bank_account')" },
-                                   {field : "bank", column:  "@lang('acc_bank_account.bank')" },
-                                   {field : "branch", column:  "@lang('acc_bank_account.branch')" },
-                                   {field : "debit_balance", column:  "@lang('acc_voucher.debit_balance')" },
-                                   {field : "credit_balance", column:  "@lang('acc_voucher.credit_balance')" }];                             
+      Ermis.data_expend_bank = [{field : "t.bank_name", column:  "@lang('acc_bank_account.bank_name')" },
+                                   {field : "t.bank_account", column:  "@lang('acc_bank_account.bank_account')" },
+                                   {field : "c.name as bank", column:  "@lang('acc_bank_account.bank')" },
+                                   {field : "t.branch", column:  "@lang('acc_bank_account.branch')" },
+                                   {field : "s.debit_close", column:  "@lang('acc_voucher.debit_balance')" },
+                                   {field : "s.credit_close", column:  "@lang('acc_voucher.credit_balance')" }];                             
   });
   </script>
 @endsection

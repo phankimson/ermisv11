@@ -30,6 +30,7 @@ var Ermis = function () {
         jQuery(".save").on("click", initSave);  
         jQuery('.cancel').on('click', initCancel);
         jQuery('.export').on('click', initExport);
+        jQuery('.import').on('click', initImport);
         jQuery('.export_extra').on('click', initExportExtra);
         jQuery('.choose-extra').on('click', initChooseExtraExport);
         jQuery('.cancel-window').on('click', initClose);
@@ -56,9 +57,9 @@ var Ermis = function () {
                 tab_key = active.attr("data-key");
                 $kGridTab = jQuery("#grid_tab"+(tab+1));                
                 if($kGridTab.data("kendoTreeList") === undefined && tab_key == "account"){                    
-                    ErmisKendoTreeViewApiTemplate1($kGridTab, Ermis.link+'-data-'+tab_key, parent_id_tree, true, "incell",onChangeTreeList,onDataBoundTreeList, jQuery(window).height() * 0.75, true, Ermis.fields_account, Ermis.columns_account,Ermis.aggregates); 
+                    ErmisKendoTreeViewApiTemplate1($kGridTab, Ermis.link+'-data?type='+tab_key, parent_id_tree, true, "incell",onChangeTreeList,onDataBoundTreeList, jQuery(window).height() * 0.75, true, Ermis.fields_account, Ermis.columns_account,Ermis.aggregates); 
                 }else if($kGridTab.data("kendoGrid") === undefined && tab_key == "bank"){
-                    ErmisKendoGridTemplateApi1($kGridTab, Ermis.page_size , Ermis.link+'-data-'+tab_key, onChangeGrid, false , jQuery(window).height() * 0.75, {
+                    ErmisKendoGridTemplateApi1($kGridTab, Ermis.page_size , Ermis.link+'-data?type='+tab_key, onChangeGrid, false , jQuery(window).height() * 0.75, {
                         numeric: false,
                         previousNext: false
                     }, true ,  Ermis.fields_bank, Ermis.columns_bank,Ermis.aggregates);
@@ -244,6 +245,17 @@ var Ermis = function () {
          });
     };
 
+
+      var initImport = function (e) {
+          ErmisTemplateEvent0(e, $import,
+          function () {
+              $import.data("kendoDialog").open();
+          },
+          function () {
+              initKendoUiDialog(2);
+          });
+    };
+
      var initKendoUiDialog = function (type) {
         if (type === 1) {
              if (tab_key === "account") {
@@ -263,6 +275,7 @@ var Ermis = function () {
           arr.action = 'import';
           arr.com = Chat.com;
           arr.key = Ermis.link;
+          arr.type = tab_key;
           ErmisTemplateAjaxPostAdd3(e,'#import-form',Ermis.link+'-import',arr,
          function(){},
          function(){},
@@ -271,7 +284,7 @@ var Ermis = function () {
          });
         }
         function onDownloadFile(e) {
-            var url = Ermis.link+'-DownloadExcel';
+            var url = Ermis.link+'-DownloadExcel?type='+tab_key;
             window.open(url);
         }
         function onExcel(e) {
