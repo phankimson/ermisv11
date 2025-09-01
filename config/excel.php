@@ -3,6 +3,13 @@
 use Maatwebsite\Excel\Excel;
 
 return [
+    'setting' =>[
+        'IMPORT_SIZE'             => env("IMPORT_SIZE",100),
+        'IMPORT_LIMIT'             => env("IMPORT_LIMIT",200),
+        'EXPORT_LIMIT'             => env("EXPORT_LIMIT",200),
+        'HEADING_ROW'             => env("HEADING_ROW",1),
+        'START_ROW'             => env("START_ROW",2),
+    ],
 
     'exports' => [
 

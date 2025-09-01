@@ -3,8 +3,6 @@
 namespace App\Http\Model\Imports;
 
 use App\Http\Model\AccAccountSystems;
-use App\Http\Model\AccExcise;
-use App\Http\Model\AccUnit;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
@@ -42,6 +40,7 @@ class AccOpenBalanceAccountImport implements ToModel, WithHeadingRow, WithBatchI
     public function model(array $row)
     {
         //dump($row);
+        dd($row);
         $account_system = AccAccountSystems::WhereDefault('code',$row['code'])->first();
         if($account_system != null){
           $arr = [
@@ -60,21 +59,21 @@ class AccOpenBalanceAccountImport implements ToModel, WithHeadingRow, WithBatchI
   
     public function batchSize(): int
     {
-      return env("IMPORT_SIZE",100);
+      return (int) config('excel.setting.IMPORT_SIZE');
     }   
   
      public function limit(): int
      {
-      return env("IMPORT_LIMIT",200);
+      return (int) config('excel.setting.IMPORT_LIMIT');
      }
 
      
      public function headingRow(): int
      {
-         return env("HEADING_ROW",1);
+         return (int) config('excel.setting.HEADING_ROW');
      }
        public function startRow(): int
      {
-         return env("START_ROW",2);
+         return (int) config('excel.setting.START_ROW');
      }
 }

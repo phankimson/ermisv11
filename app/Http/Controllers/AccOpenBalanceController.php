@@ -219,27 +219,25 @@ class AccOpenBalanceController extends Controller
    try{
     DB::connection(env('CONNECTION_DB_ACC'))->beginTransaction();
    $permission = $request->session()->get('per');
+   $rs = json_decode($request->data);
    if($permission['a'] && $request->hasFile('file')){
-         if($request->file->getClientOriginalName() == $this->download){
+         if($request->file->getClientOriginalName() == $this->download.ucfirst($rs->type).'.xlsx'){
      //Check
      $request->validate([
          'file' => 'required|mimeTypes:'.
                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,'.
                'application/vnd.ms-excel',
      ]);
-       $rs = json_decode($request->data);
-
+  
        $file = $request->file;
        // Import dữ liệu
        if($rs->type == "account"){
-        config(['excel.imports.read_only' => false]);
-        $import = new AccOpenBalanceAccountImport();
+        //config(['excel.imports.read_only' => false]);
+        $import = new AccOpenBalanceAccountImport;
         Excel::import($import , $file);
        }else{
          $import = '';
-       }
-      
-       Excel::import($import, $file);
+       }      
        // Lấy lại dữ liệu
        $merged = collect($rs)->push($import->getData());
        //dump($merged);

@@ -56,23 +56,24 @@ class AccObjectTypeImport implements ToModel, WithHeadingRow, WithBatchInserts, 
       }
     }
 
-    public function batchSize(): int
+     public function batchSize(): int
     {
-      return env("IMPORT_SIZE",100);
+      return (int) config('excel.setting.IMPORT_SIZE');
     }   
   
      public function limit(): int
      {
-      return env("IMPORT_LIMIT",200);
+      return (int) config('excel.setting.IMPORT_LIMIT');
      }
 
+     
      public function headingRow(): int
      {
-         return env("HEADING_ROW",1);
+         return (int) config('excel.setting.HEADING_ROW');
      }
        public function startRow(): int
      {
-         return env("START_ROW",2);
+         return (int) config('excel.setting.START_ROW');
      }
 
 
