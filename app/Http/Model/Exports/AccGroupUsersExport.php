@@ -21,8 +21,8 @@ class AccGroupUsersExport implements FromCollection, ShouldAutoSize, WithEvents
 
     public function collection()
     {
-      $skip = ($this->page - 1) * env("EXPORT_LIMIT");
-      $limit = $this->page * env("EXPORT_LIMIT");
+      $skip = ($this->page - 1) * (int) config('excel.setting.EXPORT_LIMIT');
+      $limit = $this->page * (int) config('excel.setting.EXPORT_LIMIT');
         $a = AccGroupUsers::get_raw_export($this->select,$this->company,$skip,$limit);
           $b = collect($a);
           if($b->count()>0){

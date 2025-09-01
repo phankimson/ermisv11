@@ -8,7 +8,6 @@ use Maatwebsite\Excel\Concerns\WithBatchInserts;
 use Maatwebsite\Excel\Concerns\WithLimit;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 use Maatwebsite\Excel\Concerns\HasReferencesToOtherSheets;
-use Maatwebsite\Excel\Concerns\WithStartRow;
 use App\Http\Model\AccAccountSystems;
 use App\Http\Model\AccDepartment;
 use App\Http\Model\AccBankAccount;
@@ -82,7 +81,7 @@ class AccCashReceiptVoucherImport implements  WithHeadingRow, WithMultipleSheets
 
 }
 
-class FirstSheetCritImport implements ToModel, HasReferencesToOtherSheets, WithHeadingRow, WithStartRow, WithBatchInserts, WithLimit
+class FirstSheetCritImport implements ToModel, HasReferencesToOtherSheets, WithHeadingRow, WithBatchInserts, WithLimit
 {
    protected $menu;
     function __construct($menu) { //this will NOT overwrite the parents construct
@@ -135,14 +134,14 @@ class FirstSheetCritImport implements ToModel, HasReferencesToOtherSheets, WithH
       return;
     }
 
-    public function batchSize(): int
+   public function batchSize(): int
     {
-      return env("IMPORT_SIZE",100);
+      return (int) config('excel.setting.IMPORT_SIZE');
     }   
   
      public function limit(): int
      {
-      return env("IMPORT_LIMIT",200);
+      return (int) config('excel.setting.IMPORT_LIMIT');
      }
 
     public function headingRow(): int
@@ -150,13 +149,9 @@ class FirstSheetCritImport implements ToModel, HasReferencesToOtherSheets, WithH
         return 9;
     }
 
-    public function startRow(): int
-    {
-        return 10;
-    }
   }
 
-  class SecondSheetImport implements ToModel, HasReferencesToOtherSheets, WithHeadingRow, WithStartRow, WithBatchInserts, WithLimit
+  class SecondSheetImport implements ToModel, HasReferencesToOtherSheets, WithHeadingRow, WithBatchInserts, WithLimit
   {
       public function model(array $row)
       {
@@ -185,23 +180,20 @@ class FirstSheetCritImport implements ToModel, HasReferencesToOtherSheets, WithH
       }
         return;
       }
-      public function batchSize(): int
-      {
-        return env("IMPORT_SIZE",100);
-      }   
-    
-       public function limit(): int
-       {
-        return env("IMPORT_LIMIT",200);
-       }
+     public function batchSize(): int
+    {
+      return (int) config('excel.setting.IMPORT_SIZE');
+    }   
+  
+     public function limit(): int
+     {
+      return (int) config('excel.setting.IMPORT_LIMIT');
+     }
 
       public function headingRow(): int
     {
         return 9;
     }
-      public function startRow(): int
-    {
-        return 10;
-    }
+
   }
 

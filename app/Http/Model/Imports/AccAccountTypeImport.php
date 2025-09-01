@@ -8,9 +8,8 @@ use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithBatchInserts;
 use Maatwebsite\Excel\Concerns\WithLimit;
-use Maatwebsite\Excel\Concerns\WithStartRow;
 
-class AccAccountTypeImport implements ToModel, WithHeadingRow, WithBatchInserts, WithLimit, WithStartRow
+class AccAccountTypeImport implements ToModel, WithHeadingRow, WithBatchInserts, WithLimit
 {
     private static $result = array();
   public function sheets(): array
@@ -53,22 +52,19 @@ class AccAccountTypeImport implements ToModel, WithHeadingRow, WithBatchInserts,
     }
     }
 
-    public function batchSize(): int
-  {
-    return env("IMPORT_SIZE",100);
-  }   
-
-   public function limit(): int
-   {
-    return env("IMPORT_LIMIT",200);
-   }
-   public function headingRow(): int
-   {
-       return env("HEADING_ROW",1);
-   }
-     public function startRow(): int
-   {
-       return env("START_ROW",2);
-   }
+     public function batchSize(): int
+    {
+      return (int) config('excel.setting.IMPORT_SIZE');
+    }   
+  
+     public function limit(): int
+     {
+      return (int) config('excel.setting.IMPORT_LIMIT');
+     }
+     
+     public function headingRow(): int
+     {
+         return (int) config('excel.setting.HEADING_ROW');
+     }    
 
 }

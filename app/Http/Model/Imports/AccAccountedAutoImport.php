@@ -21,7 +21,6 @@ use App\Http\Model\AccStatisticalCode;
 use App\Http\Model\AccWorkCode;
 use Illuminate\Support\Arr;
 use Maatwebsite\Excel\Concerns\WithLimit;
-use Maatwebsite\Excel\Concerns\WithStartRow;
 
 class AccAccountedAutoImport implements  WithHeadingRow,  WithMultipleSheets
 {
@@ -68,12 +67,12 @@ class AccAccountedAutoImport implements  WithHeadingRow,  WithMultipleSheets
 }
 
 
-class FirstSheetImport implements ToModel, HasReferencesToOtherSheets, WithBatchInserts,WithHeadingRow , WithLimit, WithStartRow 
+class FirstSheetImport implements ToModel, HasReferencesToOtherSheets, WithBatchInserts,WithHeadingRow , WithLimit 
 {
     public function model(array $row)
     {
       $code_check = AccAccountedAuto::WhereCheck('code',$row['code'],'id',null)->first();
-      if($code_check == null){
+      if($code_check == null && $row['code']){
         $arr = [
           'code'    => $row['code'],
           'name'    => $row['name'],
@@ -92,32 +91,30 @@ class FirstSheetImport implements ToModel, HasReferencesToOtherSheets, WithBatch
      }
     }
 
-    public function batchSize(): int
+  public function batchSize(): int
     {
-      return env("IMPORT_SIZE",100);
+      return (int) config('excel.setting.IMPORT_SIZE');
     }   
   
      public function limit(): int
      {
-      return env("IMPORT_LIMIT",200);
+      return (int) config('excel.setting.IMPORT_LIMIT');
      }
+     
      public function headingRow(): int
      {
-         return env("HEADING_ROW",1);
-     }
-       public function startRow(): int
-     {
-         return env("START_ROW",2);
-     }
+         return (int) config('excel.setting.HEADING_ROW');
+     }    
   
 }
 
 
 
-class SecondSheetImport implements ToModel, HasReferencesToOtherSheets, WithBatchInserts, WithHeadingRow , WithLimit, WithStartRow
+class SecondSheetImport implements ToModel, HasReferencesToOtherSheets, WithBatchInserts, WithHeadingRow , WithLimit
 {
     public function model(array $row)
     {
+      if($row['debit'] && $row['credit']){
       $accounted_auto = AccAccountedAuto::WhereDefault('code',$row['accounted_auto'])->first();
       $debit = AccAccountSystems::WhereDefault('code',$row['debit'])->first();
       $credit = AccAccountSystems::WhereDefault('code',$row['credit'])->first();
@@ -150,24 +147,22 @@ class SecondSheetImport implements ToModel, HasReferencesToOtherSheets, WithBatc
       $data = new AccAccountedAutoImport();
       $data->setDataSecond($arr);
       return new AccAccountedAutoDetail($arr);
+      }
     }
     
     public function batchSize(): int
     {
-      return env("IMPORT_SIZE",100);
+      return (int) config('excel.setting.IMPORT_SIZE');
     }   
   
      public function limit(): int
      {
-      return env("IMPORT_LIMIT",200);
+      return (int) config('excel.setting.IMPORT_LIMIT');
      }
+     
      public function headingRow(): int
      {
-         return env("HEADING_ROW",1);
-     }
-       public function startRow(): int
-     {
-         return env("START_ROW",2);
-     }
+         return (int) config('excel.setting.HEADING_ROW');
+     }  
   
   }

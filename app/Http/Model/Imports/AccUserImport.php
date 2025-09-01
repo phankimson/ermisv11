@@ -13,9 +13,8 @@ use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithBatchInserts;
 use Maatwebsite\Excel\Concerns\WithLimit;
-use Maatwebsite\Excel\Concerns\WithStartRow;
 
-class AccUserImport implements ToModel, WithHeadingRow, WithBatchInserts, WithLimit, WithStartRow
+class AccUserImport implements ToModel, WithHeadingRow, WithBatchInserts, WithLimit
 {
   private static $result = array();
   public function sheets(): array
@@ -47,6 +46,8 @@ class AccUserImport implements ToModel, WithHeadingRow, WithBatchInserts, WithLi
         $country = Country::WhereDefault('code',$row['country'])->first();
         $group_users = GroupUsers::WhereDefault('code',$row['group_users'])->first();
         $prefix_username = substr(Crypt::encryptString($com->id),0,5);
+        $code_check = AccUser::WhereCheck('username',$prefix_username,'id',null)->first();
+        if($code_check == null && $row['username']){
         //dump($row);
         $arr = [
             'id'     => Str::uuid()->toString(),
@@ -75,22 +76,20 @@ class AccUserImport implements ToModel, WithHeadingRow, WithBatchInserts, WithLi
         $data = new AccUserImport();
         $data->setData($arr);
         return new AccUser($arr);
+        }
     }
     public function batchSize(): int
     {
-      return env("IMPORT_SIZE",100);
+      return (int) config('excel.setting.IMPORT_SIZE');
     }   
   
      public function limit(): int
      {
-      return env("IMPORT_LIMIT",200);
+      return (int) config('excel.setting.IMPORT_LIMIT');
      }
+     
      public function headingRow(): int
      {
-         return env("HEADING_ROW",1);
-     }
-       public function startRow(): int
-     {
-         return env("START_ROW",2);
+         return (int) config('excel.setting.HEADING_ROW');
      }
 }

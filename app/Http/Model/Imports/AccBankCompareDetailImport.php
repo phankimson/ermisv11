@@ -78,14 +78,14 @@ class AccBankCompareDetailImport implements ToModel, WithHeadingRow, WithBatchIn
     }
 
     public function batchSize(): int
-  {
-    return env("IMPORT_SIZE",100);
-  }   
-
-   public function limit(): int
-   {
-    return env("IMPORT_LIMIT",200);
-   }
+    {
+      return (int) config('excel.setting.IMPORT_SIZE');
+    }   
+  
+     public function limit(): int
+     {
+      return (int) config('excel.setting.IMPORT_LIMIT');
+     }
 
      public function startRow(): int
    {

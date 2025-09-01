@@ -8,9 +8,8 @@ use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithBatchInserts;
 use Maatwebsite\Excel\Concerns\WithLimit;
-use Maatwebsite\Excel\Concerns\WithStartRow;
 
-class AccPeriodImport implements ToModel, WithHeadingRow, WithBatchInserts, WithLimit, WithStartRow
+class AccPeriodImport implements ToModel, WithHeadingRow, WithBatchInserts, WithLimit
 {
   private static $result = array();
   public function sheets(): array
@@ -39,7 +38,7 @@ class AccPeriodImport implements ToModel, WithHeadingRow, WithBatchInserts, With
     {
         //dump($row);
         $code_check = AccPeriod::WhereCheck('date',$row['date'],'id',null)->first();
-        if($code_check == null){
+        if($code_check == null && $row['date']){
           $arr = [
             'id'     => Str::uuid()->toString(),
             'name'    => $row['name'],
@@ -53,23 +52,19 @@ class AccPeriodImport implements ToModel, WithHeadingRow, WithBatchInserts, With
       }
     }
 
-    public function batchSize(): int
+     public function batchSize(): int
     {
-      return env("IMPORT_SIZE",100);
+      return (int) config('excel.setting.IMPORT_SIZE');
     }   
   
      public function limit(): int
      {
-      return env("IMPORT_LIMIT",200);
+      return (int) config('excel.setting.IMPORT_LIMIT');
      }
-
+     
      public function headingRow(): int
      {
-         return env("HEADING_ROW",1);
-     }
-       public function startRow(): int
-     {
-         return env("START_ROW",2);
+         return (int) config('excel.setting.HEADING_ROW');
      }
 
 }

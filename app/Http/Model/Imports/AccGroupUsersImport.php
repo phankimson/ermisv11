@@ -8,9 +8,8 @@ use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithBatchInserts;
 use Maatwebsite\Excel\Concerns\WithLimit;
-use Maatwebsite\Excel\Concerns\WithStartRow;
 
-class AccGroupUsersImport implements ToModel, WithHeadingRow, WithBatchInserts, WithLimit, WithStartRow
+class AccGroupUsersImport implements ToModel, WithHeadingRow, WithBatchInserts, WithLimit
 {
   private static $result = array();
   public function sheets(): array
@@ -40,6 +39,8 @@ class AccGroupUsersImport implements ToModel, WithHeadingRow, WithBatchInserts, 
     {
       $com = session('com');
         //dump($row);
+        $code_check = AccGroupUsers::WhereCheck('code',$row['code'],'id',null)->first();
+        if($code_check == null && $row['code']){
         $arr = [
           'id'     => Str::uuid()->toString(),
           'company_id' => $com->id,
@@ -50,23 +51,20 @@ class AccGroupUsersImport implements ToModel, WithHeadingRow, WithBatchInserts, 
         $data = new AccGroupUsersImport();
         $data->setData($arr);
         return new AccGroupUsers($arr);
+      }
     }
-    public function batchSize(): int
+   public function batchSize(): int
     {
-      return env("IMPORT_SIZE",100);
+      return (int) config('excel.setting.IMPORT_SIZE');
     }   
   
      public function limit(): int
      {
-      return env("IMPORT_LIMIT",200);
+      return (int) config('excel.setting.IMPORT_LIMIT');
      }
-      
+     
      public function headingRow(): int
      {
-         return env("HEADING_ROW",1);
-     }
-       public function startRow(): int
-     {
-         return env("START_ROW",2);
+         return (int) config('excel.setting.HEADING_ROW');
      }
 }

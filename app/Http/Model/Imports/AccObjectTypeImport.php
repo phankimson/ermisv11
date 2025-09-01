@@ -8,9 +8,8 @@ use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithBatchInserts;
 use Maatwebsite\Excel\Concerns\WithLimit;
-use Maatwebsite\Excel\Concerns\WithStartRow;
 
-class AccObjectTypeImport implements ToModel, WithHeadingRow, WithBatchInserts, WithLimit, WithStartRow
+class AccObjectTypeImport implements ToModel, WithHeadingRow, WithBatchInserts, WithLimit
 {
   private static $result = array();
   public function sheets(): array
@@ -41,7 +40,7 @@ class AccObjectTypeImport implements ToModel, WithHeadingRow, WithBatchInserts, 
     {
         //dump($row);
         $code_check = AccObjectType::WhereCheck('code',$row['code'],'id',null)->first();
-        if($code_check == null){
+        if($code_check == null && $row['code']){
           $arr = [
             'id'     => Str::uuid()->toString(),
             'code'    => $row['code'],
@@ -65,16 +64,10 @@ class AccObjectTypeImport implements ToModel, WithHeadingRow, WithBatchInserts, 
      {
       return (int) config('excel.setting.IMPORT_LIMIT');
      }
-
      
      public function headingRow(): int
      {
          return (int) config('excel.setting.HEADING_ROW');
      }
-       public function startRow(): int
-     {
-         return (int) config('excel.setting.START_ROW');
-     }
-
-
+      
 }

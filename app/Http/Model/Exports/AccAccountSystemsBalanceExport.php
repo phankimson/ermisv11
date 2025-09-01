@@ -19,8 +19,8 @@ class AccAccountSystemsBalanceExport implements FromCollection, ShouldAutoSize, 
 
     public function collection()
     {
-      $skip = ($this->page - 1) * env("EXPORT_LIMIT");
-      $limit = $this->page * env("EXPORT_LIMIT");
+      $skip = ($this->page - 1) * (int) config('excel.setting.EXPORT_LIMIT');
+      $limit = $this->page * (int) config('excel.setting.EXPORT_LIMIT');
       $period = 0;
         $a = AccAccountSystems::get_raw_balance_export($this->select,$skip,$limit,$period);
         $b = collect($a);

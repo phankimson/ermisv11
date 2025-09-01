@@ -8,9 +8,8 @@ use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithBatchInserts;
 use Maatwebsite\Excel\Concerns\WithLimit;
-use Maatwebsite\Excel\Concerns\WithStartRow;
 
-class AccOpenBalanceAccountImport implements ToModel, WithHeadingRow, WithBatchInserts, WithLimit, WithStartRow
+class AccOpenBalanceAccountImport implements ToModel, WithHeadingRow, WithBatchInserts, WithLimit
 {
   private static $result = array();
   public function sheets(): array
@@ -42,7 +41,7 @@ class AccOpenBalanceAccountImport implements ToModel, WithHeadingRow, WithBatchI
         //dump($row);
         dd($row);
         $account_system = AccAccountSystems::WhereDefault('code',$row['code'])->first();
-        if($account_system != null){
+        if($account_system != null && $row['code']){
           $arr = [
             'id'     => Str::uuid()->toString(),
             'period'    => 0,
@@ -57,7 +56,7 @@ class AccOpenBalanceAccountImport implements ToModel, WithHeadingRow, WithBatchI
     }
 
   
-    public function batchSize(): int
+      public function batchSize(): int
     {
       return (int) config('excel.setting.IMPORT_SIZE');
     }   
@@ -66,14 +65,9 @@ class AccOpenBalanceAccountImport implements ToModel, WithHeadingRow, WithBatchI
      {
       return (int) config('excel.setting.IMPORT_LIMIT');
      }
-
      
      public function headingRow(): int
      {
          return (int) config('excel.setting.HEADING_ROW');
-     }
-       public function startRow(): int
-     {
-         return (int) config('excel.setting.START_ROW');
      }
 }

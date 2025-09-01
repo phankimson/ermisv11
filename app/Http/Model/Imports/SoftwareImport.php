@@ -9,9 +9,8 @@ use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithBatchInserts;
 use Maatwebsite\Excel\Concerns\WithLimit;
-use Maatwebsite\Excel\Concerns\WithStartRow;
 
-class SoftwareImport implements ToModel, WithHeadingRow, WithBatchInserts, WithLimit, WithStartRow
+class SoftwareImport implements ToModel, WithHeadingRow, WithBatchInserts, WithLimit
 {
   private static $result = array();
   public function sheets(): array
@@ -43,7 +42,7 @@ class SoftwareImport implements ToModel, WithHeadingRow, WithBatchInserts, WithL
         //dump($row);
         $code_check = Software::WhereCheck('url',$row['url'],'id',null)->first();
         $hashids = new Hashids('',50);
-        if($code_check == null){
+        if($code_check == null && $row['url']){
           $arr =[
             'id'     => Str::uuid()->toString(),
             'name'    => $row['name'],
@@ -63,20 +62,17 @@ class SoftwareImport implements ToModel, WithHeadingRow, WithBatchInserts, WithL
     }
     public function batchSize(): int
     {
-      return env("IMPORT_SIZE",100);
+      return (int) config('excel.setting.IMPORT_SIZE');
     }   
   
      public function limit(): int
      {
-      return env("IMPORT_LIMIT",200);
+      return (int) config('excel.setting.IMPORT_LIMIT');
      }
+     
      public function headingRow(): int
      {
-         return env("HEADING_ROW",1);
-     }
-       public function startRow(): int
-     {
-         return env("START_ROW",2);
+         return (int) config('excel.setting.HEADING_ROW');
      }
 
 

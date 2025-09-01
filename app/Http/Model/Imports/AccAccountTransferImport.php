@@ -3,21 +3,14 @@
 namespace App\Http\Model\Imports;
 
 use App\Http\Model\AccAccountTransfer;
-use App\Http\Model\AccCaseCode;
-use App\Http\Model\AccCostCode;
-use App\Http\Model\AccDepartment;
-use App\Http\Model\AccObject;
 use App\Http\Model\AccAccountSystems;
-use App\Http\Model\AccStatisticalCode;
-use App\Http\Model\AccWorkCode;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithBatchInserts;
 use Maatwebsite\Excel\Concerns\WithLimit;
-use Maatwebsite\Excel\Concerns\WithStartRow;
 
-class AccAccountTransferImport implements ToModel, WithHeadingRow, WithBatchInserts, WithLimit, WithStartRow 
+class AccAccountTransferImport implements ToModel, WithHeadingRow, WithBatchInserts, WithLimit 
 {
   private static $result = array();
   public function sheets(): array
@@ -49,7 +42,7 @@ class AccAccountTransferImport implements ToModel, WithHeadingRow, WithBatchInse
         $debit = AccAccountSystems::WhereDefault('code',$row['debit'])->first();
         $credit = AccAccountSystems::WhereDefault('code',$row['credit'])->first();
         $code_check = AccAccountTransfer::WhereCheck('code',$row['code'],'id',null)->first();
-        if($code_check == null){
+        if($code_check == null && $row['code']){
         $arr = [
             'id'     => Str::uuid()->toString(),
             'code'    => $row['code'],
@@ -73,22 +66,19 @@ class AccAccountTransferImport implements ToModel, WithHeadingRow, WithBatchInse
        }
     }
 
-    public function batchSize(): int
+       public function batchSize(): int
     {
-      return env("IMPORT_SIZE",100);
+      return (int) config('excel.setting.IMPORT_SIZE');
     }   
   
      public function limit(): int
      {
-      return env("IMPORT_LIMIT",200);
+      return (int) config('excel.setting.IMPORT_LIMIT');
      }
+     
      public function headingRow(): int
      {
-         return env("HEADING_ROW",1);
-     }
-       public function startRow(): int
-     {
-         return env("START_ROW",2);
-     }
+         return (int) config('excel.setting.HEADING_ROW');
+     }    
 
 }

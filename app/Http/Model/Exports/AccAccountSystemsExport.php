@@ -19,8 +19,8 @@ class AccAccountSystemsExport implements FromCollection, ShouldAutoSize, WithEve
 
     public function collection()
     {
-      $skip = ($this->page - 1) * env("EXPORT_LIMIT");
-      $limit = $this->page * env("EXPORT_LIMIT");
+      $skip = ($this->page - 1) * (int) config('excel.setting.EXPORT_LIMIT');
+      $limit = $this->page * (int) config('excel.setting.EXPORT_LIMIT');
         $a = AccAccountSystems::get_raw_export($this->select,$skip,$limit);
         $b = collect($a);
         if($b->count()>0){

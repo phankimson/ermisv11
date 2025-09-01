@@ -11,9 +11,8 @@ use Maatwebsite\Excel\Row;
 use Maatwebsite\Excel\Concerns\OnEachRow;
 use Illuminate\Support\Arr;
 use Maatwebsite\Excel\Concerns\WithLimit;
-use Maatwebsite\Excel\Concerns\WithStartRow;
 
-class AccSettingAccountGroupImport implements OnEachRow, WithHeadingRow, WithBatchInserts, WithLimit, WithStartRow
+class AccSettingAccountGroupImport implements OnEachRow, WithHeadingRow, WithBatchInserts, WithLimit
 {
   private static $result = array();
   public function sheets(): array
@@ -42,7 +41,7 @@ class AccSettingAccountGroupImport implements OnEachRow, WithHeadingRow, WithBat
     {
         //dump($row);
         $code_check = AccSettingAccountGroup::WhereCheck('code',$row['code'],'id',null)->first();
-        if($code_check == null){
+        if($code_check == null && $row['code']){
         $arr = 
         [
             'code'    => $row['code'],
@@ -82,23 +81,20 @@ class AccSettingAccountGroupImport implements OnEachRow, WithHeadingRow, WithBat
         }
     }
 
-    public function batchSize(): int
+     public function batchSize(): int
     {
-      return env("IMPORT_SIZE",100);
+      return (int) config('excel.setting.IMPORT_SIZE');
     }   
   
      public function limit(): int
      {
-      return env("IMPORT_LIMIT",200);
+      return (int) config('excel.setting.IMPORT_LIMIT');
      }
+     
      public function headingRow(): int
      {
-         return env("HEADING_ROW",1);
-     }
-       public function startRow(): int
-     {
-         return env("START_ROW",2);
-     }
+         return (int) config('excel.setting.HEADING_ROW');
+     }    
 
 }
 

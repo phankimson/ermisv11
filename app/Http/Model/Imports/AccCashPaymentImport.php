@@ -18,7 +18,6 @@ use App\Http\Model\AccDepartment;
 use App\Http\Model\AccBankAccount;
 use App\Http\Model\AccCurrency;
 use App\Http\Model\AccSystems;
-use Maatwebsite\Excel\Concerns\WithStartRow;
 use App\Classes\Convert;
 
 
@@ -85,7 +84,7 @@ class AccCashPaymentImport implements  WithHeadingRow, WithMultipleSheets
 }
 
 
-class FirstSheetValImport implements ToModel, HasReferencesToOtherSheets, WithHeadingRow, WithBatchInserts, WithLimit, WithStartRow
+class FirstSheetValImport implements ToModel, HasReferencesToOtherSheets, WithHeadingRow, WithBatchInserts, WithLimit
 {   
     protected $type;
     protected $group;
@@ -127,27 +126,23 @@ class FirstSheetValImport implements ToModel, HasReferencesToOtherSheets, WithHe
           return new AccGeneral($arr);
       }
     } 
-    public function batchSize(): int
+   public function batchSize(): int
     {
-      return env("IMPORT_SIZE",100);
+      return (int) config('excel.setting.IMPORT_SIZE');
     }   
   
      public function limit(): int
      {
-      return env("IMPORT_LIMIT",200);
+      return (int) config('excel.setting.IMPORT_LIMIT');
      }
-        
-    public function headingRow(): int
-    {
-        return env("HEADING_ROW",1);
-    }
-      public function startRow(): int
-    {
-        return env("START_ROW",2);
-    }
+     
+     public function headingRow(): int
+     {
+         return (int) config('excel.setting.HEADING_ROW');
+     }
 }
 
-class SecondSheetImport implements ToModel, HasReferencesToOtherSheets, WithHeadingRow, WithBatchInserts, WithLimit, WithStartRow
+class SecondSheetImport implements ToModel, HasReferencesToOtherSheets, WithHeadingRow, WithBatchInserts, WithLimit
 {
     public function model(array $row)
     {
@@ -199,27 +194,23 @@ class SecondSheetImport implements ToModel, HasReferencesToOtherSheets, WithHead
       }        
     }
 
-    public function batchSize(): int
+     public function batchSize(): int
     {
-      return env("IMPORT_SIZE",100);
+      return (int) config('excel.setting.IMPORT_SIZE');
     }   
   
      public function limit(): int
      {
-      return env("IMPORT_LIMIT",200);
+      return (int) config('excel.setting.IMPORT_LIMIT');
      }
-        
-    public function headingRow(): int
-    {
-        return env("HEADING_ROW",1);
-    }
-      public function startRow(): int
-    {
-        return env("START_ROW",2);
-    }
+     
+     public function headingRow(): int
+     {
+         return (int) config('excel.setting.HEADING_ROW');
+     }
   }
 
-  class ThirdSheetImport implements ToModel, HasReferencesToOtherSheets, WithHeadingRow, WithBatchInserts, WithLimit, WithStartRow
+  class ThirdSheetImport implements ToModel, HasReferencesToOtherSheets, WithHeadingRow, WithBatchInserts, WithLimit
   {
       public function model(array $row)
       {
@@ -262,21 +253,17 @@ class SecondSheetImport implements ToModel, HasReferencesToOtherSheets, WithHead
       }
       public function batchSize(): int
     {
-      return env("IMPORT_SIZE",100);
+      return (int) config('excel.setting.IMPORT_SIZE');
     }   
   
      public function limit(): int
      {
-      return env("IMPORT_LIMIT",200);
+      return (int) config('excel.setting.IMPORT_LIMIT');
      }
-        
-    public function headingRow(): int
-    {
-        return env("HEADING_ROW",1);
-    }
-      public function startRow(): int
-    {
-        return env("START_ROW",2);
-    }
+     
+     public function headingRow(): int
+     {
+         return (int) config('excel.setting.HEADING_ROW');
+     }
   }
 
