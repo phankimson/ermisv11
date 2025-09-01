@@ -26,7 +26,7 @@ class DataSendCollectionTabs implements ShouldBroadcast
 
     public function __construct($data)
     {
-      $this->data = $data;
+      $this->data = $data;     
     }
 
     /**
@@ -36,6 +36,6 @@ class DataSendCollectionTabs implements ShouldBroadcast
      */
     public function broadcastOn()
     {       
-        return new PrivateChannel('data-'.$this->data->action.'-'.$this->data->key.'-'.$this->data->type.'-'.$this->data->com);
+        return new PrivateChannel('data-'.$this->data['action'].'-'.$this->data['key'].'-'.$this->data['type'].'-'.$this->data['com']);
     }
 }

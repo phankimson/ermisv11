@@ -235,11 +235,29 @@ class AccOpenBalanceController extends Controller
         //config(['excel.imports.read_only' => false]);
         $import = new AccOpenBalanceAccountImport;
         Excel::import($import , $file);
+        $arr = $import->getData();
+        foreach($arr as $k => $a){
+            $type = 2;
+            $data = AccAccountBalance::get_account(0,$a->id);
+            if(!$data){
+              $data = new AccAccountBalance();
+              $data->period = 0;
+              $data->account_systems = $a->id;  
+            }           
+            $data->debit_close = $a->debit_balance;
+            $data->credit_close = $a->credit_balance;
+            $data->save();
+            // Lưu lại id vào array
+            $a->balance_id = $data->id;
+            // Lưu vào collect mới
+            $arr[$k] = $a;
+        };
        }else{
          $import = '';
-       }      
-       // Lấy lại dữ liệu
-       $merged = collect($rs)->push($import->getData());
+       }  
+       // Lấy lại dữ liệu  
+       $rs->arr =  $arr;  
+       $merged = collect($rs);
        //dump($merged);
      // Lưu lịch sử
      $h = new AccHistoryAction();
@@ -252,7 +270,7 @@ class AccOpenBalanceController extends Controller
      //
      //Storage::delete($savePath.$filename);
      DB::connection(env('CONNECTION_DB_ACC'))->commit();
-     broadcast(new \App\Events\DataSendCollection($merged));
+     broadcast(new \App\Events\DataSendCollectionTabs($merged));
      return response()->json(['status'=>true,'message'=> trans('messages.success_import')]);
    }else{
     return response()->json(['status'=>false,'message'=> trans('messages.incorrect_file')]);
