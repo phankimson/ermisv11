@@ -29,7 +29,7 @@ class AccAccountSystems extends Model
       }
 
       static public function get_code_like($document,$code) {
-        $result = AccAccountSystems::where('document_id',$document)->where('code','like',$code)->where('active',1)->get();
+        $result = AccAccountSystems::where('document_id',$document)->where('code','like',$code)->where('active',1)->doesntHave('account')->get();
         return $result;
       }
 

@@ -100,6 +100,7 @@
                           {"field" : "bank_account","title" : "@lang('acc_bank_account.bank_account')" ,  footerTemplate: "<p>@lang('acc_voucher.total'):</p>" },
                           {"field" : "bank","title" : "@lang('acc_bank_account.bank')" },
                           {"field" : "branch","title" : "@lang('acc_bank_account.branch')" },
+                          {"field" : "account_default","title" : "@lang('acc_bank_account.account_default')" },
                           {"field" : "debit_balance","title" :  "@lang('acc_voucher.debit_balance')" ,format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" ,template: '#= FormatNumberDecimal(debit_balance, {{$decimal}} )#',aggregates: ['sum'] ,footerTemplate: "#=FormatNumberDecimal(sum,{{$decimal}})#"},
                           {"field" : "credit_balance","title" :  "@lang('acc_voucher.credit_balance')" ,format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" ,template: '#= FormatNumberDecimal(credit_balance, {{$decimal}} )#' ,aggregates: ['sum'] ,footerTemplate: "#=FormatNumberDecimal(sum,{{$decimal}})#"}
                       ];
@@ -111,6 +112,7 @@
               bank_account : {field : "bank_account" ,editable : false},
               bank :{field : "bank" ,editable : false },
               branch :{field : "branch" ,editable : false },
+              account_default :{field : "account_default" ,editable : false },
               debit_balance :{field : "debit_balance" , defaultValue : 0 , type: "number" },
               credit_balance :{field : "credit_balance" , defaultValue : 0 , type: "number" },
       },
@@ -126,6 +128,7 @@
                                    {field : "t.bank_account", column:  "@lang('acc_bank_account.bank_account')" },
                                    {field : "c.name as bank", column:  "@lang('acc_bank_account.bank')" },
                                    {field : "t.branch", column:  "@lang('acc_bank_account.branch')" },
+                                   {field : "a.code as account_default", column:  "@lang('acc_bank_account.account_default')" },
                                    {field : "s.debit_close", column:  "@lang('acc_voucher.debit_balance')" },
                                    {field : "s.credit_close", column:  "@lang('acc_voucher.credit_balance')" }];                             
   });

@@ -16,5 +16,6 @@ return [
     "bank_name" => "Tên tài khoản ngân hàng",
     "bank" => "Ngân hàng",
     "branch" => "Chi nhánh",
+    "account_default" => "Tài khoản hạch toán",
     "description" => "Mô tả",
 ];

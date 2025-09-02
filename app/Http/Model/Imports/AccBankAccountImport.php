@@ -2,6 +2,7 @@
 
 namespace App\Http\Model\Imports;
 
+use App\Http\Model\AccAccountSystems;
 use App\Http\Model\AccBankAccount;
 use App\Http\Model\AccBank;
 use Illuminate\Support\Str;
@@ -39,6 +40,7 @@ class AccBankAccountImport implements ToModel, WithHeadingRow, WithBatchInserts,
     {
         //dump($row);
         $bank = AccBank::WhereDefault('code',$row['bank'])->first();
+        $account_systems = AccAccountSystems::WhereDefault('code',$row['account_default'])->first();
         $code_check = AccBankAccount::WhereCheck('bank_account',$row['bank_account'],'id',null)->first();
         if($code_check == null && $row['bank_account']){
           $arr = [
@@ -47,6 +49,7 @@ class AccBankAccountImport implements ToModel, WithHeadingRow, WithBatchInserts,
             'bank_name'    => $row['bank_name'],
             'bank_id'    => $bank == null ? 0 : $bank->id,
             'branch'    => $row['branch'],
+            'account_default'    => $account_systems == null ? 0 : $account_systems->id,
             'description'    => $row['description'],
             'active'    => $row['active'] == null ? 1 : $row['active'],
           ];

@@ -38,6 +38,14 @@
           <td class="row-label"><label>@lang('acc_bank_account.branch') </label></td>
           <td><input type="text" class="k-textbox xxlarge" data-position="3" data-title="@lang('acc_bank_account.branch')" data-width="200px" maxlength="100" data-type="string" name="branch" /></td>
       </tr>
+       <tr>
+          <td class="row-label"><label>@lang('acc_bank_account.account_default')</label></td>
+          <td>
+               <select class="droplist read large" data-position="4" data-title="@lang('acc_bank_account.account_default')" data-template="#= FormatDropListRead(account_default,'account_default') #" data-type="number"  data-value-field="value" data-text-field="text" data-read-url="{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.setting-account-group').'?code=NH'}}" data-width="200px" name="account_default">
+                       
+               </select>
+          </td>
+      </tr>
       <tr>
           <td class="row-label"><label>@lang('acc_bank_account.description')</label></td>
           <td><textarea type="text" class="k-textbox medium" data-position="8" data-title="@lang('acc_bank_account.description')" data-width="200px" data-hidden="true" data-type="string" name="description" /></textarea></td>
@@ -74,6 +82,7 @@
       Ermis.data_expend = [{field : "c.name as bank", column:  "@lang('acc_bank_account.bank')" },
                            {field : "t.bank_account", column:  "@lang('acc_bank_account.bank_account')" },
                            {field : "t.bank_name", column:  "@lang('acc_bank_account.bank_name')" },
+                           {field : "a.code as account_default", column:  "@lang('acc_bank_account.account_default')" },
                            {field : "t.branch", column:  "@lang('acc_bank_account.branch')" },
                            {field : "t.description", column:  "@lang('acc_bank_account.description')" },
                            {field : "t.active", column:  "@lang('action.active')" }];

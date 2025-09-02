@@ -16,5 +16,6 @@ return [
     "bank_name" => "Bank Name",
     "bank" => "Bank",
     "branch" => "Branch",
+    "account_default" => "Account default",
     "description" => "Description",
 ];

@@ -41,6 +41,7 @@ class AccBankAccount extends Model
       static public function get_raw_export($select,$skip,$limit) {
         $result = AccBankAccount::WithRowNumberDb(env('CONNECTION_DB_ACC'))->orderBy('row_number','asc')->skip($skip)->take($limit)
         ->leftJoin('bank as c', 't.bank_id', '=', 'c.id')
+        ->leftJoin('account_systems as a', 'a.id', '=', 't.account_default')
         ->get(['row_number',DB::raw($select)]);
         //$result = DB::select(DB::raw("SELECT t.row_number,{$select} from (SELECT @i:=@i+1 as row_number, s.* FROM country s, (SELECT @i:=0) AS temp order by s.created_at asc) t order by t.row_number asc"));
         return $result;
@@ -50,6 +51,7 @@ class AccBankAccount extends Model
         $result = AccBankAccount::WithRowNumberDb(env('CONNECTION_DB_ACC'))->orderBy('row_number','asc')->skip($skip)->take($limit)
         ->leftJoin('bank as c', 't.bank_id', '=', 'c.id')
         ->leftJoin('bank_account_balance as s', 't.id', '=', 's.bank_account')
+        ->leftJoin('account_systems as a', 'a.id', '=', 't.account_default')
         ->where('s.period', $period)
         ->get(['row_number',DB::raw($select)]);
         //$result = DB::select(DB::raw("SELECT t.row_number,{$select} from (SELECT @i:=@i+1 as row_number, s.* FROM country s, (SELECT @i:=0) AS temp order by s.created_at asc) t order by t.row_number asc"));
@@ -59,13 +61,20 @@ class AccBankAccount extends Model
       static public function get_with_balance_period($period) {
         $result = AccBankAccount::with(['balance' => function ($query) use ($period) {
             $query->where('period', $period);
-        }])->orderBy('bank_account','desc')->leftJoin('bank', 'bank_account.bank_id', '=', 'bank.id')->get(['bank_account.*','bank.name']);
+        }])->orderBy('bank_account','desc')
+        ->leftJoin('bank', 'bank_account.bank_id', '=', 'bank.id')
+        ->leftJoin('account_systems', 'account_systems.id', '=', 'bank_account.account_default')->get(['bank_account.*','bank.name','account_systems.code']);
         //$result = DB::select(DB::raw("SELECT t.* from (SELECT @i:=@i+1 as row_number, s.* FROM country s, (SELECT @i:=0) AS temp order by s.created_at asc) t order by t.row_number desc"));
         return $result;
-      } 
+      }     
 
        public function balance()
     {
         return $this->hasMany(AccBankAccountBalance::class,'bank_account','id');
+    }
+
+      public function account()
+    {
+        return $this->hasOne(AccAccountSystems::class,'id','account_default');
     }
 }

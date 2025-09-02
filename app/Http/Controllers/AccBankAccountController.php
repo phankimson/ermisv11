@@ -130,6 +130,7 @@ class AccBankAccountController extends Controller
        $data->bank_account = $arr->bank_account;
        $data->bank_name = $arr->bank_name;
        $data->branch = $arr->branch;
+       $data->account_default = $arr->account_default;
        $data->description = $arr->description;
        $data->active = $arr->active;
        $data->save();
@@ -166,6 +167,7 @@ class AccBankAccountController extends Controller
       $data->bank_account = $arr->bank_account;
       $data->bank_name = $arr->bank_name;
       $data->branch = $arr->branch;
+      $data->account_default = $arr->account_default;
       $data->description = $arr->description;
       $data->active = $arr->active;
       $data->save();

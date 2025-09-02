@@ -2,14 +2,14 @@
 
 namespace App\Http\Model\Imports;
 
-use App\Http\Model\AccAccountSystems;
+use App\Http\Model\AccBankAccount;
 use App\Classes\Convert;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithBatchInserts;
 use Maatwebsite\Excel\Concerns\WithLimit;
 
-class AccOpenBalanceAccountImport implements ToModel, WithHeadingRow, WithBatchInserts, WithLimit
+class AccOpenBalanceBankImport implements ToModel, WithHeadingRow, WithBatchInserts, WithLimit
 {
   private static $result = array();
   public function sheets(): array
@@ -39,16 +39,16 @@ class AccOpenBalanceAccountImport implements ToModel, WithHeadingRow, WithBatchI
     public function model(array $row)
     {
         //dump($row);
-        $account_system = AccAccountSystems::WhereDefault('code',$row['code'])->first();
-        if($account_system != null && $row['code']){
+        $bank_account = AccBankAccount::WhereDefault('bank_account',$row['bank_account'])->first();
+        if($bank_account != null && $row['bank_account']){
           $arr = [
-            'id'     => $account_system->id,
+            'id'     => $bank_account->id,
             'balance_id'    => 0,
             'period'    => 0,
             'debit_balance'    => Convert::intDefaultformat($row['debit_balance']),
             'credit_balance'    => Convert::intDefaultformat($row['credit_balance']),
           ];
-          $data = new AccOpenBalanceAccountImport();
+          $data = new AccOpenBalanceBankImport();
           $data->setData($arr);
         return;
       }

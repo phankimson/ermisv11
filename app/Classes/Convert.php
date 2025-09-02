@@ -31,7 +31,7 @@ class Convert
 
   static public function intDefaultformat($format)
   {
-    return $format ==''? 0 : $format;
+    return ($format =='' || !$format) ? 0 : $format;
   }
 
   static public function intDefaultNumberformat($format,$number)

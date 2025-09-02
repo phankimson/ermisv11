@@ -19,6 +19,7 @@ use App\Http\Resources\BankOpenBalanceResource;
 use App\Http\Model\Exports\AccAccountSystemsBalanceExport;
 use App\Http\Model\Exports\AccBankAccountBalanceExport;
 use App\Http\Model\Imports\AccOpenBalanceAccountImport;
+use App\Http\Model\Imports\AccOpenBalanceBankImport;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
@@ -237,26 +238,50 @@ class AccOpenBalanceController extends Controller
         Excel::import($import , $file);
         $arr = $import->getData();
         foreach($arr as $k => $a){
-            $type = 2;
-            $data = AccAccountBalance::get_account(0,$a->id);
+            $type = 3;        
+            $data = AccAccountBalance::get_account(0,$a['id']);
             if(!$data){
               $data = new AccAccountBalance();
               $data->period = 0;
-              $data->account_systems = $a->id;  
+              $data->account_systems = $a['id'];  
+              $type = 2;
             }           
-            $data->debit_close = $a->debit_balance;
-            $data->credit_close = $a->credit_balance;
+            $data->debit_close = $a['debit_balance'];
+            $data->credit_close = $a['credit_balance'];
             $data->save();
             // Lưu lại id vào array
-            $a->balance_id = $data->id;
+            $a['balance_id'] = $data->id;
             // Lưu vào collect mới
             $arr[$k] = $a;
         };
+         // Lấy lại dữ liệu  
+       $rs->arr =  $arr;  
+       }else if($rs->type == "bank"){
+        $import = new AccOpenBalanceBankImport;
+        Excel::import($import , $file);
+        $arr = $import->getData();
+        foreach($arr as $k => $a){
+            $type = 3;        
+            $data = AccBankAccountBalance::get_bank_account(0,$a['id']);
+            if(!$data){
+              $data = new AccBankAccountBalance();
+              $data->period = 0;
+              $data->bank_account = $a['id'];  
+              $type = 2;
+            }           
+            $data->debit_close = $a['debit_balance'];
+            $data->credit_close = $a['credit_balance'];
+            $data->save();
+            // Lưu lại id vào array
+            $a['balance_id'] = $data->id;
+            // Lưu vào collect mới
+            $arr[$k] = $a;
+        };
+         // Lấy lại dữ liệu  
+       $rs->arr =  $arr;  
        }else{
          $import = '';
-       }  
-       // Lấy lại dữ liệu  
-       $rs->arr =  $arr;  
+       }        
        $merged = collect($rs);
        //dump($merged);
      // Lưu lịch sử
