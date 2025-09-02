@@ -1017,6 +1017,24 @@ var Ermis = function() {
         });
     };
 
+    var initChangeBankAccount = function(){
+        jQuery(".bank_account").on("change",function(e){
+            var value = this.value;
+            var url = jQuery(e.target).attr("data-read-url");
+            var postdata = {
+                data: JSON.stringify(value)
+            };
+            ErmisTemplateAjaxPost0(e, postdata, url,
+                function(result) {
+                    
+                },
+                function() {
+
+                });
+            
+        })
+    }
+
     var initKeyCode = function() {
         jQuery(document).keyup(function(e) {
           var grid = $kGridTab.data("kendoGrid");
@@ -1262,6 +1280,7 @@ var Ermis = function() {
             initBindData();
             initGetStoredArrId();
             initChangeCurrency();
+            initChangeBankAccount();
             initVoucherChange();
         }
 
