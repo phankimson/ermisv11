@@ -12,7 +12,9 @@ use App\Http\Model\AccAccountBalance;
 use App\Http\Model\AccAccountSystems;
 use App\Http\Model\AccBankAccount;
 use App\Http\Model\AccBankAccountBalance;
+use App\Http\Model\AccSettingAccountGroup;
 use App\Http\Model\AccSystems;
+use App\Http\Model\Document;
 use App\Http\Model\AccHistoryAction;
 use App\Http\Resources\OpenBalanceResource;
 use App\Http\Resources\BankOpenBalanceResource;
@@ -32,7 +34,8 @@ class AccOpenBalanceController extends Controller
   protected $menu;
   protected $page_system;
   protected $download;
-  protected $nature_none;
+  protected $code_bank;
+  protected $document;
   public function __construct(Request $request)
   {
      $this->url =  $request->segment(3);
@@ -40,6 +43,8 @@ class AccOpenBalanceController extends Controller
      $this->menu = Menu::where('code', '=', $this->key)->first();
      $this->page_system = "MAX_COUNT_CHANGE_PAGE";
      $this->download = "AccOpenBalance";
+     $this->code_bank = "NH";
+     $this->document = "DOCUMENT_TAX";
  }
 
   public function show(){
@@ -54,7 +59,12 @@ class AccOpenBalanceController extends Controller
     if($type == "account"){
     $data = OpenBalanceResource::collection(AccAccountSystems::get_with_balance_period("0"));    
     }else if($type == "bank"){
-    $data = BankOpenBalanceResource::collection(AccBankAccount::get_with_balance_period("0"));         
+    $sys = AccSystems::get_systems($this->document);
+    $doc = Document::get_code($sys->value);    
+    $setting = AccSettingAccountGroup::get_code($this->code_bank);
+    $account_default = AccAccountSystems::get_code_like_first($doc->id,$setting->account_group);
+    $data = BankOpenBalanceResource::collection(AccBankAccount::get_with_balance_period("0"));
+    
     }else{
     $data = null;
     }     

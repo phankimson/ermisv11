@@ -25,5 +25,7 @@ class BankOpenBalanceResource extends JsonResource
             'debit_balance' => $this->balance->count()>0? $this->balance->first()->debit_close : 0,
             'credit_balance' => $this->balance->count()>0 ? $this->balance->first()->credit_close : 0,
         ];
-    }
+      
+    }   
+
 }

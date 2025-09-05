@@ -33,6 +33,11 @@ class AccAccountSystems extends Model
         return $result;
       }
 
+      static public function get_code_like_first($document,$code) {
+        $result = AccAccountSystems::where('document_id',$document)->where('code','like',$code)->where('active',1)->doesntHave('account')->first();
+        return $result;
+      }
+
       static public function get_code_wherein($document,$arr_code) {
         $result = AccAccountSystems::where('document_id',$document)->whereIn('code',$arr_code)->where('active',1)->get();
         return $result;
