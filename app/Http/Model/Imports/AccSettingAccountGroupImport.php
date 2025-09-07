@@ -40,6 +40,7 @@ class AccSettingAccountGroupImport implements OnEachRow, WithHeadingRow, WithBat
     public function onRow(Row $row)
     {
         //dump($row);
+        $account_default = AccAccountSystems::WhereDefault('code',$row['account_default'])->first();
         $code_check = AccSettingAccountGroup::WhereCheck('code',$row['code'],'id',null)->first();
         if($code_check == null && $row['code']){
         $arr = 
@@ -47,6 +48,7 @@ class AccSettingAccountGroupImport implements OnEachRow, WithHeadingRow, WithBat
             'code'    => $row['code'],
             'name'    => $row['name'],
             'account_group'    => $row['account_group'], 
+            'account_default'    => $account_default ? $account_default->id : null, 
             'active'    => $row['active'] == null ? 1 : $row['active'],
         ];
         $data = new AccSettingAccountGroupImport();

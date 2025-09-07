@@ -336,7 +336,7 @@ class AccVoucherController extends Controller
       }
   }
 
-    public function change_bank_account(Request $request){
+    public function change_bank(Request $request){
     $type = 10;
     try{
       $req = json_decode($request->data);

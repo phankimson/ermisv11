@@ -16,4 +16,5 @@ return [
     "code" => "Code",
     "account_group" => "Account Group",
     "account_filter" => "Account filter",
+    "account_default" => "Account default",
 ];

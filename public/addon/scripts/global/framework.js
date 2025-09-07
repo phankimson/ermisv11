@@ -1410,6 +1410,36 @@ function getAtIndex(i,storedarrId) {
  }
 }
 
+// Load Dropdown Grid
+  var initLoadDropdownGrid = function(data,field,dataValueField,dataTextField,rs){
+        if(rs != null){
+            if(rs[dataValueField] != undefined){
+                //if(data[field] != null){
+                    //data[field][dataValueField] = rs[dataValueField];
+                    //data[field][dataTextField] = rs[dataTextField];
+                    data[field].set(dataValueField,rs[dataValueField]);
+                    data[field].set(dataTextField,rs[dataTextField]); 
+                //}else{
+                //    var array  = [];
+                //    array[dataValueField] = rs[dataValueField];
+                //    array[dataTextField] = rs[dataTextField];
+                //    data[field] = array;
+               // }
+                           
+            }else{
+                data[field].set(dataValueField,0);
+                data[field].set(dataTextField,'--Select--'); 
+                //data[field][dataTextField] =  '--Select--';
+                //data[field][dataValueField] = 0;
+            }                                                
+        }else{
+            data[field].set(dataValueField,0);
+            data[field].set(dataTextField,'--Select--'); 
+        }
+        // Không bỏ đc refresh
+        //$kGridTab.data("kendoGrid").refresh();        
+    }
+
 function checkboxClicked(element,$kGrid) {
     cell = $(element).parent(); /* you have to find cell containing check box*/
     grid = $kGrid.data("kendoGrid");

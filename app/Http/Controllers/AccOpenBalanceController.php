@@ -44,7 +44,6 @@ class AccOpenBalanceController extends Controller
      $this->page_system = "MAX_COUNT_CHANGE_PAGE";
      $this->download = "AccOpenBalance";
      $this->code_bank = "NH";
-     $this->document = "DOCUMENT_TAX";
  }
 
   public function show(){
@@ -59,10 +58,8 @@ class AccOpenBalanceController extends Controller
     if($type == "account"){
     $data = OpenBalanceResource::collection(AccAccountSystems::get_with_balance_period("0"));    
     }else if($type == "bank"){
-    $sys = AccSystems::get_systems($this->document);
-    $doc = Document::get_code($sys->value);    
     $setting = AccSettingAccountGroup::get_code($this->code_bank);
-    $account_default = AccAccountSystems::get_code_like_first($doc->id,$setting->account_group);
+    $account_default = AccAccountSystems::find($setting->account_default);
     $data = BankOpenBalanceResource::customCollection(AccBankAccount::get_with_balance_period("0"),$account_default->code);
     }else{
     $data = null;

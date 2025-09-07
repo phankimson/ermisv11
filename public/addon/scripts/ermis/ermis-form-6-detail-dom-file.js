@@ -1017,15 +1017,15 @@ var Ermis = function() {
         });
     };
 
-    var initChangeBankAccount = function(){
-        jQuery(".bank_account").bind("change",function(e){
+    var initChangeBank = function(){
+        function OnChangeBank(e){
             var value = this.value;
             var column_change = jQuery(e.target).attr("data-change");
             if(value && value != "0"){
                 var postdata = {
                     data: JSON.stringify(value)
                 };
-            ErmisTemplateAjaxPost0(e, postdata, Ermis.link + '-change-bank-account',
+            ErmisTemplateAjaxPost0(e, postdata, Ermis.link + '-change-bank',
                 function(result) {
                     // Set giá trị default
                     dataDefaultGrid.data[column_change]["value"] = result.data.value;
@@ -1035,15 +1035,17 @@ var Ermis = function() {
                         var r = grid.dataSource.data();
                         jQuery.each(r, function(l, k) {
                              initLoadDropdownGrid(k,column_change,"value","text",result.data);
-                        });  
-                        grid.refresh();
+                        });
                 },
                 function() {
 
                 });
             }          
             
-        })
+        }
+        if($bank){
+            $bank.bind("change", OnChangeBank);  
+        }      
     }
 
     var initKeyCode = function() {
@@ -1125,36 +1127,7 @@ var Ermis = function() {
                 
                      } 
         });
-    };
-
-    var initLoadDropdownGrid = function(data,field,dataValueField,dataTextField,rs){
-        if(rs != null){
-            if(rs[dataValueField] != undefined){
-                //if(data[field] != null){
-                    //data[field][dataValueField] = rs[dataValueField];
-                    //data[field][dataTextField] = rs[dataTextField];
-                    data[field].set(dataValueField,rs[dataValueField]);
-                    data[field].set(dataTextField,rs[dataTextField]); 
-                //}else{
-                //    var array  = [];
-                //    array[dataValueField] = rs[dataValueField];
-                //    array[dataTextField] = rs[dataTextField];
-                //    data[field] = array;
-               // }
-                           
-            }else{
-                data[field].set(dataValueField,0);
-                data[field].set(dataTextField,'--Select--'); 
-                //data[field][dataTextField] =  '--Select--';
-                //data[field][dataValueField] = 0;
-            }                                                
-        }else{
-            data[field].set(dataValueField,0);
-            data[field].set(dataTextField,'--Select--'); 
-        }
-        // Không bỏ đc refresh
-        //$kGridTab.data("kendoGrid").refresh();        
-    }
+    };  
 
     var initLoadColumn = function(data, dataItem) {
         jQuery.each($kGridTab_column, function(i, v) {          
@@ -1291,7 +1264,7 @@ var Ermis = function() {
             initBindData();
             initGetStoredArrId();
             initChangeCurrency();
-            initChangeBankAccount();
+            initChangeBank();
             initVoucherChange();
         }
 

@@ -38,6 +38,14 @@
            </select>     
           </td>
       </tr>
+       <tr>
+          <td class="row-label"><label>@lang('acc_setting_account_group.account_default')</label></td>
+          <td>
+               <select class="droplist read large" data-position="4" data-title="@lang('acc_setting_account_group.account_default')" data-template="#= FormatDropListRead(account_default,'account_default') #" data-type="number"  data-value-field="value" data-text-field="text" data-read-url="{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.account')}}" data-width="200px" name="account_default">
+                       
+               </select>
+          </td>
+      </tr>
       <tr>
           <td><label>@lang('action.active')</label></td>
           <td class="row-height"><input type="checkbox" data-md-icheck="" data-position="10" data-title="@lang('action.active')" data-value="1" data-width="100px" data-type="string" data-template="#= FormatCheckBox(active) #" name="active" /></td>
@@ -71,6 +79,7 @@
                            {field : "t.name", column:  "@lang('acc_setting_account_group.name')" },
                            {field : "t.account_group", column:  "@lang('acc_setting_account_group.account_group')" },
                            {field : "t.account_filter", column:  "@lang('acc_setting_account_group.account_filter')" },
+                           {field : "a.code as account_default", column:  "@lang('acc_setting_account_group.account_default')" },
                            {field : "t.active", column:  "@lang('action.active')" }];
   });
   </script>

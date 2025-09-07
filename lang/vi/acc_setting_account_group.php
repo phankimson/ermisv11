@@ -16,4 +16,5 @@ return [
     "code" => "Mã",
     "account_group" => "Nhóm tài khoản",
     "account_filter" => "Lọc tài khoản",
+    "account_default" => "Tài khoản mặc định",
 ];

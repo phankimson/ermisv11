@@ -132,6 +132,7 @@ class AccSettingAccountGroupController extends Controller
        $data->code = $arr->code;
        $data->name = $arr->name;
        $data->account_group = $arr->account_group;
+       $data->account_default = $arr->account_default;
        $data->active = $arr->active;
        $data->save();
 
@@ -174,6 +175,7 @@ class AccSettingAccountGroupController extends Controller
       $data->code = $arr->code;
       $data->name = $arr->name;
       $data->account_group = $arr->account_group;
+      $data->account_default = $arr->account_default;
       $data->active = $arr->active;
       $data->save();
 

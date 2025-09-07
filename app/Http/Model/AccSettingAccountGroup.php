@@ -48,7 +48,9 @@ class AccSettingAccountGroup extends Model
           $result =  AccSettingAccountGroup::WithRowNumberDb(env('CONNECTION_DB_ACC'))->orderBy('row_number','asc')->with([$check => function ($q) {
             $q->select('account_systems_filter.*','account_systems.id','account_systems.code');
             $q->join('account_systems', 'account_systems.id', '=', 'account_systems_filter.account_systems');
-          }])->skip($skip)->take($limit)->get(['row_number','id',DB::raw($select)]);   
+          }])->skip($skip)->take($limit)
+          ->leftJoin('account_systems as a', 'a.id', '=', 't.account_default')
+          ->get(['row_number','t.id',DB::raw($select)]);   
           $result->makeHidden('id');
           $result->pluckDistant($check, 'code');
           $result->each(function($r, $k) use ($check){
@@ -67,6 +69,11 @@ class AccSettingAccountGroup extends Model
       {
           return $this->morphMany(AccAccountSystemsFilter::class, 'account_systems_filter');
       }
+
+         public function account()
+    {
+        return $this->hasOne(AccAccountSystems::class,'id','account_default');
+    }
 
 
 }

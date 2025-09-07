@@ -1048,30 +1048,6 @@ var Ermis = function() {
         });
     };
 
-    var initLoadDropdownGrid = function(data,field,dataValueField,dataTextField,rs){
-        if(rs != null){
-            if(rs[dataValueField] != undefined){
-                //if(data[field] != null){
-                    data[field][dataValueField] = rs[dataValueField];
-                    data[field][dataTextField] = rs[dataTextField];   
-                //}else{
-                //    var array  = [];
-                //    array[dataValueField] = rs[dataValueField];
-                //    array[dataTextField] = rs[dataTextField];
-                //    data[field] = array;
-               // }
-                           
-            }else{
-                data[field][dataTextField] =  '--Select--';
-                data[field][dataValueField] = 0;
-            }                                                
-        }else{
-            data[field][dataTextField] =  '--Select--';
-            data[field][dataValueField] = 0;
-        }
-        $kGridTab.data("kendoGrid").refresh();        
-    }
-
     var initLoadColumn = function(data, dataItem) {
         jQuery.each($kGridTab_column, function(i, v) {          
             if (v.set === "1") {
