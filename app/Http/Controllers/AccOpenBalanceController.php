@@ -63,8 +63,7 @@ class AccOpenBalanceController extends Controller
     $doc = Document::get_code($sys->value);    
     $setting = AccSettingAccountGroup::get_code($this->code_bank);
     $account_default = AccAccountSystems::get_code_like_first($doc->id,$setting->account_group);
-    $data = BankOpenBalanceResource::collection(AccBankAccount::get_with_balance_period("0"));
-    
+    $data = BankOpenBalanceResource::customCollection(AccBankAccount::get_with_balance_period("0"),$account_default->code);
     }else{
     $data = null;
     }     

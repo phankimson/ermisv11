@@ -17,11 +17,13 @@ use App\Http\Resources\CashGeneralReadResource;
 use App\Http\Resources\AccountedAutoListResource;
 use App\Http\Resources\AccountedFastDropDownListResource;
 use App\Http\Model\AccObject;
+use App\Http\Model\AccBankAccount;
 use App\Http\Model\KeyAi;
 use App\Http\Model\Error;
 use App\Classes\Convert;
 use App\Http\Model\AccCountVoucher;
 use App\Http\Model\AccNumberVoucher;
+use App\Http\Resources\DropDownResource;
 use Illuminate\Support\Facades\Validator;
 use Exception;
 
@@ -317,6 +319,31 @@ class AccVoucherController extends Controller
       $data = AccCurrency::find($req);
       if($req && $data->count()>0 ){
         return response()->json(['status'=>true,'data'=> $data->rate]);
+      }else{
+        return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
+      }
+     }catch(Exception $e){
+        // Lưu lỗi
+        $err = new Error();
+        $err ->create([
+          'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
+          'user_id' => Auth::id(),
+          'menu_id' => $this->menu->id,
+          'error' => $e->getMessage().' - Line '.$e->getLine(),
+          'url'  => $this->url,
+          'check' => 0 ]);
+        return response()->json(['status'=>false,'message'=> trans('messages.error').' '.$e->getMessage().' - Line '.$e->getLine()]);
+      }
+  }
+
+    public function change_bank_account(Request $request){
+    $type = 10;
+    try{
+      $req = json_decode($request->data);
+      $rs = AccBankAccount::find($req);
+      $data = AccAccountSystems::find($rs->account_default);
+      if($req && $data){
+        return response()->json(['status'=>true,'data'=> new DropDownResource($data)]);
       }else{
         return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
       }

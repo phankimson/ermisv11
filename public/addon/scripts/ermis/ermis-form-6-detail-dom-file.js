@@ -1018,19 +1018,30 @@ var Ermis = function() {
     };
 
     var initChangeBankAccount = function(){
-        jQuery(".bank_account").on("change",function(e){
+        jQuery(".bank_account").bind("change",function(e){
             var value = this.value;
-            var url = jQuery(e.target).attr("data-read-url");
-            var postdata = {
-                data: JSON.stringify(value)
-            };
-            ErmisTemplateAjaxPost0(e, postdata, url,
+            var column_change = jQuery(e.target).attr("data-change");
+            if(value && value != "0"){
+                var postdata = {
+                    data: JSON.stringify(value)
+                };
+            ErmisTemplateAjaxPost0(e, postdata, Ermis.link + '-change-bank-account',
                 function(result) {
-                    
+                    // Set giá trị default
+                    dataDefaultGrid.data[column_change]["value"] = result.data.value;
+                    dataDefaultGrid.data[column_change]["text"] = result.data.text;
+                    // Chạy lại giá trị grid
+                        var grid = $kGrid.data("kendoGrid");
+                        var r = grid.dataSource.data();
+                        jQuery.each(r, function(l, k) {
+                             initLoadDropdownGrid(k,column_change,"value","text",result.data);
+                        });  
+                        grid.refresh();
                 },
                 function() {
 
                 });
+            }          
             
         })
     }

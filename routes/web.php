@@ -1350,6 +1350,8 @@ Route::group([
   Route::post('/cash-receipts-voucher-by-invoice-get', 'get' )->name('-by-invoice-get');
   Route::post('/cash-receipts-voucher-by-invoice-currency', 'currency' )->name('-by-invoice-currency');
   Route::post('/cash-receipts-voucher-by-invoice-reference', 'reference' )->name('-by-invoice-reference');
+  // Tìm tài khoản mặc định thay đổi ngân hàng
+  Route::post('/bank-transfer-voucher-change-bank-account', 'change_bank_account' )->name('-change-bank-account');
   });
 
 

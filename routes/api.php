@@ -67,7 +67,7 @@ Route::group([
       Route::get(env("URL_DROPDOWN").'/case-code', 'case_code_dropdown_list')->name('case-code');
       Route::get(env("URL_DROPDOWN").'/cost-code', 'cost_code_dropdown_list')->name('cost-code');
       Route::get(env("URL_DROPDOWN").'/statistical-code', 'statistical_code_dropdown_list')->name('statistical-code');
-      Route::get(env("URL_DROPDOWN").'/work-code', 'work_code_dropdown_list')->name('work-code');
+      Route::get(env("URL_DROPDOWN").'/work-code', 'work_code_dropdown_list')->name('work-code');      
       Route::get(env("URL_DROPDOWN").'/bank-account', 'bank_account_dropdown_list')->name('bank-account');
       Route::get(env("URL_DROPDOWN").'/bank', 'bank_dropdown_list')->name('bank');
       Route::get(env("URL_DROPDOWN").'/object', 'object_dropdown_list')->name('object');
