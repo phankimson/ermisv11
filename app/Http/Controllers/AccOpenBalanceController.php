@@ -44,6 +44,7 @@ class AccOpenBalanceController extends Controller
      $this->page_system = "MAX_COUNT_CHANGE_PAGE";
      $this->download = "AccOpenBalance";
      $this->code_bank = "NH";
+     $this->document = "DOCUMENT_TAX";
  }
 
   public function show(){
@@ -55,8 +56,11 @@ class AccOpenBalanceController extends Controller
 
   public function data(Request $request){  
     $type = $request->input('type',null);
+    // Lấy default document
+    $sys = AccSystems::get_systems($this->document);
+    $document = Document::get_code($sys->value);  
     if($type == "account"){
-    $data = OpenBalanceResource::collection(AccAccountSystems::get_with_balance_period("0"));    
+    $data = OpenBalanceResource::collection(AccAccountSystems::get_with_balance_period($document->id,"0"));    
     }else if($type == "bank"){
     $setting = AccSettingAccountGroup::get_code($this->code_bank);
     $account_default = AccAccountSystems::find($setting->account_default);
@@ -184,10 +188,13 @@ class AccOpenBalanceController extends Controller
       $arr = $request->data;
       $page = $request->page;
       $arr_type = $request->type;
+     // Lấy default document
+      $sys = AccSystems::get_systems($this->document);
+      $document = Document::get_code($sys->value);  
        //return (new HistoryActionExport($arr))->download('HistoryActionExportErmis.xlsx');
        //$myFile = Excel::download(new HistoryActionExport($arr), 'HistoryActionExportErmis.xlsx');
        if($arr_type == "account"){
-        $myFile = Excel::raw(new AccAccountSystemsBalanceExport($arr,$page), \Maatwebsite\Excel\Excel::XLSX);
+        $myFile = Excel::raw(new AccAccountSystemsBalanceExport($arr,$page,$document->id), \Maatwebsite\Excel\Excel::XLSX);
         $name = 'AccAccountSystems';
        }else if($arr_type == "bank"){
          $myFile = Excel::raw(new AccBankAccountBalanceExport($arr,$page), \Maatwebsite\Excel\Excel::XLSX);

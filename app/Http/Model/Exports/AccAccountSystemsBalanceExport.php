@@ -11,10 +11,12 @@ class AccAccountSystemsBalanceExport implements FromCollection, ShouldAutoSize, 
 {
   protected $select;
   protected $page;
-    public function __construct($select,$page)
+  protected $document;
+    public function __construct($select,$page,$document)
    {
        $this->select = $select;
        $this->page = $page;
+       $this->document = $document;
    }
 
     public function collection()
@@ -22,7 +24,7 @@ class AccAccountSystemsBalanceExport implements FromCollection, ShouldAutoSize, 
       $skip = ($this->page - 1) * (int) config('excel.setting.EXPORT_LIMIT');
       $limit = $this->page * (int) config('excel.setting.EXPORT_LIMIT');
       $period = 0;
-        $a = AccAccountSystems::get_raw_balance_export($this->select,$skip,$limit,$period);
+        $a = AccAccountSystems::get_raw_balance_export($this->select,$skip,$limit,$period,$this->document);
         $b = collect($a);
         if($b->count()>0){
         $key = collect($a[0])->keys();

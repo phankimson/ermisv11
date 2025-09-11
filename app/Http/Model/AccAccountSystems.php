@@ -23,8 +23,8 @@ class AccAccountSystems extends Model
       }
 
 
-      static public function get_code($code) {
-        $result = AccAccountSystems::where('code',$code)->first();
+      static public function get_code($document,$code) {
+        $result = AccAccountSystems::where('document_id',$document)->where('code',$code)->first();
         return $result;
       }
 
@@ -48,8 +48,8 @@ class AccAccountSystems extends Model
         return $result;
       }
 
-      static public function get_code_not_id($code,$id) {
-        $result = AccAccountSystems::where('code',$code)->where('id','!=',$id)->get();
+      static public function get_code_not_id($document,$code,$id) {
+        $result = AccAccountSystems::where('document_id',$document)->where('code',$code)->where('id','!=',$id)->get();
         return $result;
       }
 
@@ -58,8 +58,18 @@ class AccAccountSystems extends Model
         return $result;
       }
 
-        static public function get_nature($nature) {
-        $result = AccAccountSystems::orderBy('code','asc')->where('nature',$nature)->doesntHave('account')->get();
+        static public function get_nature($document,$nature) {
+        $result = AccAccountSystems::where('document_id',$document)->where('nature',$nature)->orderBy('code','asc')->doesntHave('account')->get();
+        return $result;
+      }
+
+      static public function get_all_not_parent($document) {
+        $result = AccAccountSystems::active()->where('document_id',$document)->orderBy('code','asc')->doesntHave('account')->get();
+        return $result;
+      }
+
+      static public function get_all($document) {
+        $result = AccAccountSystems::active()->where('document_id',$document)->orderBy('code','asc')->get();
         return $result;
       }
 
@@ -70,8 +80,8 @@ class AccAccountSystems extends Model
         return $result;
       } 
 
-      static public function get_with_balance_period($period) {
-        $result = AccAccountSystems::with(['balance' => function ($query) use ($period) {
+      static public function get_with_balance_period($document,$period) {
+        $result = AccAccountSystems::where('document_id',$document)->with(['balance' => function ($query) use ($period) {
             $query->where('period', $period);
         }])->orderBy('code','desc')->get();
         //$result = DB::select(DB::raw("SELECT t.* from (SELECT @i:=@i+1 as row_number, s.* FROM country s, (SELECT @i:=0) AS temp order by s.created_at asc) t order by t.row_number desc"));
@@ -100,8 +110,8 @@ class AccAccountSystems extends Model
         return $result;
       }   
 
-      static public function get_raw_balance_export($select,$skip,$limit,$period) {
-        $result = AccAccountSystems::WithRowNumberDb(env('CONNECTION_DB_ACC'))->orderBy('row_number','asc')
+      static public function get_raw_balance_export($select,$skip,$limit,$period,$document) {
+        $result = AccAccountSystems::WithRowNumberWhereColumnDb(env('CONNECTION_DB_ACC'),"document_id",$document)->orderBy('row_number','asc')
         ->leftJoin('account_systems as p', 't.parent_id', '=', 'p.id')
         ->leftJoin('account_balance as s', 't.id', '=', 's.account_systems')
         ->where('s.period',$period)

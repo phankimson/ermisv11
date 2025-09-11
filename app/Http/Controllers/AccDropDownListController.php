@@ -277,7 +277,7 @@ class AccDropDownListController extends Controller
     $doc = Document::get_code($sys->value);
     $code = $request->input('code',null);
     if($code == null){
-      $account = AccAccountSystems::active()->orderBy('code','asc')->doesntHave('account')->get();
+      $account = AccAccountSystems::get_all_not_parent($doc->id);
     }else{
       $setting = AccSettingAccountGroup::get_code($code);
       $account = collect([]);
@@ -522,21 +522,24 @@ class AccDropDownListController extends Controller
     // Lấy tài khoản không có default
     $multiple = $request->input('multiple',null);
     // Lấy tất cả tài khoản
-    $full = $request->input('full',null);       
+    $full = $request->input('full',null);     
+    // Lấy default document
+    $sys = AccSystems::get_systems($this->document);
+    $document = Document::get_code($sys->value);  
       if($multiple){
-       $data = LangDropDownResource::collection(AccAccountSystems::active()->orderBy('code','asc')->doesntHave('account')->get());
+       $data = LangDropDownResource::collection(AccAccountSystems::get_all_not_parent($document->id));
       }else if($full){
         $default = collect([$this->default]);
-        $data = LangDropDownResource::collection(AccAccountSystems::orderBy('code','asc')->get());
+        $data = LangDropDownResource::collection(AccAccountSystems::get_all($document->id));
         $data = $default->merge($data)->values();  
       }else if($nature){
         $default = collect([$this->default]);
         $account_nature = AccAccountNature::get_code($nature);
-        $data = LangDropDownResource::collection(AccAccountSystems::get_nature($account_nature->id));
+        $data = LangDropDownResource::collection(AccAccountSystems::get_nature($document->id,$account_nature->id));
         $data = $default->merge($data)->values();  
       }else{
         $default = collect([$this->default]);
-        $data = LangDropDownResource::collection(AccAccountSystems::active()->orderBy('code','asc')->doesntHave('account')->get());
+        $data = LangDropDownResource::collection(AccAccountSystems::get_all_not_parent($document->id));
         $data = $default->merge($data)->values();       
       }  
     return response()->json($data)->withCallback($request->input('callback'));

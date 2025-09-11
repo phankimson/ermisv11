@@ -9,13 +9,8 @@ use Illuminate\Support\Facades\Validator;
 use App\Http\Model\AccHistoryAction;
 use App\Http\Model\Menu;
 use App\Http\Model\AccAccountSystems;
-use App\Http\Model\AccAccountType;
-use App\Http\Model\AccAccountNature;
 use App\Http\Model\CompanySoftware;
 use App\Http\Model\Company;
-use App\Http\Model\Document;
-use App\Http\Model\DocumentType;
-use App\Http\Resources\DropDownListResource;
 use App\Http\Model\Error;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Model\Imports\AccAccountSystemsImport;
@@ -108,7 +103,7 @@ class AccAccountSystemsController extends Controller
         ]);
      if($validator->passes()){
      if($permission['a'] == true && !$arr->id ){
-       $check_code = AccAccountSystems::get_code($arr->code);
+       $check_code = AccAccountSystems::get_code($arr->document_id,$arr->code);
        if(!$check_code){
          $type = 2;
          $data = new AccAccountSystems();
@@ -146,6 +141,7 @@ class AccAccountSystemsController extends Controller
 
          // Lấy ID và và phân loại Thêm
          $arr->id = $data->id;
+         $arr->parent_id = $data->parent_id;
          $arr->t = $type;
          DB::connection(env('CONNECTION_DB_ACC'))->commit();
          broadcast(new \App\Events\DataSend($arr));
@@ -154,7 +150,7 @@ class AccAccountSystemsController extends Controller
          return response()->json(['status'=>false,'message'=> trans('messages.account_is_already')]);
        }
      }else if($permission['e'] == true && $arr->id){
-       $check_code = AccAccountSystems::get_code_not_id($arr->code,$arr->id);
+       $check_code = AccAccountSystems::get_code_not_id($arr->document_id,$arr->code,$arr->id);
        if($check_code->count() == 0){
          $type = 3;
          $data = AccAccountSystems::find($arr->id);
@@ -191,6 +187,7 @@ class AccAccountSystemsController extends Controller
         $data->active = $arr->active;
         $data->save();
          // Phân loại Sửa
+         $arr->parent_id = $data->parent_id;
          $arr->t = $type;
          DB::connection(env('CONNECTION_DB_ACC'))->commit();
          broadcast(new \App\Events\DataSend($arr));

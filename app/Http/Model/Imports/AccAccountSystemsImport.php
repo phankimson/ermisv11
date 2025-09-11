@@ -46,7 +46,7 @@ class AccAccountSystemsImport implements ToModel, WithHeadingRow, WithBatchInser
         $nature = AccAccountNature::WhereDefault('code',$row['nature'])->first();
         $parent = AccAccountSystems::WhereDefault('code',$row['parent'])->first();
         $document = Document::WhereDefault('code',$row['document'])->first();
-        $code_check = AccAccountSystems::WhereCheck('code',$row['code'],'id',null)->first();
+        $code_check = AccAccountSystems::WhereCheck1('code',$row['code'],'document_id',$document->id,'id',null)->first();
         if($code_check == null && $row['code']){
           $arr = [
             'id'     => Str::uuid()->toString(),
