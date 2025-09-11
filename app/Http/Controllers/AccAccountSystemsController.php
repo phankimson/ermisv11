@@ -61,7 +61,13 @@ class AccAccountSystemsController extends Controller
     try{
       $req = json_decode($request->data);
       $db = CompanySoftware::find($req->database);
+      if(!$db){
+        return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
+      }
       $com = Company::find($db->company_id);
+      if(!$com){
+        return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
+      }
       $params = array(
             'driver'    => env('DB_CONNECTION', 'mysql'),
             'host'      => env('DB_HOST', '127.0.0.1'),
@@ -154,6 +160,9 @@ class AccAccountSystemsController extends Controller
        if($check_code->count() == 0){
          $type = 3;
          $data = AccAccountSystems::find($arr->id);
+        if(!$data){
+        return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
+        }
          // Lưu lịch sử
          $h = new AccHistoryAction();
          $h ->create([
@@ -227,6 +236,9 @@ class AccAccountSystemsController extends Controller
         if($arr){
           if($permission['d'] == true){
             $data = AccAccountSystems::find($arr->id);
+            if(!$data){
+              return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
+            }
             $child = AccAccountSystems::get_child($data->id);
             $child->each(function ($item) {
               $item->parent_id = null;

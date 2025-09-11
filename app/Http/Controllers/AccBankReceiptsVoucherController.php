@@ -113,6 +113,9 @@ class AccBankReceiptsVoucherController extends Controller
           $user = Auth::user();
           if($permission['e'] == true && $arr->id ){
             $general = AccGeneral::find($arr->id);
+             if(!$general){
+              return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
+            }
             $v = $general->voucher;
             $type = 3;
             $action = 'update';
@@ -216,6 +219,10 @@ class AccBankReceiptsVoucherController extends Controller
              $detail = collect([]);
              if($d->id){
                $detail = AccDetail::find($d->id);
+                if(!$detail){
+                  DB::connection(env('CONNECTION_DB_ACC'))->rollBack();
+                  return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
+                }
              }else{
                $detail = new AccDetail();
              }
@@ -333,7 +340,11 @@ class AccBankReceiptsVoucherController extends Controller
                 }
                 // End
              if($x->id){
-               $tax = AccVatDetail::find($x->id);              
+               $tax = AccVatDetail::find($x->id);  
+                if(!$tax){
+                DB::connection(env('CONNECTION_DB_ACC'))->rollBack();
+                return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
+                }                  
              }else{
                $tax = new AccVatDetail();
              }

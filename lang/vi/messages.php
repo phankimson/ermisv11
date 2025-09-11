@@ -137,4 +137,5 @@ return [
       "enter_search_keyword"=>"Nhập từ khóa tìm kiếm",
       "bank_account_not_correct"=>"Tài khoản ngân hàng không đúng !",
       "debit_and_credit_amount_not_correct"=>"Số tiền nợ và có không khớp nhau !",
+      "account_details_balance_is_incorrect"=>"Số dư tài khoản chi tiết :account không đúng !",
 ];

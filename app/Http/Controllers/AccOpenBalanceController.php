@@ -26,9 +26,11 @@ use Exception;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Storage;
+use App\Http\Traits\LoadDocumentTraits;
 
 class AccOpenBalanceController extends Controller
 {
+  use LoadDocumentTraits;
   protected $url;
   protected $key;
   protected $menu;
@@ -48,7 +50,7 @@ class AccOpenBalanceController extends Controller
  }
 
   public function show(){
-     $count = AccAccountBalance::count();
+    $count = AccAccountBalance::count();
     $sys_page = AccSystems::get_systems($this->page_system);
     $paging = $count>$sys_page->value?1:0;   
     return view('acc.'.str_replace("-", "_", $this->key),['paging' => $paging, 'key' => $this->key ]);
@@ -113,6 +115,31 @@ class AccOpenBalanceController extends Controller
           }            
         }
       }else if($rq->type == "bank"){
+        // Kiểm tra có đúng với số dư tk không
+        $check_balance = true;
+        $check_account = "";
+        $co = collect($arr);
+          $re = $co->groupBy('account_default')->map(function ($group, $account_default) {
+             return [
+                  'account_default' => $account_default,
+                  'debit_balance' => $group->sum('debit_balance'),
+                  'credit_balance' => $group->sum('credit_balance'),
+              ];
+          })->values();
+           foreach($re as $item){  
+              $acc = AccAccountSystems::get_code($this->getId($this->document),$item['account_default']);
+              $acc_balance = AccAccountBalance::get_account(0,$acc->id);
+              $acc_balance_debit = $acc_balance?$acc_balance->debit_close:0;
+              $acc_balance_credit = $acc_balance?$acc_balance->credit_close:0;
+              if($item['debit_balance'] != $acc_balance_debit || $item['credit_balance'] != $acc_balance_credit){                            
+                  $check_balance = false;     
+                  $check_account .= $item['account_default'].", ";                        
+              }
+          };
+          if($check_balance == false){
+            return response()->json(['status'=>false,'message'=> trans('messages.account_details_balance_is_incorrect',['account'=>$check_account])]);
+          }
+          //
         foreach($arr as $k => $a){        
           if($permission['a'] == true && !$a->balance_id ){
             $type = 2;
@@ -135,6 +162,7 @@ class AccOpenBalanceController extends Controller
             $rs[$k] = $a;
           }            
         }
+        
 
 
       }else{

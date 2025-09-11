@@ -84,6 +84,9 @@ class AccBankCompareController extends Controller
              $tab1 = $arr->tab1;
              if(count($tab1)>0){
              $data = AccDetail::find($tab1[0]);
+            if(!$data){
+              return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
+            }
              $period = AccPeriod::get_date(Carbon::parse($data->accounting_date)->format('Y-m'),1);
              if(!$period){
                // Lưu lịch sử
@@ -97,15 +100,21 @@ class AccBankCompareController extends Controller
 
                //DETAIL
                foreach($arr->tab1 as $k){
-                  $d = AccDetail::find($k);                 
-                  $d->status = 2;
-                  $d->save();
+                  $d = AccDetail::find($k);  
+                  if($d){
+                   $d->status = 2;
+                   $d->save();
+                 }                    
+                  
                }
                //compare
                foreach($arr->tab2 as $l){
                   $d = AccBankCompare::find($l);
+                  if($d){
                   $d->status = 2;
                   $d->save();
+                 }     
+                
                }              
                 DB::connection(env('CONNECTION_DB_ACC'))->commit();
                return response()->json(['status'=>true,'message'=> trans('messages.check_success')]);
@@ -147,6 +156,9 @@ class AccBankCompareController extends Controller
              $tab1 = $arr->tab1;
              if(count($tab1)>0){
              $data = AccDetail::find($tab1[0]);
+             if(!$data){
+              return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
+              }     
              $period = AccPeriod::get_date(Carbon::parse($data->accounting_date)->format('Y-m'),1);
              if(!$period){
                // Lưu lịch sử
@@ -160,15 +172,21 @@ class AccBankCompareController extends Controller
 
                //DETAIL
                foreach($arr->tab1 as $k){
-                  $d = AccDetail::find($k);                 
+                  $d = AccDetail::find($k);    
+                 if($d){
                   $d->status = 1;
                   $d->save();
+                 }             
+                 
                }
                //compare
                foreach($arr->tab2 as $l){
                   $d = AccBankCompare::find($l);
+                if($d){
                   $d->status = 1;
                   $d->save();
+                }
+                  
                }              
                 DB::connection(env('CONNECTION_DB_ACC'))->commit();
                return response()->json(['status'=>true,'message'=> trans('messages.uncheck_success')]);
@@ -216,7 +234,13 @@ class AccBankCompareController extends Controller
         // Đổi dữ liệu Excel sang collect
         config(['excel.imports.read_only' => false]);
         $bank_account = AccBankAccount::find($rs->crit);
+        if(!$bank_account){
+          return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
+        }
         $bank = AccBank::find($bank_account->bank_id);
+        if(!$bank){
+          return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
+        }
         if(strpos($bank->name, "Vietinbank") !== false){
           $start_row = 26;
           $row = ['accounting_date'=>1,'transaction_description'=>2,'debit_amount'=>3,'credit_amount'=>4,'transaction_number'=>6,'corresponsive_account'=>7,'corresponsive_name'=>8];
@@ -259,6 +283,9 @@ class AccBankCompareController extends Controller
     try{
       $req = json_decode($request->data);
       $bank_compare = AccBankCompare::find($req->id);
+      if(!$bank_compare){
+        return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
+      }
       $url = explode("/",$req->href);
       if(isset($url[5])&& $bank_compare->status < 2){     
         $menu_change = Menu::get_menu_like_code($url[5]);

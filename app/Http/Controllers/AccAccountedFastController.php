@@ -89,7 +89,13 @@ class AccAccountedFastController extends Controller
     try{
       $req = json_decode($request->data);
       $db = CompanySoftware::find($req->database);
+      if(!$db){
+        return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
+      }
       $com = Company::find($db->company_id);
+      if(!$com){
+        return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
+      }
       $params = array(
             'driver'    => env('DB_CONNECTION', 'mysql'),
             'host'      => env('DB_HOST', '127.0.0.1'),
@@ -169,6 +175,9 @@ class AccAccountedFastController extends Controller
      }else if($permission['e'] == true && $arr->id){
        $type = 3;
        $data = AccAccountedFast::find($arr->id);
+       if(!$data){
+        return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
+      }
        // Lưu lịch sử
        $h = new AccHistoryAction();
        $h ->create([
@@ -233,6 +242,9 @@ class AccAccountedFastController extends Controller
         if($arr){
           if($permission['d'] == true){
             $data = AccAccountedFast::find($arr->id);
+          if(!$data){
+            return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
+          }
             // Lưu lịch sử
             $h = new AccHistoryAction();
             $h ->create([

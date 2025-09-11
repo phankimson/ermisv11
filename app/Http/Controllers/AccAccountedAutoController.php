@@ -116,7 +116,13 @@ class AccAccountedAutoController extends Controller
     try{
       $req = json_decode($request->data);
       $db = CompanySoftware::find($req->database);
+      if(!$db){
+        return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
+      }
       $com = Company::find($db->company_id);
+      if(!$com){
+        return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
+      }
       $params = array(
             'driver'    => env('DB_CONNECTION', 'mysql'),
             'host'      => env('DB_HOST', '127.0.0.1'),
@@ -223,6 +229,9 @@ class AccAccountedAutoController extends Controller
      }else if($permission['e'] == true && $arr->id){
        $type = 3;
        $data = AccAccountedAuto::find($arr->id);
+       if(!$data){
+         return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
+       }
        // Lưu lịch sử
        $h = new AccHistoryAction();
        $h ->create([
@@ -252,6 +261,10 @@ class AccAccountedAutoController extends Controller
             $dom->active = 1;
           }else{
             $dom = AccAccountedAutoDetail::find($l['0']);
+            if(!$dom){
+              DB::connection(env('CONNECTION_DB_ACC'))->rollBack();
+              return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
+            }
             $dom_all = $dom_all->filter(function ($item) use ($l) {
                return $item->id != $l['0'];
            });
