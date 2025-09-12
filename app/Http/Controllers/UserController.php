@@ -222,6 +222,9 @@ class UserController extends Controller
         DB::beginTransaction();
         $data = json_decode($request->data);
         $user = User::find(Auth::id());
+        if(!$user){
+          return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
+        }
         $user->fullname = $data->fullname;
         $user->firstname = $data->firstname;
         $user->lastname = $data->lastname;
@@ -256,6 +259,9 @@ class UserController extends Controller
     DB::beginTransaction();
     $data = json_decode($request->data);
     $user = User::find(Auth::id());
+    if(!$user){
+        return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
+      }
     $checkpassword = Hash::check($data->password, $user->password);
     $new_password = Hash::make($data->npassword);
      if($checkpassword && $user->password != $new_password && $data->npassword == $data->rpassword){
@@ -292,6 +298,9 @@ class UserController extends Controller
         $avatar = $request->file('avatar');
 
         $user = User::find(Auth::id());
+         if(!$user){
+          return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
+        }
         $sys = Systems::get_systems('PATH_UPLOAD_AVATAR');
 
         $filename = time().'.'.$avatar->getClientOriginalExtension();

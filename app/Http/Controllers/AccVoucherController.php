@@ -106,6 +106,9 @@ class AccVoucherController extends Controller
         $reference_array = [0 , $req->general_id ] ;   
       }
       $number_voucher = AccNumberVoucher::find($req->filter_voucher);
+      if(!$number_voucher){
+          return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
+        }
       $data = CashGeneralReadResource::collection(AccGeneral::get_data_load_between_reference($number_voucher->menu_id,$req->start_date,$req->end_date,$reference_array));
       if($req && $data->count()>0 ){
         return response()->json(['status'=>true,'data'=> $data]);
@@ -137,6 +140,9 @@ class AccVoucherController extends Controller
         ]);
       if($validator->passes()){
       $data = AccNumberVoucher::find($req->id);
+      if(!$data){
+          return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
+        }
       if($data->change_voucher == 1){
         $val = Convert::dateformatArr($data->format,$req->accounting_date); 
         $data = AccCountVoucher::get_count_voucher($data->id,$data->format,$val['day_format'],$val['month_format'],$val['year_format']);        
@@ -170,6 +176,9 @@ class AccVoucherController extends Controller
         try{
           $req = json_decode($request->data);        
           $data = AccNumberVoucher::find($req->id);
+          if(!$data){
+          return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
+        }
           $val = Convert::dateformatArr($data->format,$req->accounting_date);          
           $voucher = AccCountVoucher::get_count_voucher($data->id,$data->format,$val['day_format'],$val['month_format'],$val['year_format']);    
           if($req->accounting_date && $voucher != null ){
@@ -317,6 +326,9 @@ class AccVoucherController extends Controller
     try{
       $req = json_decode($request->data);
       $data = AccCurrency::find($req);
+      if(!$data){
+          return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
+        }
       if($req && $data->count()>0 ){
         return response()->json(['status'=>true,'data'=> $data->rate]);
       }else{
@@ -341,7 +353,13 @@ class AccVoucherController extends Controller
     try{
       $req = json_decode($request->data);
       $rs = AccBankAccount::find($req);
+      if(!$rs){
+        return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
+      }
       $data = AccAccountSystems::find($rs->account_default);
+      if(!$data){
+        return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
+      }
       if($req && $data){
         return response()->json(['status'=>true,'data'=> new DropDownResource($data)]);
       }else{

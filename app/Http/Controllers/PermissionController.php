@@ -113,6 +113,10 @@ class PermissionController extends Controller
                         $result->group_user_id = $d->user;
                       }else{
                         $result = GroupUsersPermission::find($d->id);
+                        if(!$result){
+                          DB::rollBack();
+                          return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
+                        }
                         $type = 3;
                         $result->group_user_id = $d->user;
                       }
@@ -123,6 +127,10 @@ class PermissionController extends Controller
                         $result->user_id = $d->user;
                       }else{
                         $result = Permission::find($d->id);
+                        if(!$result){
+                          DB::rollBack();
+                          return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
+                        }
                         $type = 3;
                         $result->user_id = $d->user;
                       }

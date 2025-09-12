@@ -54,7 +54,6 @@ class AccBankPaymentVoucherByInvoiceController extends Controller
      $this->key_invoice = "bank-payment-voucher-by-invoice";     
      $this->menu = Menu::where('code', '=', $this->key_invoice)->first();
      $this->print = 'BNHD%';
-     $this->document = 'DOCUMENT_TAX';
      $this->path = 'PATH_UPLOAD_BANK_PAYMENT';
      $this->check_cash = 'CHECK_CASH';
  }

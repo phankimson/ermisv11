@@ -73,6 +73,9 @@ class AccCashReceiptsGeneralController extends Controller
          if($arr){
            if($permission['e'] == true){
              $data = AccGeneral::find($arr);
+              if(!$data){
+               return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
+             }
              $period = AccPeriod::get_date(Carbon::parse($data->accounting_date)->format('Y-m'),1);
              if(!$period){
                $detail = AccDetail::get_detail_active($data->id,1);
@@ -152,6 +155,9 @@ class AccCashReceiptsGeneralController extends Controller
          if($arr){
            if($permission['e'] == true){
              $data = AccGeneral::find($arr);
+              if(!$data){
+               return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
+             }
              $period = AccPeriod::get_date(Carbon::parse($data->accounting_date)->format('Y-m'),1);
              if(!$period){
                $detail = AccDetail::get_detail_active($data->id,0);
@@ -313,12 +319,16 @@ class AccCashReceiptsGeneralController extends Controller
       $req = json_decode($request->data);
       // Tìm voucher & lưu voucher
       $voucher = AccCountVoucher::find($req->voucherId);  
+      if($voucher){  
       $voucher->number = $req->number;
       $voucher->save();
+      }
       foreach($req->items as $item){
         $general = AccGeneral::find($item->id);
+        if($general){
         $general->voucher = $item->revoucher;
         $general->save();
+        }
       };   
       DB::connection(env('CONNECTION_DB_ACC'))->commit();
      return response()->json(['status'=>true , 'message'=> trans('messages.update_success')]);
@@ -385,9 +395,10 @@ class AccCashReceiptsGeneralController extends Controller
                $tax_payment = $data->vat_detail_payment;
                foreach($tax_payment as $v){
                  $p = AccVatDetail::find($v->vat_detail_id);
+                if($p){
                  $p->payment = 0;
                  $p->save(); 
-
+                }
                 // Update lại số tiền đã thanh toán của từng phiếu
                 $tax_payment_update = AccVatDetailPayment::vat_detail_payment_created_at_not_id($v->vat_detail_id,$v->created_at,$v->id);
                 foreach($tax_payment_update as $t){

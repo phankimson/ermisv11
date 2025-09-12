@@ -133,6 +133,9 @@ class AccHistoryActionController extends Controller
       }else if($permission['e'] == true && $arr->id){
         $type = 3;
         $data = AccHistoryAction::find($arr->id);
+        if(!$data){
+          return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
+        }
         // Lưu lịch sử
         //$h = new HistoryAction();
         //$h ->create([
@@ -184,6 +187,9 @@ class AccHistoryActionController extends Controller
          if($arr){
            if($permission['d'] == true){
              $data = AccHistoryAction::find($arr->id);
+             if(!$data){
+                return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
+              }
              // Lưu lịch sử
              //$h = new HistoryAction();
              //$h ->create([

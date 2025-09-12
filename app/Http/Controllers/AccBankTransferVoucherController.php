@@ -48,7 +48,6 @@ class AccBankTransferVoucherController extends Controller
      $this->menu = Menu::where('code', '=', $this->key)->first();
      $this->print = 'BT%';
      $this->path = 'PATH_UPLOAD_BANK_TRANSFER';
-     $this->document = 'DOCUMENT_TAX';
      $this->check_cash = 'CHECK_CASH';
      $this->download = 'AccBankTransferVoucher.xlsx';
  }
@@ -102,6 +101,9 @@ class AccBankTransferVoucherController extends Controller
           $user = Auth::user();
           if($permission['e'] == true && $arr->id ){
             $general = AccGeneral::find($arr->id);
+             if(!$general){
+              return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
+            }
             $v = $general->voucher;
             $type = 3;
             $action = 'update';
@@ -197,6 +199,10 @@ class AccBankTransferVoucherController extends Controller
              $detail = collect([]);
              if($d->id){
                $detail = AccDetail::find($d->id);
+                if(!$detail){
+                  DB::connection(env('CONNECTION_DB_ACC'))->rollBack();
+                  return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
+                }
              }else{
                $detail = new AccDetail();
              }

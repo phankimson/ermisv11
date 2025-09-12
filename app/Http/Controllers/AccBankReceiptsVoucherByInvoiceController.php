@@ -52,7 +52,6 @@ class AccBankReceiptsVoucherByInvoiceController extends Controller
      $this->key_invoice = "bank-receipts-voucher-by-invoice";     
      $this->menu = Menu::where('code', '=', $this->key_invoice)->first();
      $this->print = 'BCHD%';
-     $this->document = 'DOCUMENT_TAX';
      $this->path = 'PATH_UPLOAD_BANK_RECEIPTS';     
  }
 

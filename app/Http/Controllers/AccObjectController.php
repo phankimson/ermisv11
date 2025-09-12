@@ -99,6 +99,9 @@ class AccObjectController extends Controller
     try{
     $req = json_decode($request->data);
     $object_type = AccObjectType::find($req);  
+     if(!$object_type){
+        return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
+      }
     $data = AccNumberCode::get_code($this->key.'_'.$object_type->filter);
     if($data){
       return response()->json(['status'=>true,'data'=> $data]);
@@ -124,7 +127,13 @@ class AccObjectController extends Controller
     try{
       $req = json_decode($request->data);
       $db = CompanySoftware::find($req->database);
+      if(!$db){
+        return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
+      }
       $com = Company::find($db->company_id);
+       if(!$com){
+        return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
+      }
       $params = array(
             'driver'    => env('DB_CONNECTION', 'mysql'),
             'host'      => env('DB_HOST', '127.0.0.1'),
@@ -217,9 +226,12 @@ class AccObjectController extends Controller
        // Lưu mã code tự tăng
 
        $p = AccObjectType::find($arr->object_type[0]);
+       if($p){
          $ir = AccNumberCode::get_code($this->key.'_'.$p->filter);
          $ir->number = $ir->number + 1;
          $ir->save();
+       }
+        
        
        //if (strpos($arr->object_type, ',') == true){
        //  $p = explode(",", $p);
@@ -251,6 +263,9 @@ class AccObjectController extends Controller
      }else if($permission['e'] == true && $arr->id){
        $type = 3;
        $data = AccObject::find($arr->id);
+        if(!$data){
+          return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
+        }
        // Lưu lịch sử
        $h = new AccHistoryAction();
        $h ->create([
@@ -357,6 +372,9 @@ class AccObjectController extends Controller
         if($arr){
           if($permission['d'] == true){
             $data = AccObject::find($arr->id);
+             if(!$data){
+              return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
+            }
             // Lưu lịch sử
             $h = new AccHistoryAction();
             $h ->create([

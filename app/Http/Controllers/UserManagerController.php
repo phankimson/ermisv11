@@ -142,8 +142,11 @@ class UserManagerController extends Controller
          $upload_success = $files->move($path, $filename);
          // Lưu lại hình ảnh
          $data = User::find($arr->id);
-         $data->avatar = $pathname;
-         $data->save();
+         if($data){
+          $data->avatar = $pathname;
+          $data->save();
+         }
+         
          //Lưu ảnh lại array
          $arr->avatar = $pathname;
        }
@@ -154,6 +157,9 @@ class UserManagerController extends Controller
      }else if($permission['e'] == true && $arr->id){
        $type = 3;
        $data = User::find($arr->id);
+         if(!$data){
+          return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
+        }
        // Lưu lịch sử
        $h = new HistoryAction();
        $h ->create([
@@ -209,8 +215,10 @@ class UserManagerController extends Controller
          $upload_success = $files->move($path, $filename);
          // Lưu lại hình ảnh
          $data = User::find($arr->id);
+         if($data){
          $data->avatar = $pathname;
          $data->save();
+         }
          //Lưu ảnh lại array
          $arr->avatar = $pathname;
        }
@@ -252,6 +260,9 @@ class UserManagerController extends Controller
         if($arr){
           if($permission['d'] == true){
             $data = User::find($arr->id);
+          if(!$data){
+            return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
+          }
             // Lưu lịch sử
             $h = new HistoryAction();
             $h ->create([

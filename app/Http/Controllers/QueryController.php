@@ -37,6 +37,9 @@ class QueryController extends Controller
         return response()->json(['status'=>true ,'message'=> trans('messages.connect_success')]);        
       }else{
         $db = CompanySoftware::find($req->database);
+        if(!$db){
+          return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
+        }
         $checkDB = SchemaDB::checkDB($db->database);
         if($checkDB == 1){
           $params = array(

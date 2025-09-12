@@ -12,4 +12,11 @@ trait LoadDocumentTraits
          return $doc->id;
     }
 
+    public function getDoc ($document_code)
+    {
+         $sys = AccSystems::get_systems($document_code);
+         $doc = Document::get_code($sys->value);
+         return $doc;
+    }
+
 }

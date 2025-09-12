@@ -118,6 +118,9 @@ class AccSuppliesGoodsController extends Controller
     try{
     $req = json_decode($request->data);   
     $type = AccSuppliesGoodsType::find($req);
+    if(!$type){
+      return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
+    }
     $data = AccNumberCode::get_code($this->key.'_'.$type->filter);
     if($data){
       return response()->json(['status'=>true,'data'=> $data]);
@@ -143,7 +146,13 @@ class AccSuppliesGoodsController extends Controller
     try{
       $req = json_decode($request->data);
       $db = CompanySoftware::find($req->database);
+       if(!$db){
+        return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
+      }
       $com = Company::find($db->company_id);
+       if(!$com){
+        return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
+      }
       $params = array(
             'driver'    => env('DB_CONNECTION', 'mysql'),
             'host'      => env('DB_HOST', '127.0.0.1'),
@@ -254,8 +263,10 @@ class AccSuppliesGoodsController extends Controller
          $upload_success = $files->move($path, $filename);
          // Lưu lại hình ảnh
          $data = AccSuppliesGoods::find($arr->id);
+         if($data){
          $data->image = $pathname;
          $data->save();
+         }        
          //Lưu ảnh lại array
          $arr->image = $pathname;
        }
@@ -293,6 +304,9 @@ class AccSuppliesGoodsController extends Controller
      }else if($permission['e'] == true && $arr->id){
        $type = 3;
        $data = AccSuppliesGoods::find($arr->id);
+       if(!$data){
+          return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
+        }
        // Lưu lịch sử
        $h = new AccHistoryAction();
        $h ->create([
@@ -367,6 +381,10 @@ class AccSuppliesGoodsController extends Controller
             $dom->active = 1;
           }else{
             $dom = AccSuppliesGoodsDiscount::find($l['0']);
+            if(!$dom){
+              DB::connection(env('CONNECTION_DB_ACC'))->rollBack();
+              return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
+            }
             $dom_all = $dom_all->filter(function ($item) use ($l) {
                return $item->id != $l['0'];
            });
@@ -409,8 +427,10 @@ class AccSuppliesGoodsController extends Controller
         $upload_success = $files->move($path, $filename);
         // Lưu lại hình ảnh
         $data = AccSuppliesGoods::find($arr->id);
+        if($data){
         $data->image = $pathname;
         $data->save();
+        }       
         //Lưu ảnh lại array
         $arr->image = $pathname;
       }

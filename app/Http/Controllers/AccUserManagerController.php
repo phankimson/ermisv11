@@ -153,8 +153,10 @@ class AccUserManagerController extends Controller
          $upload_success = $files->move($path, $filename);
          // Lưu lại hình ảnh
          $data = AccUser::find($arr->id);
-         $data->avatar = $pathname;
-         $data->save();
+         if($data){
+          $data->avatar = $pathname;
+          $data->save();
+         }        
          //Lưu ảnh lại array
          $arr->avatar = $pathname;
        }
@@ -170,6 +172,9 @@ class AccUserManagerController extends Controller
        if($check_user->count() == 0){
        $type = 3;
        $data = AccUser::find($arr->id);
+        if(!$data){
+          return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
+        }
        // Lưu lịch sử
        $h = new AccHistoryAction();
        $h ->create([
@@ -224,8 +229,10 @@ class AccUserManagerController extends Controller
          $upload_success = $files->move($path, $filename);
          // Lưu lại hình ảnh
          $data = AccUser::find($arr->id);
-         $data->avatar = $pathname;
-         $data->save();
+         if($data){
+          $data->avatar = $pathname;
+          $data->save();
+         }         
          //Lưu ảnh lại array
          $arr->avatar = $pathname;
        }
@@ -271,6 +278,9 @@ class AccUserManagerController extends Controller
         if($arr){
           if($permission['d'] == true){
             $data = AccUser::find($arr->id);
+          if(!$data){
+            return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
+          }
             // Lưu lịch sử
             $h = new AccHistoryAction();
             $h ->create([

@@ -115,6 +115,9 @@ class AccGroupUsersController extends Controller
      }else if($permission['e'] == true && $arr->id){
        $type = 3;
        $data = AccGroupUsers::find($arr->id);
+       if(!$data){
+          return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
+        }
        // Lưu lịch sử
        $h = new AccHistoryAction();
        $h ->create([
@@ -168,6 +171,9 @@ class AccGroupUsersController extends Controller
         if($arr){
           if($permission['d'] == true){
             $data = AccGroupUsers::find($arr->id);
+            if(!$data){
+              return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
+            }
             // Lưu lịch sử
             $h = new AccHistoryAction();
             $h ->create([

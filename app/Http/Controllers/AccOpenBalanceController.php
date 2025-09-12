@@ -14,7 +14,6 @@ use App\Http\Model\AccBankAccount;
 use App\Http\Model\AccBankAccountBalance;
 use App\Http\Model\AccSettingAccountGroup;
 use App\Http\Model\AccSystems;
-use App\Http\Model\Document;
 use App\Http\Model\AccHistoryAction;
 use App\Http\Resources\OpenBalanceResource;
 use App\Http\Resources\BankOpenBalanceResource;
@@ -59,8 +58,7 @@ class AccOpenBalanceController extends Controller
   public function data(Request $request){  
     $type = $request->input('type',null);
     // Lấy default document
-    $sys = AccSystems::get_systems($this->document);
-    $document = Document::get_code($sys->value);  
+    $document = $this->getDoc($this->document);  
     if($type == "account"){
     $data = OpenBalanceResource::collection(AccAccountSystems::get_with_balance_period($document->id,"0"));    
     }else if($type == "bank"){
@@ -91,31 +89,8 @@ class AccOpenBalanceController extends Controller
         ]);
      $check_perrmission = true;
      if($validator->passes()){
-      if($rq->type == "account"){
-          foreach($arr as $k => $a){
-          if($permission['a'] == true && !$a->balance_id ){
-            $type = 2;
-            $data = new AccAccountBalance();
-            $data->period = 0;
-            $data->account_systems = $a->id;  
-          }else if($permission['e'] == true && $a->balance_id){
-            $type = 3;
-            $data = AccAccountBalance::find($a->balance_id);
-          }else{
-            $check_perrmission = false;
-          }
-          if($a->debit_balance>0 || $a->credit_balance>0){
-            $data->debit_close = $a->debit_balance;
-            $data->credit_close = $a->credit_balance;
-            $data->save();
-            // Lưu lại id vào array
-            $a->balance_id = $data->id;
-            // Lưu vào collect mới
-            $rs[$k] = $a;
-          }            
-        }
-      }else if($rq->type == "bank"){
-        // Kiểm tra có đúng với số dư tk không
+      if($rq->type != "account"){
+         // Kiểm tra có đúng với số dư tk không
         $check_balance = true;
         $check_account = "";
         $co = collect($arr);
@@ -140,6 +115,31 @@ class AccOpenBalanceController extends Controller
             return response()->json(['status'=>false,'message'=> trans('messages.account_details_balance_is_incorrect',['account'=>$check_account])]);
           }
           //
+      }
+      if($rq->type == "account"){
+          foreach($arr as $k => $a){
+          if($permission['a'] == true && !$a->balance_id ){
+            $type = 2;
+            $data = new AccAccountBalance();
+            $data->period = 0;
+            $data->account_systems = $a->id;  
+          }else if($permission['e'] == true && $a->balance_id){
+            $type = 3;
+            $data = AccAccountBalance::find($a->balance_id);
+          }else{
+            $check_perrmission = false;
+          }
+          if($a->debit_balance>0 || $a->credit_balance>0){
+            $data->debit_close = $a->debit_balance;
+            $data->credit_close = $a->credit_balance;
+            $data->save();
+            // Lưu lại id vào array
+            $a->balance_id = $data->id;
+            // Lưu vào collect mới
+            $rs[$k] = $a;
+          }            
+        }
+      }else if($rq->type == "bank"){       
         foreach($arr as $k => $a){        
           if($permission['a'] == true && !$a->balance_id ){
             $type = 2;
@@ -217,8 +217,7 @@ class AccOpenBalanceController extends Controller
       $page = $request->page;
       $arr_type = $request->type;
      // Lấy default document
-      $sys = AccSystems::get_systems($this->document);
-      $document = Document::get_code($sys->value);  
+      $document = $this->getDoc($this->document);  
        //return (new HistoryActionExport($arr))->download('HistoryActionExportErmis.xlsx');
        //$myFile = Excel::download(new HistoryActionExport($arr), 'HistoryActionExportErmis.xlsx');
        if($arr_type == "account"){

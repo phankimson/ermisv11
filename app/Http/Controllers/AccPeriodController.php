@@ -80,7 +80,13 @@ class AccPeriodController extends Controller
     try{
       $req = json_decode($request->data);
       $db = CompanySoftware::find($req->database);
+      if(!$db){
+        return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
+      }
       $com = Company::find($db->company_id);
+      if(!$com){
+        return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
+      }
       $params = array(
             'driver'    => env('DB_CONNECTION', 'mysql'),
             'host'      => env('DB_HOST', '127.0.0.1'),
@@ -437,6 +443,9 @@ public function saveDetail(Request $request){
        if($arr){
          if($permission['d'] == true){
            $data = AccPeriod::find($arr->id);
+           if(!$data){
+            return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
+          }
            // Lưu lịch sử
            $h = new AccHistoryAction();
            $h ->create([

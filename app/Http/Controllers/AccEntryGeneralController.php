@@ -72,6 +72,9 @@ class AccEntryGeneralController extends Controller
          if($arr){
            if($permission['e'] == true){
              $data = AccGeneral::find($arr);
+              if(!$data){
+               return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
+             }
              $period = AccPeriod::get_date(Carbon::parse($data->accounting_date)->format('Y-m'),1);
              if(!$period){
                $detail = AccDetail::get_detail_active($data->id,1);
@@ -127,6 +130,9 @@ class AccEntryGeneralController extends Controller
          if($arr){
            if($permission['e'] == true){
              $data = AccGeneral::find($arr);
+              if(!$data){
+               return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
+             }
              $period = AccPeriod::get_date(Carbon::parse($data->accounting_date)->format('Y-m'),1);
              if(!$period){
                $detail = AccDetail::get_detail_active($data->id,0);
@@ -263,12 +269,16 @@ class AccEntryGeneralController extends Controller
       $req = json_decode($request->data);
       // Tìm voucher & lưu voucher
       $voucher = AccCountVoucher::find($req->voucherId);  
+      if($voucher){ 
       $voucher->number = $req->number;
       $voucher->save();
+      }
       foreach($req->items as $item){
         $general = AccGeneral::find($item->id);
+         if($general){
         $general->voucher = $item->revoucher;
         $general->save();
+         }
       };   
       DB::connection(env('CONNECTION_DB_ACC'))->commit();
      return response()->json(['status'=>true , 'message'=> trans('messages.update_success')]);

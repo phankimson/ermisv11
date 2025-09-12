@@ -117,6 +117,9 @@ class SystemsController extends Controller
      }else if($permission['e'] == true && $arr->id){
        $type = 3;
        $data = Systems::find($arr->id);
+       if(!$data){
+          return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
+        }
        // Lưu lịch sử
        $h = new HistoryAction();
        $h ->create([
@@ -175,6 +178,9 @@ class SystemsController extends Controller
         if($arr){
           if($permission['d'] == true){
             $data = Systems::find($arr->id);
+            if(!$data){
+              return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
+            }
             // Lưu lịch sử
             $h = new HistoryAction();
             $h ->create([

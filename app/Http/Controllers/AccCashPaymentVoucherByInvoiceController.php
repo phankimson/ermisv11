@@ -54,7 +54,6 @@ class AccCashPaymentVoucherByInvoiceController extends Controller
      $this->key_invoice = "cash-payment-voucher-by-invoice";     
      $this->menu = Menu::where('code', '=', $this->key_invoice)->first();
      $this->print = 'PCHD%';
-     $this->document = 'DOCUMENT_TAX';
      $this->path = 'PATH_UPLOAD_CASH_PAYMENT';
      $this->check_cash = 'CHECK_CASH';
  }
@@ -79,6 +78,9 @@ class AccCashPaymentVoucherByInvoiceController extends Controller
       $data = CashVoucherInvoiceResource::collection(AccVatDetail::get_detail_subject($req->subject_id,$req->start_date,$req->end_date,$this->invoice_type,1));
       if($data->count()>0){
         $general = AccGeneral::find($data->first()->general_id);
+         if(!$general){
+          return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
+        }
         $currency = $general->currency;
       }else{
         $currency = 0;
@@ -120,6 +122,9 @@ class AccCashPaymentVoucherByInvoiceController extends Controller
           $user = Auth::user();
           if($permission['e'] == true && $arr->id ){
             $general = AccGeneral::find($arr->id);
+            if(!$general){
+              return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
+            }
             $v = $general->voucher;
             $type = 3;
             $action = 'update';
@@ -191,6 +196,10 @@ class AccCashPaymentVoucherByInvoiceController extends Controller
             $detail = collect([]);
             if($d->detail_id){
               $detail = AccDetail::find($d->detail_id);
+              if(!$detail){
+                DB::connection(env('CONNECTION_DB_ACC'))->rollBack();
+                return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
+              }
             }else{
               $detail = new AccDetail();
             }            
@@ -231,9 +240,11 @@ class AccCashPaymentVoucherByInvoiceController extends Controller
                 $vat_payment_id = AccVatDetailPayment::sum_vat_detail_not_id($vat->id,'payment',$pm->id);
                 if($vat_payment_id+(float)$d->payment <= (float)$vat->total_amount){
                   // Update lại trạng thái thanh toán
-                  $tax_payment = AccVatDetail::find($pm->vat_detail_id);                    
+                  $tax_payment = AccVatDetail::find($pm->vat_detail_id);  
+                  if($tax_payment){                    
                   $tax_payment->payment = 0;
                   $tax_payment->save(); 
+                  }
                    // Update lại số tiền đã thanh toán của từng phiếu
                   $tax_payment_update = AccVatDetailPayment::vat_detail_payment_created_at_not_id($pm->vat_detail_id,$pm->created_at,$pm->id);
                   foreach($tax_payment_update as $t){

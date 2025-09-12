@@ -80,7 +80,13 @@ class AccExciseController extends Controller
     try{
       $req = json_decode($request->data);
       $db = CompanySoftware::find($req->database);
+        if(!$db){
+        return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
+      }
       $com = Company::find($db->company_id);
+       if(!$com){
+        return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
+      }
       $params = array(
             'driver'    => env('DB_CONNECTION', 'mysql'),
             'host'      => env('DB_HOST', '127.0.0.1'),
@@ -164,6 +170,9 @@ class AccExciseController extends Controller
        if($check_code->count()==0){
          $type = 3;
          $data = AccExcise::find($arr->id);
+         if(!$data){
+          return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
+        }
          // Lưu lịch sử
          $h = new AccHistoryAction();
          $h ->create([
@@ -223,6 +232,9 @@ class AccExciseController extends Controller
         if($arr){
           if($permission['d'] == true){
             $data = AccExcise::find($arr->id);
+            if(!$data){
+              return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
+            }
             $child = AccExcise::get_child($data->id);
             $child->each(function ($item) {
               $item->parent_id = null;

@@ -48,9 +48,11 @@ use App\Http\Model\Area;
 use App\Http\Model\Distric;
 use App\Http\Model\GroupUsers;
 use App\Http\Model\AccSettingVoucher;
+use App\Http\Traits\LoadDocumentTraits;
 
 class AccDropDownListController extends Controller
 {
+  use LoadDocumentTraits;
   protected $document;
   protected $type;
   protected $default;
@@ -273,8 +275,7 @@ class AccDropDownListController extends Controller
   // Lấy tài khoản nhóm theo mã
   public function setting_account_group_dropdown_list(Request $request){
     $default = collect([$this->default]);
-    $sys = AccSystems::get_systems($this->document);
-    $doc = Document::get_code($sys->value);
+    $doc = $this->getDoc($this->document);
     $code = $request->input('code',null);
     if($code == null){
       $account = AccAccountSystems::get_all_not_parent($doc->id);
@@ -524,8 +525,7 @@ class AccDropDownListController extends Controller
     // Lấy tất cả tài khoản
     $full = $request->input('full',null);     
     // Lấy default document
-    $sys = AccSystems::get_systems($this->document);
-    $document = Document::get_code($sys->value);  
+    $document = $this->getDoc($this->document); 
       if($multiple){
        $data = LangDropDownResource::collection(AccAccountSystems::get_all_not_parent($document->id));
       }else if($full){
@@ -580,8 +580,7 @@ class AccDropDownListController extends Controller
     $val = $request->input('value',null);   
     $option = $request->input('option',null);  
     $setting_voucher = AccSettingVoucher::get_menu($menu);
-    $sys = AccSystems::get_systems($this->document);
-    $document = Document::get_code($sys->value);
+    $document = $this->getDoc($this->document);
     $data = [];
     if($type == 1){ // Def
       if($option){

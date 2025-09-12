@@ -36,6 +36,9 @@ class NotesController extends Controller
         try{
           $req = json_decode($request->data);
           $data = Notes::find($req);
+          if(!$data){
+          return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
+        }
           return response()->json(['status'=>true,'data'=> $data ]);
         }catch(Exception $e){
           // Lưu lỗi
@@ -104,6 +107,9 @@ class NotesController extends Controller
                 }else if($permission['e'] == true && $arr->id){
                   $type = 3;
                   $data = Notes::find($arr->id);
+                  if(!$data){
+                    return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
+                  }
                   // Lưu lịch sử
                   $h = new HistoryAction();
                   $h ->create([
@@ -152,6 +158,9 @@ class NotesController extends Controller
              if($arr){
                if($permission['d'] == true){
                  $data = Notes::find($arr->id);
+                 if(!$data){
+                    return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
+                  }
                  // Lưu lịch sử
                  $h = new HistoryAction();
                  $h ->create([

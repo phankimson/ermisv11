@@ -56,7 +56,6 @@ class AccBankReceiptsVoucherController extends Controller
      $this->menu = Menu::where('code', '=', $this->key)->first();
      $this->print = 'PT%';
      $this->path = 'PATH_UPLOAD_BANK_RECEIPTS';
-     $this->document = 'DOCUMENT_TAX';
      $this->check_cash = 'CHECK_CASH';
      $this->download = 'AccBankReceiptsVoucher.xlsx';
  }

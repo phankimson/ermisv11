@@ -123,6 +123,9 @@ class CompanySoftwareController extends Controller
         if($db == 0){
           // Tìm database mẫu
           $db_temp = Software::find($arr->type);
+        if(!$db_temp){
+          return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
+        }
           if($db_temp){
             $db_check = SchemaDB::checkDB($arr->database);
             if ($db_check == 0) {
@@ -174,6 +177,9 @@ class CompanySoftwareController extends Controller
       }else if($permission['e'] == true && $arr->id){
         $type = 3;
         $data = CompanySoftware::find($arr->id);
+        if(!$data){
+          return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
+        }
         // Lưu lịch sử ---- NOT EDIT
         $h = new HistoryAction();
         $h ->create([
@@ -235,6 +241,9 @@ class CompanySoftwareController extends Controller
          if($arr){
            if($permission['d'] == true){
              $data = CompanySoftware::find($arr->id);
+            if(!$data){
+              return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
+            }
              // Lưu lịch sử
              $h = new HistoryAction();
              $h ->create([

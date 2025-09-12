@@ -56,7 +56,6 @@ class AccBankPaymentVoucherController extends Controller
      $this->menu = Menu::where('code', '=', $this->key)->first();
      $this->print = 'PC%';
      $this->path = 'PATH_UPLOAD_BANK_PAYMENT';
-     $this->document = 'DOCUMENT_TAX';
      $this->check_cash = 'CHECK_CASH';
      $this->download = 'AccBankPaymentVoucher.xlsx';
  }
