@@ -65,10 +65,25 @@ class AccSuppliesGoods extends Model
         return $result;
       }   
 
+        static public function get_with_balance_period($period,$type) {
+        $result = AccSuppliesGoods::where('supplies_goods.type',$type)->with(['balance' => function ($query) use ($period) {
+            $query->where('period', $period);
+        }])->orderBy('code','desc')
+        ->leftJoin('unit', 'supplies_goods.unit_id', '=', 'unit.id')
+        ->leftJoin('account_systems', 'account_systems.id', '=', 'supplies_goods.stock_account')->get(['supplies_goods.*','unit.name as unit_name','account_systems.code as account_default']);
+        //$result = DB::select(DB::raw("SELECT t.* from (SELECT @i:=@i+1 as row_number, s.* FROM country s, (SELECT @i:=0) AS temp order by s.created_at asc) t order by t.row_number desc"));
+        return $result;
+      }     
+
       static public function get_id_with_discount($id) {
         $result = AccSuppliesGoods::where('id',$id)->with('discount')->first();
         return $result;
       }
+
+        public function balance()
+    {
+        return $this->hasMany(AccStockBalance::class,'supplies_goods','id');
+    }
    
       public function discount() {
         return $this->hasMany(AccSuppliesGoodsDiscount::class,'supplies_goods_id','id');

@@ -773,6 +773,7 @@ Route::group([
   Route::get('/supplies-goods', 'show')->name('');
   Route::get('/supplies-goods-data', 'data')->name('-data');
   Route::post('/supplies-goods-load', 'load')->name('-load');
+  Route::post('/supplies-goods-load-change', 'load_change')->name('-load-change');
   Route::post('/supplies-goods-get', 'get')->name('-get');
   Route::post('/supplies-goods-save', 'save')->name('-save');
   Route::post('/supplies-goods-delete','delete')->name('-delete');

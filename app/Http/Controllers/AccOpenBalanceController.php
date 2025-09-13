@@ -15,8 +15,11 @@ use App\Http\Model\AccBankAccountBalance;
 use App\Http\Model\AccSettingAccountGroup;
 use App\Http\Model\AccSystems;
 use App\Http\Model\AccHistoryAction;
+use App\Http\Model\AccSuppliesGoods;
+use App\Http\Model\AccSuppliesGoodsType;
 use App\Http\Resources\OpenBalanceResource;
 use App\Http\Resources\BankOpenBalanceResource;
+use App\Http\Resources\SuppliesGoodsOpenBalanceResource;
 use App\Http\Model\Exports\AccAccountSystemsBalanceExport;
 use App\Http\Model\Exports\AccBankAccountBalanceExport;
 use App\Http\Model\Imports\AccOpenBalanceAccountImport;
@@ -65,6 +68,17 @@ class AccOpenBalanceController extends Controller
     $setting = AccSettingAccountGroup::get_code($this->code_bank);
     $account_default = AccAccountSystems::find($setting->account_default);
     $data = BankOpenBalanceResource::customCollection(AccBankAccount::get_with_balance_period("0"),$account_default->code);
+    }else if($type == "materials" || $type == "goods" || $type == "tools"){
+      if($type == "materials"){
+        $ty = AccSuppliesGoodsType::get_filter(1)->id;
+      }else if($type == "goods"){
+        $ty = AccSuppliesGoodsType::get_filter(2)->id;
+      }else if($type == "tools"){
+        $ty = AccSuppliesGoodsType::get_filter(3)->id;
+      }else{
+        $ty = null;
+      }    
+    $data = SuppliesGoodsOpenBalanceResource::collection(AccSuppliesGoods::get_with_balance_period("0",$ty)); 
     }else{
     $data = null;
     }     
@@ -112,7 +126,7 @@ class AccOpenBalanceController extends Controller
               }
           };
           if($check_balance == false){
-            return response()->json(['status'=>false,'message'=> trans('messages.account_details_balance_is_incorrect',['account'=>$check_account])]);
+            return response()->json(['status'=>false,'message'=> trans('messages.account_details_do_not_match_balance_sheet',['account'=>$check_account])]);
           }
           //
       }

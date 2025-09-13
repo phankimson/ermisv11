@@ -116,6 +116,32 @@
               debit_balance :{field : "debit_balance" , defaultValue : 0 , type: "number" },
               credit_balance :{field : "credit_balance" , defaultValue : 0 , type: "number" },
       },
+
+      Ermis.columns_supplies_goods = [{"field" : "id",hidden: true },
+                          {"field" : "balance_id",hidden: true },
+                          {"field" : "code","title" : "@lang('acc_supplies_goods.code')" },
+                          {"field" : "name","title" : "@lang('acc_supplies_goods.name')" ,  footerTemplate: "<p>@lang('acc_voucher.total'):</p>" },
+                          {"field" : "unit","title" : "@lang('acc_supplies_goods.unit')" },
+                          {"field" : "account_default","title" : "@lang('acc_supplies_goods_type.account_default')" },
+                          {"field" : "quantity","title" :  "@lang('acc_voucher.quantity')" ,format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" ,template: '#= FormatNumberDecimal(quantity, {{$decimal}} )#',aggregates: ['sum'] ,footerTemplate: "#=FormatNumberDecimal(sum,{{$decimal}})#"},
+                          {"field" : "amount","title" :  "@lang('acc_voucher.amount')" ,format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" ,template: '#= FormatNumberDecimal(amount, {{$decimal}} )#',aggregates: ['sum'] ,footerTemplate: "#=FormatNumberDecimal(sum,{{$decimal}})#"},                          
+                      ];
+
+      Ermis.fields_supplies_goods  = {
+              id : {field :"id" ,editable : false},
+              balance_id : {field : "balance_id", defaultValue: 0 ,editable : false},
+              code : {field : "code" ,editable : false},
+              name : {field : "name" ,editable : false},
+              unit :{field : "unit" ,editable : false },
+              account_default :{field : "account_default" ,editable : false },
+              quantity :{field : "quantity" , defaultValue : 0 , type: "number" },
+              amount :{field : "amount" , defaultValue : 0 , type: "number" },              
+      },
+
+       Ermis.aggregates_supplies_goods = [
+          { field: "quantity", aggregate: "sum" },
+          { field: "amount", aggregate: "sum" },         
+      ];     
                               
       Ermis.columns_expend = [{ selectable: true, width: "50px" }, {"field" : "column","title" : "@lang('global.column_name')"}];
       Ermis.data_expend_account = [{field : "t.code", column:  "@lang('acc_account_systems.code')" },

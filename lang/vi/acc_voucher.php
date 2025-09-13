@@ -87,4 +87,5 @@ return [
     "receipt_from_invoice" => "Thu tiền từ hóa đơn",
     "output_invoice" => "Hóa đơn đầu ra",
     "input_invoice" => "Hóa đơn đầu vào",
+    "quantity" => "Số lượng",
 ];

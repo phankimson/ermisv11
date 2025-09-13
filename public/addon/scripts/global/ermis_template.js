@@ -1,3 +1,13 @@
+var ErmisTemplateAjaxPostDeferred0 = function(e, postdata1, url1,postdata2,url2, callback_true, callback_false) {
+    RequestURLWaitingDeferred(url1,url2, 'json', postdata1,postdata2, function(result1,result2) {
+        if (result1.status === true && result2.status === true) {
+            callback_true(result1,result2);
+        } else {
+            callback_false(result1,result2);
+        }
+    }, true);
+};
+
 var ErmisTemplateAjaxPost0 = function(e, postdata, url, callback_true, callback_false) {
     RequestURLWaiting(url, 'json', postdata, function(result) {
         if (result.status === true) {

@@ -44,6 +44,7 @@ class AccSuppliesGoodsTypeImport implements ToModel, WithHeadingRow, WithBatchIn
             'code'    => $row['code'],
             'name'    => $row['name'],
             'name_en'    => $row['name_en'],
+            'account_default' =>   $row['account_default'],   
             'filter' =>   $row['filter'],        
             'active'    => $row['active'] == null ? 1 : $row['active'],
         ];

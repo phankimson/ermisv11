@@ -63,6 +63,11 @@ var Ermis = function () {
                         numeric: false,
                         previousNext: false
                     }, true ,  Ermis.fields_bank, Ermis.columns_bank,Ermis.aggregates);
+                }else if($kGridTab.data("kendoGrid") === undefined && (tab_key == "materials" || tab_key == "tools" || tab_key == "goods")){
+                    ErmisKendoGridTemplateApi1($kGridTab, Ermis.page_size , Ermis.link+'-data?type='+tab_key, onChangeGrid, false , jQuery(window).height() * 0.75, {
+                        numeric: false,
+                        previousNext: false
+                    }, true ,  Ermis.fields_supplies_goods, Ermis.columns_supplies_goods,Ermis.aggregates_supplies_goods);
                 }else{
 
                 }

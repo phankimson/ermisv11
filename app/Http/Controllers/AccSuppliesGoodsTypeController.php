@@ -158,6 +158,7 @@ class AccSuppliesGoodsTypeController extends Controller
        $data->code = $arr->code;
        $data->name = $arr->name;
        $data->name_en = $arr->name_en;
+       $data->account_default = $arr->account_default;
        $data->filter = $arr->filter;
        $data->active = $arr->active;
        $data->save();
@@ -202,6 +203,7 @@ class AccSuppliesGoodsTypeController extends Controller
       $data->code = $arr->code;
       $data->name = $arr->name;
       $data->name_en = $arr->name_en;
+      $data->account_default = $arr->account_default;
       $data->filter = $arr->filter;
       $data->active = $arr->active;
       $data->save();

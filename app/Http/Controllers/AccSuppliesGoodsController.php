@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Http\Model\Imports\AccSuppliesGoodsImport;
 use App\Http\Model\Exports\AccSuppliesGoodsExport;
 use App\Classes\Convert;
+use App\Http\Model\AccAccountSystems;
 use Illuminate\Support\Facades\File;
 use Maatwebsite\Excel\Facades\Excel;
 use Exception;
@@ -127,6 +128,30 @@ class AccSuppliesGoodsController extends Controller
     }else{
       return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
     }
+    }catch(Exception $e){
+      // Lưu lỗi
+      $err = new Error();
+      $err ->create([
+        'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
+        'user_id' => Auth::id(),
+        'menu_id' => $this->menu->id,
+        'error' => $e->getMessage().' - Line '.$e->getLine(),
+        'url'  => $this->url,
+        'check' => 0 ]);
+      return response()->json(['status'=>false,'message'=> trans('messages.error').' '.$e->getMessage().' - Line '.$e->getLine()]);
+    }
+  }
+
+  public function load_change(Request $request){
+    $type = 10;
+    try{
+    $req = json_decode($request->data);   
+    $type = AccSuppliesGoodsType::find($req);
+    if($type){
+      return response()->json(['status'=>true,'stock_account'=> $type->account_default]);      
+    }else{
+     return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
+    }    
     }catch(Exception $e){
       // Lưu lỗi
       $err = new Error();

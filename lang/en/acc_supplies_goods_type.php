@@ -15,5 +15,6 @@ return [
     "name" => "Name",
     "code" => "Code",
     "name_en" => "Name English",
+    "account_default" => "Account default",
     'filter' => "Filter",
 ];

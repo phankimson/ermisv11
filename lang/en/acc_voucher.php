@@ -87,4 +87,5 @@ return [
     "receipt_from_invoice" => "Receipt from invoice", 
     "output_invoice" => "Output invoice",
     "input_invoice" => "Input invoice",
+    "quantity" => "Quantity",
 ];

@@ -19,6 +19,11 @@ class AccSuppliesGoodsType extends Model
       {
           static::BootedBaseTrait();
       }
+
+      static public function get_filter($filter) {
+        $result = AccSuppliesGoodsType::where('filter',$filter)->first();       
+        return $result;
+      }
    
       static public function get_raw() {
         $result = AccSuppliesGoodsType::WithRowNumberDb(env('CONNECTION_DB_ACC'))->orderBy('row_number','desc')->get();       
@@ -36,7 +41,9 @@ class AccSuppliesGoodsType extends Model
       }
 
       static public function get_raw_export($select,$skip,$limit) {
-        $result =  AccSuppliesGoodsType::WithRowNumberDb(env('CONNECTION_DB_ACC'))->orderBy('row_number','asc')->skip($skip)->take($limit)->get(['row_number',DB::raw($select)]);        
+        $result =  AccSuppliesGoodsType::WithRowNumberDb(env('CONNECTION_DB_ACC'))->orderBy('row_number','asc')->skip($skip)->take($limit)
+        ->leftJoin('account_systems as a', 'a.id', '=', 't.account_default')
+        ->get(['row_number',DB::raw($select)]);       
         return $result;
       } 
 }

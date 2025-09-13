@@ -32,7 +32,7 @@
            <tr>
                  <td class="row-label"><label>@lang('acc_supplies_goods.type')</label></td>
                  <td>
-                 <select class="droplist read large" id="type" data-position="4" data-title="@lang('acc_supplies_goods.type')" data-template="#= FormatDropListRead(type,'type') #" data-type="number" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.supplies-goods-type')}}" name="type">
+                 <select class="droplist read large" id="type" data-position="4" data-title="@lang('acc_supplies_goods.type')" data-template="#= FormatDropListRead(type,'type') #" data-type="number" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.supplies-goods-type')}}" name="type" data-field-change ="stock_account">
                         
                  </select>
                  </td>

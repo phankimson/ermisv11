@@ -972,6 +972,37 @@ function RequestURLWaiting(url, returnType, postData, callback, displayLoading) 
     });
 }
 
+function RequestURLWaitingDeferred(url1 , url2, returnType, postData1,postData2, callback, displayLoading) {
+    var windowWidget = jQuery('body');
+    if (displayLoading) {
+        kendo.ui.progress(windowWidget, true);
+    }
+    var a1 = jQuery.ajax({
+        url: url1,
+        type : 'POST',
+        data: postData1,
+        dataType: returnType,
+    }),
+     a2 = jQuery.ajax({
+        url: url2,
+        type : 'POST',
+        data: postData2,
+        dataType: returnType,
+    });
+    $.when(a1, a2).done(function(r1, r2) {
+      if(r1[1] == 'success' && r2[1] == 'success'){
+       callback(r1[0], r2[0]);
+        if (displayLoading) {
+                kendo.ui.progress(windowWidget, false);
+        }
+      }else{
+        kendo.alert(r1[2].statusText+" "+r2[2].statusText);
+        kendo.ui.progress(windowWidget, false);
+      }
+    });
+    
+}
+
 function RequestURLWaitingQueue(url, returnType, postData,  type, callback ){
       jQuery.ajaxQueue({
         url: url,
@@ -2082,3 +2113,16 @@ function daysInMonth (month, year) {
 function isNumeric(value) {
     return /^-?\d+$/.test(value);
 }
+
+ function ChangeMuiltiSelect(field,data){
+        if(field && data){
+            var array = field.split(",");
+            jQuery.each(array, function (key, column) {
+              var val = "0";
+                if(data[column] != ""){
+                  val = data[column];
+                }
+                jQuery("select[name='" + column + "']").data("kendoDropDownList").value(val);
+            })
+          }
+    }

@@ -270,42 +270,60 @@ var Ermis = function () {
         }
 
     };
+
     var initLoadInputCrit = function(){
-        function multiselect_change(e) {
-          if($kGrid.find('tr.k-state-selected').length == 0){
-            var value = this.value();
-            var pd = 0 ;
-            var multiselect = jQuery("#"+Ermis.fieldload_crit);
-            if(multiselect.hasClass('multiselect')){
-              pd = value[0];
+      function multiselect_change(e) {
+        if($kGrid.find('tr.k-state-selected').length == 0){
+          var value = this.value();
+          var pd = 0 ;
+          var multiselect = jQuery("#"+Ermis.fieldload_crit);
+          var field_change = multiselect.data("field-change");
+          if(multiselect.hasClass('multiselect')){
+            pd = value[0];
+          }else{
+            pd = value;
+          }
+          if(value.length>0){
+            var postdata = { data: JSON.stringify(pd) };
+            if(field_change){
+              ErmisTemplateAjaxPostDeferred0(e,postdata, Ermis.link+'-load',postdata, Ermis.link+'-load-change',
+            function(result1,result2){
+              if(!result1.data.number){
+                jQuery("input[name='"+Ermis.fieldload+"']").val(result1.data);
+              }else{
+                jQuery("input[name='"+Ermis.fieldload+"']").val(initErmisBarcodeMasker(result1.data));
+              }     
+              ChangeMuiltiSelect(field_change,result2);     
+            },
+            function(result1,result2){
+              kendo.alert(result2.message);
+            }
+              )
             }else{
-              pd = value;
-            }
-            if(value.length>0){
-              var postdata = { data: pd };
-              ErmisTemplateAjaxPost0(e,postdata, Ermis.link+'-load',
-              function(result){
-                if(!result.data.number){
-                  jQuery("input[name='"+Ermis.fieldload+"']").val(result.data);
-                }else{
-                  jQuery("input[name='"+Ermis.fieldload+"']").val(initErmisBarcodeMasker(result.data));
-                }
-              },function(result){
-                kendo.alert(result.message);
-              })
-            }
+               ErmisTemplateAjaxPost0(e,postdata, Ermis.link+'-load',
+            function(result){
+              if(!result.data.number){
+                jQuery("input[name='"+Ermis.fieldload+"']").val(result.data);
+              }else{
+                jQuery("input[name='"+Ermis.fieldload+"']").val(initErmisBarcodeMasker(result.data));
+              }                     
+            },function(result){
+              kendo.alert(result.message);
+            })
+            }           
           }
         }
-     if(Ermis.fieldload_crit){
-        var multiselect = jQuery("#"+Ermis.fieldload_crit);
-        if(multiselect.hasClass('multiselect')){
-          multiselect = multiselect.data("kendoMultiSelect");
-        }else{
-          multiselect = multiselect.data("kendoDropDownList");
-        }
-        multiselect.bind("change", multiselect_change);
       }
+   if(Ermis.fieldload_crit){
+      var multiselect = jQuery("#"+Ermis.fieldload_crit);
+      if(multiselect.hasClass('multiselect')){
+        multiselect = multiselect.data("kendoMultiSelect");
+      }else{
+        multiselect = multiselect.data("kendoDropDownList");
+      }
+      multiselect.bind("change", multiselect_change);
     }
+  }
 
     var initLoadInput = function(){
           if(Ermis.fieldload_crit){
