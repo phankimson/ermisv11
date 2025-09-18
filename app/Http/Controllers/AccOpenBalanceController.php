@@ -15,6 +15,7 @@ use App\Http\Model\AccBankAccountBalance;
 use App\Http\Model\AccSettingAccountGroup;
 use App\Http\Model\AccSystems;
 use App\Http\Model\AccHistoryAction;
+use App\Http\Model\AccStockBalance;
 use App\Http\Model\AccSuppliesGoods;
 use App\Http\Model\AccSuppliesGoodsType;
 use App\Http\Resources\OpenBalanceResource;
@@ -60,6 +61,7 @@ class AccOpenBalanceController extends Controller
 
   public function data(Request $request){  
     $type = $request->input('type',null);
+    $stock = $request->input('stock',null);
     // Lấy default document
     $document = $this->getDoc($this->document);  
     if($type == "account"){
@@ -70,15 +72,22 @@ class AccOpenBalanceController extends Controller
     $data = BankOpenBalanceResource::customCollection(AccBankAccount::get_with_balance_period("0"),$account_default->code);
     }else if($type == "materials" || $type == "goods" || $type == "tools"){
       if($type == "materials"){
-        $ty = AccSuppliesGoodsType::get_filter(1)->id;
+        $ty = AccSuppliesGoodsType::get_filter(1);
+        $type_id = $ty->id;
+        $account_default = AccAccountSystems::find($ty->account_default);
       }else if($type == "goods"){
-        $ty = AccSuppliesGoodsType::get_filter(2)->id;
+        $ty = AccSuppliesGoodsType::get_filter(2);     
+        $type_id = $ty->id;
+        $account_default = AccAccountSystems::find($ty->account_default);
       }else if($type == "tools"){
-        $ty = AccSuppliesGoodsType::get_filter(3)->id;
+        $ty = AccSuppliesGoodsType::get_filter(3);
+        $type_id = $ty->id;
+        $account_default = AccAccountSystems::find($ty->account_default);
       }else{
-        $ty = null;
+        $type_id = null;
+        $account_default= null;
       }    
-    $data = SuppliesGoodsOpenBalanceResource::collection(AccSuppliesGoods::get_with_balance_period("0",$ty)); 
+    $data = SuppliesGoodsOpenBalanceResource::customCollection(AccSuppliesGoods::get_with_balance_period("0",$type_id,$stock),$account_default?$account_default->code:null); 
     }else{
     $data = null;
     }     
@@ -178,6 +187,31 @@ class AccOpenBalanceController extends Controller
         }
         
 
+
+      }else if($rq->type == "materials" || $rq->type == "goods" || $rq->type == "tools"){
+        foreach($arr as $k => $a){        
+          if($permission['a'] == true && !$a->balance_id ){
+            $type = 2;
+            $data = new AccStockBalance();
+            $data->period = 0;
+            $data->stock = $rq->stock;
+            $data->supplies_goods  = $a->id;  
+          }else if($permission['e'] == true && $a->balance_id){
+            $type = 3;
+            $data = AccStockBalance::find($a->balance_id);
+          }else{
+            $check_perrmission = false;
+          }
+          if($a->quantity_close>0 || $a->amount_close>0){
+            $data->quantity_close = $a->quantity_close;
+            $data->amount_close = $a->amount_close;
+            $data->save();
+            // Lưu lại id vào array
+            $a->balance_id = $data->id;
+            // Lưu vào collect mới
+            $rs[$k] = $a;
+          }            
+        }
 
       }else{
 

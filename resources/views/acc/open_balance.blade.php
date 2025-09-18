@@ -23,7 +23,7 @@
 <li data-key="materials"><a href="javascript:;">@lang('acc_open_balance.materials')</a></li>
 <li data-key="upfront_costs"><a href="javascript:;">@lang('acc_open_balance.upfront_costs')</a></li>
 <li data-key="tools"><a href="javascript:;">@lang('acc_open_balance.tools')</a></li>
-<li data-key="asset"><a href="javascript:;">@lang('acc_open_balance.asset')</a></li>
+<li data-key="assets"><a href="javascript:;">@lang('acc_open_balance.asset')</a></li>
 <li data-key="supplier"><a href="javascript:;">@lang('acc_open_balance.supplier')</a></li>
 <li data-key="customer"><a href="javascript:;">@lang('acc_open_balance.customer')</a></li>
 <li data-key="employee"><a href="javascript:;">@lang('acc_open_balance.employee')</a></li>
@@ -31,10 +31,21 @@
 <li class="uk-disabled"><a href="javascript:;">Disabled</a></li>
 @endsection
 
-@section('content_tab_add')
-    <li><div id="grid_tab1"></div></li>
-    <li><div id="grid_tab2"></div></li>
-    <li><div id="grid_tab3"></div></li>
+@section('content_tab_add')       
+    <li>
+        <div id="grid_tab1"></div>
+    </li>
+    <li>       
+        <div id="grid_tab2"></div>
+    </li>
+    <li> 
+        <div id="stock" class="row-height">
+            <label>@lang('acc_open_balance.stock') :</label>
+            <select class="droplist read large" data-position="4" data-title="@lang('acc_open_balance.stock')" data-template="#= FormatDropListRead(stock,'stock') #" data-type="number" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.stock').'?default=true'}}"  name="stock">                       
+            </select>
+        </div>             
+        <div id="grid_tab3"></div>
+    </li>
     <li><div id="grid_tab4"></div></li>
     <li><div id="grid_tab5"></div></li>
     <li><div id="grid_tab6"></div></li>
@@ -51,7 +62,7 @@
 @endpush
 
 @section('tabs')
-
+  
 @endsection
 @section('scripts_up')
 <script>

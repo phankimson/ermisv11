@@ -19,6 +19,9 @@ var Ermis = function () {
 
     var initGlobalRegister = function(){
         // KendoDroplistTemplate 
+      jQuery('.droplist.read').each(function() {
+       ErmisKendoDroplistReadTemplate(this, "contains");
+      }); 
       ErmisKendoDroplistTemplate(".droplist:not(.read)", "contains");
        //Window Extra
       $kWindow = ErmisKendoWindowTemplate(myWindow, "600px", "");
@@ -49,13 +52,16 @@ var Ermis = function () {
 
     var initClickTab = function(){
        jQuery('#tabs_li').on('change.uk.tab', function(e, active, previous) {
-                var tab = active.index();
+                var tab = active.index();              
                 if(tab_key != ""){
                  initClientLeave(tab_key);   
-                 $export = "";              
+                 $export = "";                      
                 };
-                tab_key = active.attr("data-key");
-                $kGridTab = jQuery("#grid_tab"+(tab+1));                
+                $kGridTab = jQuery("#grid_tab"+(tab+1));  
+                tab_key = active.attr("data-key");    
+                 if(tab_key == "materials" || tab_key == "tools" || tab_key == "goods"){
+                    jQuery("#stock").detach().insertBefore($kGridTab);
+                 };             
                 if($kGridTab.data("kendoTreeList") === undefined && tab_key == "account"){                    
                     ErmisKendoTreeViewApiTemplate1($kGridTab, Ermis.link+'-data?type='+tab_key, parent_id_tree, true, "incell",onChangeTreeList,onDataBoundTreeList, jQuery(window).height() * 0.75, true, Ermis.fields_account, Ermis.columns_account,Ermis.aggregates); 
                 }else if($kGridTab.data("kendoGrid") === undefined && tab_key == "bank"){
@@ -64,10 +70,12 @@ var Ermis = function () {
                         previousNext: false
                     }, true ,  Ermis.fields_bank, Ermis.columns_bank,Ermis.aggregates);
                 }else if($kGridTab.data("kendoGrid") === undefined && (tab_key == "materials" || tab_key == "tools" || tab_key == "goods")){
-                    ErmisKendoGridTemplateApi1($kGridTab, Ermis.page_size , Ermis.link+'-data?type='+tab_key, onChangeGrid, false , jQuery(window).height() * 0.75, {
+                    var a = jQuery("input[name='stock']").val();
+                    ErmisKendoGridTemplateApi1($kGridTab, Ermis.page_size , Ermis.link+'-data?type='+tab_key+'&stock='+a, onChangeGrid, false , jQuery(window).height() * 0.75, {
                         numeric: false,
                         previousNext: false
                     }, true ,  Ermis.fields_supplies_goods, Ermis.columns_supplies_goods,Ermis.aggregates_supplies_goods);
+                    
                 }else{
 
                 }
@@ -140,6 +148,9 @@ var Ermis = function () {
             obj.type = tab_key;
             if (obj.type === "account") {
                 obj.dataSource = $kGridTab.data("kendoTreeList").dataSource.data();
+            }else if(obj.type === "materials" || obj.type === "tools" || obj.type === "goods"){
+                obj.stock = jQuery("input[name='stock']").val();
+                obj.dataSource = $kGridTab.data("kendoGrid").dataSource.data();
             }else{
                 obj.dataSource = $kGridTab.data("kendoGrid").dataSource.data();
             }

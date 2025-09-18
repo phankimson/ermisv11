@@ -202,6 +202,8 @@ class AccDropDownListController extends Controller
    // Kho Droplist
   public function stock_dropdown_list(Request $request){
      $val = $request->input('value',null); 
+    // Lấy tất cả tài khoản
+    $df = $request->input('default',null);   
     if($val){
       $rs = AccStock::find($val);
       if(!$rs){
@@ -209,6 +211,8 @@ class AccDropDownListController extends Controller
       }else{
         $data = new LangDropDownResource($rs);
       }      
+    }else if($df){
+    $data = LangDropDownResource::collection(AccStock::active()->orderBy('code','asc')->get());
     }else{
     $default = collect([$this->default]);
     $data = LangDropDownResource::collection(AccStock::active()->orderBy('code','asc')->get());

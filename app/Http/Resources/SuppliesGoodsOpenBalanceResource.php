@@ -12,6 +12,7 @@ class SuppliesGoodsOpenBalanceResource extends JsonResource
      * @param  \Illuminate\Http\Request  $request
      * @return array
      */
+    private static $data;
     public function toArray($request)
     {   
         return [
@@ -20,11 +21,20 @@ class SuppliesGoodsOpenBalanceResource extends JsonResource
             'code' => $this->code,
             'name' => $this->name,
             'unit' => $this->unit_name,
-            'account_default' => $this->account_default,
+            'account_default' => $this->account_default?$this->account_default:self::$data,
             'quantity' => $this->balance->count()>0? $this->balance->first()->quantity_close : 0,
             'amount' => $this->balance->count()>0? $this->balance->first()->amount_close : 0,            
         ];
       
     } 
+
+       //I made custom function that returns collection type
+  public static function customCollection($resource, $data): \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+  {
+   //you can add as many params as you want.
+    self::$data = $data;
+    return parent::collection($resource);
+  }
+
 
 }

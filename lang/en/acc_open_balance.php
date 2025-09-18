@@ -20,6 +20,7 @@ return [
     "tools" => "Tools",
     "asset" => "Asset",
     "supplier" => "Supplier",
+    "stock" => "Stock",
     "customer" => "Customer",
     "employee" => "Employee",
     "other" => "Other",

@@ -16,6 +16,7 @@ return [
     "bank" => "Ngân hàng",
     "goods" => "Hàng hóa",
     "asset" => "Tài sản",
+    "stock" => "Kho",
     "upfront_costs" => "Chi phí trả trước",
     "tools" => "Công cụ dụng cụ",
     "materials" => "Nguyên vật liệu",

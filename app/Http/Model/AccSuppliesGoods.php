@@ -65,9 +65,10 @@ class AccSuppliesGoods extends Model
         return $result;
       }   
 
-        static public function get_with_balance_period($period,$type) {
-        $result = AccSuppliesGoods::where('supplies_goods.type',$type)->with(['balance' => function ($query) use ($period) {
+        static public function get_with_balance_period($period,$type,$stock) {
+        $result = AccSuppliesGoods::where('supplies_goods.type',$type)->with(['balance' => function ($query) use ($period,$stock) {
             $query->where('period', $period);
+            $query->where('stock', $stock);
         }])->orderBy('code','desc')
         ->leftJoin('unit', 'supplies_goods.unit_id', '=', 'unit.id')
         ->leftJoin('account_systems', 'account_systems.id', '=', 'supplies_goods.stock_account')->get(['supplies_goods.*','unit.name as unit_name','account_systems.code as account_default']);
