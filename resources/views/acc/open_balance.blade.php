@@ -39,9 +39,9 @@
         <div id="grid_tab2"></div>
     </li>
     <li> 
-        <div id="stock" class="row-height">
+        <div id="stock_area" class="row-height">
             <label>@lang('acc_open_balance.stock') :</label>
-            <select class="droplist read large" data-position="4" data-title="@lang('acc_open_balance.stock')" data-template="#= FormatDropListRead(stock,'stock') #" data-type="number" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.stock').'?default=true'}}"  name="stock">                       
+            <select class="droplist read large" id="stock" data-position="4" data-title="@lang('acc_open_balance.stock')" data-template="#= FormatDropListRead(stock,'stock') #" data-type="number" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.stock').'?default=true'}}"  name="stock">                       
             </select>
         </div>             
         <div id="grid_tab3"></div>

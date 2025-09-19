@@ -39,4 +39,9 @@ class AccStockBalance extends Model
         return $result;
       }
 
+      static public function get_account($period,$account_systems) {
+        $result = AccStockBalance::where('period',$period)->where('account_systems',$account_systems)->first();
+        return $result;
+      }
+
 }

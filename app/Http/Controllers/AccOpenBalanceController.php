@@ -70,7 +70,7 @@ class AccOpenBalanceController extends Controller
     $setting = AccSettingAccountGroup::get_code($this->code_bank);
     $account_default = AccAccountSystems::find($setting->account_default);
     $data = BankOpenBalanceResource::customCollection(AccBankAccount::get_with_balance_period("0"),$account_default->code);
-    }else if($type == "materials" || $type == "goods" || $type == "tools"){
+    }else if($type == "materials" || $type == "goods" || $type == "tools" || $type == "upfront_costs" || $type == "assets"){
       if($type == "materials"){
         $ty = AccSuppliesGoodsType::get_filter(1);
         $type_id = $ty->id;
@@ -81,6 +81,14 @@ class AccOpenBalanceController extends Controller
         $account_default = AccAccountSystems::find($ty->account_default);
       }else if($type == "tools"){
         $ty = AccSuppliesGoodsType::get_filter(3);
+        $type_id = $ty->id;
+        $account_default = AccAccountSystems::find($ty->account_default);
+      }else if($type == "upfront_costs"){
+        $ty = AccSuppliesGoodsType::get_filter(6);
+        $type_id = $ty->id;
+        $account_default = AccAccountSystems::find($ty->account_default);
+      }else if($type == "assets"){
+        $ty = AccSuppliesGoodsType::get_filter(7);
         $type_id = $ty->id;
         $account_default = AccAccountSystems::find($ty->account_default);
       }else{
@@ -112,7 +120,7 @@ class AccOpenBalanceController extends Controller
         ]);
      $check_perrmission = true;
      if($validator->passes()){
-      if($rq->type != "account"){
+      if($rq->type == "bank"){
          // Kiểm tra có đúng với số dư tk không
         $check_balance = true;
         $check_account = "";
@@ -138,6 +146,33 @@ class AccOpenBalanceController extends Controller
             return response()->json(['status'=>false,'message'=> trans('messages.account_details_do_not_match_balance_sheet',['account'=>$check_account])]);
           }
           //
+      }else if($rq->type == "materials" || $rq->type == "goods" || $rq->type == "tools" || $rq->type == "upfront_costs" || $rq->type == "assets"){
+          // Kiểm tra có đúng với số dư tk không
+          $check_balance = true;
+          $check_account = "";
+          $co = collect($arr);
+            $re = $co->groupBy('account_default')->map(function ($group, $account_default) {
+              return [
+                    'account_default' => $account_default,
+                    'quantity' => $group->sum('quantity'),
+                    'amount' => $group->sum('amount'),
+                ];
+            })->values();
+            foreach($re as $item){  
+                $acc = AccAccountSystems::get_code($this->getId($this->document),$item['account_default']);
+                $acc_balance = AccStockBalance::get_account(0,$item['id']);
+                $acc_balance_quantity = $acc_balance?$acc_balance->quantity_close:0;
+                $acc_balance_amount = $acc_balance?$acc_balance->amount_close:0;
+                if($item['quantity'] != $acc_balance_quantity || $item['amount'] != $acc_balance_amount){                            
+                    $check_balance = false;     
+                    $check_account .= $item['account_default'].", ";                        
+                }
+            };
+            if($check_balance == false){
+              return response()->json(['status'=>false,'message'=> trans('messages.account_details_do_not_match_balance_sheet',['account'=>$check_account])]);
+           }
+      }else{
+
       }
       if($rq->type == "account"){
           foreach($arr as $k => $a){
@@ -186,9 +221,7 @@ class AccOpenBalanceController extends Controller
           }            
         }
         
-
-
-      }else if($rq->type == "materials" || $rq->type == "goods" || $rq->type == "tools"){
+      }else if($rq->type == "materials" || $rq->type == "goods" || $rq->type == "tools" || $rq->type == "upfront_costs" || $rq->type == "assets"){
         foreach($arr as $k => $a){        
           if($permission['a'] == true && !$a->balance_id ){
             $type = 2;
@@ -202,9 +235,9 @@ class AccOpenBalanceController extends Controller
           }else{
             $check_perrmission = false;
           }
-          if($a->quantity_close>0 || $a->amount_close>0){
-            $data->quantity_close = $a->quantity_close;
-            $data->amount_close = $a->amount_close;
+          if($a->quantity>0 || $a->amount>0){
+            $data->quantity_close = $a->quantity;
+            $data->amount_close = $a->amount;
             $data->save();
             // Lưu lại id vào array
             $a->balance_id = $data->id;

@@ -37,6 +37,9 @@ var Ermis = function () {
         jQuery('.export_extra').on('click', initExportExtra);
         jQuery('.choose-extra').on('click', initChooseExtraExport);
         jQuery('.cancel-window').on('click', initClose);
+        jQuery("#stock").on("change", initChangeStock);
+        //Shortcut
+        shortcut.add(key + "I", function (e) { initImport(e); });
         shortcut.add(key + "S", function (e) { initSave(e); });
         shortcut.add(key + "C", function (e) { initCancel(e); }); 
         shortcut.add(key + "Q", function (e) { initExport(e); });
@@ -59,8 +62,8 @@ var Ermis = function () {
                 };
                 $kGridTab = jQuery("#grid_tab"+(tab+1));  
                 tab_key = active.attr("data-key");    
-                 if(tab_key == "materials" || tab_key == "tools" || tab_key == "goods"){
-                    jQuery("#stock").detach().insertBefore($kGridTab);
+                 if(tab_key == "materials" || tab_key == "tools" || tab_key == "goods" || tab_key == "upfront_costs" || tab_key == "assets"){
+                    jQuery("#stock_area").detach().insertBefore($kGridTab);
                  };             
                 if($kGridTab.data("kendoTreeList") === undefined && tab_key == "account"){                    
                     ErmisKendoTreeViewApiTemplate1($kGridTab, Ermis.link+'-data?type='+tab_key, parent_id_tree, true, "incell",onChangeTreeList,onDataBoundTreeList, jQuery(window).height() * 0.75, true, Ermis.fields_account, Ermis.columns_account,Ermis.aggregates); 
@@ -69,8 +72,8 @@ var Ermis = function () {
                         numeric: false,
                         previousNext: false
                     }, true ,  Ermis.fields_bank, Ermis.columns_bank,Ermis.aggregates);
-                }else if($kGridTab.data("kendoGrid") === undefined && (tab_key == "materials" || tab_key == "tools" || tab_key == "goods")){
-                    var a = jQuery("input[name='stock']").val();
+                }else if($kGridTab.data("kendoGrid") === undefined && (tab_key == "materials" || tab_key == "tools" || tab_key == "goods" || tab_key == "upfront_costs" || tab_key == "assets")){
+                    var a = jQuery("#stock").val();
                     ErmisKendoGridTemplateApi1($kGridTab, Ermis.page_size , Ermis.link+'-data?type='+tab_key+'&stock='+a, onChangeGrid, false , jQuery(window).height() * 0.75, {
                         numeric: false,
                         previousNext: false
@@ -109,6 +112,28 @@ var Ermis = function () {
                  treeList.refresh();
         };       
       }  
+
+      var initChangeStock = function(e){
+        var a = jQuery(e.target).val();
+        var grid = $kGridTab.data("kendoGrid");
+        var ds = new kendo.data.DataSource({
+            transport: {
+                read: {
+                    url: Ermis.link+'-data?type='+tab_key+'&stock='+a,
+                    dataType: "json",
+                },       
+            },
+            pageSize: parseInt(Ermis.page_size),      
+            schema: {
+                model: {
+                    id: "id",
+                    fields: Ermis["fields_"+tab_key]
+                }
+            },
+            aggregate: Ermis.aggregates_supplies_goods,
+        });
+        grid.setDataSource(ds);
+      }
     
       var onChangeTreeList = function (e) {
             if(e.items.length == 1){
@@ -148,8 +173,8 @@ var Ermis = function () {
             obj.type = tab_key;
             if (obj.type === "account") {
                 obj.dataSource = $kGridTab.data("kendoTreeList").dataSource.data();
-            }else if(obj.type === "materials" || obj.type === "tools" || obj.type === "goods"){
-                obj.stock = jQuery("input[name='stock']").val();
+            }else if(obj.type === "materials" || obj.type === "tools" || obj.type === "goods" || tab_key == "upfront_costs" || tab_key == "assets"){
+                obj.stock = jQuery("#stock").val();
                 obj.dataSource = $kGridTab.data("kendoGrid").dataSource.data();
             }else{
                 obj.dataSource = $kGridTab.data("kendoGrid").dataSource.data();
