@@ -62,7 +62,7 @@ var Ermis = function () {
                 };
                 $kGridTab = jQuery("#grid_tab"+(tab+1));  
                 tab_key = active.attr("data-key");    
-                 if(tab_key == "materials" || tab_key == "tools" || tab_key == "goods" || tab_key == "upfront_costs" || tab_key == "assets"){
+                 if(tab_key == "materials" || tab_key == "tools" || tab_key == "goods" || tab_key == "upfront_costs" || tab_key == "assets" || tab_key == "finished_product"){
                     jQuery("#stock_area").detach().insertBefore($kGridTab);
                  };             
                 if($kGridTab.data("kendoTreeList") === undefined && tab_key == "account"){                    
@@ -72,7 +72,7 @@ var Ermis = function () {
                         numeric: false,
                         previousNext: false
                     }, true ,  Ermis.fields_bank, Ermis.columns_bank,Ermis.aggregates);
-                }else if($kGridTab.data("kendoGrid") === undefined && (tab_key == "materials" || tab_key == "tools" || tab_key == "goods" || tab_key == "upfront_costs" || tab_key == "assets")){
+                }else if($kGridTab.data("kendoGrid") === undefined && (tab_key == "materials" || tab_key == "tools" || tab_key == "goods" || tab_key == "upfront_costs" || tab_key == "assets" || tab_key == "finished_product")){
                     var a = jQuery("#stock").val();
                     ErmisKendoGridTemplateApi1($kGridTab, Ermis.page_size , Ermis.link+'-data?type='+tab_key+'&stock='+a, onChangeGrid, false , jQuery(window).height() * 0.75, {
                         numeric: false,
@@ -173,7 +173,7 @@ var Ermis = function () {
             obj.type = tab_key;
             if (obj.type === "account") {
                 obj.dataSource = $kGridTab.data("kendoTreeList").dataSource.data();
-            }else if(obj.type === "materials" || obj.type === "tools" || obj.type === "goods" || tab_key == "upfront_costs" || tab_key == "assets"){
+            }else if(obj.type === "materials" || obj.type === "tools" || obj.type === "goods" || tab_key == "upfront_costs" || tab_key == "assets" || tab_key == "finished_product"){
                 obj.stock = jQuery("#stock").val();
                 obj.dataSource = $kGridTab.data("kendoGrid").dataSource.data();
             }else{
@@ -382,6 +382,12 @@ var Ermis = function () {
             if(rd.type === "account"){
                 var grid = $kGridTab.data("kendoTreeList");
                 initEdit(rd.arr,grid,Ermis.columns_account);
+            }else if(rd.type === "bank"){
+                var grid = $kGridTab.data("kendoGrid");
+                initEdit(rd.arr,grid,Ermis.columns_bank);
+            }else if(rd.type === "materials" || rd.type === "tools" || rd.type === "goods" || rd.type === "upfront_costs" || rd.type === "assets" || rd.type === "finished_product"){
+                var grid = $kGridTab.data("kendoGrid");
+                initEdit(rd.arr,grid,Ermis.columns_supplies_goods);
             }else{
                 var grid = $kGridTab.data("kendoGrid");
                 initEdit(rd.arr,grid,Ermis.columns_account);
@@ -438,7 +444,7 @@ var Ermis = function () {
               initSaveComplete(rs.data);
           });
         Echo.private('data-import-'+Ermis.link+'-'+tab_key+'-'+Chat.com)
-           .listen('DataSendCollectionTabs', (rs) => {
+           .listen('DataSendArrayTabs', (rs) => {
                initSaveComplete(rs.data);
            });
         }

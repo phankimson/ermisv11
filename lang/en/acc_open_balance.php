@@ -21,6 +21,7 @@ return [
     "asset" => "Asset",
     "supplier" => "Supplier",
     "stock" => "Stock",
+    "finished_product" => "Finished product",
     "customer" => "Customer",
     "employee" => "Employee",
     "other" => "Other",

@@ -12,7 +12,7 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Support\Facades\Auth;
 
-class DataSendCollectionTabs implements ShouldBroadcast
+class DataSendArrayTabs implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -36,6 +36,6 @@ class DataSendCollectionTabs implements ShouldBroadcast
      */
     public function broadcastOn()
     {       
-        return new PrivateChannel('data-'.$this->data->action.'-'.$this->data->key.'-'.$this->data->type.'-'.$this->data->com);
+        return new PrivateChannel('data-'.$this->data['action'].'-'.$this->data['key'].'-'.$this->data['type'].'-'.$this->data['com']);
     }
 }

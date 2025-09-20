@@ -20,6 +20,7 @@ return [
     "upfront_costs" => "Chi phí trả trước",
     "tools" => "Công cụ dụng cụ",
     "materials" => "Nguyên vật liệu",
+    "finished_product" => "Thành phẩm",
     "supplier" => "Nhà cung cấp",
     "customer" => "Khách hàng",
     "employee" => "Nhân viên",

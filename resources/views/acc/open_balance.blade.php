@@ -24,10 +24,12 @@
 <li data-key="upfront_costs"><a href="javascript:;">@lang('acc_open_balance.upfront_costs')</a></li>
 <li data-key="tools"><a href="javascript:;">@lang('acc_open_balance.tools')</a></li>
 <li data-key="assets"><a href="javascript:;">@lang('acc_open_balance.asset')</a></li>
+<li data-key="finished_product"><a href="javascript:;">@lang('acc_open_balance.finished_product')</a></li>
 <li data-key="supplier"><a href="javascript:;">@lang('acc_open_balance.supplier')</a></li>
 <li data-key="customer"><a href="javascript:;">@lang('acc_open_balance.customer')</a></li>
 <li data-key="employee"><a href="javascript:;">@lang('acc_open_balance.employee')</a></li>
 <li data-key="other"><a href="javascript:;">@lang('acc_open_balance.other')</a></li>
+<li class="uk-disabled"><a href="javascript:;">Disabled</a></li>
 <li class="uk-disabled"><a href="javascript:;">Disabled</a></li>
 @endsection
 
@@ -55,6 +57,8 @@
     <li><div id="grid_tab10"></div></li>
     <li><div id="grid_tab11"></div></li>
     <li><div id="grid_tab12"></div></li>
+    <li><div id="grid_tab13"></div></li>
+    <li><div id="grid_tab14"></div></li>
 @endsection
 
 @push('context_action')
@@ -80,7 +84,7 @@
       Ermis.decimal = "{{$decimal}}";
 
       Ermis.columns_account = [{"field" : "id",hidden: true },
-                               {"field" : "balance_id",hidden: true },
+                               {"field" : "balance_id" ,hidden: true },
                                {"field" : "code","title" : "@lang('acc_account_systems.code')" },
                                {"field" : "name","title" : "@lang('acc_account_systems.name')" ,  footerTemplate: "<p>@lang('acc_voucher.total'):</p>" },
                                {"field" : "name_en","title" : "@lang('acc_account_systems.name_en')" },
@@ -96,7 +100,7 @@
 
       Ermis.fields_account = {
               id : {field :"id",nullable: false ,editable : false},
-              balance_id : {field : "balance_id", defaultValue: 0 ,editable : false},
+              balance_id : {field : "balance_id", defaultValue: 0 },
               code : {field : "code" ,editable : false},
               name : {field : "name" ,editable : false},
               name_en :{field : "name_en" ,editable : false },
@@ -118,7 +122,7 @@
 
       Ermis.fields_bank = {
               id : {field :"id" ,editable : false},
-              balance_id : {field : "balance_id", defaultValue: 0 ,editable : false},
+              balance_id : {field : "balance_id", defaultValue: 0 },
               bank_name : {field : "bank_name" ,editable : false},
               bank_account : {field : "bank_account" ,editable : false},
               bank :{field : "bank" ,editable : false },
@@ -140,7 +144,7 @@
 
       Ermis.fields_supplies_goods  = {
               id : {field :"id" ,editable : false},
-              balance_id : {field : "balance_id", defaultValue: 0 ,editable : false},
+              balance_id : {field : "balance_id", defaultValue: 0 },
               code : {field : "code" ,editable : false},
               name : {field : "name" ,editable : false},
               unit :{field : "unit" ,editable : false },
