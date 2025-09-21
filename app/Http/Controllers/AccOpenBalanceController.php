@@ -88,16 +88,16 @@ class AccOpenBalanceController extends Controller
         $ty = AccSuppliesGoodsType::get_filter(3);
         $type_id = $ty->id;
         $account_default = AccAccountSystems::find($ty->account_default);
+      }else if($type == "finished_product"){
+        $ty = AccSuppliesGoodsType::get_filter(4);
+        $type_id = $ty->id;
+        $account_default = AccAccountSystems::find($ty->account_default);
       }else if($type == "upfront_costs"){
         $ty = AccSuppliesGoodsType::get_filter(6);
         $type_id = $ty->id;
         $account_default = AccAccountSystems::find($ty->account_default);
       }else if($type == "assets"){
         $ty = AccSuppliesGoodsType::get_filter(7);
-        $type_id = $ty->id;
-        $account_default = AccAccountSystems::find($ty->account_default);
-      }else if($type == "finished_product"){
-        $ty = AccSuppliesGoodsType::get_filter(8);
         $type_id = $ty->id;
         $account_default = AccAccountSystems::find($ty->account_default);
       }else{
@@ -162,6 +162,7 @@ class AccOpenBalanceController extends Controller
           $co = collect($arr);
             $re = $co->groupBy('account_default')->map(function ($group, $account_default) {
               return [
+                    'supplies_goods_list' =>$group->pluck('id'),
                     'account_default' => $account_default,
                     'amount' => $group->sum('amount'),
                 ];
@@ -170,10 +171,14 @@ class AccOpenBalanceController extends Controller
                 $acc = AccAccountSystems::get_code($this->getId($this->document),$item['account_default']);
                 $acc_balance = AccAccountBalance::get_account(0,$acc['id']);
                 $acc_balance_amount = $acc_balance?$acc_balance->debit_close:0;
-                //**********/ Coi lại số dư tồn kho
-                $acc_balance_stock = AccStockBalance::get_supplies_goods(0,$acc['id']);
-                $acc_balance_stock_amount = $acc_balance_stock?$acc_balance_stock->amount_close:0;
-                if( ($item['amount'] + $acc_balance_stock_amount) != $acc_balance_amount){                            
+                $acc_balance_stock_amount = 0;
+                 foreach($item['supplies_goods_list'] as $i){
+                  $acc_balance_stock = AccStockBalance::get_supplies_goods(0,$i);
+                  if($acc_balance_stock){
+                    $acc_balance_stock_amount += $acc_balance_stock->amount_close;
+                  }                  
+                }
+                if( ($item['amount'] + $acc_balance_stock_amount) > $acc_balance_amount){                            
                     $check_balance = false;     
                     $check_account .= $item['account_default'].", ";                        
                 }

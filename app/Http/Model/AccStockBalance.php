@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Http\Traits\ScopesTraits;
 use App\Http\Traits\BootedTraits;
 use Illuminate\Support\Facades\DB;
+use App\Http\Model\Casts\Decimal;
 
 class AccStockBalance extends Model
 {
@@ -14,6 +15,17 @@ class AccStockBalance extends Model
       protected $table = 'stock_balance';
       public $incrementing = false; // and it doesn't even have to be auto-incrementing!
       protected $guarded = []; //Thiếu dòng create bị lỗi Add [code] to fillable property to allow mass assignment on
+
+      protected $casts = [
+          'quantity_open'=> Decimal::class,
+          'amount_open'=> Decimal::class,
+          'quantity_receipt'=> Decimal::class,    
+          'amount_receipt'=> Decimal::class,
+          'quantity_issue'=> Decimal::class,
+          'amount_issue'=> Decimal::class,
+          'quantity_close'=> Decimal::class,
+          'amount_close'=> Decimal::class,
+      ];
 
       protected static function booted()
   {
