@@ -2,14 +2,14 @@
 
 namespace App\Http\Model\Imports;
 
-use App\Http\Model\AccBankAccount;
+use App\Http\Model\AccSuppliesGoods;
 use App\Classes\Convert;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithBatchInserts;
 use Maatwebsite\Excel\Concerns\WithLimit;
 
-class AccOpenBalanceBankImport implements ToModel, WithHeadingRow, WithBatchInserts, WithLimit
+class AccOpenBalanceStockImport implements ToModel, WithHeadingRow, WithBatchInserts, WithLimit
 {
   private static $result = array();
   public function sheets(): array
@@ -39,17 +39,17 @@ class AccOpenBalanceBankImport implements ToModel, WithHeadingRow, WithBatchInse
     public function model(array $row)
     {
         //dump($row);
-        $bank_account = AccBankAccount::WhereDefault('bank_account',$row['bank_account'])->first();
-        if($bank_account != null && $row['bank_account']){
+        $suppler_goods = AccSuppliesGoods::WhereDefault('code',$row['code'])->first();
+        if($suppler_goods != null && $row['code']){
           $arr = [
-            'id'     => $bank_account->id,
+            'id'     => $suppler_goods->id,
             'balance_id'    => 0,
             'period'    => 0,
-            'account_default'    => $bank_account->account_default,
-            'debit_balance'    => Convert::intDefaultformat($row['debit_balance']),
-            'credit_balance'    => Convert::intDefaultformat($row['credit_balance']),
+            'account_default'    => $suppler_goods->stock_account,
+            'quantity_close'    => Convert::intDefaultformat($row['quantity']),
+            'amount_close'    => Convert::intDefaultformat($row['amount']),
           ];
-          $data = new AccOpenBalanceBankImport();
+          $data = new AccOpenBalanceStockImport();
           $data->setData($arr);
         return;
       }

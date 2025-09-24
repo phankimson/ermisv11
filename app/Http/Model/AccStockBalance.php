@@ -51,8 +51,13 @@ class AccStockBalance extends Model
         return $result;
       }
 
-      static public function get_supplies_goods($period,$supplies_goods) {
-        $result = AccStockBalance::where('period',$period)->where('supplies_goods',$supplies_goods)->first();
+      static public function get_supplies_goods($period,$supplies_goods,$stock) {
+        $result = AccStockBalance::where('period',$period)->where('supplies_goods',$supplies_goods)->where('stock',$stock)->first();
+        return $result;
+      }
+
+       static public function get_sum_supplies_goods($period,$supplies_goods) {
+        $result = AccStockBalance::where('period',$period)->where('supplies_goods',$supplies_goods)->sum('amount_close');
         return $result;
       }
 

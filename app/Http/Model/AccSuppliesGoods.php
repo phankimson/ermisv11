@@ -76,6 +76,17 @@ class AccSuppliesGoods extends Model
         return $result;
       }     
 
+        static public function get_raw_balance_export($select,$skip,$limit,$period) {
+        $result = AccSuppliesGoods::WithRowNumberDb(env('CONNECTION_DB_ACC'))->orderBy('row_number','asc')->skip($skip)->take($limit)
+        ->leftJoin('unit as c', 't.unit_id', '=', 'c.id')
+        ->leftJoin('stock_balance as s', 't.id', '=', 's.supplies_goods')
+        ->leftJoin('account_systems as a', 'a.id', '=', 't.stock_account')
+        ->where('s.period', $period)
+        ->get(['row_number',DB::raw($select)]);
+        //$result = DB::select(DB::raw("SELECT t.row_number,{$select} from (SELECT @i:=@i+1 as row_number, s.* FROM country s, (SELECT @i:=0) AS temp order by s.created_at asc) t order by t.row_number asc"));
+        return $result;
+      }
+
       static public function get_id_with_discount($id) {
         $result = AccSuppliesGoods::where('id',$id)->with('discount')->first();
         return $result;

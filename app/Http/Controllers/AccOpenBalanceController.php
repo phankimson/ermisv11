@@ -24,8 +24,10 @@ use App\Http\Resources\BankOpenBalanceResource;
 use App\Http\Resources\SuppliesGoodsOpenBalanceResource;
 use App\Http\Model\Exports\AccAccountSystemsBalanceExport;
 use App\Http\Model\Exports\AccBankAccountBalanceExport;
+use App\Http\Model\Exports\AccStockBalanceExport;
 use App\Http\Model\Imports\AccOpenBalanceAccountImport;
 use App\Http\Model\Imports\AccOpenBalanceBankImport;
+use App\Http\Model\Imports\AccOpenBalanceStockImport;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
@@ -158,12 +160,14 @@ class AccOpenBalanceController extends Controller
       }else if($rq->type == "materials" || $rq->type == "goods" || $rq->type == "tools" || $rq->type == "upfront_costs" || $rq->type == "assets" || $rq->type == "finished_product"){
           // Kiểm tra có đúng với số dư tk không
           $check_balance = true;
+          $check_quantity = true;
           $check_account = "";
           $co = collect($arr);
             $re = $co->groupBy('account_default')->map(function ($group, $account_default) {
               return [
                     'supplies_goods_list' =>$group->pluck('id'),
                     'account_default' => $account_default,
+                    'quantity' => $group->sum('quantity'),
                     'amount' => $group->sum('amount'),
                 ];
             })->values();
@@ -173,18 +177,26 @@ class AccOpenBalanceController extends Controller
                 $acc_balance_amount = $acc_balance?$acc_balance->debit_close:0;
                 $acc_balance_stock_amount = 0;
                  foreach($item['supplies_goods_list'] as $i){
-                  $acc_balance_stock = AccStockBalance::get_supplies_goods(0,$i);
-                  if($acc_balance_stock){
-                    $acc_balance_stock_amount += $acc_balance_stock->amount_close;
+                  $acc_balance_stock = AccStockBalance::get_sum_supplies_goods(0,$i);
+                  if($acc_balance_stock>0){
+                    $acc_balance_stock_amount += $acc_balance_stock;
                   }                  
                 }
                 if( ($item['amount'] + $acc_balance_stock_amount) > $acc_balance_amount){                            
                     $check_balance = false;     
-                    $check_account .= $item['account_default'].", ";                        
+                    $check_account .= $item['account_default'].", ";                    
+                }
+                if($item['amount'] == 0 && $item['quantity'] > 0){
+                  $check_quantity = false;     
+                  $check_account .= $item['account_default'].", "; 
                 }
             };
             if($check_balance == false){
               return response()->json(['status'=>false,'message'=> trans('messages.account_details_do_not_match_balance_sheet',['account'=>$check_account])]);
+           }else if($check_quantity == false){
+              return response()->json(['status'=>false,'message'=> trans('messages.amount_cannot_be_zero',['account'=>$check_account])]);
+           }else{
+             
            }
       }else{
 
@@ -339,6 +351,9 @@ class AccOpenBalanceController extends Controller
        }else if($arr_type == "bank"){
          $myFile = Excel::raw(new AccBankAccountBalanceExport($arr,$page), \Maatwebsite\Excel\Excel::XLSX);
          $name = 'AccBankAccount';
+       }else if($arr_type == "materials" || $arr_type == "goods" || $arr_type == "tools" || $arr_type == "upfront_costs" || $arr_type == "assets" || $arr_type == "finished_product"){
+         $myFile = Excel::raw(new AccStockBalanceExport($arr,$page), \Maatwebsite\Excel\Excel::XLSX);
+         $name = 'Acc'.ucfirst($arr_type);
        }else{
         $myFile = '';
         $name = '';
@@ -365,6 +380,9 @@ class AccOpenBalanceController extends Controller
 
   public function DownloadExcel(Request $request){
    $type = $request->input('type',null);
+   if($type == "materials" || $type == "goods" || $type == "tools" || $type == "upfront_costs" || $type == "assets" || $type == "finished_product"){
+         $type = 'stock';
+   }
    return Storage::download('public/downloadFile/'.$this->download.ucfirst($type).'.xlsx');
  }
 
@@ -413,6 +431,10 @@ class AccOpenBalanceController extends Controller
         $import = new AccOpenBalanceBankImport;
         Excel::import($import , $file);
         $arr = $import->getData();
+        $currency_default = AccSystems::get_systems($this->currency_default);
+        $rate = AccCurrency::get_code($currency_default->value);    
+        $setting = AccSettingAccountGroup::get_code($this->code_bank);
+        $account_default = AccAccountSystems::find($setting->account_default);
         foreach($arr as $k => $a){
             $type = 3;        
             $data = AccBankAccountBalance::get_bank_account(0,$a['id']);
@@ -425,6 +447,15 @@ class AccOpenBalanceController extends Controller
             $data->debit_close = $a['debit_balance'];
             $data->credit_close = $a['credit_balance'];
             $data->save();
+            $acc = $a['account_default']?$a['account_default']:$account_default->id;
+              // Cập nhật số dư tiền tệ
+            if($a->debit_balance>0){
+               $this->increaseCurrency($acc,$rate->id,$a['debit_balance'],$rate->rate,$a->id);
+            }  
+            if($a->credit_balance>0){
+               $this->reduceCurrency($acc,$rate->id,$a['credit_balance'],$rate->rate,$a->id);
+            }
+            //
             // Lưu lại id vào array
             $a['balance_id'] = $data->id;
             // Lưu vào collect mới
@@ -432,6 +463,29 @@ class AccOpenBalanceController extends Controller
         };
          // Lấy lại dữ liệu  
        $rs->arr =  $arr;  
+       }else if($rs->type == "materials" || $rs->type == "goods" || $rs->type == "tools" || $rs->type == "upfront_costs" || $rs->type == "assets" || $rs->type == "finished_product"){
+         $import = new AccOpenBalanceStockImport;
+          Excel::import($import , $file);
+          $arr = $import->getData();
+          foreach($arr as $k => $a){
+            $type = 3;        
+            $data = AccStockBalance::get_supplies_goods(0,$a['id'],$rs->stock);
+            if(!$data){
+              $data = new AccBankAccountBalance();
+              $data->period = 0;
+              $data->supplier_goods = $a['id'];  
+              $data->stock = $rs->stock;  
+              $type = 2;
+            }           
+            $data->quantity_close = $a['quantity_close'];
+            $data->amount_close = $a['amount_close'];
+            $data->save();
+           
+            // Lưu lại id vào array
+            $a['balance_id'] = $data->id;
+            // Lưu vào collect mới
+            $arr[$k] = $a;
+        };
        }else{
          $import = '';
        }        

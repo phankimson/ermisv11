@@ -138,4 +138,5 @@ return [
       "bank_account_not_correct"=>"Tài khoản ngân hàng không đúng !",
       "debit_and_credit_amount_not_correct"=>"Số tiền nợ và có không khớp nhau !",
       "account_details_do_not_match_balance_sheet"=>"Chi tiết tài khoản :account không khớp với bảng số dư !",
+      "amount_cannot_be_zero"=>"Tài khoản :account thành tiền không được bằng 0 !",
 ];

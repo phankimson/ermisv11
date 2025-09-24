@@ -171,7 +171,13 @@
                                    {field : "t.branch", column:  "@lang('acc_bank_account.branch')" },
                                    {field : "a.code as account_default", column:  "@lang('acc_bank_account.account_default')" },
                                    {field : "s.debit_close", column:  "@lang('acc_voucher.debit_balance')" },
-                                   {field : "s.credit_close", column:  "@lang('acc_voucher.credit_balance')" }];                             
+                                   {field : "s.credit_close", column:  "@lang('acc_voucher.credit_balance')" }];  
+      Ermis.data_expend_stock = [{field : "t.code", column:  "@lang('acc_supplies_goods.code')" },
+                                   {field : "t.name", column:  "@lang('acc_supplies_goods.name')" },
+                                   {field : "c.name as unit", column:  "@lang('acc_supplies_goods.unit')" },
+                                   {field : "a.code as stock_account", column:  "@lang('acc_supplies_goods.stock_account')" },
+                                   {field : "s.quantity_close", column:  "@lang('acc_voucher.quantity')" },
+                                   {field : "s.amount_close", column:  "@lang('acc_voucher.amount')" }];                                                               
   });
   </script>
 @endsection
