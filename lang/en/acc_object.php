@@ -28,6 +28,7 @@ return [
     "phone" => "Phone",
     "fax" => "Fax",
     "email" => "Email",
+    "account_default" => "Account default",   
     "website" => "Website",
     "bank_account" => "Bank account",
     "bank_name" => "Bank name",

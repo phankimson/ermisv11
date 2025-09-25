@@ -15,5 +15,6 @@ return [
     "name" => "Tên",
     "code" => "Mã",
     "name_en" => "Tên Tiếng Anh",
+    "account_default" => "Tài khoản mặc định",   
     'filter' => "Lọc",
 ];

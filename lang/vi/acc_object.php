@@ -25,6 +25,7 @@ return [
     "phone" => "Điện thoại",
     "fax" => "Fax",
     "email" => "Email",
+    "account_default" => "Tài khoản mặc định",   
     "website" => "Website",
     "issued_by_identity_card" => "Nơi cấp",
     "date_identity_card" => "Ngày cấp",

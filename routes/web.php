@@ -859,6 +859,7 @@ Route::group([
   Route::get('/object', 'show')->name('');
   Route::get('/object-data', 'data')->name('-data');
   Route::post('/object-load', 'load')->name('-load');
+  Route::post('/object-load-change', 'load_change')->name('-load-change');
   Route::post('/object-get', 'get')->name('-get');
   Route::post('/object-save', 'save')->name('-save');
   Route::post('/object-delete', 'delete')->name('-delete');

@@ -25,10 +25,10 @@
 <li data-key="tools"><a href="javascript:;">@lang('acc_open_balance.tools')</a></li>
 <li data-key="assets"><a href="javascript:;">@lang('acc_open_balance.asset')</a></li>
 <li data-key="finished_product"><a href="javascript:;">@lang('acc_open_balance.finished_product')</a></li>
-<li data-key="supplier"><a href="javascript:;">@lang('acc_open_balance.supplier')</a></li>
-<li data-key="customer"><a href="javascript:;">@lang('acc_open_balance.customer')</a></li>
-<li data-key="employee"><a href="javascript:;">@lang('acc_open_balance.employee')</a></li>
-<li data-key="other"><a href="javascript:;">@lang('acc_open_balance.other')</a></li>
+<li data-key="suppliers"><a href="javascript:;">@lang('acc_open_balance.supplier')</a></li>
+<li data-key="customers"><a href="javascript:;">@lang('acc_open_balance.customer')</a></li>
+<li data-key="employees"><a href="javascript:;">@lang('acc_open_balance.employee')</a></li>
+<li data-key="others"><a href="javascript:;">@lang('acc_open_balance.other')</a></li>
 <li class="uk-disabled"><a href="javascript:;">Disabled</a></li>
 <li class="uk-disabled"><a href="javascript:;">Disabled</a></li>
 @endsection
@@ -157,6 +157,25 @@
           { field: "quantity", aggregate: "sum" },
           { field: "amount", aggregate: "sum" },         
       ];     
+
+       Ermis.columns_object = [{"field" : "id",hidden: true },
+                          {"field" : "balance_id",hidden: true },
+                          {"field" : "code","title" : "@lang('acc_object.code')" },
+                          {"field" : "name","title" : "@lang('acc_object.name')" ,  footerTemplate: "<p>@lang('acc_voucher.total'):</p>" },
+                          {"field" : "account_default","title" : "@lang('acc_object.account_default')" },
+                          {"field" : "debit_balance","title" :  "@lang('acc_voucher.debit_balance')" ,format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" ,template: '#= FormatNumberDecimal(debit_balance, {{$decimal}} )#',aggregates: ['sum'] ,footerTemplate: "#=FormatNumberDecimal(sum,{{$decimal}})#"},
+                          {"field" : "credit_balance","title" :  "@lang('acc_voucher.credit_balance')" ,format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" ,template: '#= FormatNumberDecimal(credit_balance, {{$decimal}} )#' ,aggregates: ['sum'] ,footerTemplate: "#=FormatNumberDecimal(sum,{{$decimal}})#"}
+                      ];
+
+      Ermis.fields_object = {
+              id : {field :"id" ,editable : false},
+              balance_id : {field : "balance_id", defaultValue: 0 },
+              code : {field : "code" ,editable : false},
+              name : {field : "name" ,editable : false},        
+              account_default :{field : "account_default" ,editable : false },
+              debit_balance :{field : "debit_balance" , defaultValue : 0 , type: "number" },
+              credit_balance :{field : "credit_balance" , defaultValue : 0 , type: "number" },
+      },
                               
       Ermis.columns_expend = [{ selectable: true, width: "50px" }, {"field" : "column","title" : "@lang('global.column_name')"}];
       Ermis.data_expend_account = [{field : "t.code", column:  "@lang('acc_account_systems.code')" },
@@ -172,12 +191,19 @@
                                    {field : "a.code as account_default", column:  "@lang('acc_bank_account.account_default')" },
                                    {field : "s.debit_close", column:  "@lang('acc_voucher.debit_balance')" },
                                    {field : "s.credit_close", column:  "@lang('acc_voucher.credit_balance')" }];  
+
       Ermis.data_expend_stock = [{field : "t.code", column:  "@lang('acc_supplies_goods.code')" },
                                    {field : "t.name", column:  "@lang('acc_supplies_goods.name')" },
                                    {field : "c.name as unit", column:  "@lang('acc_supplies_goods.unit')" },
                                    {field : "a.code as stock_account", column:  "@lang('acc_supplies_goods.stock_account')" },
                                    {field : "s.quantity_close", column:  "@lang('acc_voucher.quantity')" },
-                                   {field : "s.amount_close", column:  "@lang('acc_voucher.amount')" }];                                                               
+                                   {field : "s.amount_close", column:  "@lang('acc_voucher.amount')" }]; 
+                                   
+     Ermis.data_expend_object = [{field : "t.code", column:  "@lang('acc_object.code')" },
+                                {field : "t.name", column:  "@lang('acc_object.name')" },
+                                {field : "a.code as account_default", column:  "@lang('acc_object.account_default')" },
+                                {field : "s.debit_close", column:  "@lang('acc_voucher.debit_balance')" },
+                                {field : "s.credit_close", column:  "@lang('acc_voucher.credit_balance')" }];                       
   });
   </script>
 @endsection

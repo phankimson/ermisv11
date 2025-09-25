@@ -65,7 +65,7 @@ class AccSuppliesGoods extends Model
         return $result;
       }   
 
-        static public function get_with_balance_period($period,$type,$stock) {
+      static public function get_with_balance_period($period,$type,$stock) {
         $result = AccSuppliesGoods::where('supplies_goods.type',$type)->with(['balance' => function ($query) use ($period,$stock) {
             $query->where('period', $period);
             $query->where('stock', $stock);

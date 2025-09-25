@@ -6,6 +6,7 @@ use App\Http\Model\AccObject;
 use App\Classes\Convert;
 use App\Http\Model\AccObjectGroup;
 use App\Http\Model\AccObjectType;
+use App\Http\Model\AccAccountSystems;
 use App\Http\Model\Regions;
 use App\Http\Model\Country;
 use App\Http\Model\Area;
@@ -53,6 +54,7 @@ class AccObjectImport implements OnEachRow, WithHeadingRow, WithBatchInserts, Wi
         $country = Country::WhereDefault('code',$row['country'])->first();
         $regions = Regions::WhereDefault('code',$row['regions'])->first();
         $object_group = AccObjectGroup::WhereDefault('code',$row['object_group'])->first();
+        $account_systems = AccAccountSystems::WhereDefault('code',$row['account_default'])->first();
         if($code_check == null && $row['code']){
             $arr = [
                 'object_group'    => $object_group == null ? 0 : $object_group->id,
@@ -64,6 +66,7 @@ class AccObjectImport implements OnEachRow, WithHeadingRow, WithBatchInserts, Wi
                 'date_identity_card'    => Convert::dateDefaultformat($row['date_identity_card'],'Y-m-d'),
                 'address'    => $row['address'],
                 'email'    => $row['email'],
+                'account_default'    => $account_systems == null ? 0 : $account_systems->id,  
                 'tax_code'    => $row['tax_code'],
                 'invoice_form'    => $row['invoice_form'],
                 'invoice_symbol'    => $row['invoice_symbol'],

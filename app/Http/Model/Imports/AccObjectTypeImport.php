@@ -3,6 +3,7 @@
 namespace App\Http\Model\Imports;
 
 use App\Http\Model\AccObjectType;
+use App\Http\Model\AccAccountSystems;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
@@ -40,12 +41,14 @@ class AccObjectTypeImport implements ToModel, WithHeadingRow, WithBatchInserts, 
     {
         //dump($row);
         $code_check = AccObjectType::WhereCheck('code',$row['code'],'id',null)->first();
+        $account_systems = AccAccountSystems::WhereDefault('code',$row['account_default'])->first();
         if($code_check == null && $row['code']){
           $arr = [
             'id'     => Str::uuid()->toString(),
             'code'    => $row['code'],
             'name'    => $row['name'],
             'name_en'    => $row['name_en'], 
+            'account_default'    => $account_systems == null ? 0 : $account_systems->id,  
             'filter'    => $row['filter'],        
             'active'    => $row['active'] == null ? 1 : $row['active'],
           ];

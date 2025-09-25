@@ -10,19 +10,11 @@ use App\Http\Model\AccHistoryAction;
 use App\Http\Model\Menu;
 use App\Http\Model\AccObject;
 use App\Http\Model\AccObjectType;
-use App\Http\Model\AccObjectGroup;
 use App\Http\Model\AccNumberCode;
-use App\Http\Model\Regions;
-use App\Http\Model\Area;
-use App\Http\Model\Distric;
-use App\Http\Model\AccDepartment;
-use App\Http\Model\Country;
 use App\Http\Model\CompanySoftware;
 use App\Http\Model\Company;
 use App\Http\Model\Error;
 use App\Http\Model\AccSystems;
-use App\Http\Resources\DropDownListResource;
-use App\Http\Resources\ObjectTypeDropDownListResource;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Model\Imports\AccObjectImport;
 use App\Http\Model\Exports\AccObjectExport;
@@ -122,6 +114,30 @@ class AccObjectController extends Controller
     }
   }
 
+  public function load_change(Request $request){
+    $type = 10;
+    try{
+    $req = json_decode($request->data);   
+    $type = AccObjectType::find($req);
+    if($type){
+      return response()->json(['status'=>true,'account_default'=> $type->account_default]);      
+    }else{
+     return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
+    }    
+    }catch(Exception $e){
+      // Lưu lỗi
+      $err = new Error();
+      $err ->create([
+        'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
+        'user_id' => Auth::id(),
+        'menu_id' => $this->menu->id,
+        'error' => $e->getMessage().' - Line '.$e->getLine(),
+        'url'  => $this->url,
+        'check' => 0 ]);
+      return response()->json(['status'=>false,'message'=> trans('messages.error').' '.$e->getMessage().' - Line '.$e->getLine()]);
+    }
+  }
+
   public function ChangeDatabase(Request $request){
     $type = 9;
     try{
@@ -189,6 +205,7 @@ class AccObjectController extends Controller
        $data->date_identity_card = $arr->date_identity_card;
        $data->address = $arr->address;
        $data->email = $arr->email;
+       $data->account_default = $arr->account_default;
        $data->tax_code = $arr->tax_code;
        $data->invoice_form = $arr->invoice_form;
        $data->invoice_symbol = $arr->invoice_symbol;
@@ -285,6 +302,7 @@ class AccObjectController extends Controller
       $data->date_identity_card = $arr->date_identity_card;
       $data->address = $arr->address;
       $data->email = $arr->email;
+      $data->account_default = $arr->account_default;
       $data->tax_code = $arr->tax_code;
       $data->invoice_form = $arr->invoice_form;
       $data->invoice_symbol = $arr->invoice_symbol;

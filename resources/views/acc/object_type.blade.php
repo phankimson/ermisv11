@@ -36,9 +36,17 @@
           <td class="row-label"><label>@lang('acc_object_type.name_en') </label></td>
           <td><input type="text" class="k-textbox xxlarge" data-position="3" data-title="@lang('acc_object_type.name_en')" data-width="200px" maxlength="100" data-type="string" name="name_en" /></td>
       </tr>
+         <tr>
+          <td class="row-label"><label>@lang('acc_object_type.account_default')</label></td>
+          <td>
+               <select class="droplist read large" data-position="4" data-title="@lang('acc_object_type.account_default')" data-template="#= FormatDropListRead(account_default,'account_default') #" data-type="number"  data-value-field="value" data-text-field="text" data-read-url="{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.setting-account-group').'?code=OB'}}" data-width="200px" name="account_default">
+                       
+               </select>
+          </td>
+      </tr>
       <tr>
           <td class="row-label"><label>@lang('acc_object_type.filter')</label></td>
-          <td><input type="number" class="k-textbox medium" data-position="3" data-title="@lang('acc_object_type.filter')" data-width="200px"  maxlength="4" data-type="string" name="filter" /></td>
+          <td><input type="number" class="k-textbox medium" data-position="5" data-title="@lang('acc_object_type.filter')" data-width="200px"  maxlength="4" data-type="string" name="filter" /></td>
       </tr>
         <tr>
             <td><label>@lang('action.active')</label></td>
@@ -69,11 +77,12 @@
       Ermis.decimal = "{{$decimal}}";
       Ermis.short_key = "{{ config('app.short_key')}}";
       Ermis.columns_expend = [{ selectable: true, width: "50px" }, {"field" : "column","title" : "@lang('global.column_name')"}];
-      Ermis.data_expend = [{field : "code", column:  "@lang('acc_object_type.code')" },
-                           {field : "name", column:  "@lang('acc_object_type.name')" },
-                           {field : "name_en", column:  "@lang('acc_object_type.name_en')" },
-                           {field : "filter", column:  "@lang('acc_object_type.filter')" },
-                           {field : "active", column:  "@lang('action.active')" }];
+      Ermis.data_expend = [{field : "t.code", column:  "@lang('acc_object_type.code')" },
+                           {field : "t.name", column:  "@lang('acc_object_type.name')" },
+                           {field : "t.name_en", column:  "@lang('acc_object_type.name_en')" },
+                           {field : "a.code as account_default", column:  "@lang('acc_object_type.account_default')" },
+                           {field : "t.filter", column:  "@lang('acc_object_type.filter')" },
+                           {field : "t.active", column:  "@lang('action.active')" }];
   });
   </script>
 @endsection

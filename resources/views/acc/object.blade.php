@@ -29,7 +29,7 @@
              <tr>
              <td class="row-label"><label>@lang('acc_object.object_type') *</label></td>
              <td>
-               <select class="multiselect read large" id="object_type" data-position="1" data-hidden="true" data-type="arr" data-filter="true" name="object_type" multiple="multiple" data-value-field="value" data-text-field="text" data-read-url="{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.object-type')}}" data-placeholder="Select">
+               <select class="multiselect read large" id="object_type" data-position="1" data-hidden="true" data-type="arr" data-filter="true" name="object_type" multiple="multiple" data-value-field="value" data-text-field="text" data-read-url="{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.object-type')}}" data-placeholder="Select" data-field-change ="account_default">
                 </select>
              </td>
              </tr>
@@ -85,6 +85,14 @@
                <tr>
                    <td class="row-label"><label>@lang('acc_object.tax_code') </label></td>
                     <td><input type="text" class="k-textbox large" data-position="10" data-title="@lang('acc_object.tax_code')" maxlength="50" data-width="200px" data-type="string" name="tax_code" /></td>
+               </tr>
+               <tr>
+               <td class="row-label"><label>@lang('acc_object.account_default')</label></td>
+               <td>
+               <select class="droplist read large" data-position="4" data-title="@lang('acc_object.account_default')" data-template="#= FormatDropListRead(account_default,'account_default') #" data-type="number"  data-value-field="value" data-text-field="text" data-read-url="{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.setting-account-group').'?code=OB'}}" data-width="200px" name="account_default">
+                       
+               </select>
+               </td>
                </tr>
                <tr class="object_type_1 object_type_2 hidden filter_tr">
                    <td class="row-label"><label>@lang('acc_object.director') </label></td>
@@ -264,6 +272,7 @@
                            {field : "t.date_identity_card", column:  "@lang('acc_object.date_identity_card')" },
                            {field : "t.address", column:  "@lang('acc_object.address')" },
                            {field : "t.email", column:  "@lang('acc_object.email')" },
+                           {field : "b.code as account_default", column:  "@lang('acc_object.account_default')" },
                            {field : "t.tax_code", column:  "@lang('acc_object.tax_code')" },
                            {field : "t.director", column:  "@lang('acc_object.director')" },
                            {field : "t.phone", column:  "@lang('acc_object.phone')" },

@@ -49,6 +49,17 @@ class AccObject extends Model
         return $result;
       }
 
+      static public function get_with_balance_period($period,$type) {
+        $result = AccObject::whereHas('object_type', function (Builder $query) use ($type) {
+              $query->where('object_type', $type);})
+        ->with(['balance' => function ($query) use ($period) {
+            $query->where('period', $period);
+        }])->orderBy('code','desc')
+        ->leftJoin('account_systems', 'account_systems.id', '=', 'object.account_default')->get(['object.*','account_systems.code as account_default']);
+        //$result = DB::select(DB::raw("SELECT t.* from (SELECT @i:=@i+1 as row_number, s.* FROM country s, (SELECT @i:=0) AS temp order by s.created_at asc) t order by t.row_number desc"));
+        return $result;
+      }     
+
       static public function get_raw_export($select,$skip,$limit) {
         $env = env("DB_DATABASE");
         $check = 'object_type';
@@ -61,6 +72,7 @@ class AccObject extends Model
           }])
           ->leftJoin('object_group as a', 't.object_group', '=', 'a.id')
           ->leftJoin('department as c', 't.department', '=', 'c.id')
+          ->leftJoin('account_systems as b', 'b.id', '=', 't.account_default')
           ->leftJoin($env.'.regions as m', 't.regions', '=', 'm.id')
           ->leftJoin($env.'.area as n', 't.area', '=', 'n.id')
           ->leftJoin($env.'.distric as s', 't.distric', '=', 's.id')
@@ -76,6 +88,7 @@ class AccObject extends Model
           $result = AccObject::WithRowNumberDb(env('CONNECTION_DB_ACC'))->orderBy('row_number','asc')->skip($skip)->take($limit)
           ->leftJoin('object_group as a', 't.object_group', '=', 'a.id')
           ->leftJoin('department as c', 't.department', '=', 'c.id')
+          ->leftJoin('account_systems as b', 'b.id', '=', 't.account_default')
           ->leftJoin($env.'.regions as m', 't.regions', '=', 'm.id')
           ->leftJoin($env.'.area as n', 't.area', '=', 'n.id')
           ->leftJoin($env.'.distric as s', 't.distric', '=', 's.id')
@@ -89,5 +102,11 @@ class AccObject extends Model
       {
           return $this->hasMany(AccObjectFilterObjectType::class, 'object', 'id');
       }
+
+        public function balance()
+    {
+        return $this->hasMany(AccObjectBalance::class,'object','id');
+    }
+   
 
 }

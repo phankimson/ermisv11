@@ -19,9 +19,12 @@ use App\Http\Model\AccStockBalance;
 use App\Http\Model\AccSuppliesGoods;
 use App\Http\Model\AccSuppliesGoodsType;
 use App\Http\Model\AccCurrency;
+use App\Http\Model\AccObject;
+use App\Http\Model\AccObjectType;
 use App\Http\Resources\OpenBalanceResource;
 use App\Http\Resources\BankOpenBalanceResource;
 use App\Http\Resources\SuppliesGoodsOpenBalanceResource;
+use App\Http\Resources\ObjectOpenBalanceResource;
 use App\Http\Model\Exports\AccAccountSystemsBalanceExport;
 use App\Http\Model\Exports\AccBankAccountBalanceExport;
 use App\Http\Model\Exports\AccStockBalanceExport;
@@ -34,11 +37,13 @@ use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Traits\LoadDocumentTraits;
 use App\Http\Traits\CurrencyCheckTraits;
+use App\Http\Traits\StockCheckTraits;
 
 class AccOpenBalanceController extends Controller
 {
   use LoadDocumentTraits;
   use CurrencyCheckTraits;
+  use StockCheckTraits;
   protected $url;
   protected $key;
   protected $menu;
@@ -79,36 +84,52 @@ class AccOpenBalanceController extends Controller
     $data = BankOpenBalanceResource::customCollection(AccBankAccount::get_with_balance_period("0"),$account_default->code);
     }else if($type == "materials" || $type == "goods" || $type == "tools" || $type == "upfront_costs" || $type == "assets" || $type == "finished_product"){
       if($type == "materials"){
-        $ty = AccSuppliesGoodsType::get_filter(1);
-        $type_id = $ty->id;
-        $account_default = AccAccountSystems::find($ty->account_default);
+        $i = 1;
       }else if($type == "goods"){
-        $ty = AccSuppliesGoodsType::get_filter(2);     
-        $type_id = $ty->id;
-        $account_default = AccAccountSystems::find($ty->account_default);
+        $i = 2;
       }else if($type == "tools"){
-        $ty = AccSuppliesGoodsType::get_filter(3);
-        $type_id = $ty->id;
-        $account_default = AccAccountSystems::find($ty->account_default);
+        $i = 3;
       }else if($type == "finished_product"){
-        $ty = AccSuppliesGoodsType::get_filter(4);
-        $type_id = $ty->id;
-        $account_default = AccAccountSystems::find($ty->account_default);
+        $i = 4;
       }else if($type == "upfront_costs"){
-        $ty = AccSuppliesGoodsType::get_filter(6);
-        $type_id = $ty->id;
-        $account_default = AccAccountSystems::find($ty->account_default);
+        $i = 6;
       }else if($type == "assets"){
-        $ty = AccSuppliesGoodsType::get_filter(7);
-        $type_id = $ty->id;
-        $account_default = AccAccountSystems::find($ty->account_default);
+        $i = 7;
+      }else{
+        $i = 0;
+      } 
+      if($i>0){
+      $ty = AccSuppliesGoodsType::get_filter($i);
+      $type_id = $ty->id;
+      $account_default = AccAccountSystems::find($ty->account_default);       
       }else{
         $type_id = null;
         $account_default= null;
-      }    
+      }   
     $data = SuppliesGoodsOpenBalanceResource::customCollection(AccSuppliesGoods::get_with_balance_period("0",$type_id,$stock),$account_default?$account_default->code:null); 
+    }else if($type == "suppliers" || $type == "customers" || $type == "employees" || $type == "others"){
+      if($type == "suppliers"){
+        $i = 1;
+      }else if($type == "customers"){
+        $i = 2; 
+      }else if($type == "employees"){ 
+        $i = 3;
+      } else if($type == "others"){
+        $i = 4; 
+      }else{
+        $i = 0;
+      }
+      if($i>0){
+      $ty = AccObjectType::get_filter($i);
+      $type_id = $ty->id;
+      $account_default = AccAccountSystems::find($ty->account_default);
+       }else{
+        $type_id = null;
+        $account_default= null;
+      }
+      $data = ObjectOpenBalanceResource::customCollection(AccObject::get_with_balance_period("0",$type_id),$account_default?$account_default->code:null); 
     }else{
-    $data = null;
+      $data = null;
     }     
     if($data){
       return response()->json($data);
@@ -244,6 +265,7 @@ class AccOpenBalanceController extends Controller
             if($data->credit_close >0){             
               $this->increaseCurrency($acc->id,$rate->id,$data->credit_close,$rate->rate,$a->id);
             }
+            //
           }else{
             $check_perrmission = false;
           }
@@ -258,6 +280,7 @@ class AccOpenBalanceController extends Controller
             if($a->credit_balance>0){
                $this->reduceCurrency($acc->id,$rate->id,$a->credit_balance,$rate->rate,$a->id);
             }
+            //
             // Lưu lại id vào array
             $a->balance_id = $data->id;
             // Lưu vào collect mới
@@ -266,7 +289,8 @@ class AccOpenBalanceController extends Controller
         }
         
       }else if($rq->type == "materials" || $rq->type == "goods" || $rq->type == "tools" || $rq->type == "upfront_costs" || $rq->type == "assets" || $rq->type == "finished_product"){
-        foreach($arr as $k => $a){        
+        foreach($arr as $k => $a){ 
+          $acc = AccAccountSystems::get_code($this->getId($this->document),$a->account_default);       
           if($permission['a'] == true && !$a->balance_id ){
             $type = 2;
             $data = new AccStockBalance();
@@ -276,6 +300,11 @@ class AccOpenBalanceController extends Controller
           }else if($permission['e'] == true && $a->balance_id){
             $type = 3;
             $data = AccStockBalance::find($a->balance_id);
+              // Trả lại số dư kho
+              if($data->quantity_close >0){             
+                $this->reduceStock($acc->id,$rq->stock,$a->id,$data->quantity);
+              }
+             //
           }else{
             $check_perrmission = false;
           }
@@ -283,6 +312,11 @@ class AccOpenBalanceController extends Controller
             $data->quantity_close = $a->quantity;
             $data->amount_close = $a->amount;
             $data->save();
+              // Lưu lại số dư kho
+                if($a->quantity >0){             
+                  $this->increaseStock($acc->id,$rq->stock,$a->id,$a->quantity);
+                }
+              //
             // Lưu lại id vào array
             $a->balance_id = $data->id;
             // Lưu vào collect mới
@@ -471,7 +505,7 @@ class AccOpenBalanceController extends Controller
             $type = 3;        
             $data = AccStockBalance::get_supplies_goods(0,$a['id'],$rs->stock);
             if(!$data){
-              $data = new AccBankAccountBalance();
+              $data = new AccStockBalance();
               $data->period = 0;
               $data->supplier_goods = $a['id'];  
               $data->stock = $rs->stock;  
@@ -480,6 +514,35 @@ class AccOpenBalanceController extends Controller
             $data->quantity_close = $a['quantity_close'];
             $data->amount_close = $a['amount_close'];
             $data->save();
+                // Lấy giá trị mặc định      
+                if($type == "materials"){
+                  $i = 1;
+                }else if($type == "goods"){
+                  $i = 2;
+                }else if($type == "tools"){
+                  $i = 3;
+                }else if($type == "finished_product"){
+                  $i = 4;
+                }else if($type == "upfront_costs"){
+                  $i = 6;
+                }else if($type == "assets"){
+                  $i = 7;
+                }else{
+                  $i = 0;
+                } 
+                if($i>0){
+                $ty = AccSuppliesGoodsType::get_filter($i);
+                $account_default = AccAccountSystems::find($ty->account_default);       
+                }else{
+                  $account_default= null;
+                } 
+            $supplies_goods = AccSuppliesGoods::find($a['id']);
+            $acc = $supplies_goods?$supplies_goods->stock_account:($account_default?$account_default->id:null);
+            // Lưu lại số dư kho
+                if($a->quantity >0){             
+                  $this->increaseStock($acc,$rs->stock,$data->supplier_goods,$data->quantity);
+                }
+              //
            
             // Lưu lại id vào array
             $a['balance_id'] = $data->id;

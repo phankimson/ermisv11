@@ -37,7 +37,9 @@ class AccObjectType extends Model
       }
 
       static public function get_raw_export($select,$skip,$limit) {
-        $result =  AccObjectType::WithRowNumberDb(env('CONNECTION_DB_ACC'))->orderBy('row_number','asc')->skip($skip)->take($limit)->get(['row_number',DB::raw($select)]);        
+        $result =  AccObjectType::WithRowNumberDb(env('CONNECTION_DB_ACC'))->orderBy('row_number','asc')->skip($skip)->take($limit)
+        ->leftJoin('account_systems as a', 'a.id', '=', 't.account_default')
+        ->get(['row_number',DB::raw($select)]);       
         return $result;
       } 
 

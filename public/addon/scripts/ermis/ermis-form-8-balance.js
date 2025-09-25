@@ -81,6 +81,12 @@ var Ermis = function () {
                         previousNext: false
                     }, true ,  Ermis.fields_supplies_goods, Ermis.columns_supplies_goods,Ermis.aggregates_supplies_goods);
                    initKendoGridExtra(Ermis["data_expend_stock"]);  
+                }else if($kGridTab.data("kendoGrid") === undefined && (tab_key == "suppliers" || tab_key == "customers" || tab_key == "employees" || tab_key == "others")){
+                     ErmisKendoGridTemplateApi1($kGridTab, Ermis.page_size , Ermis.link+'-data?type='+tab_key, onChangeGrid, false , jQuery(window).height() * 0.75, {
+                        numeric: false,
+                        previousNext: false
+                    }, true ,  Ermis.fields_object, Ermis.columns_object,Ermis.aggregates);
+                    initKendoGridExtra(Ermis["data_expend_object"]);  
                 }else{
 
                 }
