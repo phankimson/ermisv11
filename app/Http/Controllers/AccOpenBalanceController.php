@@ -20,6 +20,7 @@ use App\Http\Model\AccSuppliesGoods;
 use App\Http\Model\AccSuppliesGoodsType;
 use App\Http\Model\AccCurrency;
 use App\Http\Model\AccObject;
+use App\Http\Model\AccObjectBalance;
 use App\Http\Model\AccObjectType;
 use App\Http\Resources\OpenBalanceResource;
 use App\Http\Resources\BankOpenBalanceResource;
@@ -28,9 +29,11 @@ use App\Http\Resources\ObjectOpenBalanceResource;
 use App\Http\Model\Exports\AccAccountSystemsBalanceExport;
 use App\Http\Model\Exports\AccBankAccountBalanceExport;
 use App\Http\Model\Exports\AccStockBalanceExport;
+use App\Http\Model\Exports\AccObjectBalanceExport;
 use App\Http\Model\Imports\AccOpenBalanceAccountImport;
 use App\Http\Model\Imports\AccOpenBalanceBankImport;
 use App\Http\Model\Imports\AccOpenBalanceStockImport;
+use App\Http\Model\Imports\AccOpenBalanceObjectImport;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
@@ -38,6 +41,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Http\Traits\LoadDocumentTraits;
 use App\Http\Traits\CurrencyCheckTraits;
 use App\Http\Traits\StockCheckTraits;
+use App\Classes\OpenBalanceGlobal;
 
 class AccOpenBalanceController extends Controller
 {
@@ -75,29 +79,16 @@ class AccOpenBalanceController extends Controller
     $type = $request->input('type',null);
     $stock = $request->input('stock',null);
     // Lấy default document
-    $document = $this->getDoc($this->document);  
-    if($type == "account"){
+    $document = $this->getDoc($this->document);
+    $type_file = OpenBalanceGlobal::convertType($type);  
+    if($type_file == "account"){
     $data = OpenBalanceResource::collection(AccAccountSystems::get_with_balance_period($document->id,"0"));    
-    }else if($type == "bank"){
+    }else if($type_file == "bank"){
     $setting = AccSettingAccountGroup::get_code($this->code_bank);
     $account_default = AccAccountSystems::find($setting->account_default);
     $data = BankOpenBalanceResource::customCollection(AccBankAccount::get_with_balance_period("0"),$account_default->code);
-    }else if($type == "materials" || $type == "goods" || $type == "tools" || $type == "upfront_costs" || $type == "assets" || $type == "finished_product"){
-      if($type == "materials"){
-        $i = 1;
-      }else if($type == "goods"){
-        $i = 2;
-      }else if($type == "tools"){
-        $i = 3;
-      }else if($type == "finished_product"){
-        $i = 4;
-      }else if($type == "upfront_costs"){
-        $i = 6;
-      }else if($type == "assets"){
-        $i = 7;
-      }else{
-        $i = 0;
-      } 
+    }else if($type_file == "stock"){
+      $i = OpenBalanceGlobal::convertSuppliesGoodsTypeFilter($type);
       if($i>0){
       $ty = AccSuppliesGoodsType::get_filter($i);
       $type_id = $ty->id;
@@ -107,18 +98,8 @@ class AccOpenBalanceController extends Controller
         $account_default= null;
       }   
     $data = SuppliesGoodsOpenBalanceResource::customCollection(AccSuppliesGoods::get_with_balance_period("0",$type_id,$stock),$account_default?$account_default->code:null); 
-    }else if($type == "suppliers" || $type == "customers" || $type == "employees" || $type == "others"){
-      if($type == "suppliers"){
-        $i = 1;
-      }else if($type == "customers"){
-        $i = 2; 
-      }else if($type == "employees"){ 
-        $i = 3;
-      } else if($type == "others"){
-        $i = 4; 
-      }else{
-        $i = 0;
-      }
+    }else if($type_file == "object"){
+      $i = OpenBalanceGlobal::convertObjectTypeFilter($type);
       if($i>0){
       $ty = AccObjectType::get_filter($i);
       $type_id = $ty->id;
@@ -151,8 +132,9 @@ class AccOpenBalanceController extends Controller
             'type' => 'required',
         ]);
      $check_perrmission = true;
+     $type_file = OpenBalanceGlobal::convertType($rq->type); 
      if($validator->passes()){
-      if($rq->type == "bank"){
+      if($type_file == "bank" || $type_file == "object" ){
          // Kiểm tra có đúng với số dư tk không
         $check_balance = true;
         $check_account = "";
@@ -178,7 +160,7 @@ class AccOpenBalanceController extends Controller
             return response()->json(['status'=>false,'message'=> trans('messages.account_details_do_not_match_balance_sheet',['account'=>$check_account])]);
           }
           //
-      }else if($rq->type == "materials" || $rq->type == "goods" || $rq->type == "tools" || $rq->type == "upfront_costs" || $rq->type == "assets" || $rq->type == "finished_product"){
+      }else if($type_file == "stock"){
           // Kiểm tra có đúng với số dư tk không
           $check_balance = true;
           $check_quantity = true;
@@ -222,7 +204,7 @@ class AccOpenBalanceController extends Controller
       }else{
 
       }
-      if($rq->type == "account"){
+      if($type_file == "account"){
           foreach($arr as $k => $a){
           if($permission['a'] == true && !$a->balance_id ){
             $type = 2;
@@ -245,7 +227,7 @@ class AccOpenBalanceController extends Controller
             $rs[$k] = $a;
           }            
         }
-      }else if($rq->type == "bank"){
+      }else if($type_file == "bank"){
         $currency_default = AccSystems::get_systems($this->currency_default);
         $rate = AccCurrency::get_code($currency_default->value);       
         foreach($arr as $k => $a){        
@@ -288,7 +270,7 @@ class AccOpenBalanceController extends Controller
           }            
         }
         
-      }else if($rq->type == "materials" || $rq->type == "goods" || $rq->type == "tools" || $rq->type == "upfront_costs" || $rq->type == "assets" || $rq->type == "finished_product"){
+      }else if($type_file == "stock"){
         foreach($arr as $k => $a){ 
           $acc = AccAccountSystems::get_code($this->getId($this->document),$a->account_default);       
           if($permission['a'] == true && !$a->balance_id ){
@@ -324,6 +306,33 @@ class AccOpenBalanceController extends Controller
           }            
         }
 
+      }else if($type_file == "object" ){
+        $i = OpenBalanceGlobal::convertObjectTypeFilter($rq->type);
+        $ty = AccObjectType::get_filter($i);
+        foreach($arr as $k => $a){ 
+          $acc = AccAccountSystems::get_code($this->getId($this->document),$a->account_default);       
+          if($permission['a'] == true && !$a->balance_id ){
+            $type = 2;
+            $data = new AccObjectBalance();
+            $data->period = 0;
+            $data->object  = $a->id;
+            $data->object_type  = $ty->id;   
+          }else if($permission['e'] == true && $a->balance_id){
+            $type = 3;
+            $data = AccObjectBalance::find($a->balance_id);             
+          }else{
+            $check_perrmission = false;
+          }
+          if($a->debit_balance>0 || $a->credit_balance>0){           
+            $data->debit_close = $a->debit_balance;
+            $data->credit_close = $a->credit_balance;
+            $data->save();             
+            // Lưu lại id vào array
+            $a->balance_id = $data->id;
+            // Lưu vào collect mới
+            $rs[$k] = $a;
+          }            
+        }
       }else{
 
       }
@@ -374,20 +383,23 @@ class AccOpenBalanceController extends Controller
    try{
       $arr = $request->data;
       $page = $request->page;
-      $arr_type = $request->type;
+      $type_file = OpenBalanceGlobal::convertType($request->type); 
      // Lấy default document
       $document = $this->getDoc($this->document);  
        //return (new HistoryActionExport($arr))->download('HistoryActionExportErmis.xlsx');
        //$myFile = Excel::download(new HistoryActionExport($arr), 'HistoryActionExportErmis.xlsx');
-       if($arr_type == "account"){
+       if($type_file == "account"){
         $myFile = Excel::raw(new AccAccountSystemsBalanceExport($arr,$page,$document->id), \Maatwebsite\Excel\Excel::XLSX);
         $name = 'AccAccountSystems';
-       }else if($arr_type == "bank"){
+       }else if($type_file == "bank"){
          $myFile = Excel::raw(new AccBankAccountBalanceExport($arr,$page), \Maatwebsite\Excel\Excel::XLSX);
          $name = 'AccBankAccount';
-       }else if($arr_type == "materials" || $arr_type == "goods" || $arr_type == "tools" || $arr_type == "upfront_costs" || $arr_type == "assets" || $arr_type == "finished_product"){
+       }else if($type_file == "stock"){
          $myFile = Excel::raw(new AccStockBalanceExport($arr,$page), \Maatwebsite\Excel\Excel::XLSX);
-         $name = 'Acc'.ucfirst($arr_type);
+         $name = 'Acc'.ucfirst($request->type);
+       }else if($type_file == "object" ){
+         $myFile = Excel::raw(new AccObjectBalanceExport($arr,$page), \Maatwebsite\Excel\Excel::XLSX);
+         $name = 'Acc'.ucfirst($request->type);
        }else{
         $myFile = '';
         $name = '';
@@ -414,10 +426,8 @@ class AccOpenBalanceController extends Controller
 
   public function DownloadExcel(Request $request){
    $type = $request->input('type',null);
-   if($type == "materials" || $type == "goods" || $type == "tools" || $type == "upfront_costs" || $type == "assets" || $type == "finished_product"){
-         $type = 'stock';
-   }
-   return Storage::download('public/downloadFile/'.$this->download.ucfirst($type).'.xlsx');
+   $type_file = OpenBalanceGlobal::convertType($type); 
+   return Storage::download('public/downloadFile/'.$this->download.ucfirst($type_file).'.xlsx');
  }
 
   public function import(Request $request) {
@@ -426,8 +436,9 @@ class AccOpenBalanceController extends Controller
     DB::connection(env('CONNECTION_DB_ACC'))->beginTransaction();
    $permission = $request->session()->get('per');
    $rs = json_decode($request->data);
+   $type_file = OpenBalanceGlobal::convertType($rs->type); 
    if($permission['a'] && $request->hasFile('file')){
-         if($request->file->getClientOriginalName() == $this->download.ucfirst($rs->type).'.xlsx'){
+         if($request->file->getClientOriginalName() == $this->download.ucfirst($type_file).'.xlsx'){
      //Check
      $request->validate([
          'file' => 'required|mimeTypes:'.
@@ -437,7 +448,7 @@ class AccOpenBalanceController extends Controller
   
        $file = $request->file;
        // Import dữ liệu
-       if($rs->type == "account"){
+       if($type_file == "account"){
         //config(['excel.imports.read_only' => false]);
         $import = new AccOpenBalanceAccountImport;
         Excel::import($import , $file);
@@ -461,7 +472,7 @@ class AccOpenBalanceController extends Controller
         };
          // Lấy lại dữ liệu  
        $rs->arr =  $arr;  
-       }else if($rs->type == "bank"){
+       }else if($type_file == "bank"){
         $import = new AccOpenBalanceBankImport;
         Excel::import($import , $file);
         $arr = $import->getData();
@@ -497,10 +508,19 @@ class AccOpenBalanceController extends Controller
         };
          // Lấy lại dữ liệu  
        $rs->arr =  $arr;  
-       }else if($rs->type == "materials" || $rs->type == "goods" || $rs->type == "tools" || $rs->type == "upfront_costs" || $rs->type == "assets" || $rs->type == "finished_product"){
+       }else if($type_file == "stock"){
          $import = new AccOpenBalanceStockImport;
           Excel::import($import , $file);
           $arr = $import->getData();
+           // Lấy giá trị mặc định      
+            $i = OpenBalanceGlobal::convertSuppliesGoodsTypeFilter($rs->type);
+            if($i>0){
+            $ty = AccSuppliesGoodsType::get_filter($i);
+            $account_default = AccAccountSystems::find($ty->account_default);       
+            }else{
+              $account_default= null;
+            } 
+            
           foreach($arr as $k => $a){
             $type = 3;        
             $data = AccStockBalance::get_supplies_goods(0,$a['id'],$rs->stock);
@@ -513,36 +533,43 @@ class AccOpenBalanceController extends Controller
             }           
             $data->quantity_close = $a['quantity_close'];
             $data->amount_close = $a['amount_close'];
-            $data->save();
-                // Lấy giá trị mặc định      
-                if($type == "materials"){
-                  $i = 1;
-                }else if($type == "goods"){
-                  $i = 2;
-                }else if($type == "tools"){
-                  $i = 3;
-                }else if($type == "finished_product"){
-                  $i = 4;
-                }else if($type == "upfront_costs"){
-                  $i = 6;
-                }else if($type == "assets"){
-                  $i = 7;
-                }else{
-                  $i = 0;
-                } 
-                if($i>0){
-                $ty = AccSuppliesGoodsType::get_filter($i);
-                $account_default = AccAccountSystems::find($ty->account_default);       
-                }else{
-                  $account_default= null;
-                } 
+            $data->save();   
+            // Lấy giá trị mặc định
             $supplies_goods = AccSuppliesGoods::find($a['id']);
-            $acc = $supplies_goods?$supplies_goods->stock_account:($account_default?$account_default->id:null);
+            $acc = $supplies_goods?$supplies_goods->stock_account:($account_default?$account_default->id:null);            
             // Lưu lại số dư kho
                 if($a->quantity >0){             
                   $this->increaseStock($acc,$rs->stock,$data->supplier_goods,$data->quantity);
                 }
               //
+           
+            // Lưu lại id vào array
+            $a['balance_id'] = $data->id;
+            // Lưu vào collect mới
+            $arr[$k] = $a;
+        };
+       }else if($type_file == 'object'){
+          $import = new AccOpenBalanceObjectImport;
+          Excel::import($import , $file);
+          $arr = $import->getData();
+          // Lấy giá trị loại object
+          $i = OpenBalanceGlobal::convertSuppliesGoodsTypeFilter($rs->type);
+          if($i>0){
+          $ty = AccObjectType::get_filter($i);    
+          }
+          foreach($arr as $k => $a){
+            $type = 3;        
+            $data = AccObjectBalance::get_object(0,$a['id']);
+            if(!$data){
+              $data = new AccObjectBalance();
+              $data->period = 0;
+              $data->object = $a['id'];
+              $data->object_type = $ty->id;
+              $type = 2;
+            }           
+            $data->debit_close = $a['debit_close'];
+            $data->credit_close = $a['credit_close'];
+            $data->save();               
            
             // Lưu lại id vào array
             $a['balance_id'] = $data->id;

@@ -52,13 +52,24 @@ class AccObject extends Model
       static public function get_with_balance_period($period,$type) {
         $result = AccObject::whereHas('object_type', function (Builder $query) use ($type) {
               $query->where('object_type', $type);})
-        ->with(['balance' => function ($query) use ($period) {
+        ->with(['balance' => function ($query) use ($period,$type) {
             $query->where('period', $period);
+            $query->where('object_type', $type);
         }])->orderBy('code','desc')
         ->leftJoin('account_systems', 'account_systems.id', '=', 'object.account_default')->get(['object.*','account_systems.code as account_default']);
         //$result = DB::select(DB::raw("SELECT t.* from (SELECT @i:=@i+1 as row_number, s.* FROM country s, (SELECT @i:=0) AS temp order by s.created_at asc) t order by t.row_number desc"));
         return $result;
       }     
+
+      static public function get_raw_balance_export($select,$skip,$limit,$period) {
+        $result = AccObject::WithRowNumberDb(env('CONNECTION_DB_ACC'))->orderBy('row_number','asc')->skip($skip)->take($limit)
+        ->leftJoin('object_balance as s', 't.id', '=', 's.object')
+        ->leftJoin('account_systems as a', 'a.id', '=', 't.account_default')
+        ->where('s.period', $period)
+        ->get(['row_number',DB::raw($select)]);
+        //$result = DB::select(DB::raw("SELECT t.row_number,{$select} from (SELECT @i:=@i+1 as row_number, s.* FROM country s, (SELECT @i:=0) AS temp order by s.created_at asc) t order by t.row_number asc"));
+        return $result;
+      }
 
       static public function get_raw_export($select,$skip,$limit) {
         $env = env("DB_DATABASE");
