@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('object_balance', function (Blueprint $table) {
-              $table->uuid('object_type');
+              $table->uuid('object_type')->after('object');
         });
     }
 

@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
        Schema::table('object', function (Blueprint $table) {
-              $table->uuid('account_default');
+              $table->uuid('account_default')->after('email');
         });
     }
 

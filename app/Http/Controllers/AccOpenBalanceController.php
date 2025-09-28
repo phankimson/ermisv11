@@ -438,7 +438,8 @@ class AccOpenBalanceController extends Controller
    $rs = json_decode($request->data);
    $type_file = OpenBalanceGlobal::convertType($rs->type); 
    if($permission['a'] && $request->hasFile('file')){
-         if($request->file->getClientOriginalName() == $this->download.ucfirst($type_file).'.xlsx'){
+    if (preg_match("/".$this->download.ucfirst($type_file)."/", $request->file->getClientOriginalName())) {    
+         //if($request->file->getClientOriginalName() == $this->download.ucfirst($type_file).'.xlsx'){
      //Check
      $request->validate([
          'file' => 'required|mimeTypes:'.
@@ -483,22 +484,32 @@ class AccOpenBalanceController extends Controller
         foreach($arr as $k => $a){
             $type = 3;        
             $data = AccBankAccountBalance::get_bank_account(0,$a['id']);
+             $acc = $a['account_default']?$a['account_default']:$account_default->id;
             if(!$data){
               $data = new AccBankAccountBalance();
               $data->period = 0;
               $data->bank_account = $a['id'];  
               $type = 2;
+            }else{
+               // Trả lại số dư tiền tệ
+            if($data->debit_close >0){
+              $this->reduceCurrency($acc,$rate->id,$data->debit_close,$rate->rate,$a['id']);
+            }
+            if($data->credit_close >0){             
+              $this->increaseCurrency($acc,$rate->id,$data->credit_close,$rate->rate,$a['id']);
+            }
+            //
             }           
             $data->debit_close = $a['debit_balance'];
             $data->credit_close = $a['credit_balance'];
             $data->save();
-            $acc = $a['account_default']?$a['account_default']:$account_default->id;
+           
               // Cập nhật số dư tiền tệ
-            if($a->debit_balance>0){
-               $this->increaseCurrency($acc,$rate->id,$a['debit_balance'],$rate->rate,$a->id);
+            if($a['debit_balance']>0){
+               $this->increaseCurrency($acc,$rate->id,$a['debit_balance'],$rate->rate,$a['id']);
             }  
-            if($a->credit_balance>0){
-               $this->reduceCurrency($acc,$rate->id,$a['credit_balance'],$rate->rate,$a->id);
+            if($a['credit_balance']>0){
+               $this->reduceCurrency($acc,$rate->id,$a['credit_balance'],$rate->rate,$a['id']);
             }
             //
             // Lưu lại id vào array
@@ -524,22 +535,29 @@ class AccOpenBalanceController extends Controller
           foreach($arr as $k => $a){
             $type = 3;        
             $data = AccStockBalance::get_supplies_goods(0,$a['id'],$rs->stock);
+            // Lấy giá trị mặc định
+            $supplies_goods = AccSuppliesGoods::find($a['id']);
+            $acc = $supplies_goods?$supplies_goods->stock_account:($account_default?$account_default->id:null); 
             if(!$data){
               $data = new AccStockBalance();
               $data->period = 0;
               $data->supplier_goods = $a['id'];  
               $data->stock = $rs->stock;  
               $type = 2;
+            }else{
+               // Trả lại số dư kho
+               if($data->quantity_close >0){             
+                  $this->reduceStock($acc,$rs->stock,$data->supplies_goods,$data->quantity_close);
+                }
+               //
             }           
             $data->quantity_close = $a['quantity_close'];
             $data->amount_close = $a['amount_close'];
             $data->save();   
-            // Lấy giá trị mặc định
-            $supplies_goods = AccSuppliesGoods::find($a['id']);
-            $acc = $supplies_goods?$supplies_goods->stock_account:($account_default?$account_default->id:null);            
+                       
             // Lưu lại số dư kho
-                if($a->quantity >0){             
-                  $this->increaseStock($acc,$rs->stock,$data->supplier_goods,$data->quantity);
+                if($a['quantity_close'] >0){             
+                  $this->increaseStock($acc,$rs->stock,$data->supplies_goods,$a['quantity_close']);
                 }
               //
            

@@ -114,7 +114,9 @@ var Ermis = function () {
                                 total += item[field]; // Add the current item's value
                             }                           
                          }
+                   if(typeof aggregate_total[field] != 'undefined'){
                     aggregate_total[field]["sum"] = total;
+                   };
                  })
                  treeList.refresh();
         };       
@@ -153,7 +155,9 @@ var Ermis = function () {
               var parentDataItem = treeList.dataSource.get(parentId);                
               var aggregate = aggregates[parentId];              
                 jQuery.each(key, function(i, field) {
-                    parentDataItem.set(field,aggregate[field]["sum"]);
+                    if(typeof aggregate[field] != 'undefined'){
+                         parentDataItem.set(field,aggregate[field]["sum"]);
+                    }                   
                 })              
               }else{ 
                 let data = treeList.dataSource.data();
@@ -166,7 +170,9 @@ var Ermis = function () {
                                 total += item[field]; // Add the current item's value
                             }                           
                          }
-                    aggregate_total[field]["sum"] = total;
+                    if(typeof aggregate_total[field] != 'undefined'){
+                        aggregate_total[field]["sum"] = total;
+                    }
                  })
               }        
             }            
@@ -180,10 +186,10 @@ var Ermis = function () {
             obj.type = tab_key;
             if (obj.type === "account") {
                 obj.dataSource = $kGridTab.data("kendoTreeList").dataSource.data();
-            }else if(tab_key === "materials" || tab_key === "tools" || tab_key === "goods" || tab_key == "upfront_costs" || tab_key == "assets" || tab_key == "finished_product"){
-                obj.stock = jQuery("#stock").val();
-                obj.dataSource = $kGridTab.data("kendoGrid").dataSource.data();
             }else{
+                if(tab_key === "materials" || tab_key === "tools" || tab_key === "goods" || tab_key == "upfront_costs" || tab_key == "assets" || tab_key == "finished_product"){
+                    obj.stock = jQuery("#stock").val();
+                }
                 obj.dataSource = $kGridTab.data("kendoGrid").dataSource.data();
             }
             var postdata = { data: JSON.stringify(obj) };
@@ -391,16 +397,18 @@ var Ermis = function () {
         var initSaveComplete = function(rd){
             if(rd.type === "account"){
                 var grid = $kGridTab.data("kendoTreeList");
-                initEdit(rd.arr,grid,Ermis.columns_account);
-            }else if(rd.type === "bank"){
-                var grid = $kGridTab.data("kendoGrid");
-                initEdit(rd.arr,grid,Ermis.columns_bank);
-            }else if(rd.type === "materials" || rd.type === "tools" || rd.type === "goods" || rd.type === "upfront_costs" || rd.type === "assets" || rd.type === "finished_product"){
-                var grid = $kGridTab.data("kendoGrid");
-                initEdit(rd.arr,grid,Ermis.columns_supplies_goods);
+                initEdit(rd.arr,grid,Ermis.columns_account);            
             }else{
+                var columns_edit = '';
+                if(rd.type === "bank"){
+                    columns_edit = Ermis.columns_bank;
+                }else if(rd.type === "materials" || rd.type === "tools" || rd.type === "goods" || rd.type === "upfront_costs" || rd.type === "assets" || rd.type === "finished_product"){
+                    columns_edit = Ermis.columns_supplies_goods;
+                }else if(rd.type === "suppliers" || rd.type === "customers" || rd.type === "employees" || rd.type === "others" ){
+                    columns_edit = Ermis.columns_object;
+                }
                 var grid = $kGridTab.data("kendoGrid");
-                initEdit(rd.arr,grid,Ermis.columns_account);
+                initEdit(rd.arr,grid,columns_edit);
             }           
         }
 
@@ -410,7 +418,7 @@ var Ermis = function () {
                  var ds = new kendo.data.TreeListDataSource({
                         transport: {
                             read: {
-                                url: Ermis.link+'-data-'+tab_key,
+                                url:  Ermis.link+'-data?type='+tab_key,
                                 dataType: "json",
                             },       
                         },
@@ -427,11 +435,16 @@ var Ermis = function () {
                     });
                     grid.setDataSource(ds);
                  }else{
+                    var url_default = Ermis.link+'-data?type='+tab_key;
+                    if(tab_key == "materials" || tab_key == "tools" || tab_key == "goods" || tab_key == "upfront_costs" || tab_key == "assets" || tab_key == "finished_product"){
+                         var a = jQuery("#stock").val();
+                         url_default = url_default+'&stock='+a
+                    }
                     var grid = $kGridTab.data("kendoGrid");
                     var ds = new kendo.data.DataSource({
                         transport: {
                             read: {
-                                url: Ermis.link+'-data-'+tab_key,
+                                url: url_default,
                                 dataType: "json",
                             },       
                         },
