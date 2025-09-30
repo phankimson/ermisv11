@@ -15,7 +15,6 @@ use App\Http\Model\AccSystems;
 use App\Http\Model\AccPeriod;
 use App\Http\Model\AccNumberVoucher;
 use App\Http\Model\AccCountVoucher;
-use App\Http\Model\AccCurrencyCheck;
 use App\Http\Model\AccPrintTemplate;
 use App\Http\Model\AccVatDetailPayment;
 use App\Http\Model\Error;
@@ -29,9 +28,11 @@ use Maatwebsite\Excel\Facades\Excel;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use App\Http\Traits\CurrencyCheckTraits;
 
 class AccBankTransferGeneralController extends Controller
 {
+  use CurrencyCheckTraits;
   protected $url;
   protected $key;
   protected $key_voucher;
@@ -98,19 +99,21 @@ class AccBankTransferGeneralController extends Controller
                     $d->update(['active'=>0]);                    
                     // Lưu số lại số tồn bên nợ
                   if(substr($d->debit()->first()->code,0,3) == "112"){
-                       $ba = AccCurrencyCheck::get_type_first($d->debit,$d->currency,$d->bank_account_debit);
-                      if($ba){
-                        $ba->amount = $ba->amount - $d->amount;
-                        $ba->save();
-                      }
+                    $this->reduceCurrencyEdit($d->debit,$d->currency,$d->amount,$d->bank_account_debit);
+                      //  $ba = AccCurrencyCheck::get_type_first($d->debit,$d->currency,$d->bank_account_debit);
+                      // if($ba){
+                      //   $ba->amount = $ba->amount - $d->amount;
+                      //   $ba->save();
+                      // }
                     }
                     // Lưu số lại số tồn bên có
                     if(substr($d->credit()->first()->code,0,3) == "112"){
-                        $ca = AccCurrencyCheck::get_type_first($d->credit,$d->currency,$d->bank_account_credit);
-                      if($ca){
-                        $ca->amount = $ca->amount + $d->amount;
-                        $ca->save();
-                      }
+                      $this->increaseCurrencyEdit($d->credit,$d->currency,$d->amount,$d->bank_account_credit);
+                      //   $ca = AccCurrencyCheck::get_type_first($d->credit,$d->currency,$d->bank_account_credit);
+                      // if($ca){
+                      //   $ca->amount = $ca->amount + $d->amount;
+                      //   $ca->save();
+                      // }
                     }
                 });
                 DB::connection(env('CONNECTION_DB_ACC'))->commit();
@@ -171,19 +174,21 @@ class AccBankTransferGeneralController extends Controller
                     $d->update(['active'=>1]);
                    // Lưu số lại số tồn bên nợ
                    if(substr($d->debit()->first()->code,0,3) == "112"){
-                       $ba = AccCurrencyCheck::get_type_first($d->debit,$d->currency,$d->bank_account_debit);
-                      if($ba){
-                        $ba->amount = $ba->amount + $d->amount;
-                        $ba->save();
-                      }
+                     $this->increaseCurrencyEdit($d->debit,$d->currency,$d->amount,$d->bank_account_debit);
+                      //  $ba = AccCurrencyCheck::get_type_first($d->debit,$d->currency,$d->bank_account_debit);
+                      // if($ba){
+                      //   $ba->amount = $ba->amount + $d->amount;
+                      //   $ba->save();
+                      // }
                     }
                     // Lưu số lại số tồn bên có
                     if(substr($d->credit()->first()->code,0,3) == "112"){
-                        $ca = AccCurrencyCheck::get_type_first($d->credit,$d->currency,$d->bank_account_credit);
-                      if($ca){
-                        $ca->amount = $ca->amount - $d->amount;
-                        $ca->save();
-                      }
+                       $this->reduceCurrencyEdit($d->credit,$d->currency,$d->amount,$d->bank_account_credit);
+                      //   $ca = AccCurrencyCheck::get_type_first($d->credit,$d->currency,$d->bank_account_credit);
+                      // if($ca){
+                      //   $ca->amount = $ca->amount - $d->amount;
+                      //   $ca->save();
+                      // }
                     }
                 });
                 DB::connection(env('CONNECTION_DB_ACC'))->commit();
@@ -360,17 +365,19 @@ class AccBankTransferGeneralController extends Controller
                
                foreach($detail as $d){
                 //Clear số tiền bên nợ
-                $b1 = AccCurrencyCheck::get_type_first($d->debit,$d->currency,$d->bank_account_debit);
-                if($b1){          
-                  $b1->amount = $b1->amount - $d->amount;
-                  $b1->save();
-                }
+                $this->reduceCurrencyEdit($d->debit,$d->currency,$d->amount,$d->bank_account_debit);
+                // $b1 = AccCurrencyCheck::get_type_first($d->debit,$d->currency,$d->bank_account_debit);
+                // if($b1){          
+                //   $b1->amount = $b1->amount - $d->amount;
+                //   $b1->save();
+                // }
                 //Clear số tiền bên có
-                $b2 = AccCurrencyCheck::get_type_first($d->credit,$d->currency,$d->bank_account_credit);
-                if($b2){
-                  $b2->amount = $b2->amount + $d->amount;
-                  $b2->save();
-                }             
+                $this->increaseCurrencyEdit($d->credit,$d->currency,$d->amount,$d->bank_account_credit);
+                // $b2 = AccCurrencyCheck::get_type_first($d->credit,$d->currency,$d->bank_account_credit);
+                // if($b2){
+                //   $b2->amount = $b2->amount + $d->amount;
+                //   $b2->save();
+                // }             
                }             
 
                // Xóa các dòng chi tiết
@@ -481,33 +488,35 @@ class AccBankTransferGeneralController extends Controller
       foreach($data['crit'] as $item){
       // Lưu số tồn bên nợ
       if(substr($item['debit'],0,3) === '112'){   
-         $balance = AccCurrencyCheck::get_type_first($item['debit_id'],$item['currency'],$item['bank_account_debit']);
-        if($balance){
-              $balance->amount = $balance->amount + ($item['amount'] * $item['rate']);
-              $balance->save();
-            }else{
-              $balance = new AccCurrencyCheck();
-              $balance->type = $item['debit_id'];
-              $balance->currency = $item['currency'];
-              $balance->bank_account = $item['bank_account_debit'];
-              $balance->amount = $item['amount'] * $item['rate'];
-              $balance->save();
-            }
+         $this->increaseCurrency($item['debit_id'],$item['currency'],$item['amount'],$item['rate'],$item['bank_account_debit']);  
+        //  $balance = AccCurrencyCheck::get_type_first($item['debit_id'],$item['currency'],$item['bank_account_debit']);
+        // if($balance){
+        //       $balance->amount = $balance->amount + ($item['amount'] * $item['rate']);
+        //       $balance->save();
+        //     }else{
+        //       $balance = new AccCurrencyCheck();
+        //       $balance->type = $item['debit_id'];
+        //       $balance->currency = $item['currency'];
+        //       $balance->bank_account = $item['bank_account_debit'];
+        //       $balance->amount = $item['amount'] * $item['rate'];
+        //       $balance->save();
+        //     }
       }
       // Lưu số tồn bên có
-      if(substr($item['credit'],0,3) === '112'){                 
-              $balance = AccCurrencyCheck::get_type_first($item['credit_id'],$item['currency'],$item['bank_account_credit']);
-              if($balance){
-                $balance->amount = $balance->amount - ($item['amount'] * $item['rate']);
-                $balance->save();
-              }else{
-                $balance = new AccCurrencyCheck();
-                $balance->type = $item['credit_id'];
-                $balance->currency = $item['currency'];
-                $balance->bank_account = $item['bank_account_credit'];
-                $balance->amount = 0 - ($item['amount'] * $item['rate']);
-                $balance->save();
-              }                  
+      if(substr($item['credit'],0,3) === '112'){       
+         $this->reduceCurrency($item['credit_id'],$item['currency'],$item['amount'],$item['rate'],$item['bank_account_credit']);           
+              // $balance = AccCurrencyCheck::get_type_first($item['credit_id'],$item['currency'],$item['bank_account_credit']);
+              // if($balance){
+              //   $balance->amount = $balance->amount - ($item['amount'] * $item['rate']);
+              //   $balance->save();
+              // }else{
+              //   $balance = new AccCurrencyCheck();
+              //   $balance->type = $item['credit_id'];
+              //   $balance->currency = $item['currency'];
+              //   $balance->bank_account = $item['bank_account_credit'];
+              //   $balance->amount = 0 - ($item['amount'] * $item['rate']);
+              //   $balance->save();
+              // }                  
             }
       } 
       $merged = collect($rs)->push($data);

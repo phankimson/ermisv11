@@ -19,8 +19,8 @@ trait CurrencyCheckTraits
                $balance->save();
             }
             return $balance;
-      }   
-
+      }       
+  
     public function reduceCurrency($acc_credit,$currency,$amount,$rate,$bank_account=null)
     {
        $balance = AccCurrencyCheck::get_type_first($acc_credit,$currency,$bank_account);
@@ -37,5 +37,25 @@ trait CurrencyCheckTraits
           }
           return $balance;
     }    
+
+     public function increaseCurrencyEdit($acc_debit,$currency,$amount,$bank_account=null){
+      $balance = AccCurrencyCheck::get_type_first($acc_debit,$currency,$bank_account);
+            if($balance){
+               $balance->amount = $balance->amount + $amount;
+               $balance->save();
+            }
+       return $balance;
+   }
+
+
+    public function reduceCurrencyEdit($acc_credit,$currency,$amount,$bank_account=null)
+    {
+      $balance = AccCurrencyCheck::get_type_first($acc_credit,$currency,$bank_account);
+          if($balance){
+               $balance->amount = $balance->amount - $amount ;
+               $balance->save();
+          }
+          return $balance;
+    }
 
 }

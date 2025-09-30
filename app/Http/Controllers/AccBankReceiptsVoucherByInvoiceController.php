@@ -13,7 +13,6 @@ use App\Http\Model\AccVatDetail;
 use App\Http\Model\AccGeneral;
 use App\Http\Model\AccDetail;
 use App\Http\Model\AccSettingVoucher;
-use App\Http\Model\AccCurrencyCheck;
 use App\Http\Model\AccCountVoucher;
 use App\Http\Model\AccVatDetailPayment;
 use App\Http\Model\AccSystems;
@@ -29,9 +28,11 @@ use Illuminate\Support\Facades\File;
 use Exception;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use App\Http\Traits\CurrencyCheckTraits;
 
 class AccBankReceiptsVoucherByInvoiceController extends Controller
 {
+  use CurrencyCheckTraits;
   protected $url;
   protected $key;
   protected $key_invoice;
@@ -272,18 +273,19 @@ class AccBankReceiptsVoucherByInvoiceController extends Controller
 
              // Lưu số tồn tiền bên Nợ
              if($setting_voucher->debit){
-               $balance = AccCurrencyCheck::get_type_first($setting_voucher->debit,$arr->currency,null);
-               if($balance){
-                 $balance->amount = $balance->amount + $d->payment;
-                 $balance->save();
-               }else{
-                 $balance = new AccCurrencyCheck();
-                 $balance->type = $setting_voucher->debit;
-                 $balance->currency = $arr->currency;
-                 $balance->bank_account = null;
-                 $balance->amount = $d->payment;
-                 $balance->save();
-               }
+              $this->increaseCurrency($setting_voucher->debit,$arr->currency,$d->payment,$d->rate,$arr->bank_account);
+               //$balance = AccCurrencyCheck::get_type_first($setting_voucher->debit,$arr->currency,null);
+               //if($balance){
+               //  $balance->amount = $balance->amount + $d->payment;
+               //  $balance->save();
+               //}else{
+               //  $balance = new AccCurrencyCheck();
+               //  $balance->type = $setting_voucher->debit;
+               //  $balance->currency = $arr->currency;
+               //  $balance->bank_account = null;
+               //  $balance->amount = $d->payment;
+               //  $balance->save();
+              // }
              }
                // End
                

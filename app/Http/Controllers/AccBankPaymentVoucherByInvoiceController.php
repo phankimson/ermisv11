@@ -13,7 +13,6 @@ use App\Http\Model\AccVatDetail;
 use App\Http\Model\AccGeneral;
 use App\Http\Model\AccDetail;
 use App\Http\Model\AccSettingVoucher;
-use App\Http\Model\AccCurrencyCheck;
 use App\Http\Model\AccCountVoucher;
 use App\Http\Model\AccVatDetailPayment;
 use App\Http\Model\AccAccountSystems;
@@ -30,9 +29,11 @@ use Illuminate\Support\Facades\File;
 use Exception;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use App\Http\Traits\CurrencyCheckTraits;
 
 class AccBankPaymentVoucherByInvoiceController extends Controller
 {
+  use CurrencyCheckTraits;
   protected $url;
   protected $key;
   protected $key_invoice;
@@ -278,18 +279,19 @@ class AccBankPaymentVoucherByInvoiceController extends Controller
 
              // Lưu số tồn tiền bên Có
              if($setting_voucher->credit){
-               $balance = AccCurrencyCheck::get_type_first($setting_voucher->credit,$arr->currency,null);
-               if($balance){
-                 $balance->amount = $balance->amount - $d->payment;
-                 $balance->save();
-               }else{
-                 $balance = new AccCurrencyCheck();
-                 $balance->type = $setting_voucher->credit;
-                 $balance->currency = $arr->currency;
-                 $balance->bank_account = null;
-                 $balance->amount = 0 - $d->payment;
-                 $balance->save();
-               }
+              $balance = $this->reduceCurrency($setting_voucher->credit,$arr->currency,$d->payment,$d->rate,$arr->bank_account);
+               //$balance = AccCurrencyCheck::get_type_first($setting_voucher->credit,$arr->currency,null);
+               //if($balance){
+               //  $balance->amount = $balance->amount - $d->payment;
+               //  $balance->save();
+               //}else{
+               //  $balance = new AccCurrencyCheck();
+               //  $balance->type = $setting_voucher->credit;
+               //  $balance->currency = $arr->currency;
+               //  $balance->bank_account = null;
+               //  $balance->amount = 0 - $d->payment;
+               //  $balance->save();
+               //}
               if($ca->value == 1 && $balance->amount<0){
                   $acc_system = AccAccountSystems::find($setting_voucher->credit);
                   $acc = $acc_system->code;

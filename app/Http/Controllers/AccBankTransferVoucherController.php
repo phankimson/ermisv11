@@ -12,7 +12,6 @@ use App\Http\Model\AccDetail;
 use App\Http\Model\AccAttach;
 use App\Http\Model\AccPeriod;
 use App\Http\Model\AccSystems;
-use App\Http\Model\AccCurrencyCheck;
 use App\Http\Model\AccNumberVoucher;
 use App\Http\Model\AccCountVoucher;
 use App\Http\Model\AccPrintTemplate;
@@ -28,9 +27,11 @@ use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+use App\Http\Traits\CurrencyCheckTraits;
 
 class AccBankTransferVoucherController extends Controller
 {
+  use CurrencyCheckTraits;
   protected $url;
   protected $key;
   protected $menu;
@@ -224,36 +225,38 @@ class AccBankTransferVoucherController extends Controller
              array_push($removeId,$detail->id);
              $arr->detail[$k]->id = $detail->id;      
              // Lưu số tồn tiền bên Nợ
-             if(substr($d->debit->text,0,3) === '112'){     
-               $balance = AccCurrencyCheck::get_type_first($d->debit->value,$arr->currency,$d->bank_account_debit->value);     
-               if($balance){
-                 $balance->amount = $balance->amount + ($d->amount * $d->rate);
-                 $balance->save();
-               }else{
-                 $balance = new AccCurrencyCheck();
-                 $balance->type = $d->debit->value;
-                 $balance->currency = $arr->currency;
-                 $balance->bank_account = $d->bank_account_debit->value;
-                 $balance->amount = $d->amount * $d->rate;
-                 $balance->save();
-               }
+             if(substr($d->debit->text,0,3) === '112'){ 
+               $balance = $this->increaseCurrency($d->debit->value,$arr->currency,$d->amount,$d->rate,$d->bank_account_debit->value);    
+              //  $balance = AccCurrencyCheck::get_type_first($d->debit->value,$arr->currency,$d->bank_account_debit->value);     
+              //  if($balance){
+              //    $balance->amount = $balance->amount + ($d->amount * $d->rate);
+              //    $balance->save();
+              //  }else{
+              //    $balance = new AccCurrencyCheck();
+              //    $balance->type = $d->debit->value;
+              //    $balance->currency = $arr->currency;
+              //    $balance->bank_account = $d->bank_account_debit->value;
+              //    $balance->amount = $d->amount * $d->rate;
+              //    $balance->save();
+              //  }
              }
                // End
            
                // Lưu số tồn tiền bên Có
               if(substr($d->credit->text,0,3) == '112'){
-                 $balance = AccCurrencyCheck::get_type_first($d->credit->value,$arr->currency,$d->bank_account_credit->value);     
-                 if($balance){
-                   $balance->amount = $balance->amount - ($d->amount * $d->rate);
-                   $balance->save();
-                 }else{                  
-                   $balance = new AccCurrencyCheck();
-                   $balance->type = $d->credit->value;
-                   $balance->currency = $arr->currency;
-                   $balance->bank_account = $d->bank_account_credit->value;
-                   $balance->amount = 0 - ($d->amount * $d->rate);
-                   $balance->save();
-                 }
+                $balance = $this->reduceCurrency($d->credit->value,$arr->currency,$d->amount,$d->rate,$d->bank_account_credit->value);
+                //  $balance = AccCurrencyCheck::get_type_first($d->credit->value,$arr->currency,$d->bank_account_credit->value);     
+                //  if($balance){
+                //    $balance->amount = $balance->amount - ($d->amount * $d->rate);
+                //    $balance->save();
+                //  }else{                  
+                //    $balance = new AccCurrencyCheck();
+                //    $balance->type = $d->credit->value;
+                //    $balance->currency = $arr->currency;
+                //    $balance->bank_account = $d->bank_account_credit->value;
+                //    $balance->amount = 0 - ($d->amount * $d->rate);
+                //    $balance->save();
+                //  }
                    if($ca->value == "1" && $balance->amount<0){
                     $acc = $d->credit->text;
                     break;
