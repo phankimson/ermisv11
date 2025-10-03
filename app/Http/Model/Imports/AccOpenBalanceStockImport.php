@@ -46,8 +46,8 @@ class AccOpenBalanceStockImport implements ToModel, WithHeadingRow, WithBatchIns
             'balance_id'    => 0,
             'period'    => 0,
             'account_default'    => $suppler_goods->stock_account,
-            'quantity_close'    => Convert::intDefaultformat($row['quantity']),
-            'amount_close'    => Convert::intDefaultformat($row['amount']),
+            'quantity'    => Convert::intDefaultformat($row['quantity']),
+            'amount'    => Convert::intDefaultformat($row['amount']),
           ];
           $data = new AccOpenBalanceStockImport();
           $data->setData($arr);

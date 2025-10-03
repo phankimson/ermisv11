@@ -136,7 +136,7 @@ var Ermis = function () {
             schema: {
                 model: {
                     id: "id",
-                    fields: Ermis["fields_"+tab_key]
+                    fields: Ermis.fields_supplies_goods
                 }
             },
             aggregate: Ermis.aggregates_supplies_goods,

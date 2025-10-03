@@ -471,8 +471,8 @@ class AccOpenBalanceController extends Controller
             // Lưu vào collect mới
             $arr[$k] = $a;
         };
-         // Lấy lại dữ liệu  
-       $rs->arr =  $arr;  
+           // Lấy lại dữ liệu      
+          $rs->arr = $arr;
        }else if($type_file == "bank"){
         $import = new AccOpenBalanceBankImport;
         Excel::import($import , $file);
@@ -516,9 +516,9 @@ class AccOpenBalanceController extends Controller
             $a['balance_id'] = $data->id;
             // Lưu vào collect mới
             $arr[$k] = $a;
-        };
-         // Lấy lại dữ liệu  
-       $rs->arr =  $arr;  
+        };    
+           // Lấy lại dữ liệu      
+          $rs->arr = $arr;     
        }else if($type_file == "stock"){
          $import = new AccOpenBalanceStockImport;
           Excel::import($import , $file);
@@ -541,7 +541,7 @@ class AccOpenBalanceController extends Controller
             if(!$data){
               $data = new AccStockBalance();
               $data->period = 0;
-              $data->supplier_goods = $a['id'];  
+              $data->supplies_goods = $a['id'];  
               $data->stock = $rs->stock;  
               $type = 2;
             }else{
@@ -551,13 +551,13 @@ class AccOpenBalanceController extends Controller
                 }
                //
             }           
-            $data->quantity_close = $a['quantity_close'];
-            $data->amount_close = $a['amount_close'];
+            $data->quantity_close = $a['quantity'];
+            $data->amount_close = $a['amount'];
             $data->save();   
                        
             // Lưu lại số dư kho
-                if($a['quantity_close'] >0){             
-                  $this->increaseStock($acc,$rs->stock,$data->supplies_goods,$a['quantity_close']);
+                if($a['quantity'] >0){             
+                  $this->increaseStock($acc,$rs->stock,$data->supplies_goods,$a['quantity']);
                 }
               //
            
@@ -566,12 +566,14 @@ class AccOpenBalanceController extends Controller
             // Lưu vào collect mới
             $arr[$k] = $a;
         };
+          // Lấy lại dữ liệu      
+          $rs->arr = $arr;
        }else if($type_file == 'object'){
           $import = new AccOpenBalanceObjectImport;
           Excel::import($import , $file);
           $arr = $import->getData();
           // Lấy giá trị loại object
-          $i = OpenBalanceGlobal::convertSuppliesGoodsTypeFilter($rs->type);
+          $i = OpenBalanceGlobal::convertObjectTypeFilter($rs->type);
           if($i>0){
           $ty = AccObjectType::get_filter($i);    
           }
@@ -585,8 +587,8 @@ class AccOpenBalanceController extends Controller
               $data->object_type = $ty->id;
               $type = 2;
             }           
-            $data->debit_close = $a['debit_close'];
-            $data->credit_close = $a['credit_close'];
+            $data->debit_close = $a['debit_balance'];
+            $data->credit_close = $a['credit_balance'];
             $data->save();               
            
             // Lưu lại id vào array
@@ -594,9 +596,11 @@ class AccOpenBalanceController extends Controller
             // Lưu vào collect mới
             $arr[$k] = $a;
         };
+          // Lấy lại dữ liệu      
+        $rs->arr = $arr;
        }else{
          $import = '';
-       }        
+       } 
        $merged = collect($rs);
        //dump($merged);
      // Lưu lịch sử

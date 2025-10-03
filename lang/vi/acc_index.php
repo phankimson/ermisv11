@@ -55,5 +55,12 @@ return [
     "suplier"=>"Nhà cung cấp",
     "purchase_voucher"=>"Phiếu mua hàng",
     "report_purchase"=>"Báo cáo mua hàng",
-    "report_general_purchase"=>"Report General Purchase",
+    "report_general_purchase"=>"Báo cáo tổng hợp mua hàng",
+    "open_balance" =>"Số dư đầu kỳ",
+    "accounted_fast" => "Hạch toán nhanh",
+    "accounted_auto" =>"Hạch toán tự động",
+    "period" =>"Kỳ kế toán",
+    "number_code" =>"Số thứ tự mã",
+    "print_template" =>"Mẫu in",
+    "support" =>"Hỗ trợ",
 ];

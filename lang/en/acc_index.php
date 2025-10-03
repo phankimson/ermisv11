@@ -57,4 +57,12 @@ return [
     "purchase_voucher"=>"Purchase Voucher",
     "report_purchase"=>"Report Purchase",
     "report_general_purchase"=>"Report General Purchase",
+    "open_balance" =>"Open balance",
+    "accounted_fast" =>"Accounted Fast",
+    "accounted_auto" =>"Accounted Auto",
+    "period" =>"Period",
+    "number_code" =>"Number code",
+    "print_template" =>"Print template",
+    "tool" =>"Print template",
+    "support" =>"Support",
 ];

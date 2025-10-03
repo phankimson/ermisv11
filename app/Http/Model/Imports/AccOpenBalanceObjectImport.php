@@ -46,8 +46,8 @@ class AccOpenBalanceObjectImport implements ToModel, WithHeadingRow, WithBatchIn
             'balance_id'    => 0,
             'period'    => 0,
             'account_default'    => $object->account_default,
-            'debit_close'    => Convert::intDefaultformat($row['debit_balance']),
-            'credit_close'    => Convert::intDefaultformat($row['credit_balance']),
+            'debit_balance'    => Convert::intDefaultformat($row['debit_balance']),
+            'credit_balance'    => Convert::intDefaultformat($row['credit_balance']),
           ];
           $data = new AccOpenBalanceObjectImport();
           $data->setData($arr);

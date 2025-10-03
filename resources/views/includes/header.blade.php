@@ -20,40 +20,37 @@
                                 <div class="uk-grid uk-dropdown-grid" data-uk-grid-margin>
                                     <div class="uk-width-2-3">
                                         <div class="uk-grid uk-grid-width-medium-1-3 uk-margin-top uk-margin-bottom uk-text-center" data-uk-grid-margin>
-                                            <a href="page_mailbox.html">
-                                                <i class="material-icons md-36">&#xE158;</i>
-                                                <span class="uk-text-muted uk-display-block">Mailbox</span>
+                                            <a href="{{url($lang.'/acc/open-balance')}}">
+                                                <i class="material-icons md-36">input_circle</i>
+                                                <span class="uk-text-muted uk-display-block">@lang('acc_index.open_balance')</span>
                                             </a>
-                                            <a href="page_invoices.html">
-                                                <i class="material-icons md-36">&#xE53E;</i>
-                                                <span class="uk-text-muted uk-display-block">Invoices</span>
+                                            <a href="{{url($lang.'/acc/accounted-fast')}}">
+                                                <i class="material-icons md-36">unfold_less_double</i>
+                                                <span class="uk-text-muted uk-display-block">@lang('acc_index.accounted_fast')</span>
                                             </a>
-                                            <a href="page_chat.html">
-                                                <i class="material-icons md-36 md-color-red-600">&#xE0B9;</i>
-                                                <span class="uk-text-muted uk-display-block">Chat</span>
+                                            <a href="{{url($lang.'/acc/accounted-auto')}}">
+                                                <i class="material-icons md-36 md-color-red-600">&#xE86F;</i>
+                                                <span class="uk-text-muted uk-display-block">@lang('acc_index.accounted_auto')</span>
                                             </a>
-                                            <a href="page_scrum_board.html">
-                                                <i class="material-icons md-36">&#xE85C;</i>
-                                                <span class="uk-text-muted uk-display-block">Scrum Board</span>
+                                            <a href="{{url($lang.'/acc/period')}}">
+                                                <i class="material-icons md-36">lock_open</i>
+                                                <span class="uk-text-muted uk-display-block">@lang('acc_index.period')</span>
                                             </a>
-                                            <a href="page_snippets.html">
-                                                <i class="material-icons md-36">&#xE86F;</i>
-                                                <span class="uk-text-muted uk-display-block">Snippets</span>
+                                            <a href="{{url($lang.'/acc/number-code')}}">
+                                                <i class="material-icons md-36">exposure_plus_1</i>
+                                                <span class="uk-text-muted uk-display-block">@lang('acc_index.number_code')</span>
                                             </a>
-                                            <a href="page_user_profile.html">
-                                                <i class="material-icons md-36">&#xE87C;</i>
-                                                <span class="uk-text-muted uk-display-block">User profile</span>
+                                            <a href="{{url($lang.'/acc/print-template')}}">
+                                                <i class="material-icons md-36">content_paste</i>
+                                                <span class="uk-text-muted uk-display-block">@lang('acc_index.print_template')</span>
                                             </a>
                                         </div>
                                     </div>
                                     <div class="uk-width-1-3">
                                         <ul class="uk-nav uk-nav-dropdown uk-panel">
-                                            <li class="uk-nav-header">Components</li>
-                                            <li><a href="components_accordion.html">Accordions</a></li>
-                                            <li><a href="components_buttons.html">Buttons</a></li>
-                                            <li><a href="components_notifications.html">Notifications</a></li>
-                                            <li><a href="components_sortable.html">Sortable</a></li>
-                                            <li><a href="components_tabs.html">Tabs</a></li>
+                                            <li class="uk-nav-header">@lang('acc_index.support')</li>
+                                            <li><a href="{{url($lang.'/acc')}}">Tính thuế nhà thầu</a></li>
+                                            <li><a href="{{url($lang.'/acc')}}">Tính giao dịch liên kết</a></li>                  
                                         </ul>
                                     </div>
                                 </div>

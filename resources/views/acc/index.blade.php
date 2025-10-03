@@ -557,12 +557,12 @@
                        </g>
                       </svg>
                             <dl>
-                                <dd><a class="text-center lazyload" data-uk-tooltip title="@lang('acc_index.general_voucher')" href="{{url('')}}"><img src="{{url('addon/img/icon/pie-chart.png')}}" /></a><p>@lang('acc_index.general_voucher')</p></dd>
+                                <dd><a class="text-center lazyload" data-uk-tooltip title="@lang('acc_index.general_voucher')" href="{{url($lang.'/acc/entry-general')}}"><img src="{{url('addon/img/icon/pie-chart.png')}}" /></a><p>@lang('acc_index.general_voucher')</p></dd>
                                 <dd><a class="text-center lazyload" data-uk-tooltip title="@lang('acc_index.auto_account_transfer')" href="{{url('')}}"><img src="{{url('addon/img/icon/diagram.png')}}" /></a><p>@lang('acc_index.auto_account_transfer')</p></dd>
                                 <dd><a class="text-center lazyload" data-uk-tooltip title="@lang('acc_index.general')" href="{{url('')}}"><img src="{{url('addon/img/icon/notebook.png')}}" /></a><p>@lang('acc_index.general')</p></dd>
                                 <dd><a class="text-center lazyload" data-uk-tooltip title="@lang('acc_index.ledger')" href="{{url('')}}"><img src="{{url('addon/img/icon/report.png')}}" /></a><p>@lang('acc_index.ledger')</p></dd>
-                                <dd><a class="text-center lazyload" data-uk-tooltip title="@lang('acc_index.account_transfer')" href="{{url('')}}"><img src="{{url('addon/img/icon/checklist.png')}}" /></a><p>@lang('acc_index.account_transfer')</p></dd>
-                                <dd><a class="text-center lazyload" data-uk-tooltip title="@lang('acc_index.account')" href="{{url('')}}"><img src="{{url('addon/img/icon/list.png')}}" /></a><p>@lang('acc_index.account')</p></dd>
+                                <dd><a class="text-center lazyload" data-uk-tooltip title="@lang('acc_index.account_transfer')" href="{{url($lang.'/acc/account-transfer')}}"><img src="{{url('addon/img/icon/checklist.png')}}" /></a><p>@lang('acc_index.account_transfer')</p></dd>
+                                <dd><a class="text-center lazyload" data-uk-tooltip title="@lang('acc_index.account')" href="{{url($lang.'/acc/account-systems')}}"><img src="{{url('addon/img/icon/list.png')}}" /></a><p>@lang('acc_index.account')</p></dd>
                             </dl>
 
                         </div>
