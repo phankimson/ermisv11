@@ -86,7 +86,7 @@ class AccOpenBalanceController extends Controller
     }else if($type_file == "bank"){
     $setting = AccSettingAccountGroup::get_code($this->code_bank);
     $account_default = AccAccountSystems::find($setting->account_default);
-    $data = BankOpenBalanceResource::customCollection(AccBankAccount::get_with_balance_period("0"),$account_default->code);
+    $data = BankOpenBalanceResource::customCollection(AccBankAccount::get_with_balance_period("0"),optional($account_default)->code);
     }else if($type_file == "stock"){
       $i = OpenBalanceGlobal::convertSuppliesGoodsTypeFilter($type);
       if($i>0){
@@ -97,7 +97,7 @@ class AccOpenBalanceController extends Controller
         $type_id = null;
         $account_default= null;
       }   
-    $data = SuppliesGoodsOpenBalanceResource::customCollection(AccSuppliesGoods::get_with_balance_period("0",$type_id,$stock),$account_default?$account_default->code:null); 
+    $data = SuppliesGoodsOpenBalanceResource::customCollection(AccSuppliesGoods::get_with_balance_period("0",$type_id,$stock),optional($account_default)->code); 
     }else if($type_file == "object"){
       $i = OpenBalanceGlobal::convertObjectTypeFilter($type);
       if($i>0){
@@ -108,7 +108,7 @@ class AccOpenBalanceController extends Controller
         $type_id = null;
         $account_default= null;
       }
-      $data = ObjectOpenBalanceResource::customCollection(AccObject::get_with_balance_period("0",$type_id),$account_default?$account_default->code:null); 
+      $data = ObjectOpenBalanceResource::customCollection(AccObject::get_with_balance_period("0",$type_id),optional($account_default)->code); 
     }else{
       $data = null;
     }     
@@ -241,10 +241,10 @@ class AccOpenBalanceController extends Controller
             $type = 3;
             $data = AccBankAccountBalance::find($a->balance_id);
              // Trả lại số dư tiền tệ
-            if($data->debit_close >0){
+            if(optional($data)->debit_close >0){
               $this->reduceCurrency($acc->id,$rate->id,$data->debit_close,$rate->rate,$a->id);
             }
-            if($data->credit_close >0){             
+            if(optional($data)->credit_close >0){             
               $this->increaseCurrency($acc->id,$rate->id,$data->credit_close,$rate->rate,$a->id);
             }
             //
@@ -283,7 +283,7 @@ class AccOpenBalanceController extends Controller
             $type = 3;
             $data = AccStockBalance::find($a->balance_id);
               // Trả lại số dư kho
-              if($data->quantity_close >0){             
+              if(optional($data)->quantity_close >0){             
                 $this->reduceStock($acc->id,$rq->stock,$a->id,$data->quantity);
               }
              //
@@ -484,7 +484,7 @@ class AccOpenBalanceController extends Controller
         foreach($arr as $k => $a){
             $type = 3;        
             $data = AccBankAccountBalance::get_bank_account(0,$a['id']);
-             $acc = $a['account_default']?$a['account_default']:$account_default->id;
+             $acc = $a['account_default']?$a['account_default']:optional($account_default)->id;
             if(!$data){
               $data = new AccBankAccountBalance();
               $data->period = 0;
@@ -537,7 +537,7 @@ class AccOpenBalanceController extends Controller
             $data = AccStockBalance::get_supplies_goods(0,$a['id'],$rs->stock);
             // Lấy giá trị mặc định
             $supplies_goods = AccSuppliesGoods::find($a['id']);
-            $acc = $supplies_goods?$supplies_goods->stock_account:($account_default?$account_default->id:null); 
+            $acc = $supplies_goods?$supplies_goods->stock_account:(optional($account_default)->id); 
             if(!$data){
               $data = new AccStockBalance();
               $data->period = 0;
