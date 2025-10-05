@@ -88,4 +88,10 @@ return [
     "output_invoice" => "Hóa đơn đầu ra",
     "input_invoice" => "Hóa đơn đầu vào",
     "quantity" => "Số lượng",
+    "item_code" => "Mã hàng",
+    "item_name" => "Tên hàng",
+    "unit" => "Đơn vị tính",
+    "stock" => "Kho",
+    "price" => "Giá bán",
+    "expiry_date" => "Hạn sử dụng",
 ];

@@ -1260,6 +1260,30 @@ Route::group([
   Route::post('/entry-voucher-delete', 'delete' )->name('-delete'); 
 
   });  
+
+  // Inventory Issue General - Xuất kho
+  Route::group([
+    'as' => 'inventory-issue',
+    'controller' => AccInventoryIssueGeneralController::class
+  ],function () {
+  Route::get('/inventory-issue-general', 'show' )->name('');
+  Route::post('/inventory-issue-general-get','find' )->name('-find');
+  Route::post('/inventory-issue-general-unwrite','unwrite' )->name('-unwrite');
+  Route::post('/inventory-issue-general-write','write' )->name('-write');
+  Route::post('/inventory-issue-general-revoucher', 'revoucher' )->name('-revoucher');
+  Route::post('/inventory-issue-general-start-voucher', 'start_voucher' )->name('-start-voucher');
+  Route::post('/inventory-issue-general-change-voucher', 'change_voucher' )->name('-change-voucher');
+  Route::get('/inventory-issue-general-DownloadExcel', 'DownloadExcel' )->name('-DownloadExcel');
+  Route::any('/inventory-issue-general-import', 'import')->name('-import');
+  Route::any('/inventory-issue-general-delete', 'delete')->name('-delete');
+
+  // Ghi , ko ghi , tìm chứng từ trang
+  Route::post('/issue-inventory-voucher-unwrite','unwrite' )->name('-unwrite');
+  Route::post('/issue-inventory-voucher-write','write' )->name('-write');
+  Route::post('/issue-inventory-voucher-find', 'find' )->name('-find');
+  Route::post('/issue-inventory-voucher-delete', 'delete' )->name('-delete'); 
+
+  });  
   
 
   // Receipt Cash Detail -  Phiếu thu tiền

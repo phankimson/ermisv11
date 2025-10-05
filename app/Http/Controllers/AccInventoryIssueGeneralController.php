@@ -10,30 +10,28 @@ use App\Http\Model\AccHistoryAction;
 use App\Http\Model\Menu;
 use App\Http\Model\AccGeneral;
 use App\Http\Model\AccDetail;
-use App\Http\Model\AccVatDetail;
 use App\Http\Model\AccSystems;
 use App\Http\Model\AccPeriod;
 use App\Http\Model\AccNumberVoucher;
 use App\Http\Model\AccCountVoucher;
 use App\Http\Model\AccPrintTemplate;
-use App\Http\Model\AccVatDetailPayment;
-use App\Http\Model\AccBankCompare;
+use App\Http\Model\AccInventory;
 use App\Http\Model\Error;
-use App\Http\Resources\BankGeneralResource;
+use App\Http\Resources\InventoryGeneralResource;
 use App\Http\Resources\TypeGeneralResource;
 use App\Http\Resources\TypeListGeneralResource;
-use App\Http\Model\Imports\AccBankPaymentImport;
+use App\Http\Model\Imports\AccInventoryIssueImport;
 use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
-use App\Http\Traits\CurrencyCheckTraits;
+use App\Http\Traits\StockCheckTraits;
 
-class AccIssueInventoryGeneralController extends Controller
+class AccInventoryIssueGeneralController extends Controller
 {
-  use CurrencyCheckTraits;
+  use StockCheckTraits;
   protected $url;
   protected $key;
   protected $menu;
@@ -42,11 +40,13 @@ class AccIssueInventoryGeneralController extends Controller
   protected $date_range;
   protected $action;
   protected $download;
+  protected $key_voucher;
   public function __construct(Request $request)
  {
      $this->url =  $request->segment(3);
      $this->group = 6; // 6 Nhóm xuất kho
-     $this->key = "issue-inventory-general";
+     $this->key = "inventory-issue-general";
+     $this->key_voucher = "inventory-issue-voucher";
      $this->menu = Menu::where('code', '=', $this->key)->first();
      $this->print = 'XK%';
      $this->date_range = "DATE_RANGE_GENERAL";
@@ -55,7 +55,7 @@ class AccIssueInventoryGeneralController extends Controller
 
   public function show(){
     $sys = AccSystems::get_systems($this->date_range);
-    $group =  TypeListGeneralResource::collection(Menu::get_menu_by_group($this->menu->type,$this->group));
+    $group = TypeListGeneralResource::collection(Menu::get_menu_like_code($this->key_voucher));
     $action = new TypeGeneralResource($group->first());
     $end_date_default = Carbon::now();
     $start_date_default = Carbon::now()->subDays($sys->value);
@@ -80,8 +80,7 @@ class AccIssueInventoryGeneralController extends Controller
              }
              $period = AccPeriod::get_date(Carbon::parse($data->accounting_date)->format('Y-m'),1);
              if(!$period){
-               $detail = AccDetail::get_detail_active($data->id,1);
-
+               $detail = AccDetail::get_detail_active($data->id,1);               
                // Lưu lịch sử
                $h = new AccHistoryAction();
                $h ->create([
@@ -95,33 +94,16 @@ class AccIssueInventoryGeneralController extends Controller
 
                //DETAIL
                $detail->each(function ($d){
-                    $d->update(['active'=>0]);                    
-                    // Lưu số lại số tồn bên nợ
-                    if(substr($d->debit()->first()->code,0,3) == ("111" || "113")){
-                      $this->reduceCurrencyEdit($d->debit,$d->currency,$d->amount);
-                      //  $ba = AccCurrencyCheck::get_type_first($d->debit,$d->currency,null);
-                      //if($ba){
-                      //  $ba->amount = $ba->amount - $d->amount;
-                      //  $ba->save();
-                      //}
-                     }
-                    //else if(substr($d->debit()->first()->code,0,3) == "112"){
-                    //   $ba = AccCurrencyCheck::get_type_first($d->debit,$d->currency,$d->bank_account);
-                    //  if($ba){
-                    //    $ba->amount = $ba->amount - $d->amount;
-                    //    $ba->save();
-                    //  }
-                    //}
-                    // Lưu số lại số tồn bên có
-                    if(substr($d->credit()->first()->code,0,3) == "112"){
-                      $this->increaseCurrencyEdit($d->credit,$d->currency,$d->amount,$d->bank_account_credit);
-                      //  $ca = AccCurrencyCheck::get_type_first($d->credit,$d->currency,$d->bank_account);
-                      //if($ca){
-                      //  $ca->amount = $ca->amount + $d->amount;
-                      //  $ca->save();
-                      //}
-                    }
+                    $d->update(['active'=>0]); 
+                    // inventory
+                    $inventory = AccInventory::get_detail_first($d->id);
+                    if($inventory){
+                      // Trả lại số tồn kho
+                      $this->increaseStock($d->credit,$inventory->stock,$inventory->supplies_goods,$inventory->quantity); 
+                      $inventory->update(['active'=>0]);
+                    }                              
                 });
+
                 DB::connection(env('CONNECTION_DB_ACC'))->commit();
                return response()->json(['status'=>true,'message'=> trans('messages.unrecored_success')]);
              }else{
@@ -177,33 +159,16 @@ class AccIssueInventoryGeneralController extends Controller
 
                //DETAIL
                $detail->each(function ($d){
-                    $d->update(['active'=>1]);
-                   // Lưu số lại số tồn bên nợ
-                    if(substr($d->debit()->first()->code,0,3) == ("111" || "113")){
-                        $this->increaseCurrencyEdit($d->debit,$d->currency,$d->amount);
-                      //$ba = AccCurrencyCheck::get_type_first($d->debit,$d->currency,null);
-                      //if($ba){
-                      //  $ba->amount = $ba->amount + $d->amount;
-                      //  $ba->save();
-                      //}
-                     }
-                    //else if(substr($d->debit()->first()->code,0,3) == "112"){
-                    //   $ba = AccCurrencyCheck::get_type_first($d->debit,$d->currency,$d->bank_account);
-                    //  if($ba){
-                    //    $ba->amount = $ba->amount + $d->amount;
-                    //    $ba->save();
-                    //  }
-                    //}
-                    // Lưu số lại số tồn bên có
-                    if(substr($d->credit()->first()->code,0,3) == "112"){
-                      $this->reduceCurrencyEdit($d->credit,$d->currency,$d->amount,$d->bank_account_credit);
-                      //$ca = AccCurrencyCheck::get_type_first($d->credit,$d->currency,$d->bank_account);
-                      //if($ca){
-                      // $ca->amount = $ca->amount - $d->amount;
-                      //  $ca->save();
-                      //}
-                    }
+                    $d->update(['active'=>1]); 
+                    // inventory
+                    $inventory = AccInventory::get_detail_first($d->id);
+                    if($inventory){
+                      // Trừ số tồn kho
+                      $this->reduceStock($d->credit,$inventory->stock,$inventory->supplies_goods,$inventory->quantity); 
+                      $inventory->update(['active'=>1]);
+                    }                  
                 });
+                
                 DB::connection(env('CONNECTION_DB_ACC'))->commit();
                return response()->json(['status'=>true,'message'=> trans('messages.unrecored_success')]);
              }else{
@@ -235,7 +200,7 @@ class AccIssueInventoryGeneralController extends Controller
     $type = 10;
     try{
       $req = json_decode($request->data);
-      $data = collect(BankGeneralResource::collection(AccGeneral::get_data_load_between($req->type,$req->start_date_a,$req->end_date_a)));
+      $data = collect(InventoryGeneralResource::collection(AccGeneral::get_data_load_between($req->type,$req->start_date_a,$req->end_date_a)));
       if($req->active != ""){
         $data = $data->where('active',$req->active)->values();
       }
@@ -265,7 +230,7 @@ class AccIssueInventoryGeneralController extends Controller
       // Tìm voucher
       $v = AccNumberVoucher::get_menu($this->menu->id); 
       $date_obj = Convert::dateformatRange($v->format,$req);
-      $data = collect(BankGeneralResource::collection(AccGeneral::get_data_load_between($req->type,$date_obj['start_date'],$date_obj['end_date'])));
+      $data = collect(InventoryGeneralResource::collection(AccGeneral::get_data_load_between($req->type,$date_obj['start_date'],$date_obj['end_date'])));
       if($data->count()>0){
         return response()->json(['status'=>true,'data'=> $data]);
       }else{
@@ -364,8 +329,7 @@ class AccIssueInventoryGeneralController extends Controller
            $data = AccGeneral::get_id_with_detail($arr,['detail','tax','attach','vat_detail_payment']);           
            $period = AccPeriod::get_date(Carbon::parse($data->accounting_date)->format('Y-m'),1);
            if(!$period){
-             if($permission['d'] == true){             
-
+             if($permission['d'] == true){            
                // Lưu lịch sử
                $h = new AccHistoryAction();
                $h ->create([
@@ -379,56 +343,17 @@ class AccIssueInventoryGeneralController extends Controller
                $detail = $data->detail;
                
                foreach($detail as $d){
-                //Clear số tiền bên nợ
-               $this->reduceCurrencyEdit($d->debit,$d->currency,$d->amount);
-                //$b1 = AccCurrencyCheck::get_type_first($d->debit,$d->currency,null);
-                //if($b1){          
-                //  $b1->amount = $b1->amount - $d->amount;
-                //  $b1->save();
-                //}
-                //Clear số tiền bên có
-               $this->increaseCurrencyEdit($d->credit,$d->currency,$d->amount,$d->bank_account_credit);
-                //  $b2 = AccCurrencyCheck::get_type_first($d->credit,$d->currency,$d->bank_account_credit);
-                //   if($b2){
-                //    $b2->amount = $b2->amount + $d->amount;
-                //    $b2->save();
-                //  }             
+                 // inventory
+                 $inventory = AccInventory::get_detail_first($d->id);
+                 if($inventory){
+                   // Trả lại số tồn kho
+                   $this->increaseStock($d->credit,$inventory->stock,$inventory->supplies_goods,$inventory->quantity); 
+                   $inventory->delete();
+                 }          
                }             
 
                // Xóa các dòng chi tiết
-               $data->detail()->delete();              
-
-               // Update lại trạng thái thanh toán
-               $tax_payment = $data->vat_detail_payment;
-               foreach($tax_payment as $v){
-                 $p = AccVatDetail::find($v->vat_detail_id);
-                 if($p){
-                    $p->payment = 0;
-                    $p->save(); 
-                 }                 
-
-                // Update lại số tiền đã thanh toán của từng phiếu
-                $tax_payment_update = AccVatDetailPayment::vat_detail_payment_created_at_not_id($v->vat_detail_id,$v->created_at,$v->id);
-                foreach($tax_payment_update as $t){
-                  if($t->paid > $v->paid){
-                  $t->paid = $t->paid - $v->payment;
-                  $t->remaining = $t->remaining + $v->payment;
-                  $t->save();
-                  }          
-                }               
-               }; 
-                // Update lại trạng thái so sánh ngân hàng
-              $compare = AccBankCompare::find($data->compare_id);
-              if($compare){
-                $compare->status = 1;
-                $compare->save();
-              }
-              
-                // Xóa các dòng thuế
-               $data->tax()->delete();
-
-                // Xóa các dòng thanh toán
-                $data->vat_detail_payment()->delete();                         
+               $data->detail()->delete();                                  
 
                $attach = $data->attach();
                foreach($attach as $a){
@@ -488,7 +413,7 @@ class AccIssueInventoryGeneralController extends Controller
 
       $file = $request->file;
       // Import dữ liệu
-      $import = new AccBankPaymentImport($this->menu->id,$this->group);
+      $import = new AccInventoryIssueImport($this->menu->id,$this->group);
       Excel::import($import, $file);
       // Lấy lại dữ liệu
       //$array = AccGeneral::with('detail','tax')->get();
@@ -508,37 +433,23 @@ class AccIssueInventoryGeneralController extends Controller
        $data = $import->getData();
       foreach($data['crit'] as $item){
         // Lưu số tồn bên nợ
-      if(substr($item['debit'],0,3)  === ('111' ||  '113')){ 
-         $this->increaseCurrency($item['debit_id'],$item['currency'],$item['amount'],$item['rate']);      
-        //$balance = AccCurrencyCheck::get_type_first($item['debit_id'],$item['currency'],null);
-        //if($balance){
-        //      $balance->amount = $balance->amount + ($item['amount'] * $item['rate']);
-        //      $balance->save();
-        //    }else{
-        //      $balance = new AccCurrencyCheck();
-        //      $balance->type = $item['debit_id'];
-        //      $balance->currency = $item['currency'];
-        //      $balance->bank_account = null;
-        //      $balance->amount = $item['amount'] * $item['rate'];
-        //      $balance->save();
-        //    }
-      }
-      // Lưu số tồn bên có
-      if(substr($item['credit'],0,3) === '112'){              
-              $this->reduceCurrency($item['credit_id'],$item['currency'],$item['amount'],$item['rate'],$item['bank_account']);   
-              //$balance = AccCurrencyCheck::get_type_first($item['credit_id'],$item['currency'],$item['bank_account']);
-              //if($balance){
-              //  $balance->amount = $balance->amount - ($item['amount'] * $item['rate']);
-              //  $balance->save();
-              //}else{
-              //  $balance = new AccCurrencyCheck();
-              //  $balance->type = $item['credit_id'];
-              //  $balance->currency = $item['currency'];
-              //  $balance->bank_account = $item['bank_account'];
-              //  $balance->amount = 0 - ($item['amount'] * $item['rate']);
-              //  $balance->save();
-              //}                  
-            }
+         $this->increaseStock($item->acc,$item->stock,$item->item_id,$item->quantity);
+         // Lưu Inventory
+         $inventory = new AccInventory(); 
+         $inventory->general_id = $item->general_id;
+         $inventory->detail_id = $item->detail_id;
+         $inventory->item_id = $item->item_id;
+         $inventory->item_code = $item->item_code;
+         $inventory->item_name = $item->item_name;
+         $inventory->item_name_en = $item->name_en;
+         $inventory->unit = $item->unit;
+         $inventory->stock_issue = $item->stock;
+         $inventory->quantity = $item->quantity;
+         $inventory->price = $item->price;
+         $inventory->amount = $item->amount;
+         $inventory->status = 1;
+         $inventory->active = 1;
+         $inventory->save();
       }
       $merged = collect($rs)->push($data);
       //dump($merged);

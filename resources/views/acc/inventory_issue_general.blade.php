@@ -57,18 +57,19 @@
                                 active:    {type:"boolean" }
                             };
             Ermis.columns    =   [{ "field" : "id",hidden: true },
-                                { "field" : "item_code","title" : "@lang('acc_general.item_code') " ,"width" : "200px" ,aggregates: ['count'], footerTemplate: "<p>Total Count: #=count#</p>" },
-                                { "field" : "item_name","title" : "@lang('acc_voucher.item_name') " ,"width" : "100px" },
+                                { "field" : "item_code","title" : "@lang('acc_voucher.item_code') " ,"width" : "100px" },
+                                { "field" : "item_name","title" : "@lang('acc_voucher.item_name') " ,"width" : "200px" ,aggregates: ['count'], footerTemplate: "<p>Total Count: #=count#</p>" },
                                 { "field" : "unit","title" : "@lang('acc_voucher.unit') " ,"width" : "100px" },
                                 { "field" : "stock","title" : "@lang('acc_voucher.stock') " ,"width" : "100px" },
                                 { "field" : "quantity","title" : "@lang('acc_voucher.quantity') " ,"width" : "150px", template: '#= FormatNumberDecimal(quantity,{{$decimal}}) #' ,aggregates: ['sum'] , footerTemplate:"#= FormatNumberDecimal(sum,{{$decimal}}) #"},
                                 { "field" : "price","title" : "@lang('acc_voucher.price') " ,"width" : "150px" ,template: '#= FormatNumberDecimal(price,{{$decimal}}) #'},
-                                { "field" : "amount","title" : "@lang('acc_voucher.amount') " ,"width" : "150px" ,template: '#= FormatNumberDecimal(amount,{{$decimal}}) #'},
+                                { "field" : "amount","title" : "@lang('acc_voucher.amount') " ,"width" : "150px" ,template: '#= FormatNumberDecimal(amount,{{$decimal}}) #' ,aggregates: ['sum'] , footerTemplate:"#= FormatNumberDecimal(sum,{{$decimal}}) #"},
                                 { "field" : "lot_number","title" : "@lang('acc_general.lot_number') " ,"width" : "100px" },
                                 { "field" : "contract","title" : "@lang('acc_general.contract') " ,"width" : "100px" },
-                                { "field" : "expiry_date","title" : "@lang('acc_general.expiry_date') " ,"width" : "100px"} ]
+                                { "field" : "expiry_date","title" : "@lang('acc_voucher.expiry_date') " ,"width" : "100px"} ]
 
             Ermis.aggregate = [ { field: "item_name", aggregate: "count" },
+                                { field: "quantity", aggregate: "sum" },
                                 { field: "amount", aggregate: "sum" }];
             Ermis.columns_voucher = [{"field" : "voucher_date","title" : "@lang('acc_voucher.voucher_date')" ,template : "#=FormatDate(voucher_date)#" ,editor: initReadOnlyGrid},
                                     {"field" : "voucher","title" : "@lang('acc_voucher.voucher')",editor: initReadOnlyGrid },

@@ -88,4 +88,10 @@ return [
     "output_invoice" => "Output invoice",
     "input_invoice" => "Input invoice",
     "quantity" => "Quantity",
+    "item_code" => "Item code",
+    "item_name" => "Item name",
+    "unit" => "unit",
+    "stock" => "Stock",
+    "price" => "Price",
+    "expiry_date" => "Expiry date",
 ];
