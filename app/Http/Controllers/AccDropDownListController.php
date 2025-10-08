@@ -14,13 +14,13 @@ use App\Http\Resources\ObjectDropDownListResource;
 use App\Http\Resources\DropDownResource;
 use App\Http\Resources\TaxDropDownResource;
 use App\Http\Model\AccUnit;
+use App\Http\Model\AccSuppliesGoods;
 use App\Http\Model\AccSuppliesGoodsType;
 use App\Http\Model\AccSuppliesGoodsGroup;
 use App\Http\Model\AccWarrantyPeriod;
 use App\Http\Model\AccStock;
 use App\Http\Model\AccVat;
 use App\Http\Model\AccExcise;
-use App\Http\Model\AccSystems;
 use App\Http\Model\Document;
 use App\Http\Model\AccSettingAccountGroup;
 use App\Http\Model\AccAccountSystems;
@@ -178,6 +178,24 @@ class AccDropDownListController extends Controller
     }else{
     $default = collect([$this->default]);
     $data = LangDropDownResource::collection(AccSuppliesGoodsGroup::active()->orderBy('code','asc')->get());
+    $data = $default->merge($data)->values();
+    }         
+    return response()->json($data)->withCallback($request->input('callback'));
+  }
+
+  // Hàng hóa Droplist
+  public function supplies_goods_dropdown_list(Request $request){
+    $val = $request->input('value',null); 
+    if($val){
+      $rs = AccSuppliesGoods::find($val);
+      if(!$rs){
+        $data = collect($this->default);
+      }else{
+        $data = new LangDropDownResource($rs);
+      }      
+    }else{
+    $default = collect([$this->default]);
+    $data = LangDropDownResource::collection(AccSuppliesGoods::active()->orderBy('code','asc')->get());
     $data = $default->merge($data)->values();
     }         
     return response()->json($data)->withCallback($request->input('callback'));

@@ -55,6 +55,7 @@ Route::group([
       "controller" => AccDropDownListController::class
       ],function () {
       Route::get(env("URL_DROPDOWN").'/unit', 'unit_dropdown_list')->name('unit');
+      Route::get(env("URL_DROPDOWN").'/supplies-goods', 'supplies_goods_dropdown_list')->name('supplies-goods');
       Route::get(env("URL_DROPDOWN").'/supplies-goods-type', 'supplies_goods_type_dropdown_list')->name('supplies-goods-type');
       Route::get(env("URL_DROPDOWN").'/supplies-goods-group', 'supplies_goods_group_dropdown_list')->name('supplies-goods-group');
       Route::get(env("URL_DROPDOWN").'/warranty-period', 'warranty_period_dropdown_list')->name('warranty-period');

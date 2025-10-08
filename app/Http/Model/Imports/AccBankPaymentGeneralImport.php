@@ -55,7 +55,7 @@ class AccBankPaymentGeneralImport implements WithMappedCells,ToModel
 
   public function model(array $row)
   {  
-     $data = new AccBankPaymentGeneralImport($this->menu);
+    $data = new AccBankPaymentGeneralImport($this->menu);
     $currency_default = $data->getCurrencyDefault();                   
     $subject = AccObject::WhereDefault('code',$row['subject'])->first();
     $code_check = AccGeneral::WhereCheck('voucher',$row['voucher'],'id',null)->first();

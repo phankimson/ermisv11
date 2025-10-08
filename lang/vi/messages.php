@@ -130,6 +130,7 @@ return [
       "invoice_number_paid" => "Số hóa đơn :invoice đã thanh toán !",
       "invoice_number_duplicate" => "Số hóa đơn :invoice bị trùng!",
       "account_negative" => "Tài khoản :account âm !",
+      "code_negative" => "Mã :code âm trong kho !",
       "connect_success"=>"Kết nối thành công !",
       "connect_fail"=>"Kết nối thất bại !",
       "bank_transfer_is_duplicated"=>"Ngân hàng chuyển nội bộ bị trùng !",

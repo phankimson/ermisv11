@@ -129,6 +129,7 @@ return [
   "please_select_line_choose" => "Please select line choose !",
   "invoice_number_duplicate" => "Invoice number :invoice duplicate !",
   "account_negative" => "Account :account negative !",
+  "code_negative" => "Code :code negative in stock !",
   "connect_success"=>"Connect success !",
   "connect_fail"=>"Connect fail !",
   "bank_transfer_is_duplicated"=>"Bank transfer is duplicated !",

@@ -58,7 +58,7 @@
                             };
             Ermis.columns    =   [{ "field" : "id",hidden: true },
                                 { "field" : "item_code","title" : "@lang('acc_voucher.item_code') " ,"width" : "100px" },
-                                { "field" : "item_name","title" : "@lang('acc_voucher.item_name') " ,"width" : "200px" ,aggregates: ['count'], footerTemplate: "<p>Total Count: #=count#</p>" },
+                                { "field" : "item_name","title" : "@lang('acc_voucher.item_name') " ,"width" : "200px" ,aggregates: ['count'], footerTemplate: "<p>@lang('acc_voucher.total_count'): #=count#</p>" },
                                 { "field" : "unit","title" : "@lang('acc_voucher.unit') " ,"width" : "100px" },
                                 { "field" : "stock","title" : "@lang('acc_voucher.stock') " ,"width" : "100px" },
                                 { "field" : "quantity","title" : "@lang('acc_voucher.quantity') " ,"width" : "150px", template: '#= FormatNumberDecimal(quantity,{{$decimal}}) #' ,aggregates: ['sum'] , footerTemplate:"#= FormatNumberDecimal(sum,{{$decimal}}) #"},
