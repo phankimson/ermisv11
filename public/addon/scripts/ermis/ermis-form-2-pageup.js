@@ -131,8 +131,6 @@ var Ermis = function () {
             jQuery('input,textarea').removeClass('disabled');
             jQuery('.k-button').removeClass('disabled');
             jQuery('input:checkbox').parent().removeClass('disabled');
-            jQuery('input').not('[type=radio]').val("");
-            jQuery('textarea').val("");
             SetDataDefault(data.columns);
             jQuery('.load').click();
             ErmisDisableKendoDroplist(null,data.columns);
@@ -157,8 +155,6 @@ var Ermis = function () {
         } else if (flag === 4) {//Cancel, Save
             $kGrid.removeClass('disabled');
             $kGrid.find('tr.k-state-selected').removeClass('k-state-selected');
-            jQuery('input').not('[type=radio]').val("");
-            jQuery('textarea').val("");
             SetDataDefault(data.columns);
             jQuery(Ermis.image_upload+'_preview').attr('src',UrlString('addon/img/placehold/100.png'));
             jQuery('.k-select,.k-datepicker').addClass('disabled');

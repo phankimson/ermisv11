@@ -630,7 +630,7 @@ function SetDataDefault(columns){
       if (col.key === 'select' && classes == "droplist" ) {       
         jQuery('.'+classes+'[name="' + col.field + '"]').data('kendoDropDownList').value("0");
       } else if (col.key === 'select' && classes == "multiselect") {
-          jQuery('.'+classes+'[name="' + col.field + '"]').data('kendoMultiSelect').value("");
+          jQuery('.'+classes+'[name="' + col.field + '"]').data('kendoMultiSelect').value([]);
       } else if (col.key === 'checkbox') {
           var a = jQuery('input[name="' + col.field + '"]');
           var value = jQuery('input[name="' + col.field + '"]').attr("data-value");
@@ -650,8 +650,14 @@ function SetDataDefault(columns){
           jQuery('input[name="' + col.field + '"]').attr("checked", "checked");
       } else if (col.addoption === 'true') {
           jQuery('#droplist-validation_listbox .k-item').removeClass('disabled k-state-disabled');
-      }else if (col.key === 'textarea' && jQuery('textarea[name = ' + col.field + ']').hasClass("editor")) {
+      }else if (col.key === 'textarea') {
+        if(jQuery('textarea[name = ' + col.field + ']').hasClass("editor")){
               jQuery('textarea[name="' + col.field + '"]').data('kendoEditor').value("");
+        }else{
+              jQuery('textarea[name="' + col.field + '"]').val("");
+        }
+      }else if(col.key == 'text' && col.type == 'string'){
+          jQuery('input[name="' + col.field + '"]').val("");
       }
   });
 }
