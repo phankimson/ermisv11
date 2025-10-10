@@ -589,7 +589,6 @@ function SetDataAjax(data, dataItem){
               }
             } else {
               if(classes == 'multiselect'){
-                jQuery('.'+classes+'[name="' + col.field + '"]').data('kendoMultiSelect').value([]);
                 if( (v != null && v != "") || (Array.isArray(v) && v.length == 0)){
                   if(col.type == "arr"){                    
                     jQuery('.'+classes+'[name="' + col.field + '"]').data('kendoMultiSelect').value(v);

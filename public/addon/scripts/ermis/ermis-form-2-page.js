@@ -157,6 +157,7 @@ var Ermis = function () {
             $kGrid.find('tr.k-state-selected').removeClass('k-state-selected');
             jQuery('input').not('[type=radio]').val("");
             jQuery('textarea').val("");
+            jQuery('.multiselect').data('kendoMultiSelect').value([]);
             SetDataDefault(data.columns);
             jQuery('.k-select,.k-datepicker').addClass('disabled');
             jQuery('.number-price,.number').addClass('disabled');
