@@ -21,7 +21,7 @@ class AccSuppliesGoodsType extends Model
       }
 
       static public function get_filter($filter) {
-        $result = AccSuppliesGoodsType::where('filter',$filter)->first();       
+        $result = AccSuppliesGoodsType::where('filter',$filter)->orderBy('created_at','desc')->first();       
         return $result;
       }
    

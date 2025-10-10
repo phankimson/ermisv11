@@ -35,7 +35,7 @@
 
 @section('content_add')
 <div class="uk-width-medium-4-4 search-table-outter">
-    @include('action.content_3',['voucher'=>$voucher,'menu'=>$menu , 'change'=>'credit'])
+    @include('action.content_8',['voucher'=>$voucher,'menu'=>$menu , 'change'=>'credit'])
 </div>
 @endsection
 
@@ -127,10 +127,11 @@
                                                 {"field" : "total_amount","title" :  "@lang('acc_voucher.total_amount')" ,template: '#= FormatNumberDecimal(total_amount, {{$decimal}} )#' } ];
 
         Ermis.columns_barcode = [{title: 'Select All',headerTemplate: '<input type="checkbox" id="header-chb-barcode" class="k-checkbox barcode"><label class="k-checkbox-label" for="header-chb-barcode"></label>',template: function(dataItem){return '<input type="checkbox" id="'+ dataItem.id+'" class="k-checkbox barcode"><label class="k-checkbox-label" for="'+ dataItem.id +'"></label>'},width: 80},
-                                                {"field" : "date_voucher","title" : "@lang('acc_voucher.date_voucher')" },
-                                                {"field" : "voucher","title" : "@lang('acc_voucher.voucher')" },
-                                                {"field" : "description","title" : "@lang('acc_voucher.description')" },
-                                                {"field" : "subject","title" :  "@lang('acc_voucher.subject')" } ]
+                                                {"field" : "code","title" : "@lang('acc_supplies_goods.code')" },
+                                                {"field" : "name","title" : "@lang('acc_supplies_goods.name')" },
+                                                {"field" : "unit","title" : "@lang('acc_supplies_goods.unit')" },
+                                                {"field" : "price","title" :  "@lang('acc_supplies_goods.price')" ,format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" },
+                                                {"field" : "price_purchase", "title" : "@lang('acc_supplies_goods.price_purchase')" ,format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" } ];
 
         Ermis.columns    = [{"field" :"id", hidden : true},
                             { "field" : "item_code","title" :"@lang('acc_voucher.item_code')","url" : "{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.supplies-goods')}}" ,editor: ItemsReadDropDownEditor , "select" : "OnchangeCancel" ,template : "#=getUrlAjaxItemName(item_code,'item_code')#","width" : "150px" ,"set" : "5" },
@@ -163,6 +164,7 @@
             quantity:     {field : "quantity",type:"number" , defaultValue : 0 , validation: { min: 1, required: true }},
             price:     {field : "price",type:"number",validation: { min: 0, required: true }},
             amount:     {field : "amount",type:"number" , defaultValue : 0 , validation: { min: 1, required: true }},
+            unit: { field : "unit", defaultValue: DefaultReadValueField() },
             case_code: { field : "case_code", defaultValue: DefaultReadValueField() },
             cost_code: { field : "cost_code", defaultValue: DefaultReadValueField() },
             statistical_code: { field : "statistical_code", defaultValue: DefaultReadValueField() },
@@ -196,5 +198,5 @@
 <script>kendo.culture('en-DE')</script>
 @endif
 <script src="{{ url('addon/scripts/ermis/ermis-form-global-detail.js') }}"></script>
-<script src="{{ url('addon/scripts/ermis/ermis-form-4-detail-dom-file.js') }}"></script>
+<script src="{{ url('addon/scripts/ermis/ermis-form-4-detail-stock.js') }}"></script>
 @endsection

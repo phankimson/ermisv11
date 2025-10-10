@@ -17,6 +17,7 @@ use App\Http\Model\AccNumberVoucher;
 use App\Http\Model\AccPrintTemplate;
 use App\Http\Model\Error;
 use App\Http\Model\AccObjectType;
+use App\Http\Model\AccSuppliesGoodsType;
 use App\Http\Resources\InventoryIssueGeneralReadResource;
 use App\Http\Model\Imports\AccBankPaymentGeneralImport;
 use App\Http\Model\Imports\AccBankPaymentVoucherImport;
@@ -46,7 +47,7 @@ class AccInventoryIssueVoucherController extends Controller
   public function __construct(Request $request)
  {
      $this->url =  $request->segment(3);
-     $this->group = 6; // 4 Nhóm chi ngân hàng
+     $this->group = 6; // 6 Nhóm xuất kho
      $this->type_object = 1; // 1 Nhà cung cấp (VD : 2,3 nếu nhiều đối tượng)
      $this->key = "inventory-issue-voucher";
      $this->menu = Menu::where('code', '=', $this->key)->first();
@@ -135,7 +136,7 @@ class AccInventoryIssueVoucherController extends Controller
           $general->reference = $arr->reference;
           $general->total_quantity = $arr->total_quantity;
           $general->total_amount = $arr->total_amount;
-          $general->total_amount_rate = $arr->total_amount;
+          $general->total_amount_rate = $arr->total_amount * $arr->rate;
           $general->status = 1;
           $general->active = 1;
           $general->group = $this->group;
@@ -187,7 +188,7 @@ class AccInventoryIssueVoucherController extends Controller
              $detail->debit = $d->debit->value;  // Đổi từ id value dạng read
              $detail->credit = $d->credit->value;  // Đổi từ id value dạng read
              $detail->amount = $d->amount;
-             $detail->amount_rate = $d->amount;
+             $detail->amount_rate = $d->amount * $arr->rate;
              $detail->accounted_fast = $d->accounted_fast->value;  // Đổi từ id value dạng read
              $detail->department = $d->department->value; // Đổi từ id value dạng read
              $detail->case_code = $d->case_code->value;  // Đổi từ id value dạng read

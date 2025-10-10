@@ -1,5 +1,5 @@
 var Ermis = function() {
-
+    // Bank Transfer
     var initGetShortKey = function() {
         return key = Ermis.short_key;
     };

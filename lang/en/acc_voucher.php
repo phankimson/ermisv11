@@ -94,4 +94,7 @@ return [
     "stock" => "Stock",
     "price" => "Price",
     "expiry_date" => "Expiry date",
+    "exporter"=>"Exporter",
+    "importer"=>"Importer",
+    "barcode"=>"Barcode",
 ];

@@ -1359,6 +1359,42 @@ Route::group([
   Route::any('/entry-general-voucher-import', 'import')->name('-import');
   });
 
+  // Inventory Issue Detail - Phiếu xuất kho chi tiết
+  Route::group([
+    'as' => 'inventory-issue-voucher',
+    'controller' => AccInventoryIssueVoucherController::class
+  ],function () {
+  Route::get('/inventory-issue-voucher', 'show' )->name('');
+  Route::post('/inventory-issue-voucher-save', 'save' )->name('-save');
+  Route::post('/inventory-issue-voucher-bind', 'bind' )->name('-bind');
+  Route::get('/inventory-issue-voucher-DownloadExcel', 'DownloadExcel' )->name('-DownloadExcel');
+  Route::any('/inventory-issue-voucher-import', 'import')->name('-import');
+  });
+
+  // Inventory Receipt Detail - Phiếu nhập kho chi tiết
+  Route::group([
+    'as' => 'inventory-receipt-voucher',
+    'controller' => AccInventoryIssueVoucherController::class
+  ],function () {
+  Route::get('/inventory-receipt-voucher', 'show' )->name('');
+  Route::post('/inventory-receipt-voucher-save', 'save' )->name('-save');
+  Route::post('/inventory-receipt-voucher-bind', 'bind' )->name('-bind');
+  Route::get('/inventory-receipt-voucher-DownloadExcel', 'DownloadExcel' )->name('-DownloadExcel');
+  Route::any('/inventory-receipt-voucher-import', 'import')->name('-import');
+  });
+
+  // Inventory Transfer - Phiếu chuyển kho
+  Route::group([
+    'as' => 'inventory-transfer-voucher',
+    'controller' => AccInventoryIssueVoucherController::class
+  ],function () {
+  Route::get('/inventory-transfer-voucher', 'show' )->name('');
+  Route::post('/inventory-transfer-voucher-save', 'save' )->name('-save');
+  Route::post('/inventory-transfer-voucher-bind', 'bind' )->name('-bind');
+  Route::get('/inventory-transfer-voucher-DownloadExcel', 'DownloadExcel' )->name('-DownloadExcel');
+  Route::any('/inventory-transfer-voucher-import', 'import')->name('-import');
+  });
+
   // Receipt Cash Detail Voucher -  Phiếu thu tiền chi tiết
   Route::group([
     'as' => 'cash-receipts-voucher',
@@ -1468,6 +1504,55 @@ Route::group([
   Route::post('/entry-general-voucher-reference', 'reference' )->name('-reference');
   Route::post('/entry-general-voucher-voucher-change', 'voucher_change' )->name('-voucher-change');
   Route::post('/entry-general-voucher-load-voucher-change', 'load_voucher_change' )->name('-load-voucher-change');
+  });
+
+  // Inventory issue Voucher -  Phiếu xuất kho chi tiết
+  Route::group([
+    'as' => 'inventory-issue-voucher',
+    'controller' => AccVoucherController::class
+  ],function () {
+  Route::post('/inventory-issue-voucher-get', 'get' )->name('-get');
+  Route::post('/inventory-issue-voucher-auto', 'auto' )->name('-auto');
+  Route::post('/inventory-issue-voucher-ai', 'ai' )->name('-ai');
+  Route::post('/inventory-issue-voucher-currency', 'currency' )->name('-currency');
+  Route::post('/inventory-issue-voucher-reference', 'reference' )->name('-reference');
+  Route::post('/inventory-issue-voucher-voucher-change', 'voucher_change' )->name('-voucher-change');
+  Route::post('/inventory-issue-voucher-load-voucher-change', 'load_voucher_change' )->name('-load-voucher-change');
+  // Tìm vật tư hàng hóa
+  Route::post('/inventory-issue-voucher-load', 'load' )->name('-load');
+  });
+
+
+  // Inventory Receipt Voucher -  Phiếu nhập kho chi tiết
+  Route::group([
+    'as' => 'inventory-receipt-voucher',
+    'controller' => AccVoucherController::class
+  ],function () {
+  Route::post('/inventory-receipt-voucher-get', 'get' )->name('-get');
+  Route::post('/inventory-receipt-voucher-auto', 'auto' )->name('-auto');
+  Route::post('/inventory-receipt-voucher-ai', 'ai' )->name('-ai');
+  Route::post('/inventory-receipt-voucher-currency', 'currency' )->name('-currency');
+  Route::post('/inventory-receipt-voucher-reference', 'reference' )->name('-reference');
+  Route::post('/inventory-receipt-voucher-voucher-change', 'voucher_change' )->name('-voucher-change');
+  Route::post('/inventory-receipt-voucher-load-voucher-change', 'load_voucher_change' )->name('-load-voucher-change');
+    // Tìm vật tư hàng hóa
+  Route::post('/inventory-receipt-voucher-load', 'load' )->name('-load');
+  });
+
+   // Inventory Transfer Voucher -  Phiếu chuyển kho chi tiết
+  Route::group([
+    'as' => 'inventory-transfer-voucher',
+    'controller' => AccVoucherController::class
+  ],function () {
+  Route::post('/inventory-transfer-voucher-get', 'get' )->name('-get');
+  Route::post('/inventory-transfer-voucher-auto', 'auto' )->name('-auto');
+  Route::post('/inventory-transfer-voucher-ai', 'ai' )->name('-ai');
+  Route::post('/inventory-transfer-voucher-currency', 'currency' )->name('-currency');
+  Route::post('/inventory-transfer-voucher-reference', 'reference' )->name('-reference');
+  Route::post('/inventory-transfer-voucher-voucher-change', 'voucher_change' )->name('-voucher-change');
+  Route::post('/inventory-transfer-voucher-load-voucher-change', 'load_voucher_change' )->name('-load-voucher-change');
+  // Tìm vật tư hàng hóa
+  Route::post('/inventory-receipt-voucher-load', 'load' )->name('-load');
   });
 
   // Receipt Cash Detail By Invoice - Phiếu thu tiền theo hóa đơn

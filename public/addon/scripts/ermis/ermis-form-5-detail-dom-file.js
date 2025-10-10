@@ -1,5 +1,5 @@
 var Ermis = function() {
-
+    // Payment Receipt by invoice
     var initGetShortKey = function() {
         return key = Ermis.short_key;
     };

@@ -18,6 +18,7 @@ use App\Http\Resources\AccountedAutoListResource;
 use App\Http\Resources\AccountedFastDropDownListResource;
 use App\Http\Model\AccObject;
 use App\Http\Model\AccBankAccount;
+use App\Http\Model\AccSuppliesGoods;
 use App\Http\Model\KeyAi;
 use App\Http\Model\Error;
 use App\Classes\Convert;
@@ -331,6 +332,33 @@ class AccVoucherController extends Controller
         }
       if($req && $data->count()>0 ){
         return response()->json(['status'=>true,'data'=> $data->rate]);
+      }else{
+        return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
+      }
+     }catch(Exception $e){
+        // Lưu lỗi
+        $err = new Error();
+        $err ->create([
+          'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
+          'user_id' => Auth::id(),
+          'menu_id' => $this->menu->id,
+          'error' => $e->getMessage().' - Line '.$e->getLine(),
+          'url'  => $this->url,
+          'check' => 0 ]);
+        return response()->json(['status'=>false,'message'=> trans('messages.error').' '.$e->getMessage().' - Line '.$e->getLine()]);
+      }
+  }
+
+  public function load(Request $request){
+    $type = 10;
+    try{
+      $req = json_decode($request->data);
+      $data = AccSuppliesGoods::get_type_field($req->filter_type_barcode,$req->filter_field_barcode,$req->filter_value_barcode);
+      if(!$data){
+          return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
+        }
+      if($req && $data->count()>0 ){
+        return response()->json(['status'=>true,'data'=> $data]);
       }else{
         return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
       }

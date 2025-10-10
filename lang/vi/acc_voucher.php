@@ -94,4 +94,7 @@ return [
     "stock" => "Kho",
     "price" => "Giá bán",
     "expiry_date" => "Hạn sử dụng",
+    "exporter"=>"Người xuất",
+    "importer"=>"Người nhập",
+    "barcode"=>"Mã vạch",
 ];

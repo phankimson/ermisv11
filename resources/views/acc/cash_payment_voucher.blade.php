@@ -129,10 +129,11 @@
                                                 {"field" : "total_amount","title" :  "@lang('acc_voucher.total_amount')" ,template: '#= FormatNumberDecimal(total_amount, {{$decimal}} )#' } ];
 
         Ermis.columns_barcode = [{title: 'Select All',headerTemplate: '<input type="checkbox" id="header-chb-barcode" class="k-checkbox barcode"><label class="k-checkbox-label" for="header-chb-barcode"></label>',template: function(dataItem){return '<input type="checkbox" id="'+ dataItem.id+'" class="k-checkbox barcode"><label class="k-checkbox-label" for="'+ dataItem.id +'"></label>'},width: 80},
-                                                {"field" : "date_voucher","title" : "@lang('acc_voucher.date_voucher')" },
-                                                {"field" : "voucher","title" : "@lang('acc_voucher.voucher')" },
-                                                {"field" : "description","title" : "@lang('acc_voucher.description')" },
-                                                {"field" : "subject","title" :  "@lang('acc_voucher.subject')" } ]
+                                                {"field" : "code","title" : "@lang('acc_supplies_goods.code')" },
+                                                {"field" : "name","title" : "@lang('acc_supplies_goods.name')" },
+                                                {"field" : "unit","title" : "@lang('acc_supplies_goods.unit')" },
+                                                {"field" : "price","title" :  "@lang('acc_supplies_goods.price')" ,format: "{0:n0}" ,decimals: 0 },
+                                                {"field" : "price_purchase","title" : "@lang('acc_supplies_goods.price_purchase')" ,format: "{0:n0}" ,decimals: 0 } ];
 
         Ermis.column_grid = [{ "field" : "id",hidden: true },
                             { "field" : "date_invoice","title" : "@lang('acc_voucher.date_invoice')", type:"date" ,editor : DatePickerEditor ,template: '#= FormatDate(date_invoice) #' ,width : '150px'},

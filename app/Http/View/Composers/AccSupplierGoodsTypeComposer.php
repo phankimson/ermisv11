@@ -23,7 +23,7 @@ class AccSupplierGoodsTypeComposer
     public function __construct()
     {
         // Dependencies automatically resolved by service container...
-        $t = AccSuppliesGoodsType::active()->get();
+        $t = AccSuppliesGoodsType::active()->orderBy('created_at','asc')->get();
         $this->type = $t;
     }
 
