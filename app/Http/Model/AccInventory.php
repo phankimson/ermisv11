@@ -56,5 +56,9 @@ class AccInventory extends Model
         $result = AccInventory::where('detail_id',$id)->first();
         return $result;
       }
+
+       public function detail() {
+        return $this->hasOne(AccDetail::class,'detail_id','id');
+       }
     
 }
