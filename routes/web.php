@@ -1520,6 +1520,7 @@ Route::group([
   Route::post('/inventory-issue-voucher-load-voucher-change', 'load_voucher_change' )->name('-load-voucher-change');
   // Tìm vật tư hàng hóa
   Route::post('/inventory-issue-voucher-load', 'load' )->name('-load');
+
   });
 
 

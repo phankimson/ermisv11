@@ -1785,6 +1785,36 @@ function DefaultValueField(){
           })
    }
 
+   ItemsReadMultiDropDownEditor = function (container, options) {
+    var c  = findObjectByKey($kGridTab_column,"field",options.field);
+    jQuery('<input required id="' + options.field + '" data-url="'+c.url+'"  class="dropdown-list-ajax" name="' + options.field + '"/>')
+           .appendTo(container)
+           .kendoDropDownList({
+             filter: "contains",
+             dataTextField: "text",
+             dataValueField: "value",
+             template: `<table>
+													<tr class="combo-tr">
+														<td class="combo-hd-td">#: data.text #</td>
+														<td class="combo-hd-td">#: data.description #</td>
+		  										</tr>
+		  								</table>`,
+             autoBind: true,
+             select: eval(c.select), // PriItems :Onchange , SleItems : OnchangeCancel , Items : OnchangeItem , Group : OnchangeGroup
+             filter: "contains",  
+             dataBound: OnDataBoundDropDownEditor,         
+              dataSource: {
+                        transport: {
+                            dataType: 'jsonp',
+                            read: {
+                                url:  c.url,
+                                cache: false
+                            }                          
+                        }
+                }
+         })
+  }
+
    ItemsReadDropDownEditor = function (container, options) {
     var c  = findObjectByKey($kGridTab_column,"field",options.field);
     jQuery('<input required id="' + options.field + '" data-url="'+c.url+'"  class="dropdown-list-ajax" name="' + options.field + '"/>')

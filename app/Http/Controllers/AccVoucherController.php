@@ -18,6 +18,7 @@ use App\Http\Resources\AccountedAutoListResource;
 use App\Http\Resources\AccountedFastDropDownListResource;
 use App\Http\Model\AccObject;
 use App\Http\Model\AccBankAccount;
+use App\Http\Model\AccStock;
 use App\Http\Model\AccSuppliesGoods;
 use App\Http\Model\KeyAi;
 use App\Http\Model\Error;
@@ -353,7 +354,7 @@ class AccVoucherController extends Controller
     $type = 10;
     try{
       $req = json_decode($request->data);
-      $data = AccSuppliesGoods::get_type_field($req->filter_type_barcode,$req->filter_field_barcode,$req->filter_value_barcode);
+      $data = AccSuppliesGoods::get_type_field($req->filter_type_barcode,$req->filter_field_barcode,$req->filter_value_barcode,$req->stock);
       if(!$data){
           return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
         }

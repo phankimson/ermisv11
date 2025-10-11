@@ -139,4 +139,5 @@ return [
   "debit_and_credit_amount_not_correct"=>"Debit and credit amount not correct !",
   "account_details_do_not_match_balance_sheet"=>"Account details :account do not match balance sheet !",
   "amount_cannot_be_zero"=>"Account details :account amount cannot be zero !",
+  "please_select_stock" => "Please select stock !",
 ];

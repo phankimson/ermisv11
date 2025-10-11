@@ -29,7 +29,7 @@
     <tr>
        <td class="row-label-responsive"><label>@lang('acc_voucher.stock')</label></td>
         <td colspan="2">
-            <select class="droplist read large xxlarge stock" name="bank_account"  data-type="string" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.stock')}}" data-change="{{ $change ?? '' }}">
+            <select class="droplist read large xxlarge stock" name="stock"  data-type="string" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.stock')}}" data-change="{{ $change ?? '' }}">
                 <option readonly selected value="0">--Select--</option>
                           
             </select>            

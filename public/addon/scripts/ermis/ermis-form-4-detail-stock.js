@@ -791,38 +791,23 @@ var Ermis = function() {
         $rate.on("change", OnChangeRate);
     }   
 
-    var initChangeBank = function(){
-        function OnChangeBank(e){
+    var initChangeStock = function(){
+        function OnChangeStock(e){
             var arr = {};
             var value = this.value;
             arr["value"] = value;
             arr["text"] = jQuery(this).find("option:selected").text();
+            $stock_val = value;
             var column_change = jQuery(e.target).attr("data-change");
-            if(value && value != "0"){
-                var postdata = {
-                    data: JSON.stringify(value)
-                };
-            ErmisTemplateAjaxPost0(e, postdata, Ermis.link + '-change-bank',
-            function(result) {
-                // Set giá trị default
-                dataDefaultGrid.data[column_change]["value"] = result.data.value;
-                dataDefaultGrid.data[column_change]["text"] = result.data.text;
-                dataDefaultGrid.data["bank_account"] = arr; 
-                // Chạy lại giá trị grid
-                    var grid = $kGrid.data("kendoGrid");
-                    var r = grid.dataSource.data();
-                    jQuery.each(r, function(l, k) {
-                            initLoadDropdownGrid(k,column_change,"value","text",result.data);
-                            initLoadDropdownGrid(k,"bank_account","value","text",arr);
-                    });  
-            },
-            function() {
-
-            });      
-            }            
+            var grid = $kGrid.data("kendoGrid");
+            var r = grid.dataSource.data();
+            jQuery.each(r, function(l, k) {
+                initLoadDropdownGrid(k,"stock","value","text",arr);
+            });
+            dataDefaultGrid.data["stock"] = arr;      
         }
-        if($bank){
-        $bank.bind("change", OnChangeBank);  
+        if($stock){
+            $stock.bind("change", OnChangeStock);  
         }      
     }
 
@@ -852,14 +837,20 @@ var Ermis = function() {
         jQuery('#search_barcode').on('click', function(e) {
             var filter = GetAllDataForm('#form-window-barcode', 2);
             var c = GetDataAjax(filter.columns, filter.elem);
-            var postdata = {
-                data: JSON.stringify(c.obj)
-            };
-            ErmisTemplateAjaxPost0(e, postdata, Ermis.link + '-load', function(result) {
-                ErmisKendoGridAddData($kGridBarcode,result.data,Ermis.page_size_1,null);
-            }, function(result) {
-                kendo.alert(result.message);
-            });
+            if($stock_val != ""){
+                c.obj.stock = $stock_val;
+                var postdata = {
+                    data: JSON.stringify(c.obj)
+                };
+                ErmisTemplateAjaxPost0(e, postdata, Ermis.link + '-load', function(result) {
+                    ErmisKendoGridAddData($kGridBarcode,result.data,Ermis.page_size_1,null);
+                }, function(result) {
+                    kendo.alert(result.message);
+                });
+            }else{
+                kendo.alert(Lang.get('messages.please_select_stock') );
+            }
+          
         });
     };
 
@@ -1394,7 +1385,7 @@ var Ermis = function() {
             initBindData();
             initGetStoredArrId();
             initChangeCurrency();
-            initChangeBank();
+            initChangeStock();
             initVoucherChange();
         }
 

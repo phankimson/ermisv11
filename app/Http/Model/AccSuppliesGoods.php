@@ -92,14 +92,20 @@ class AccSuppliesGoods extends Model
         return $result;
       }
 
-      static public function get_type_field($type,$field,$value) {
+      static public function get_type_field($type,$field,$value,$stock) {
         if($field !="" && $value !=""){
           $result = AccSuppliesGoods::where('supplies_goods.type',$type)->where('supplies_goods.'.$field,$value)
-          ->leftJoin('unit', 'supplies_goods.unit_id', '=', 'unit.id')->orderBy('supplies_goods.created_at','asc')
+          ->leftJoin('unit', 'supplies_goods.unit_id', '=', 'unit.id')
+          ->join('stock_check', 'stock_check.supplies_goods', '=', 'supplies_goods.id')
+          ->where('stock_check.stock',$stock)
+          ->orderBy('supplies_goods.created_at','asc')
           ->get(['supplies_goods.*','unit.name as unit']);
         }else{
           $result = AccSuppliesGoods::where('supplies_goods.type',$type)
-          ->leftJoin('unit', 'supplies_goods.unit_id', '=', 'unit.id')->orderBy('supplies_goods.created_at','asc')
+          ->leftJoin('unit', 'supplies_goods.unit_id', '=', 'unit.id')
+          ->join('stock_check', 'stock_check.supplies_goods', '=', 'supplies_goods.id')
+          ->where('stock_check.stock',$stock)
+          ->orderBy('supplies_goods.created_at','asc')
           ->get(['supplies_goods.*','unit.name as unit']);
         }        
         return $result;
