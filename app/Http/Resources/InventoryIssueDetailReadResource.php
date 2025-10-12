@@ -19,7 +19,7 @@ class InventoryIssueDetailReadResource extends JsonResource
         return [
             'id' => $this->id,
             'item_id' => $this->item_id,
-            'item_code' => $this->item_code,
+            'item_code' => !$this->item_id ? DefaultDropDownResource::make("") : ObjectDropDownResource::make($this->item()->first()),
             'item_name' => $this->item_name,
             'currency' => $this->currency,
             'debit' => LangDropDownResource::make($this->debit()->first()),

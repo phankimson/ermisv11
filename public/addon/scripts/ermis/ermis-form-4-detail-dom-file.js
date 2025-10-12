@@ -275,39 +275,6 @@ var Ermis = function() {
       };
     }
 
-    var initScanBarcode = function(e) {
-        var obj = {};
-        var $this = e.currentTarget ? e.currentTarget : e
-        obj.value = jQuery($this).val();
-        if (obj.value) {
-            obj.id = sessionStorage.dataId;
-            var postdata = {
-                data: JSON.stringify(obj)
-            };
-            ErmisTemplateAjaxPost0(e, postdata, Ermis.link + '-scan', function(result) {
-                var i = result.data;
-                var grid = $kGrid.data("kendoGrid");
-                var dataItem = grid.dataSource.get(i.id);
-                if (dataItem) {
-                    var row = grid.tbody.find("tr[data-uid='" + dataItem.uid + "']");
-                    var selectedItem = grid.dataItem(row);
-                    selectedItem.set("quantity", dataItem.quantity + 1);
-                } else {
-                    i.quantity = 1;
-                    grid.dataSource.insert(0, i);
-                }
-
-                setTimeout(function() {
-                    jQuery($this).val("");
-                    jQuery($this).focus();
-                }, 1);
-            }, function(result) {
-                kendo.alert(result.message);
-            });
-
-        }
-    }
-
     var initKendoGridVatChange = function() {
         var gridVat = $kGridVat.data("kendoGrid");
         gridVat.dataSource.bind("change", function(e) {
@@ -360,81 +327,56 @@ var Ermis = function() {
          //grid.refresh();
     }
 
-    var initKendoGridBarcode = function() {
-        var grid = $kGridBarcode.kendoGrid({
-            dataSource: {
-                data: []
-            },
-            selectable: "multiple, row",
-            height: jQuery(window).height() * 0.5,
-            sortable: true,
-            pageable: true,
-            filterable: true,
-            columns: Ermis.columns_barcode
-        }).data("kendoGrid");
-        grid.thead.kendoTooltip({
-            filter: "th",
-            content: function(e) {
-                var target = e.target; // element for which the tooltip is shown
-                return $(target).text();
-            }
-        });
-
-        grid.table.on("click", ".k-checkbox", selectRow);
-        //bind click event to the checkbox
-        //grid.table.on("click", ".k-checkbox" , selectRow);
-        jQuery('#header-chb-b').change(function(ev) {
-            var checked = ev.target.checked;
-            $kGridBarcode.find('.k-checkbox').not("#header-chb-b").each(function(idx, item) {
-                  if (checked) {
-                      if (!$(item).is(':checked')) {
-                          $(item).click();
-                      }
-                  } else {
-                      if ($(item).is(':checked')) {
-                          $(item).click();
-                      }
-                  }
+    var initScanBarcode = function(e) {
+        var obj = {};
+        var $this = e.currentTarget ? e.currentTarget : e
+        obj.value = jQuery($this).val();
+        if (obj.value) {
+            obj.id = sessionStorage.dataId;
+            var postdata = {
+                data: JSON.stringify(obj)
+            };
+            ErmisTemplateAjaxPost0(e, postdata, Ermis.link + '-scan', function(result) {
+                var i = result.data;
+                var grid = $kGrid.data("kendoGrid");
+                initLoadBarcode(grid,i);
+                setTimeout(function() {
+                    jQuery($this).val("");
+                    jQuery($this).focus();
+                }, 1);
+            }, function(result) {
+                kendo.alert(result.message);
             });
 
-        });
-
-        jQuery(".choose_barcode").bind("click", function() {
-            var checked = [];
-            for (var i of checkedData) {
-                var grid = $kGrid.data("kendoGrid");
-                var dataItem = grid.dataSource.get(i.id);
-                if (dataItem) {
-                    var row = grid.tbody.find("tr[data-uid='" + dataItem.uid + "']");
-                    var selectedItem = grid.dataItem(row);
-                    selectedItem.set("quantity", dataItem.quantity + 1);
-                } else {
-                    i.quantity = 1;
-                    grid.dataSource.insert(0, i);
-                    $kGridBarcode.find('.k-checkbox[id="' + i.id + '"]').click();
-                }
-            }
-            $kWindow1.close();
-            checkedData = [];
-        });
-        var checkedData = [];
-
-        //on click of the checkbox:
-        function selectRow() {
-            var checked = this.checked,
-                row = $(this).closest("tr"),
-                grid = $kGridBarcode.data("kendoGrid"),
-                dataItem = grid.dataItem(row);
-            if (checked) {
-                checkedData.push(dataItem)
-                //-select the row
-                row.addClass("k-state-selected");
-            } else {
-                checkedData = checkedData.filter(x => x.id != dataItem.id)
-                //-remove selection
-                row.removeClass("k-state-selected");
-            }
         }
+    }    
+
+    var initLoadBarcode = function(grid,item){
+        var data = grid.dataSource.data();
+        var dataItem = null;
+            $.each(data, function(idx, record) {
+                if (record.item_code.value === item.id) {
+                    dataItem = record;
+                    return false; // Exit loop
+                }
+            });        
+        if (dataItem) {
+            dataItem.set("quantity", dataItem.quantity + 1);
+        } else {
+            item.quantity = 1;
+            grid.dataSource.insert(0, item);
+        }
+    }
+
+    var initKendoGridBarcode = function() {
+         ErmisKendoGridCheckboxTemplate($kGridBarcode, [] , jQuery(window).height() * 0.5,Ermis.page_size_1, "multiple, row", "barcode","id", Ermis.columns_barcode, function(checkedIds) {              
+                 for (var i of checkedIds) {
+                   var grid = $kGrid.data("kendoGrid");
+                   initLoadBarcode(grid,i);
+                   // $kGridBarcode.find('.k-checkbox[id="' + i.id + '"]').click();
+                 }                
+            $kWindow1.close();
+        });        
         jQuery("#barcode").on("blur", initScanBarcode)
 
     };

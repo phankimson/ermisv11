@@ -92,12 +92,13 @@ class AccSuppliesGoods extends Model
         return $result;
       }
 
-      static public function get_type_field($type,$field,$value,$stock) {
+      static public function get_type_field($type,$field,$value,$stock,$account_default = null) {
         if($field !="" && $value !=""){
           $result = AccSuppliesGoods::where('supplies_goods.type',$type)->where('supplies_goods.'.$field,$value)
           ->leftJoin('unit', 'supplies_goods.unit_id', '=', 'unit.id')
           ->join('stock_check', 'stock_check.supplies_goods', '=', 'supplies_goods.id')
           ->where('stock_check.stock',$stock)
+          ->where('stock_check.type',$account_default)
           ->orderBy('supplies_goods.created_at','asc')
           ->get(['supplies_goods.*','unit.name as unit']);
         }else{
@@ -105,6 +106,7 @@ class AccSuppliesGoods extends Model
           ->leftJoin('unit', 'supplies_goods.unit_id', '=', 'unit.id')
           ->join('stock_check', 'stock_check.supplies_goods', '=', 'supplies_goods.id')
           ->where('stock_check.stock',$stock)
+          ->where('stock_check.type',$account_default)
           ->orderBy('supplies_goods.created_at','asc')
           ->get(['supplies_goods.*','unit.name as unit']);
         }        

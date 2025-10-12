@@ -108,7 +108,7 @@
         <td><label>@lang('global.code')</label></td>
         <td colspan="2">
           <span class="k-textbox k-space-right xxlarge">
-                <input type="text" class="no_copy" name="barcode"/>
+                <input type="text" id="barcode" class="no_copy" name="barcode"/>
                 <a href="javascript:;" style="right : 10px"  class="k-icon k-i-filter barcode">&nbsp;</a>
             </span> 
         </td>

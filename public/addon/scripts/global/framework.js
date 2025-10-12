@@ -1620,6 +1620,16 @@ function calculateTotalRateAggregate(decimal) {
       return kendo.toString(total, 'n'+decimal);
 };
 
+function calculateTotalPriceAggregate(decimal) {
+    var grid = $kGrid.data("kendoGrid");
+    var data = grid.dataSource.data();
+    var total = 0;
+    for (var i = 0; i < data.length; i++) {
+      total += data[i].quantity * data[i].price ;
+    }
+      return kendo.toString(total, 'n'+decimal);
+};
+
 function calculateTotalRatePaymentAggregate(decimal) {
   var grid = $kGrid.data("kendoGrid");
   var data = grid.dataSource.data();

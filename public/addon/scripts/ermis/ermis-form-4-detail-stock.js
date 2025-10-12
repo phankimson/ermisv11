@@ -248,6 +248,27 @@ var Ermis = function() {
           $kGridTab = $kGrid;
           $kGridTab_column = Ermis.columns;
       } ;
+    }  
+
+    var initKendoGridChange = function() {
+        var grid = $kGrid.data("kendoGrid");
+        grid.dataSource.bind("change", function(e) {
+            // checks to see if the action is a change and the column being changed is what is expected
+            var item = e.items[0];
+            if (e.action === "itemchange" && (e.field === "price" || e.field === "quantity")) {
+                // here you can access model items using e.items[0].modelName;
+                item.rate == 0 ? item.set("amount",0) : item.set("amount",item.price * item.quantity);
+            }else if(e.action === "itemchange" && e.field === "amount" ){
+                item.set("amount",item.price * item.quantity);
+            }else{
+
+            }   
+            if(e.action === "itemchange" && (e.field === "price" || e.field === "quantity" || e.field === "amount" )){
+                    grid.refresh();
+            }             
+        });
+         // finally, refresh the grid to show the changes
+         //grid.refresh();
     }
 
     var initScanBarcode = function(e) {
@@ -262,16 +283,7 @@ var Ermis = function() {
             ErmisTemplateAjaxPost0(e, postdata, Ermis.link + '-scan', function(result) {
                 var i = result.data;
                 var grid = $kGrid.data("kendoGrid");
-                var dataItem = grid.dataSource.get(i.id);
-                if (dataItem) {
-                    var row = grid.tbody.find("tr[data-uid='" + dataItem.uid + "']");
-                    var selectedItem = grid.dataItem(row);
-                    selectedItem.set("quantity", dataItem.quantity + 1);
-                } else {
-                    i.quantity = 1;
-                    grid.dataSource.insert(0, i);
-                }
-
+                initLoadBarcode(grid,i);
                 setTimeout(function() {
                     jQuery($this).val("");
                     jQuery($this).focus();
@@ -283,43 +295,31 @@ var Ermis = function() {
         }
     }    
 
-    var initKendoGridChange = function() {
-        var grid = $kGrid.data("kendoGrid");
-        grid.dataSource.bind("change", function(e) {
-            // checks to see if the action is a change and the column being changed is what is expected
-            var item = e.items[0];
-            if (e.action === "itemchange" && (e.field === "amount" || e.field === "rate")) {
-                // here you can access model items using e.items[0].modelName;
-                item.rate == 0 ? item.set("amount_rate",0) : item.set("amount_rate",item.amount * item.rate);
-            }else if(e.action === "itemchange" && e.field === "amount_rate" ){
-                item.set("amount_rate",item.amount * item.rate);
-            }else{
-
-            }   
-            if(e.action === "itemchange" && (e.field === "amount_rate" || e.field === "rate" || e.field === "amount" )){
-                    grid.refresh();
-            }             
-        });
-         // finally, refresh the grid to show the changes
-         //grid.refresh();
+    var initLoadBarcode = function(grid,item){
+        var data = grid.dataSource.data();
+        var dataItem = null;
+            $.each(data, function(idx, record) {
+                if (record.item_code.value === item.id) {
+                    dataItem = record;
+                    return false; // Exit loop
+                }
+            });        
+        if (dataItem) {
+            dataItem.set("quantity", dataItem.quantity + 1);
+        } else {
+            item.quantity = 1;
+            grid.dataSource.insert(0, item);
+        }
     }
 
     var initKendoGridBarcode = function() {
-         ErmisKendoGridCheckboxTemplate($kGridBarcode, [] , jQuery(window).height() * 0.5,Ermis.page_size_1, "multiple, row", "barcode","id", Ermis.columns_barcode, function(checkedIds) {
-                var grid = $kGrid.data("kendoGrid");
+         ErmisKendoGridCheckboxTemplate($kGridBarcode, [] , jQuery(window).height() * 0.5,Ermis.page_size_1, "multiple, row", "barcode","id", Ermis.columns_barcode, function(checkedIds) {              
                  for (var i of checkedIds) {
-                var dataItem = grid.dataSource.get(i.id);
-                if (dataItem) {
-                    var row = grid.tbody.find("tr[data-uid='" + dataItem.uid + "']");
-                    var selectedItem = grid.dataItem(row);
-                    selectedItem.set("quantity", dataItem.quantity + 1);
-                } else {
-                    i.quantity = 1;
-                    grid.dataSource.insert(0, i);
-                    $kGridBarcode.find('.k-checkbox[id="' + i.id + '"]').click();
-                }
-            }                
-            $kWindow3.close();
+                   var grid = $kGrid.data("kendoGrid");
+                   initLoadBarcode(grid,i);
+                   // $kGridBarcode.find('.k-checkbox[id="' + i.id + '"]').click();
+                 }                
+            $kWindow1.close();
         });        
         jQuery("#barcode").on("blur", initScanBarcode)
 
