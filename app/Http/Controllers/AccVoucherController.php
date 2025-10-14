@@ -18,7 +18,6 @@ use App\Http\Resources\AccountedAutoListResource;
 use App\Http\Resources\AccountedFastDropDownListResource;
 use App\Http\Model\AccObject;
 use App\Http\Model\AccBankAccount;
-use App\Http\Model\AccStock;
 use App\Http\Model\AccSuppliesGoods;
 use App\Http\Model\KeyAi;
 use App\Http\Model\Error;
@@ -27,6 +26,7 @@ use App\Http\Model\AccCountVoucher;
 use App\Http\Model\AccNumberVoucher;
 use App\Http\Model\AccSuppliesGoodsType;
 use App\Http\Resources\DropDownResource;
+use App\Http\Resources\InventoryIssueDetailReadResource;
 use Illuminate\Support\Facades\Validator;
 use Exception;
 

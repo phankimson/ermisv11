@@ -97,4 +97,5 @@ return [
     "exporter"=>"Người xuất",
     "importer"=>"Người nhập",
     "barcode"=>"Mã vạch",
+    "quantity_in_stock"=>"Số lượng tồn",
 ];

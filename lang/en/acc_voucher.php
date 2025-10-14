@@ -97,4 +97,5 @@ return [
     "exporter"=>"Exporter",
     "importer"=>"Importer",
     "barcode"=>"Barcode",
+    "quantity_in_stock"=>"Quantity in stock",
 ];

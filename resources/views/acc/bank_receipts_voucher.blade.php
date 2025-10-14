@@ -132,6 +132,7 @@
                                                 {"field" : "code","title" : "@lang('acc_supplies_goods.code')" },
                                                 {"field" : "name","title" : "@lang('acc_supplies_goods.name')" },
                                                 {"field" : "unit","title" : "@lang('acc_supplies_goods.unit')" },
+                                                {"field" : "quantity_in_stock","title" : "@lang('acc_voucher.quantity_in_stock')",format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" },
                                                 {"field" : "price","title" :  "@lang('acc_supplies_goods.price')" ,format: "{0:n0}" ,decimals: 0 },
                                                 {"field" : "price_purchase","title" : "@lang('acc_supplies_goods.price_purchase')" ,format: "{0:n0}" ,decimals: 0 } ];
 

@@ -100,7 +100,7 @@ class AccSuppliesGoods extends Model
           ->where('stock_check.stock',$stock)
           ->where('stock_check.type',$account_default)
           ->orderBy('supplies_goods.created_at','asc')
-          ->get(['supplies_goods.*','unit.name as unit']);
+          ->get(['supplies_goods.*','unit.name as unit','stock_check.quantity as quantity_in_stock']);
         }else{
           $result = AccSuppliesGoods::where('supplies_goods.type',$type)
           ->leftJoin('unit', 'supplies_goods.unit_id', '=', 'unit.id')
@@ -108,7 +108,7 @@ class AccSuppliesGoods extends Model
           ->where('stock_check.stock',$stock)
           ->where('stock_check.type',$account_default)
           ->orderBy('supplies_goods.created_at','asc')
-          ->get(['supplies_goods.*','unit.name as unit']);
+          ->get(['supplies_goods.*','unit.name as unit','stock_check.quantity as quantity_in_stock']);
         }        
         return $result;
       }

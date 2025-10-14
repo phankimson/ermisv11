@@ -314,8 +314,8 @@ var Ermis = function() {
 
     var initKendoGridBarcode = function() {
          ErmisKendoGridCheckboxTemplate($kGridBarcode, [] , jQuery(window).height() * 0.5,Ermis.page_size_1, "multiple, row", "barcode","id", Ermis.columns_barcode, function(checkedIds) {              
-                 for (var i of checkedIds) {
-                   var grid = $kGrid.data("kendoGrid");
+                var grid = $kGrid.data("kendoGrid");
+                for (var i of checkedIds) {               
                    initLoadBarcode(grid,i);
                    // $kGridBarcode.find('.k-checkbox[id="' + i.id + '"]').click();
                  }                
