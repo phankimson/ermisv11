@@ -308,6 +308,7 @@ var Ermis = function() {
             dataItem.set("quantity", dataItem.quantity + 1);
         } else {
             item.quantity = 1;
+            item.amount = item.price*item.quantity;
             grid.dataSource.insert(0, item);
         }
     }

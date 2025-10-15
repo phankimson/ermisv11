@@ -26,7 +26,7 @@ use App\Http\Model\AccCountVoucher;
 use App\Http\Model\AccNumberVoucher;
 use App\Http\Model\AccSuppliesGoodsType;
 use App\Http\Resources\DropDownResource;
-use App\Http\Resources\InventoryIssueDetailReadResource;
+use App\Http\Resources\BarcodeResource;
 use Illuminate\Support\Facades\Validator;
 use Exception;
 
@@ -356,7 +356,7 @@ class AccVoucherController extends Controller
     try{
       $req = json_decode($request->data);
       $type = AccSuppliesGoodsType::find($req->filter_type_barcode);
-      $data = AccSuppliesGoods::get_type_field($req->filter_type_barcode,$req->filter_field_barcode,$req->filter_value_barcode,$req->stock,optional($type)->account_default);
+      $data = BarcodeResource::customCollection(AccSuppliesGoods::get_type_field($req->filter_type_barcode,$req->filter_field_barcode,$req->filter_value_barcode,$req->stock,optional($type)->account_default),$req->stock);
       if(!$data){
           return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
         }
