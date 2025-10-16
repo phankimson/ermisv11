@@ -273,8 +273,11 @@ var Ermis = function() {
 
     var initScanBarcode = function(e) {
         var obj = {};
-        var $this = e.currentTarget ? e.currentTarget : e
+        if($stock_val != ""){
+        var $this = e.currentTarget ? e.currentTarget : e ;      
         obj.value = jQuery($this).val();
+        obj.stock = $stock_val;
+        obj.code_page = Ermis.voucher.code;
         if (obj.value) {
             obj.id = sessionStorage.dataId;
             var postdata = {
@@ -292,6 +295,10 @@ var Ermis = function() {
                 kendo.alert(result.message);
             });
 
+        }
+
+        }else{
+            kendo.alert(Lang.get('messages.please_select_stock') );
         }
     }    
 
@@ -799,7 +806,7 @@ var Ermis = function() {
             arr["value"] = value;
             arr["text"] = jQuery(this).find("option:selected").text();
             $stock_val = value;
-            var column_change = jQuery(e.target).attr("data-change");
+            //var column_change = jQuery(e.target).attr("data-change");
             var grid = $kGrid.data("kendoGrid");
             var r = grid.dataSource.data();
             jQuery.each(r, function(l, k) {
@@ -840,6 +847,7 @@ var Ermis = function() {
             var c = GetDataAjax(filter.columns, filter.elem);
             if($stock_val != ""){
                 c.obj.stock = $stock_val;
+                c.obj.code_page = Ermis.voucher.code;
                 var postdata = {
                     data: JSON.stringify(c.obj)
                 };

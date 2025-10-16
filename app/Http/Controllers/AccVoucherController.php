@@ -356,12 +356,40 @@ class AccVoucherController extends Controller
     try{
       $req = json_decode($request->data);
       $type = AccSuppliesGoodsType::find($req->filter_type_barcode);
-      $data = BarcodeResource::customCollection(AccSuppliesGoods::get_type_field($req->filter_type_barcode,$req->filter_field_barcode,$req->filter_value_barcode,$req->stock,optional($type)->account_default),$req->stock);
+      $data = BarcodeResource::customCollection(AccSuppliesGoods::get_type_field($req->filter_type_barcode,$req->filter_field_barcode,$req->filter_value_barcode,$req->stock,optional($type)->account_default),["account_default"=>optional($type)->account_default,"code_page"=>$req->code_page,"stock"=>$req->stock]);
       if(!$data){
           return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
         }
       if($req && $data->count()>0 ){
         return response()->json(['status'=>true,'data'=> $data]);
+      }else{
+        return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
+      }
+     }catch(Exception $e){
+        // Lưu lỗi
+        $err = new Error();
+        $err ->create([
+          'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
+          'user_id' => Auth::id(),
+          'menu_id' => $this->menu->id,
+          'error' => $e->getMessage().' - Line '.$e->getLine(),
+          'url'  => $this->url,
+          'check' => 0 ]);
+        return response()->json(['status'=>false,'message'=> trans('messages.error').' '.$e->getMessage().' - Line '.$e->getLine()]);
+      }
+  }
+
+  public function scan(Request $request){
+    $type = 10;
+    try{
+      $req = json_decode($request->data);
+      $supplies_goods = AccSuppliesGoods::get_code_field($req->value,$req->stock);
+      $data = BarcodeResource::customCollection($supplies_goods,["account_default"=>optional($supplies_goods->first())->account_default, "code_page"=>$req->code_page,"stock"=>$req->stock]);
+      if(!$data){
+          return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
+        }
+      if($req && $data->count()>0 ){
+        return response()->json(['status'=>true,'data'=> $data->first()]);
       }else{
         return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
       }

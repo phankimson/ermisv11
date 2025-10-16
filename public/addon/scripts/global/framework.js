@@ -1957,8 +1957,10 @@ function DefaultValueField(){
      jQuery('#form-action').find('input[name="' + v.field + '"]').val(dataItem[v.field]);
      var grid = $kGrid.data("kendoGrid");
      var r = grid.dataSource.data();
-     var gridVat = $kGridVat.data("kendoGrid");
-     var rs = gridVat.dataSource.data();
+     if($kGridVat.length > 0){
+          var gridVat = $kGridVat.data("kendoGrid");
+          var rs = gridVat.dataSource.data();
+     }
        if(v.field_set){
        key_rs = v.field_set;
        }else{
@@ -1991,7 +1993,7 @@ function DefaultValueField(){
           // Không bỏ được refresh
          grid.refresh();
        };
-      if(key_rs){
+      if(key_rs && $kGridVat.length > 0){
        dataDefaultGrid.vat[key_rs] = dataItem[key_rs];
          jQuery.each(rs, function(l, k) {
            if(!k[key_rs]){

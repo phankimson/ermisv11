@@ -117,6 +117,17 @@ class AccSuppliesGoods extends Model
       }
 
 
+        static public function get_code_field($code,$stock) {
+          $result = AccSuppliesGoods::where('supplies_goods.code',$code)
+          ->leftJoin('unit', 'supplies_goods.unit_id', '=', 'unit.id')
+          ->join('stock_check', 'stock_check.supplies_goods', '=', 'supplies_goods.id')
+          ->where('stock_check.stock',$stock)
+          ->orderBy('supplies_goods.created_at','asc')
+          ->get(['supplies_goods.*','unit.id as unit_id','unit.code as unit_code','unit.name as unit','unit.name_en as unit_en','stock_check.quantity as quantity_in_stock','stock_check.type as account_default']);       
+        return $result;
+      }
+
+
         public function balance()
     {
         return $this->hasMany(AccStockBalance::class,'supplies_goods','id');

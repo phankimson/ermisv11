@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Http\Model\AccAccountSystems;
 use App\Http\Model\AccStock;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -19,7 +20,21 @@ class BarcodeResource extends JsonResource
         $locale = $request->segment(1);
         $item = collect(['value' => $this->id, 'text' =>  $this->code ." - ".($locale == "vi" ? $this->name :$this->name_en)]);
         $unit = collect(['value' => $this->unit_id, 'text' =>  $this->unit_code  ." - ".($locale == "vi" ? $this->unit : $this->unit_en)]);
-        $stock = AccStock::find(self::$data);
+        $stock = AccStock::find(self::$data['stock']);
+        if(self::$data['account_default']){
+            $account_default = AccAccountSystems::find(self::$data['account_default']);
+        }    
+        $account = AccAccountSystems::find($this->stock_account);
+        if(self::$data['code_page'] === "NK"&& self::$data['account_default']){           
+           $account_debit =  $account ? LangDropDownResource::make($account) : LangDropDownResource::make($account_default);
+           $account_credit = DefaultDropDownResource::make("");
+        }else if(self::$data['code_page'] === "XK" && self::$data['account_default']){          
+           $account_debit = DefaultDropDownResource::make("");
+           $account_credit =  $account ? LangDropDownResource::make($account) : LangDropDownResource::make($account_default);
+        }else{    
+            $account_debit = DefaultDropDownResource::make("");
+            $account_credit = DefaultDropDownResource::make("");
+        }
         return [
             'id' => $this->id,
             'item_code' => $item,
@@ -32,8 +47,8 @@ class BarcodeResource extends JsonResource
             'quantity_in_stock' => $this->quantity_in_stock,
             'price' => $this->price,
             'price_purchase' => $this->price_purchase,
-            'debit' =>  !$this->debit ? DefaultDropDownResource::make("") : LangDropDownResource::make($this->debit()->first()),
-            'credit' =>  !$this->credit ? DefaultDropDownResource::make("") : LangDropDownResource::make($this->credit()->first()),
+            'debit' =>  $account_debit ,
+            'credit' =>  $account_credit,
             'stock' =>  !$stock ? DefaultDropDownResource::make("") : LangDropDownResource::make($stock),
             'subject_id' =>  $this->subject_id_credit,
             'subject_code' =>  !$this->subject_id_credit ? DefaultDropDownResource::make("") : ObjectDropDownResource::make($this->subject_credit()->first()),
