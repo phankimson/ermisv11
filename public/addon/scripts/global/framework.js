@@ -1806,7 +1806,7 @@ function DefaultValueField(){
              template: `<table>
 													<tr class="combo-tr">
 														<td class="combo-hd-td">#: data.text #</td>
-														<td class="combo-hd-td">#: data.description #</td>
+														<td class="combo-hd-td">#: data.description !== undefined ? data.description : "" #</td>
 		  										</tr>
 		  								</table>`,
              autoBind: true,
