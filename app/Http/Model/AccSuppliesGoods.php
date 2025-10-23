@@ -116,6 +116,16 @@ class AccSuppliesGoods extends Model
         return $result;
       }
 
+      static public function get_has_stock($stock){
+        $result = AccSuppliesGoods::with(['stock_check'=> function ($query) use ($stock) {
+            $query->where('stock', $stock);
+            $query->select('id', 'supplies_goods', 'quantity', 'stock');
+        }],"unit")
+        ->orderBy('code','asc')
+        ->get();
+        return $result;
+      }
+
 
         static public function get_code_field($code,$stock) {
           $result = AccSuppliesGoods::where('supplies_goods.code',$code)
@@ -132,9 +142,18 @@ class AccSuppliesGoods extends Model
     {
         return $this->hasMany(AccStockBalance::class,'supplies_goods','id');
     }
+
+      public function stock_check()
+      {
+          return $this->hasMany(AccStockCheck::class,'supplies_goods','id');
+      }
    
       public function discount() {
         return $this->hasMany(AccSuppliesGoodsDiscount::class,'supplies_goods_id','id');
+      }
+
+      public function unit(){
+        return $this->belongsTo(AccUnit::class,'unit_id','id');
       }
 
 }

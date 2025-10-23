@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Classes\Convert;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Resources\LangDropDownResource;
+use App\Http\Resources\SuppliesGoodsDropDownResource;
 use App\Http\Resources\AccountSystemsDropDownResource;
 use App\Http\Resources\LangTaxDropDownResource;
 use App\Http\Resources\BankDropDownResource;
@@ -186,6 +188,7 @@ class AccDropDownListController extends Controller
   // Hàng hóa Droplist
   public function supplies_goods_dropdown_list(Request $request){
     $val = $request->input('value',null); 
+    $stock = $request->input('stock',null); 
     if($val){
       $rs = AccSuppliesGoods::find($val);
       if(!$rs){
@@ -193,6 +196,10 @@ class AccDropDownListController extends Controller
       }else{
         $data = new LangDropDownResource($rs);
       }      
+    }else if($stock){
+      $rs = AccSuppliesGoods::get_has_stock($stock);
+      $rs_convert = Convert::Array_convert_supplies_goods($rs);
+      $data = SuppliesGoodsDropDownResource::collection($rs_convert);
     }else{
     $default = collect([$this->default]);
     $data = LangDropDownResource::collection(AccSuppliesGoods::active()->orderBy('code','asc')->get());

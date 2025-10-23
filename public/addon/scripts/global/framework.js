@@ -1805,7 +1805,7 @@ function DefaultValueField(){
              dataValueField: "value",
              template: `<table>
 													<tr class="combo-tr">
-														<td class="combo-hd-td">#: data.text #</td>
+														<td class="combo-td">#: data.text #</td>
 														<td class="combo-hd-td">#: data.description !== undefined ? data.description : "" #</td>
 		  										</tr>
 		  								</table>`,
@@ -1823,6 +1823,77 @@ function DefaultValueField(){
                         }
                 }
          })
+  }
+
+  ItemsReadMultiCritDropDownEditor = function (container, options) {
+    var c  = findObjectByKey($kGridTab_column,"field",options.field);
+    var crit = jQuery('.'+c.crit+'[name="' + c.crit + '"]').data('kendoDropDownList').value();
+    if(crit && crit != "0"){
+      jQuery('<input required id="' + options.field + '" data-url="'+c.url+'"  class="dropdown-list-ajax" name="' + options.field + '"/>')
+           .appendTo(container)
+           .kendoDropDownList({
+             filter: "contains",
+             dataTextField: "text",
+             dataValueField: "value",
+             template: `<table>
+													<tr class="combo-tr">
+														<td class="combo-td">#: data.text #</td>
+														<td class="combo-hd-td">#: data.description !== undefined ? data.description : "" #</td>
+		  										</tr>
+		  								</table>`,
+             autoBind: true,
+             select: eval(c.select), // PriItems :Onchange , SleItems : OnchangeCancel , Items : OnchangeItem , Group : OnchangeGroup
+             filter: "contains",  
+             dataBound: OnDataBoundDropDownEditor,         
+              dataSource: {
+                        transport: {
+                            dataType: 'jsonp',
+                            read: {
+                                url:  c.url+"?"+c.crit+"="+crit,
+                                cache: false
+                            }                          
+                        }
+                }
+         })
+    }else{
+      kendo.alert(Lang.get('messages.please_select_'+c.crit));
+    }    
+  }
+
+  ItemsReadGoodsCritDropDownEditor = function (container, options) {
+    var c  = findObjectByKey($kGridTab_column,"field",options.field);
+    var crit = jQuery('.'+c.crit+'[name="' + c.crit + '"]').data('kendoDropDownList').value();
+    if(crit && crit != "0"){
+      jQuery('<input required id="' + options.field + '" data-url="'+c.url+'"  class="dropdown-list-ajax" name="' + options.field + '"/>')
+           .appendTo(container)
+           .kendoDropDownList({
+             filter: "contains",
+             dataTextField: "text",
+             dataValueField: "value",
+             template: `<table>
+													<tr class="combo-tr">
+														<td class="combo-td">#: data.text #</td>
+                            <td class="combo-u-td">#: data.unit_name #</td>
+														<td class="combo-hd-td text-right">#: data.quantity !== undefined ? data.quantity : 0 #</td>
+		  										</tr>
+		  								</table>`,
+             autoBind: true,
+             select: eval(c.select), // PriItems :Onchange , SleItems : OnchangeCancel , Items : OnchangeItem , Group : OnchangeGroup
+             filter: "contains",  
+             dataBound: OnDataBoundDropDownEditor,         
+              dataSource: {
+                        transport: {
+                            dataType: 'jsonp',
+                            read: {
+                                url:  c.url+"?"+c.crit+"="+crit,
+                                cache: false
+                            }                          
+                        }
+                }
+         })
+    }else{
+      kendo.alert(Lang.get('messages.please_select_'+c.crit));
+    }    
   }
 
    ItemsReadDropDownEditor = function (container, options) {

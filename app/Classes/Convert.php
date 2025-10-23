@@ -157,4 +157,25 @@ class Convert
       }   
           return join(" ",$arr);
     }  
+
+    static public function Array_convert_supplies_goods($data){
+      $rs_convert = collect([]);
+      $data->each(function ($item, int $key) use($rs_convert){
+        $item->stock_check->each(function ($it, int $k) use($item,$rs_convert){
+          $co = collect(['id' =>  $item->id,
+                'code' => $item->code,
+                'name' => $item->name,
+                'name_en' => $item->name_en,
+                'unit_id' => $item->unit->id,
+                'stock' => $it->stock,
+                'unit' => $item->unit->name,
+                'unit_en' => $item->unit->name_en,
+                'quantity' => $it->quantity,
+                'account' => $item->stock_account,
+              ]);
+          $rs_convert->push($co);
+        });
+      });
+      return $rs_convert;
+    }
 }

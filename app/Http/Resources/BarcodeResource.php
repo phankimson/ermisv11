@@ -43,7 +43,7 @@ class BarcodeResource extends JsonResource
             'name' => $this->name,
             'name_en' => $this->name_en,
             'unit' => $unit ,
-            'unit_name' => $this->name,
+            'unit_name' => $unit->get('text'),
             'quantity_in_stock' => $this->quantity_in_stock,
             'price' => $this->price,
             'price_purchase' => $this->price_purchase,
