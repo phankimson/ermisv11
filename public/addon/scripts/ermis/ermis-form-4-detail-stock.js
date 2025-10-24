@@ -1272,9 +1272,9 @@ var Ermis = function() {
                 if (dataItem[v.field] !== null && dataItem[v.field] != data_check) {                                      
                     if(v.url && a[v.field] == undefined){
                         var sytax =  v.url.includes("?") ? "&" : "?"; 
-                         RequestURLcallback(v.url+sytax+"value="+dataItem[v.field],function(rs){
+                            RequestURLcallback(v.url+sytax+"value="+dataItem[v.field],function(rs){
                             initLoadDropdownGrid(data,v.field,dataValueField,dataTextField,rs); 
-                        });                                          
+                            });                                                                
                     }else{
                         var f = findObjectByKey(a[v.field],dataValueField,dataItem[v.field]);    
                         initLoadDropdownGrid(data,v.field,dataValueField,dataTextField,f);                      
@@ -1324,16 +1324,16 @@ var Ermis = function() {
 
     OnchangeCancel = function(e) {        
         var dataItem = this.dataItem(e.item);
+        var field = e.sender.element.prop("id");
         var row = e.sender.element.closest("tr").index();
         //var col = e.sender.element.closest("td");        
-        if (dataItem == undefined) {
-            // TEST
-            //$kGridTab.data("kendoGrid").refresh();
-        } else {
+        if (dataItem ) {
             var grid = $kGridTab.data("kendoGrid");
             var data = grid.dataSource.data()[row];      
             initLoadColumn(data, dataItem);
             initFixScrollGrid();
+        } else {
+           
         }
    
     };

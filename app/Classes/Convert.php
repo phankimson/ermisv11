@@ -162,7 +162,8 @@ class Convert
       $rs_convert = collect([]);
       $data->each(function ($item, int $key) use($rs_convert){
         $item->stock_check->each(function ($it, int $k) use($item,$rs_convert){
-          $co = collect(['id' =>  $item->id,
+          $co = collect(['id' =>  $it->id,
+                'item_id' => $item->id,
                 'code' => $item->code,
                 'name' => $item->name,
                 'name_en' => $item->name_en,

@@ -19,6 +19,7 @@ class SuppliesGoodsDropDownResource extends JsonResource
         return (object)[
             'value' => $this['id'],
             'text' => $this['code'] ." - ".($locale == "vi" ? $this['name'] :$this['name_en']),
+            'item' => $this['item_id'],
             'unit' => $this['unit_id'],
             'stock' => $this['stock'],
             'unit_name' => ($locale == "vi" ? $this['unit'] :$this['unit_en']),
