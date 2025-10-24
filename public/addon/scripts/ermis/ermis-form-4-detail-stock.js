@@ -1324,10 +1324,10 @@ var Ermis = function() {
 
     OnchangeCancel = function(e) {        
         var dataItem = this.dataItem(e.item);
-        var field = e.sender.element.prop("id");
+        //var field = e.sender.element.prop("id");
         var row = e.sender.element.closest("tr").index();
         //var col = e.sender.element.closest("td");        
-        if (dataItem ) {
+        if (dataItem) {
             var grid = $kGridTab.data("kendoGrid");
             var data = grid.dataSource.data()[row];      
             initLoadColumn(data, dataItem);
