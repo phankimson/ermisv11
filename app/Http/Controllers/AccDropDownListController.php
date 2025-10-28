@@ -198,12 +198,8 @@ class AccDropDownListController extends Controller
       }      
     }else if($stock){
       $rs = AccSuppliesGoods::get_has_stock($stock);      
-      if($rs->count() == 0){
-        $data = collect($this->default);
-      }else{
-        $rs_convert = Convert::Array_convert_supplies_goods($rs);
-        $data = SuppliesGoodsDropDownResource::collection($rs_convert);
-      }     
+      $rs_convert = Convert::Array_convert_supplies_goods($rs);
+      $data = SuppliesGoodsDropDownResource::collection($rs_convert);  
     }else{
     $default = collect([$this->default]);
     $data = LangDropDownResource::collection(AccSuppliesGoods::active()->orderBy('code','asc')->get());
