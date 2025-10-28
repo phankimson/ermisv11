@@ -1061,11 +1061,13 @@ var Ermis = function() {
                     dataValueField = "id"; 
                 }
                 data_check =  data[v.field] == null ? data[v.field] :  data[v.field][dataValueField];
-                if (dataItem[v.field] !== null && dataItem[v.field] != data_check) {                                      
+                if (dataItem[v.field] && dataItem[v.field] != data_check) {                                      
                     if(v.url && a[v.field] == undefined){
                         var sytax =  v.url.includes("?") ? "&" : "?"; 
                          RequestURLcallback(v.url+sytax+"value="+dataItem[v.field],function(rs){
-                            initLoadDropdownGrid(data,v.field,dataValueField,dataTextField,rs);   
+                            initLoadDropdownGrid(data,v.field,dataValueField,dataTextField,rs);  
+                            // Bắt buộc refresh lại grid mới hiển thị dữ liệu
+                             $kGridTab.data("kendoGrid").refresh();                          
                         });                                          
                     }else{
                         var f = findObjectByKey(a[v.field],dataValueField,dataItem[v.field]);    
@@ -1105,16 +1107,18 @@ var Ermis = function() {
 
     Onchange = function(e) {
         var dataItem = this.dataItem(e.item);
+       // var field = e.sender.element.prop("id");
         var row = e.sender.element.closest("tr").index();
         //var col = e.sender.element.closest("td");        
         var grid = $kGridTab.data("kendoGrid");
         var data = grid.dataSource.data()[row];
-        initLoadColumn(data, dataItem);
+        initLoadColumn(data, dataItem );
         initFixScrollGrid();
     };
 
     OnchangeCancel = function(e) {        
         var dataItem = this.dataItem(e.item);
+        //var field = e.sender.element.prop("id");
         var row = e.sender.element.closest("tr").index();
         //var col = e.sender.element.closest("td");        
         if (dataItem == undefined) {

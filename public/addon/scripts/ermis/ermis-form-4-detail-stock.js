@@ -1256,40 +1256,43 @@ var Ermis = function() {
     };
 
     var initLoadColumn = function(data, dataItem) {
-        jQuery.each($kGridTab_column, function(i, v) {          
-            if (v.set === "1") {
+        jQuery.each($kGridTab_column, function(i, v) {    
+                 if (v.set === "1") {
                 var value = dataItem[v.field] ? dataItem[v.field] : 0;
                 data.set(v.field,value);
-            } else if (v.set === "2" || v.set === "5") {         
-                if(v.url){
-                    dataTextField = "text";
-                    dataValueField = "value"; 
-                }else{
-                    dataTextField = "code";
-                    dataValueField = "id"; 
-                }
-                data_check =  data[v.field] == null ? data[v.field] :  data[v.field][dataValueField];
-                if (dataItem[v.field] !== null && dataItem[v.field] != data_check) {                                      
-                    if(v.url && a[v.field] == undefined){
-                        var sytax =  v.url.includes("?") ? "&" : "?"; 
-                            RequestURLcallback(v.url+sytax+"value="+dataItem[v.field],function(rs){
-                            initLoadDropdownGrid(data,v.field,dataValueField,dataTextField,rs); 
-                            });                                                                
+                } else if (v.set === "2" || v.set === "5") {         
+                    if(v.url){
+                        dataTextField = "text";
+                        dataValueField = "value"; 
                     }else{
-                        var f = findObjectByKey(a[v.field],dataValueField,dataItem[v.field]);    
-                        initLoadDropdownGrid(data,v.field,dataValueField,dataTextField,f);                      
-                    }                                  
-                }
-            } else if (v.set === "3") {
-                var value = dataItem[v.field] ? FormatNumber(parseInt(dataItem[v.field])) : 0
-                data.set(v.field,value);                
-            } else if (v.set === "4") {
-                data.set(v.field,1);
-            } else if (v.set === "6") {
-                data.set(v.field,dataItem[v.field]);                
-            }else{
+                        dataTextField = "code";
+                        dataValueField = "id"; 
+                    }
+                    data_check =  data[v.field] == null ? data[v.field] :  data[v.field][dataValueField];
+                    if (dataItem[v.field] && dataItem[v.field] != data_check) {                                      
+                        if(v.url && a[v.field] == undefined){
+                            var sytax =  v.url.includes("?") ? "&" : "?"; 
+                                RequestURLcallback(v.url+sytax+"value="+dataItem[v.field],function(rs){
+                                initLoadDropdownGrid(data,v.field,dataValueField,dataTextField,rs);
+                                  // Bắt buộc refresh lại grid mới hiển thị dữ liệu
+                                    $kGridTab.data("kendoGrid").refresh();
+                                });                                                                
+                        }else{
+                            var f = findObjectByKey(a[v.field],dataValueField,dataItem[v.field]);    
+                            initLoadDropdownGrid(data,v.field,dataValueField,dataTextField,f);                      
+                        }                                  
+                    }
+                } else if (v.set === "3") {
+                    var value = dataItem[v.field] ? FormatNumber(parseInt(dataItem[v.field])) : 0
+                    data.set(v.field,value);                
+                } else if (v.set === "4") {
+                    data.set(v.field,1);
+                } else if (v.set === "6") {
+                    data.set(v.field,dataItem[v.field]);                
+                }else{
 
-            }
+                } 
+           
            
         }); 
               
@@ -1314,6 +1317,7 @@ var Ermis = function() {
 
     Onchange = function(e) {
         var dataItem = this.dataItem(e.item);
+        //var field = e.sender.element.prop("id");
         var row = e.sender.element.closest("tr").index();
         //var col = e.sender.element.closest("td");        
         var grid = $kGridTab.data("kendoGrid");
