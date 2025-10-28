@@ -198,7 +198,7 @@ class AccDropDownListController extends Controller
       }      
     }else if($stock){
       $rs = AccSuppliesGoods::get_has_stock($stock);      
-      if($rs->isEmpty()){
+      if($rs->count() == 0){
         $data = collect($this->default);
       }else{
         $rs_convert = Convert::Array_convert_supplies_goods($rs);
