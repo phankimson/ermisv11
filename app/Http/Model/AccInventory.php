@@ -52,6 +52,10 @@ class AccInventory extends Model
         AccInventory::where('general_id',$general_id)->whereNotIn('id',$arr)->delete();
       }
 
+       static public function get_detail_id_whereNotIn_delete($general_id,$arr) {
+        AccInventory::where('general_id',$general_id)->whereNotIn('detail_id',$arr)->delete();
+      }
+
       static public function get_detail_first($id) {
         $result = AccInventory::where('detail_id',$id)->first();
         return $result;

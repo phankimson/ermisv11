@@ -1874,7 +1874,7 @@ function DefaultValueField(){
 													<tr class="combo-tr">
 														<td class="combo-td">#: data.text #</td>
                             <td class="combo-u-td">#: data.unit_name #</td>
-														<td class="combo-hd-td text-right">#: data.quantity !== undefined ? data.quantity : 0 #</td>
+														<td class="combo-hd-td">#: data.quantity !== undefined ? data.quantity : 0 #</td>
 		  										</tr>
 		  								</table>`,
              autoBind: true,

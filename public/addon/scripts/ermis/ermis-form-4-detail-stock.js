@@ -964,7 +964,7 @@ var Ermis = function() {
         var crit = crit1.concat(crit2);
         if(crit.length == 0){
           obj.type = jQuery('#tabstrip').find('.k-state-active').attr("data-search");
-          obj.total_number = ConvertNumber(jQuery('#quantity_total').html(),Ermis.decimal_symbol);
+          obj.total_quantity = ConvertNumber(jQuery('#quantity_total').html(),Ermis.decimal_symbol);
           obj.total_amount = ConvertNumber(jQuery('#amount_total').html(),Ermis.decimal_symbol);
           obj.total_amount_rate = ConvertNumber(jQuery('#amount_rate_total').html(),Ermis.decimal_symbol);         
           initSaveDetail(e,obj);     

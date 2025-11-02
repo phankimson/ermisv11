@@ -102,7 +102,6 @@ class AccInventoryIssueVoucherController extends Controller
         if(!$period){
           $general = [];
           $removeId = [];
-          $removeId_v = [];
           $permission = $request->session()->get('per');
           $check_permission = true;
           $user = Auth::user();
@@ -121,7 +120,7 @@ class AccInventoryIssueVoucherController extends Controller
             $general->user = $user->id;
             $v = $this->saveNumberVoucher($this->menu,$arr);
           }else{
-                $check_permission = false;
+            $check_permission = false;
           }       
           $general->type = $this->menu->id;
           $general->voucher = $v;
@@ -170,7 +169,8 @@ class AccInventoryIssueVoucherController extends Controller
           // CHI TIET / Detail
            foreach($arr->detail as $k => $d){
              $detail = collect([]);
-             if($d->id){
+             $inventory = collect([]);
+             if($d->id || $d->id != 0){
                $detail = AccDetail::find($d->id);
                $inventory = AccInventory::get_detail_first($d->id);
                 if(!$detail){
@@ -182,13 +182,12 @@ class AccInventoryIssueVoucherController extends Controller
                $inventory = new AccInventory();
              }
              $detail->general_id = $general->id;
-             $detail->description = $d->item_name;
+             $detail->description = $d->item_code->text;
              $detail->currency = $arr->currency;
              $detail->debit = $d->debit->value;  // Đổi từ id value dạng read
              $detail->credit = $d->credit->value;  // Đổi từ id value dạng read
              $detail->amount = $d->amount;
-             $detail->amount_rate = $d->amount * $arr->rate;
-             $detail->accounted_fast = $d->accounted_fast->value;  // Đổi từ id value dạng read
+             $detail->amount_rate = $d->amount * $arr->rate;             
              $detail->department = $d->department->value; // Đổi từ id value dạng read
              $detail->case_code = $d->case_code->value;  // Đổi từ id value dạng read
              $detail->cost_code = $d->cost_code->value;  // Đổi từ id value dạng read
@@ -205,27 +204,26 @@ class AccInventoryIssueVoucherController extends Controller
        
              array_push($removeId,$detail->id);
              $arr->detail[$k]->id = $detail->id;   
-             
              // Lưu kho
              $inventory->general_id = $general->id;
              $inventory->detail_id = $detail->id;
-             $inventory->item_id = $d->item_id;
-             $inventory->item_code = $d->item_code;
-             $inventory->item_name = $d->item_name;
-             $inventory->unit = $d->unit;
-             $inventory->stock_issue = $d->stock;
+             $inventory->item_id = $d->item_code->value;
+             $inventory->item_code = $d->item_code->item;
+             $inventory->item_name = $d->item_code->text;
+             $inventory->unit = $d->unit->value;
+             $inventory->stock_issue = $d->stock->value;
              $inventory->quantity = $d->quantity;
              $inventory->price = $d->price;
-             $inventory->amount = $d->amount;
-             $inventory->expiry_date = $d->expiry_date;
+             $inventory->amount = $d->quantity * $d->price;
              $inventory->active = 1;
              $inventory->status = 1;
              $inventory->save();
+       
                                   
                // Lưu số tồn kho bên Có
-                $balance = $this->reduceStock($d->credit->value,$d->stock,$d->item_id,$d->quantity);   
+                $balance = $this->reduceStock($d->credit->value,$d->stock->value,$d->item_code->value,$d->quantity);   
                   if($ca->value == "1" && $balance->quantity<0){
-                    $acc = $d->item_code;
+                    $acc = $d->item_code->item;
                     break;
                   }              
                // End
@@ -233,6 +231,7 @@ class AccInventoryIssueVoucherController extends Controller
 
            // Xóa dòng chi tiết
            AccDetail::get_detail_whereNotIn_delete($general->id,$removeId);
+           AccInventory::get_detail_id_whereNotIn_delete($general->id,$removeId);
           
            // Lưu file
            if($request->hasFile('files')) {
