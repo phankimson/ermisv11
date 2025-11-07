@@ -29,12 +29,14 @@ var Ermis = function() {
         $kWindow3 = ErmisKendoWindowTemplate(myWindow3, "1000px", "");
         $kWindow4 = ErmisKendoWindowTemplate(myWindow4, "400px", "");
         $kWindow5 = ErmisKendoWindowTemplate(myWindow5, "800px", "");
+        $kWindow7 = ErmisKendoWindowTemplate(myWindow7, "800px", "");
         $kWindow.title(Lang.get('acc_voucher.search_for_object'));
         $kWindow1.title(Lang.get('acc_voucher.search_for_goods'));
         $kWindow2.title(Lang.get('acc_voucher.reference'));
         $kWindow3.title(Lang.get('acc_voucher.search_for_voucher'));
         $kWindow4.title(Lang.get('acc_voucher.attach'));
-        $kWindow5.title(Lang.get('acc_voucher.change_voucher'));       
+        $kWindow5.title(Lang.get('acc_voucher.change_voucher'));  
+        $kWindow7.title(Lang.get('acc_voucher.check_subject'));         
         // Grid
         ErmisKendoGridTemplate3($kGrid, Ermis.data, Ermis.aggregate, Ermis.field, Ermis.page_size , {
             confirmation: false
@@ -408,8 +410,8 @@ var Ermis = function() {
         shortcut.remove(key + ".");
         shortcut.remove(key + ",");
         shortcut.remove(key + "T");
-        jQuery('.add,.copy,.edit,.delete,.back,.forward,.print,.import,.cancel,.save,.choose,.filter,.pageview,.reference,.write_item,.unwrite_item,.advance_teacher,.advance_employee').not('.back_to').addClass('disabled');
-        jQuery('.add,.copy,.edit,.delete,.back,.forward,.print-item,.cancel,.save,.choose,.pageview,.filter,.reference,.write_item,.unwrite_item,.advance_teacher,.advance_employee').not('.back_to').off('click');
+        jQuery('.add,.copy,.edit,.delete,.back,.forward,.print,.import,.cancel,.save,.choose,.filter,.pageview,.reference,.write_item,.unwrite_item,.advance_teacher,.advance_employee,.open_subject').not('.back_to').addClass('disabled');
+        jQuery('.add,.copy,.edit,.delete,.back,.forward,.print-item,.cancel,.save,.choose,.pageview,.filter,.reference,.write_item,.unwrite_item,.advance_teacher,.advance_employee,.open_subject').not('.back_to').off('click');
         jQuery('input,textarea').not(".start,.end").not('.header_main_search_input').not('#files').not('.k-filter-menu input').addClass('disabled');
         jQuery(".droplist").not('.not_disabled').addClass('disabled');
         jQuery('input:checkbox').parent().addClass('disabled');
@@ -426,7 +428,7 @@ var Ermis = function() {
             sessionStorage.removeItem("dataId");
             sessionStorage.removeItem("data");
             sessionStorage.removeItem("compare");
-            jQuery('.cancel,.save,.choose,.cancel-window,.filter,.reference,.import,.advance_teacher,.advance_employee').removeClass('disabled');
+            jQuery('.cancel,.save,.choose,.cancel-window,.filter,.reference,.import,.advance_teacher,.advance_employee,.open_subject').removeClass('disabled');
             jQuery('.cancel').on('click', initCancel);
             jQuery('.save').on('click', initSave);
             jQuery('.choose').on('click', initChoose);
@@ -434,6 +436,7 @@ var Ermis = function() {
             jQuery('.filter').on('click', initFilterForm);
             jQuery('.barcode').on('click', initBarcodeForm);
             jQuery('.reference').on('click', initReferenceForm);
+            jQuery('.open_subject').on('click', initCheckForm);
             jQuery('.attach').on('click', initAttachForm);
             jQuery('.voucher-change').on('click', initVoucherChangeForm);
             jQuery('.import').on('click', initImport);
@@ -492,13 +495,14 @@ var Ermis = function() {
             sessionStorage.removeItem("compare");
             shortcut.remove(key + "T");
         } else if (flag === 3) { //EDIT
-            jQuery('.cancel,.save,.filter,.reference,.advance_teacher,.advance_employee').removeClass('disabled');
+            jQuery('.cancel,.save,.filter,.reference,.advance_teacher,.advance_employee,.open_subject').removeClass('disabled');
             jQuery('.cancel').on('click', initCancel);
             jQuery('.save').on('click', initSave);
             jQuery('.filter').on('click', initFilterForm);
             jQuery('.barcode').on('click', initBarcodeForm);
             jQuery('.reference').on('click', initReferenceForm);
             jQuery('.attach').on('click', initAttachForm);
+            jQuery('.open_subject').on('click', initCheckForm);
             jQuery('.voucher-change').on('click', initVoucherChangeForm);
             jQuery('.cancel-window').on('click', initClose);
             shortcut.add(key + "S", function(e) {
@@ -630,13 +634,14 @@ var Ermis = function() {
             jQuery(".date-picker,.end,.start").val(kendo.toString(kendo.parseDate(new Date()), 'dd/MM/yyyy'));
           }
           
-          jQuery('.cancel,.save,.filter,.reference,.advance_teacher,.advance_employee').removeClass('disabled');
+          jQuery('.cancel,.save,.filter,.reference,.advance_teacher,.advance_employee,.open_subject').removeClass('disabled');
           jQuery('.cancel').on('click', initCancel);
           jQuery('.save').on('click', initSave);
           jQuery('.filter').on('click', initFilterForm);
           jQuery('.barcode').on('click', initBarcodeForm);
           jQuery('.reference').on('click', initReferenceForm);
           jQuery('.attach').on('click', initAttachForm);
+          jQuery('.open_subject').on('click', initCheckForm);
           jQuery('.voucher-change').on('click', initVoucherChangeForm);
           jQuery('.cancel-window').on('click', initClose);
           shortcut.add(key + "S", function(e) {
@@ -834,6 +839,9 @@ var Ermis = function() {
     var initAttachForm = function() {
         $kWindow4.open();
     };
+    var initCheckForm = function() {
+        $kWindow7.open();
+    }    
     var initVoucherChangeForm = function() {
         if(Ermis.voucher.change_voucher == 1){
             initLoadVoucherChange();
@@ -877,6 +885,12 @@ var Ermis = function() {
             }, function(result) {
                 kendo.alert(result.message);
             });
+        });
+    };
+
+       var initCheckSubject = function() {
+        jQuery('#check_subject').on('click', function(e) {
+       
         });
     };
 
@@ -1249,6 +1263,8 @@ var Ermis = function() {
                 $kWindow4.close();
             } else if ($kWindow5.element.is(":hidden") === false) {
                 $kWindow5.close();
+            }else if ($kWindow7.element.is(":hidden") === false) {
+                $kWindow7.close();
             }else{
 
             }

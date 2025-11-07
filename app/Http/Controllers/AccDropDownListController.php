@@ -6,7 +6,7 @@ use App\Classes\Convert;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Resources\LangDropDownResource;
-use App\Http\Resources\SuppliesGoodsDropDownResource;
+use App\Http\Resources\SuppliesGoodsIssueDropDownResource;
 use App\Http\Resources\AccountSystemsDropDownResource;
 use App\Http\Resources\LangTaxDropDownResource;
 use App\Http\Resources\BankDropDownResource;
@@ -197,9 +197,9 @@ class AccDropDownListController extends Controller
         $data = new LangDropDownResource($rs);
       }      
     }else if($stock){
-      $rs = AccSuppliesGoods::get_has_stock($stock);      
-      $rs_convert = Convert::Array_convert_supplies_goods($rs);
-      $data = SuppliesGoodsDropDownResource::collection($rs_convert);  
+      $rs = AccSuppliesGoods::get_has_stock($stock);    
+      $rs_convert = Convert::Array_convert_supplies_goods($rs); 
+      $data = SuppliesGoodsIssueDropDownResource::collection($rs_convert);  
     }else{
     $default = collect([$this->default]);
     $data = LangDropDownResource::collection(AccSuppliesGoods::active()->orderBy('code','asc')->get());

@@ -98,4 +98,5 @@ return [
     "importer"=>"Importer",
     "barcode"=>"Barcode",
     "quantity_in_stock"=>"Quantity in stock",
+    "check_subject" => "Check subject",
 ];

@@ -160,8 +160,21 @@ class Convert
 
     static public function Array_convert_supplies_goods($data){
       $rs_convert = collect([]);
+      $co = collect(['id' =>  '0',
+                'item_id' => '',
+                'code' => '',
+                'name' => "--Select--",
+                'name_en' => "--Select--",
+                'unit_id' => '',
+                'stock' => '',
+                'unit' => '',
+                'unit_en' => '',
+                'quantity' => '',
+                'account' => '',
+              ]);
+      $rs_convert->push($co);
       $data->each(function ($item, int $key) use($rs_convert){
-        $item->stock_check->each(function ($it, int $k) use($item,$rs_convert){
+          $item->stock_check->each(function ($it, int $k) use($item,$rs_convert){
           $co = collect(['id' =>  $it->id,
                 'item_id' => $item->id,
                 'code' => $item->code,
@@ -174,8 +187,8 @@ class Convert
                 'quantity' => $it->quantity,
                 'account' => $item->stock_account,
               ]);
-          $rs_convert->push($co);
-        });
+         $rs_convert->push($co);
+        });         
       });
       return $rs_convert;
     }

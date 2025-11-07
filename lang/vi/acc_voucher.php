@@ -23,7 +23,7 @@ return [
     "subject_name" => "Tên đối tượng",
     "subject_debit" => "Mã đối tượng nợ",
     "subject_credit" => "Mã đối tượng có",
-    "tax_code" => "Tax code",
+    "tax_code" => "Mã số thuế",
     "address" => "Địa chỉ",
     "bank_payer"=>"Tài khoản chuyển",
     "bank_receiver"=>"Tài khoản nhận",
@@ -98,4 +98,5 @@ return [
     "importer"=>"Người nhập",
     "barcode"=>"Mã vạch",
     "quantity_in_stock"=>"Số lượng tồn",
+    "check_subject" => "Kiểm tra đối tượng",
 ];
