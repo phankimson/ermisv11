@@ -141,4 +141,5 @@ return [
       "account_details_do_not_match_balance_sheet"=>"Chi tiết tài khoản :account không khớp với bảng số dư !",
       "amount_cannot_be_zero"=>"Tài khoản :account thành tiền không được bằng 0 !",
       "please_select_stock" => "Xin vui lòng chọn kho !",
+      "message_tax_1" => "The above information is for reference only. To be sure, please contact the tax authority.",
 ];

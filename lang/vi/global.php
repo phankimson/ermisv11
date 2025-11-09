@@ -84,4 +84,6 @@ return [
        "refesh"=>"Làm mới",
        "select"=>"--Chọn--",
        "re_voucher"=>"Đánh số chứng từ",
+       "is_active"=>"Đang hoạt động",
+       "none_active"=>"Ngừng hoạt động",
 ];

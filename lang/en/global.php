@@ -84,4 +84,6 @@ return [
       "refesh"=>"Refesh",
       "select"=>"--Select--",
       "re_voucher"=>"Re-voucher",
+      "is_active"=>"Is active",
+      "none_active"=>"None active",
 ];

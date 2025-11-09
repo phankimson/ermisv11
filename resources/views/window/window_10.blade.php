@@ -1,26 +1,44 @@
 <div id="form-window-check-subject" style="display:none" aria-hidden="false">
-<div class="uk-width-medium-4-4">
-  <span>@lang('acc_voucher.tax_code') :</span>
-  <input type="text" class="k-textbox large no_clear"  name="tax_code" value="" />
-</div>
+    <table>
+    <tr>
+    <td class="row-label-responsive"><label>@lang('acc_voucher.tax_code')</label></td>
+    <td>
+        <input type="text" class="k-textbox large no_clear"  name="tax_code" value="" />
+    </td>
+    </tr>
 
-<div class="load_check_subject">
-<div class="uk-width-medium-4-4 uk-margin-medium-top">
-    <span>@lang('acc_voucher.tax_code') :</span>
-    <span></span>
-</div> 
+     <tr class="row-height load_check_subject hidden tax_code">
+    <td class="row-label-responsive"><label>@lang('acc_voucher.tax_code')</label></td>
+    <td>
+         <span></span>
+    </td>
+    </tr>
 
-<div class="uk-width-medium-4-4 uk-margin-medium-top">
-    <span>@lang('acc_voucher.subject_name') :</span>
-    <span></span>
-</div>  
+    <tr class="row-height load_check_subject hidden subject_name">
+    <td class="row-label-responsive"><label>@lang('acc_voucher.subject_name')</label></td>
+    <td>
+         <span></span>
+    </td>
+    </tr>
 
-<div class="uk-width-medium-4-4 uk-margin-medium-top">
-    <span>@lang('acc_voucher.address') :</span>
-    <span></span>
-</div>  
+     <tr class="row-height load_check_subject hidden address">
+    <td class="row-label-responsive"><label>@lang('acc_voucher.address')</label></td>
+    <td>
+         <span></span>
+    </td>
+    </tr>
 
-</div>
+    <tr class="row-height load_check_subject hidden active">
+    <td class="row-label-responsive"><label>@lang('action.active')</label></td>
+    <td>
+         <a href="javascript:;" class="md-btn md-btn-success md-btn-wave-light waves-effect waves-button waves-light">@lang('global.is_active')</a>
+    </td>
+    </tr>
+
+     <tr class="row-height load_check_subject hidden">
+        <td colspan="2">*** @lang('messages.message_tax_1')</td>
+    </tr>
+</table>
 
   <div class="uk-margin" style="float : right">
       <a href="javascript:;" class="k-button k-primary check_subject" data-uk-tooltip title="@lang('action.check') "><i class="md-18 material-icons md-color-white">check_box</i>@lang('action.check')</a>

@@ -29,7 +29,7 @@ var Ermis = function() {
         $kWindow3 = ErmisKendoWindowTemplate(myWindow3, "1000px", "");
         $kWindow4 = ErmisKendoWindowTemplate(myWindow4, "400px", "");
         $kWindow5 = ErmisKendoWindowTemplate(myWindow5, "800px", "");
-        $kWindow7 = ErmisKendoWindowTemplate(myWindow7, "800px", "");
+        $kWindow7 = ErmisKendoWindowTemplate(myWindow7, "500px", "");
         $kWindow.title(Lang.get('acc_voucher.search_for_object'));
         $kWindow1.title(Lang.get('acc_voucher.search_for_goods'));
         $kWindow2.title(Lang.get('acc_voucher.reference'));
