@@ -85,6 +85,11 @@
     <tr>
         <td><label>@lang('acc_voucher.automatic_ai')</label></td>
         <td colspan="2"><input type="text" class="speech-input no_copy" url="ai" readonly lang="{{$lang}}" name="automatic_ai" data-ready="Tell here !!" value="" data-buttonsize="5" data-patience="5"></td>
+         <td class="row-label-responsive"></td>
+            <td></td>
+            <td colspan="2">
+                <a class="md-btn uk-margin-bottom open_subject">@lang('acc_voucher.check_subject')</a>                      
+            </td>
     </tr>
     <tr>
         <td><label>@lang('acc_voucher.attach')</label></td>

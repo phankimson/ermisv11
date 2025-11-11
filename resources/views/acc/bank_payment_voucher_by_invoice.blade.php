@@ -19,6 +19,7 @@
 @include('window.window_4')
 @include('window.window_5')
 @include('window.window_8')
+@include('window.window_10')
 @endsection
 
 @section('uktab')

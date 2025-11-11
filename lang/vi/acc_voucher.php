@@ -21,6 +21,7 @@ return [
     "subject" => "Đối tượng",
     "subject_code" => "Mã đối tượng",
     "subject_name" => "Tên đối tượng",
+    "subject_name_en" => "Tên đối tượng TA",
     "subject_debit" => "Mã đối tượng nợ",
     "subject_credit" => "Mã đối tượng có",
     "tax_code" => "Mã số thuế",

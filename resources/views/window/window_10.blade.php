@@ -3,11 +3,11 @@
     <tr>
     <td class="row-label-responsive"><label>@lang('acc_voucher.tax_code')</label></td>
     <td>
-        <input type="text" class="k-textbox large no_clear"  name="tax_code" value="" />
+        <input type="text" class="k-textbox large no_clear" id="check_subject_tax_code"  name="tax_code" value="" />
     </td>
     </tr>
 
-     <tr class="row-height load_check_subject hidden tax_code">
+    <tr class="row-height load_check_subject hidden subject_tax_code">
     <td class="row-label-responsive"><label>@lang('acc_voucher.tax_code')</label></td>
     <td>
          <span></span>
@@ -21,17 +21,24 @@
     </td>
     </tr>
 
-     <tr class="row-height load_check_subject hidden address">
+    <tr class="row-height load_check_subject hidden subject_name_en">
+    <td class="row-label-responsive"><label>@lang('acc_voucher.subject_name_en')</label></td>
+    <td>
+         <span></span>
+    </td>
+    </tr>
+
+     <tr class="row-height load_check_subject hidden subject_address">
     <td class="row-label-responsive"><label>@lang('acc_voucher.address')</label></td>
     <td>
          <span></span>
     </td>
     </tr>
 
-    <tr class="row-height load_check_subject hidden active">
+    <tr class="row-height load_check_subject hidden subject_active">
     <td class="row-label-responsive"><label>@lang('action.active')</label></td>
     <td>
-         <a href="javascript:;" class="md-btn md-btn-success md-btn-wave-light waves-effect waves-button waves-light">@lang('global.is_active')</a>
+         <a href="javascript:;" class="md-btn md-btn-danger md-btn-wave-light waves-effect waves-button waves-light">@lang('global.is_active')</a>
     </td>
     </tr>
 

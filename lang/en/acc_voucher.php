@@ -21,6 +21,7 @@ return [
     "subject" => "Subject",
     "subject_code" => "Subject code",
     "subject_name" => "Subject name",
+    "subject_name_en" => "Subject english name",
     "subject_debit" => "Subject debit",
     "subject_credit" => "Subject credit",
     "tax_code" => "Tax code",

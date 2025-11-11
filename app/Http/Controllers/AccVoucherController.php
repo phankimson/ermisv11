@@ -16,6 +16,7 @@ use App\Http\Resources\DropDownListResource;
 use App\Http\Resources\CashGeneralReadResource;
 use App\Http\Resources\AccountedAutoListResource;
 use App\Http\Resources\AccountedFastDropDownListResource;
+use App\Http\Resources\CheckSubjectResource;
 use App\Http\Model\AccObject;
 use App\Http\Model\AccBankAccount;
 use App\Http\Model\AccSuppliesGoods;
@@ -29,6 +30,7 @@ use App\Http\Resources\DropDownResource;
 use App\Http\Resources\BarcodeResource;
 use Illuminate\Support\Facades\Validator;
 use Exception;
+use Illuminate\Support\Facades\Http;
 
 
 class AccVoucherController extends Controller
@@ -421,6 +423,32 @@ class AccVoucherController extends Controller
       }
       if($req && $data){
         return response()->json(['status'=>true,'data'=> new DropDownResource($data)]);
+      }else{
+        return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
+      }
+     }catch(Exception $e){
+        // Lưu lỗi
+        $err = new Error();
+        $err ->create([
+          'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
+          'user_id' => Auth::id(),
+          'menu_id' => $this->menu->id,
+          'error' => $e->getMessage().' - Line '.$e->getLine(),
+          'url'  => $this->url,
+          'check' => 0 ]);
+        return response()->json(['status'=>false,'message'=> trans('messages.error').' '.$e->getMessage().' - Line '.$e->getLine()]);
+      }
+  }
+
+  public function check_subject(Request $request){
+    $type = 10;
+    try{
+      $req = json_decode($request->data);
+      $url = config('app.url_check_subject_api').$req;
+      $response = Http::get($url);
+      $data = $response->json();  
+      if($req && $data['code'] == "00"){
+        return response()->json(['status'=>true,'data'=> new CheckSubjectResource($data)]);
       }else{
         return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
       }

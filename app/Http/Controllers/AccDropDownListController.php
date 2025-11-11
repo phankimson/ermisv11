@@ -610,7 +610,7 @@ class AccDropDownListController extends Controller
     $option = $request->input('option',null);  
     $setting_voucher = AccSettingVoucher::get_menu($menu);
     $document = $this->getDoc($this->document);
-    $data = [];
+    $data = collect();
     if($type == 1){ // Def
       if($option){
         $debt_account = AccountSystemsDropDownResource::collection(AccAccountSystems::get_wherein_id($document->id,$setting_voucher->debit_filter));

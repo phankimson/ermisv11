@@ -889,8 +889,29 @@ var Ermis = function() {
     };
 
        var initCheckSubject = function() {
-        jQuery('#check_subject').on('click', function(e) {
-       
+        jQuery('.check_subject').on('click', function(e) {
+            var data = jQuery("#check_subject_tax_code").val().trim();
+             var postdata = {
+                data: JSON.stringify(data)
+            };
+            ErmisTemplateAjaxPost0(e, postdata, Ermis.link + '-check-subject', function(result) {
+              jQuery.each(result.data, function(i, v) { 
+                if(i == "subject_active"){
+                    if(v == true){
+                        jQuery("."+i).find("a").removeClass("md-btn-danger").addClass("md-btn-success");
+                        jQuery("."+i).find("a").html(Lang.get('global.is_active'));
+                    }else{
+                        jQuery("."+i).find("a").removeClass("md-btn-success").addClass("md-btn-danger");
+                        jQuery("."+i).find("a").html(Lang.get('global.none_active'));
+                    }
+                }else{
+                    jQuery("."+i).find("span").html(v);
+                }              
+               });  
+             jQuery(".load_check_subject").removeClass('hidden');
+            }, function(result) {               
+                kendo.alert(result.message);
+            });   
         });
     };
 
@@ -1242,6 +1263,7 @@ var Ermis = function() {
                 var dataItem = grid.dataItem($kGridSubject.find('tr.k-state-selected'));
                 $kWindow.close();
                 AddChooseObjectResult(dataItem);
+                jQuery("#check_subject_tax_code").val(dataItem.tax_code);
             } else {
                 kendo.alert(Lang.get('messages.please_select_line_choose'));
             }
@@ -1416,6 +1438,7 @@ var Ermis = function() {
             initChangeCurrency();
             initChangeStock();
             initVoucherChange();
+            initCheckSubject();
         }
 
     };

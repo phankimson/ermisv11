@@ -1407,11 +1407,14 @@ Route::group([
   Route::post('/cash-receipts-voucher-reference', 'reference' )->name('-reference');
   Route::post('/cash-receipts-voucher-voucher-change', 'voucher_change' )->name('-voucher-change');
   Route::post('/cash-receipts-voucher-load-voucher-change', 'load_voucher_change' )->name('-load-voucher-change');
+     // Kiểm tra mst doanh nghiệp
+  Route::post('/cash-receipts-voucher-check-subject', 'check_subject' )->name('-check-subject');
 
   // Tìm chứng từ trang thu tiền theo hóa đơn
   Route::post('/cash-receipts-voucher-by-invoice-get', 'get' )->name('-by-invoice-get');
   Route::post('/cash-receipts-voucher-by-invoice-currency', 'currency' )->name('-by-invoice-currency');
   Route::post('/cash-receipts-voucher-by-invoice-reference', 'reference' )->name('-by-invoice-reference');  
+  Route::post('/cash-receipts-voucher-by-invoice-check-subject', 'check_subject' )->name('-check-subject');
   });
 
 
@@ -1427,11 +1430,14 @@ Route::group([
   Route::post('/cash-payment-voucher-reference', 'reference' )->name('-reference');
   Route::post('/cash-payment-voucher-voucher-change', 'voucher_change' )->name('-voucher-change');
   Route::post('/cash-payment-voucher-load-voucher-change', 'load_voucher_change' )->name('-load-voucher-change');
+   // Kiểm tra mst doanh nghiệp
+  Route::post('/cash-payment-voucher-check-subject', 'check_subject' )->name('-check-subject');
 
   // Tìm chứng từ trang thu tiền theo hóa đơn
   Route::post('/cash-payment-voucher-by-invoice-get', 'get' )->name('-by-invoice-get');
   Route::post('/cash-payment-voucher-by-invoice-currency', 'currency' )->name('-by-invoice-currency');
   Route::post('/cash-payment-voucher-by-invoice-reference', 'reference' )->name('-by-invoice-reference');
+  Route::post('/cash-payment-voucher-by-invoice-check-subject', 'check_subject' )->name('-check-subject');
   });
 
   // Receipt Bank Detail Voucher -  Phiếu thu tiền ngân hàng chi tiết
@@ -1451,8 +1457,12 @@ Route::group([
   Route::post('/bank-receipts-voucher-by-invoice-get', 'get' )->name('-by-invoice-get');
   Route::post('/bank-receipts-voucher-by-invoice-currency', 'currency' )->name('-by-invoice-currency');
   Route::post('/bank-receipts-voucher-by-invoice-reference', 'reference' )->name('-by-invoice-reference');
+  Route::post('/bank-receipts-voucher-by-invoice-check-subject', 'check_subject' )->name('-check-subject');  
+  
     // Tìm tài khoản mặc định thay đổi ngân hàng
   Route::post('/bank-receipts-voucher-change-bank', 'change_bank' )->name('-change-bank');
+    // Kiểm tra mst doanh nghiệp
+  Route::post('/bank-receipts-voucher-check-subject', 'check_subject' )->name('-check-subject');
   });
 
   // Payment Bank Detail Voucher -  Phiếu chi tiền ngân hàng chi tiết
@@ -1472,8 +1482,11 @@ Route::group([
   Route::post('/bank-payment-voucher-by-invoice-get', 'get' )->name('-by-invoice-get');
   Route::post('/bank-payment-voucher-by-invoice-currency', 'currency' )->name('-by-invoice-currency');
   Route::post('/bank-payment-voucher-by-invoice-reference', 'reference' )->name('-by-invoice-reference');
+  Route::post('/bank-payment-voucher-by-invoice-check-subject', 'check_subject' )->name('-check-subject');  
   // Tìm tài khoản mặc định thay đổi ngân hàng
   Route::post('/bank-payment-voucher-change-bank', 'change_bank' )->name('-change-bank');
+  // Kiểm tra mst doanh nghiệp
+  Route::post('/bank-payment-voucher-check-subject', 'check_subject' )->name('-check-subject');
   });
 
   // Transfer Bank Detail Voucher -  Phiếu chuyển khoản ngân hàng chi tiết
@@ -1521,6 +1534,8 @@ Route::group([
   // Tìm vật tư hàng hóa
   Route::post('/inventory-issue-voucher-load', 'load' )->name('-load');
   Route::post('/inventory-issue-voucher-scan', 'scan' )->name('-scan');
+   // Kiểm tra mst doanh nghiệp
+  Route::post('/inventory-issue-voucher-check-subject', 'check_subject' )->name('-check-subject');
   });
 
 

@@ -138,6 +138,7 @@ return [
     |
     */
     'short_key' => env('SHORT_KEY'),
+    'url_check_subject_api' => env('URL_CHECK_SUBJECT_API'),
     /*
     |--------------------------------------------------------------------------
     | Autoloaded Service Providers
