@@ -1517,6 +1517,8 @@ Route::group([
   Route::post('/entry-general-voucher-reference', 'reference' )->name('-reference');
   Route::post('/entry-general-voucher-voucher-change', 'voucher_change' )->name('-voucher-change');
   Route::post('/entry-general-voucher-load-voucher-change', 'load_voucher_change' )->name('-load-voucher-change');
+   // Kiểm tra mst doanh nghiệp
+  Route::post('/entry-general-voucher-check-subject', 'check_subject' )->name('-check-subject');
   });
 
   // Inventory issue Voucher -  Phiếu xuất kho chi tiết
@@ -1553,6 +1555,9 @@ Route::group([
   Route::post('/inventory-receipt-voucher-load-voucher-change', 'load_voucher_change' )->name('-load-voucher-change');
     // Tìm vật tư hàng hóa
   Route::post('/inventory-receipt-voucher-load', 'load' )->name('-load');
+  Route::post('/inventory-receipt-voucher-scan', 'scan' )->name('-scan');
+   // Kiểm tra mst doanh nghiệp
+  Route::post('/inventory-receipt-voucher-check-subject', 'check_subject' )->name('-check-subject');
   });
 
    // Inventory Transfer Voucher -  Phiếu chuyển kho chi tiết

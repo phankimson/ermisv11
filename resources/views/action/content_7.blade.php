@@ -76,7 +76,15 @@
             </td>
         </tr>
     <tr>
+        <td><label></label></td>
+        <td colspan="2">
+        </td>
         
+     <td class="row-label-responsive"></td>
+            <td></td>
+            <td colspan="2">
+                <a class="md-btn uk-margin-bottom open_subject">@lang('acc_voucher.check_subject')</a>                      
+            </td>
     </tr>
     <tr>
         

@@ -1382,6 +1382,8 @@ var Ermis = function() {
                 $kWindow4.close();
             } else if ($kWindow5.element.is(":hidden") === false) {
                 $kWindow5.close();
+            }else if ($kWindow7.element.is(":hidden") === false) {
+                $kWindow7.close();
             }else{
 
             }

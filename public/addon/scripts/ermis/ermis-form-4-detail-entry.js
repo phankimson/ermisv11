@@ -27,10 +27,12 @@ var Ermis = function() {
         $kWindow3 = ErmisKendoWindowTemplate(myWindow3, "1000px", "");
         $kWindow4 = ErmisKendoWindowTemplate(myWindow4, "400px", "");
         $kWindow5 = ErmisKendoWindowTemplate(myWindow5, "800px", "");
+        $kWindow7 = ErmisKendoWindowTemplate(myWindow7, "500px", "");
         $kWindow2.title(Lang.get('acc_voucher.reference'));
         $kWindow3.title(Lang.get('acc_voucher.search_for_voucher'));
         $kWindow4.title(Lang.get('acc_voucher.attach'));
         $kWindow5.title(Lang.get('acc_voucher.change_voucher'));
+        $kWindow7.title(Lang.get('acc_voucher.check_subject'));    
         // Grid Vat
         ErmisKendoGridTemplate3($kGridVat, Ermis.data, Ermis.aggregate, Ermis.field_tax, Ermis.page_size , true, jQuery(window).height() * 0.5, Ermis.column_grid,onSaveVat);
         initKendoGridVatChange();
@@ -412,8 +414,8 @@ var Ermis = function() {
         shortcut.remove(key + ".");
         shortcut.remove(key + ",");
         shortcut.remove(key + "T");
-        jQuery('.add,.copy,.edit,.delete,.back,.forward,.print,.import,.cancel,.save,.choose,.filter,.pageview,.reference,.write_item,.unwrite_item,.advance_teacher,.advance_employee').not('.back_to').addClass('disabled');
-        jQuery('.add,.copy,.edit,.delete,.back,.forward,.print-item,.cancel,.save,.choose,.pageview,.filter,.reference,.write_item,.unwrite_item,.advance_teacher,.advance_employee').not('.back_to').off('click');
+        jQuery('.add,.copy,.edit,.delete,.back,.forward,.print,.import,.cancel,.save,.choose,.filter,.pageview,.reference,.write_item,.unwrite_item,.advance_teacher,.advance_employee,.open_subject').not('.back_to').addClass('disabled');
+        jQuery('.add,.copy,.edit,.delete,.back,.forward,.print-item,.cancel,.save,.choose,.pageview,.filter,.reference,.write_item,.unwrite_item,.advance_teacher,.advance_employee,.open_subject').not('.back_to').off('click');
         jQuery('input,textarea').not(".start,.end").not('.header_main_search_input').not('#files').not('.k-filter-menu input').addClass('disabled');
         jQuery(".droplist").not('.not_disabled').addClass('disabled');
         jQuery('input:checkbox').parent().addClass('disabled');
@@ -432,12 +434,13 @@ var Ermis = function() {
             sessionStorage.removeItem("dataId");
             sessionStorage.removeItem("data");
             sessionStorage.removeItem("compare");
-            jQuery('.cancel,.save,.choose,.cancel-window,.filter,.reference,.import,.advance_teacher,.advance_employee').removeClass('disabled');
+            jQuery('.cancel,.save,.choose,.cancel-window,.filter,.reference,.import,.advance_teacher,.advance_employee,.open_subject').removeClass('disabled');
             jQuery('.cancel').on('click', initCancel);
             jQuery('.save').on('click', initSave);
             jQuery('.cancel-window').on('click', initClose);
             jQuery('.reference').on('click', initReferenceForm);
             jQuery('.attach').on('click', initAttachForm);
+            jQuery('.open_subject').on('click', initCheckForm);
             jQuery('.voucher-change').on('click', initVoucherChangeForm);
             jQuery('.import').on('click', initImport);
             shortcut.add(key + "S", function(e) {
@@ -497,11 +500,12 @@ var Ermis = function() {
             sessionStorage.removeItem("compare");
             shortcut.remove(key + "T");
         } else if (flag === 3) { //EDIT
-            jQuery('.cancel,.save,.filter,.reference,.advance_teacher,.advance_employee').removeClass('disabled');
+            jQuery('.cancel,.save,.filter,.reference,.advance_teacher,.advance_employee,.open_subject').removeClass('disabled');
             jQuery('.cancel').on('click', initCancel);
             jQuery('.save').on('click', initSave);
             jQuery('.reference').on('click', initReferenceForm);
             jQuery('.attach').on('click', initAttachForm);
+            jQuery('.open_subject').on('click', initCheckForm);
             jQuery('.voucher-change').on('click', initVoucherChangeForm);
             jQuery('.cancel-window').on('click', initClose);
             shortcut.add(key + "S", function(e) {
@@ -637,11 +641,12 @@ var Ermis = function() {
             jQuery(".date-picker,.end,.start").val(kendo.toString(kendo.parseDate(new Date()), 'dd/MM/yyyy'));
           }
           
-          jQuery('.cancel,.save,.filter,.reference,.advance_teacher,.advance_employee').removeClass('disabled');
+          jQuery('.cancel,.save,.filter,.reference,.advance_teacher,.advance_employee,.open_subject').removeClass('disabled');
           jQuery('.cancel').on('click', initCancel);
           jQuery('.save').on('click', initSave);
           jQuery('.reference').on('click', initReferenceForm);
           jQuery('.attach').on('click', initAttachForm);
+          jQuery('.open_subject').on('click', initCheckForm);
           jQuery('.voucher-change').on('click', initVoucherChangeForm);
           jQuery('.cancel-window').on('click', initClose);
           shortcut.add(key + "S", function(e) {
@@ -781,6 +786,33 @@ var Ermis = function() {
         }  
     };
 
+      var initCheckSubject = function() {
+        jQuery('.check_subject').on('click', function(e) {
+            var data = jQuery("#check_subject_tax_code").val().trim();
+             var postdata = {
+                data: JSON.stringify(data)
+            };
+            ErmisTemplateAjaxPost0(e, postdata, Ermis.link + '-check-subject', function(result) {
+              jQuery.each(result.data, function(i, v) { 
+                if(i == "subject_active"){
+                    if(v == true){
+                        jQuery("."+i).find("a").removeClass("md-btn-danger").addClass("md-btn-success");
+                        jQuery("."+i).find("a").html(Lang.get('global.is_active'));
+                    }else{
+                        jQuery("."+i).find("a").removeClass("md-btn-success").addClass("md-btn-danger");
+                        jQuery("."+i).find("a").html(Lang.get('global.none_active'));
+                    }
+                }else{
+                    jQuery("."+i).find("span").html(v);
+                }              
+               });  
+             jQuery(".load_check_subject").removeClass('hidden');
+            }, function(result) {               
+                kendo.alert(result.message);
+            });   
+        });
+    };
+
     var initChangeCurrency = function() {
         function OnChangeCurrency(e) {
             var value = this.value;
@@ -821,6 +853,9 @@ var Ermis = function() {
     };
     var initAttachForm = function() {
         $kWindow4.open();
+    };
+     var initCheckForm = function() {
+        $kWindow7.open();
     };
     var initVoucherChangeForm = function() {
         if(Ermis.voucher.change_voucher == 1){
@@ -1214,6 +1249,8 @@ var Ermis = function() {
                 $kWindow4.close();
             } else if ($kWindow5.element.is(":hidden") === false) {
                 $kWindow5.close();
+            }else if ($kWindow7.element.is(":hidden") === false) {
+                $kWindow7.close();
             }else{
 
             }
@@ -1360,6 +1397,7 @@ var Ermis = function() {
             initGetStoredArrId();
             initChangeCurrency();
             initVoucherChange();
+            initCheckSubject();
         }
 
     };
