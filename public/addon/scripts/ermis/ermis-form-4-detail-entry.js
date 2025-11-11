@@ -795,11 +795,14 @@ var Ermis = function() {
             ErmisTemplateAjaxPost0(e, postdata, Ermis.link + '-check-subject', function(result) {
               jQuery.each(result.data, function(i, v) { 
                 if(i == "subject_active"){
-                    if(v == true){
-                        jQuery("."+i).find("a").removeClass("md-btn-danger").addClass("md-btn-success");
+                    if(v == 1){
+                        jQuery("."+i).find("a").removeClass("md-btn-danger").removeClass("md-btn-primary").addClass("md-btn-success");
                         jQuery("."+i).find("a").html(Lang.get('global.is_active'));
+                    }else if(v == 2){
+                        jQuery("."+i).find("a").removeClass("md-btn-danger").removeClass("md-btn-success").addClass("md-btn-primary");
+                        jQuery("."+i).find("a").html(Lang.get('global.address_unknown'));
                     }else{
-                        jQuery("."+i).find("a").removeClass("md-btn-success").addClass("md-btn-danger");
+                        jQuery("."+i).find("a").removeClass("md-btn-success").removeClass("md-btn-primary").addClass("md-btn-danger");
                         jQuery("."+i).find("a").html(Lang.get('global.none_active'));
                     }
                 }else{

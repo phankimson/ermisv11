@@ -86,4 +86,5 @@ return [
        "re_voucher"=>"Đánh số chứng từ",
        "is_active"=>"Đang hoạt động",
        "none_active"=>"Ngừng hoạt động",
+       "address_unknown"=>"Không xác định địa chỉ",
 ];

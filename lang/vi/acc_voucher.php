@@ -100,4 +100,5 @@ return [
     "barcode"=>"Mã vạch",
     "quantity_in_stock"=>"Số lượng tồn",
     "check_subject" => "Kiểm tra đối tượng",
+    "updated_at" => "Ngày cập nhật",
 ];

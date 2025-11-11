@@ -42,6 +42,13 @@
     </td>
     </tr>
 
+    <tr class="row-height load_check_subject hidden subject_update">
+    <td class="row-label-responsive"><label>@lang('acc_voucher.updated_at')</label></td>
+    <td>
+         <span></span>
+    </td>
+    </tr>
+
      <tr class="row-height load_check_subject hidden">
         <td colspan="2">*** @lang('messages.message_tax_1')</td>
     </tr>

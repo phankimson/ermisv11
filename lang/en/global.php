@@ -86,4 +86,5 @@ return [
       "re_voucher"=>"Re-voucher",
       "is_active"=>"Is active",
       "none_active"=>"None active",
+      "address_unknown"=>"Address unknown",
 ];
