@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Http\Traits\ScopesTraits;
 use App\Http\Traits\BootedTraits;
 use Illuminate\Support\Facades\DB;
+use App\Http\Model\Casts\Decimal;
 
 class AccCurrencyCheck extends Model
 {
@@ -19,6 +20,10 @@ class AccCurrencyCheck extends Model
   {
       static::BootedBaseTrait();
   }
+
+  protected $casts = [
+          'amount'=> Decimal::class,
+      ];
 
 
       static public function get_raw() {

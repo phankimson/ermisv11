@@ -66,7 +66,15 @@ class AccBankAccount extends Model
         ->leftJoin('account_systems', 'account_systems.id', '=', 'bank_account.account_default')->get(['bank_account.*','bank.name','account_systems.code']);
         //$result = DB::select(DB::raw("SELECT t.* from (SELECT @i:=@i+1 as row_number, s.* FROM country s, (SELECT @i:=0) AS temp order by s.created_at asc) t order by t.row_number desc"));
         return $result;
-      }     
+      }    
+      
+       static public function get_has_detail(){
+        $result = AccBankAccount::with('currency_check')
+        ->orderBy('bank_account','asc')
+        ->get();
+        return $result;
+      }
+
 
        public function balance()
     {
@@ -77,4 +85,10 @@ class AccBankAccount extends Model
     {
         return $this->hasOne(AccAccountSystems::class,'id','account_default');
     }
+
+    public function currency_check()
+    {
+        return $this->hasOne(AccCurrencyCheck::class,'bank_account','id');
+    }
+   
 }

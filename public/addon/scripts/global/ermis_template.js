@@ -2123,6 +2123,32 @@ var ErmisKendoDroplistTemplate = function(elem, filter) {
     });
 };
 
+var ErmisKendoDroplistMultiTemplate = function(elem,filter) {
+    var text = jQuery(elem).attr('data-text-field');
+    var value = jQuery(elem).attr('data-value-field');
+    var url = jQuery(elem).attr('data-read-url');
+    jQuery(elem).kendoDropDownList({
+        dataTextField: text,
+        dataValueField: value,  
+        template: `<table>
+                    <tr class="combo-tr">
+                    <td class="combo-td">#: data.`+text+`#</td>
+                    <td class="combo-td">#: data.description !== undefined ? data.description : "" #</td>
+                    </tr>
+                   </table>`,     
+        dataSource: {
+            transport: {
+                read: {
+                    dataType: "jsonp",
+                    url: url,
+                }
+            }
+        },
+        filter: filter,
+        autoBind: true,
+    });   
+};
+
 var ErmisKendoDroplistReadTemplate = function(elem,filter) {
     var text = jQuery(elem).attr('data-text-field');
     var value = jQuery(elem).attr('data-value-field');

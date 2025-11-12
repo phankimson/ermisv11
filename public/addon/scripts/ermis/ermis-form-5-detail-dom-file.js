@@ -16,7 +16,10 @@ var Ermis = function() {
         jQuery('.droplist.read').each(function() {
             ErmisKendoDroplistReadTemplate(this, "contains");
           }); 
-          ErmisKendoDroplistTemplate(".droplist:not(.read)", "contains");
+        jQuery('.droplist.multi').each(function() {
+             ErmisKendoDroplistMultiTemplate(this, "contains");
+        });   
+          ErmisKendoDroplistTemplate(".droplist:not(.read,.multi)", "contains");
         //DatePickerTemplate
         ErmisKendoDatePickerTemplate(".date-picker","dd/MM/yyyy");
         //ContextMenu

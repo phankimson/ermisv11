@@ -10,6 +10,7 @@ use App\Http\Resources\SuppliesGoodsIssueDropDownResource;
 use App\Http\Resources\AccountSystemsDropDownResource;
 use App\Http\Resources\LangTaxDropDownResource;
 use App\Http\Resources\BankDropDownResource;
+use App\Http\Resources\BankMultiDropDownResource;
 use App\Http\Resources\AccountedFastDropDownResource;
 use App\Http\Resources\ObjectTypeDropDownResource;
 use App\Http\Resources\ObjectDropDownListResource;
@@ -58,11 +59,13 @@ class AccDropDownListController extends Controller
   protected $document;
   protected $type;
   protected $default;
+  protected $default_multi;
   public function __construct()
   {
     $this->document = "DOCUMENT_TAX";
     $this->type = "acc";
     $this->default = ["value" => "0","text" => "--Select--"];
+    $this->default_multi = ["value" => "0","text" => "--Select--", "description" => ""];
   }
   public function country_dropdown_list(Request $request){
      $val = $request->input('value',null); 
@@ -416,6 +419,7 @@ class AccDropDownListController extends Controller
   // TK Ngân hàng
   public function bank_account_dropdown_list(Request $request){
     $val = $request->input('value',null); 
+    $detail = $request->input('detail',null); 
     if($val){
       $rs = AccBankAccount::find($val);
       if(!$rs){
@@ -423,6 +427,11 @@ class AccDropDownListController extends Controller
       }else{
         $data = new BankDropDownResource($rs);
       }      
+    }else if($detail){
+      $default = collect([$this->default_multi]);
+      $rs = AccBankAccount::get_has_detail();
+      $data = BankMultiDropDownResource::collection($rs);
+      $data = $default->merge($data)->values();
     }else{
       $default = collect([$this->default]);
       $data = BankDropDownResource::collection(AccBankAccount::active()->orderBy('bank_account','asc')->get());
