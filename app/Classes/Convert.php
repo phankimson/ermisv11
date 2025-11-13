@@ -158,7 +158,7 @@ class Convert
           return join(" ",$arr);
     }  
 
-    static public function Array_convert_supplies_goods($data){
+    static public function Array_convert_supplies_goods($data,$price){
       $rs_convert = collect([]);
       $co = collect(['id' =>  '0',
                 'item_id' => '',
@@ -170,11 +170,12 @@ class Convert
                 'unit' => '',
                 'unit_en' => '',
                 'quantity' => '',
+                'price' => '',
                 'account' => '',
               ]);
       $rs_convert->push($co);
-      $data->each(function ($item, int $key) use($rs_convert){
-          $item->stock_check->each(function ($it, int $k) use($item,$rs_convert){
+      $data->each(function ($item, int $key) use($rs_convert,$price){
+          $item->stock_check->each(function ($it, int $k) use($item,$rs_convert,$price){
           $co = collect(['id' =>  $it->id,
                 'item_id' => $item->id,
                 'code' => $item->code,
@@ -185,6 +186,7 @@ class Convert
                 'unit' => $item->unit->name,
                 'unit_en' => $item->unit->name_en,
                 'quantity' => $it->quantity,
+                'price' => $price =="XK"?$item->price:$item->price_purchase,
                 'account' => $item->stock_account,
               ]);
          $rs_convert->push($co);

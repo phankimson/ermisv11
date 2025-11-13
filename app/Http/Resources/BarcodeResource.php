@@ -28,12 +28,15 @@ class BarcodeResource extends JsonResource
         if(self::$data['code_page'] === "NK"&& self::$data['account_default']){           
            $account_debit =  $account ? LangDropDownResource::make($account) : LangDropDownResource::make($account_default);
            $account_credit = DefaultDropDownResource::make("");
+           $price = $this->price_purchase;
         }else if(self::$data['code_page'] === "XK" && self::$data['account_default']){          
            $account_debit = DefaultDropDownResource::make("");
            $account_credit =  $account ? LangDropDownResource::make($account) : LangDropDownResource::make($account_default);
+           $price = $this->price;
         }else{    
             $account_debit = DefaultDropDownResource::make("");
             $account_credit = DefaultDropDownResource::make("");
+            $price = 0;
         }
         return [
             'id' => $this->id,
@@ -45,8 +48,7 @@ class BarcodeResource extends JsonResource
             'unit' => $unit ,
             'unit_name' => $unit->get('text'),
             'quantity_in_stock' => $this->quantity_in_stock,
-            'price' => $this->price,
-            'price_purchase' => $this->price_purchase,
+            'price' => $price,
             'debit' =>  $account_debit ,
             'credit' =>  $account_credit,
             'stock' =>  !$stock ? DefaultDropDownResource::make("") : LangDropDownResource::make($stock),

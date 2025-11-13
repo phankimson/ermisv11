@@ -31,9 +31,7 @@ class AccInventory extends Model
           'quantity' => Decimal::class,
           'quantity_receipt' => Decimal::class,
           'price'=> Decimal::class,
-          'purchase_price'=> Decimal::class,
           'amount'=> Decimal::class,
-          'purchase_amount'=> Decimal::class,
           'expiry_date' => Date::class,
           'active' => 'boolean',
       ];

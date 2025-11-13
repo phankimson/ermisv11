@@ -1278,10 +1278,35 @@ Route::group([
   Route::any('/inventory-issue-general-delete', 'delete')->name('-delete');
 
   // Ghi , ko ghi , tìm chứng từ trang
-  Route::post('/issue-inventory-voucher-unwrite','unwrite' )->name('-unwrite');
-  Route::post('/issue-inventory-voucher-write','write' )->name('-write');
-  Route::post('/issue-inventory-voucher-find', 'find' )->name('-find');
-  Route::post('/issue-inventory-voucher-delete', 'delete' )->name('-delete'); 
+  Route::post('/inventory-issue-voucher-unwrite','unwrite' )->name('-unwrite');
+  Route::post('/inventory-issue-voucher-write','write' )->name('-write');
+  Route::post('/inventory-issue-voucher-find', 'find' )->name('-find');
+  Route::post('/inventory-issue-voucher-delete', 'delete' )->name('-delete'); 
+
+  });  
+
+
+  // Inventory Receipt General - Nhập kho
+  Route::group([
+    'as' => 'inventory-receipt',
+    'controller' => AccInventoryReceiptGeneralController::class
+  ],function () {
+  Route::get('/inventory-receipt-general', 'show' )->name('');
+  Route::post('/inventory-receipt-general-get','find' )->name('-find');
+  Route::post('/inventory-receipt-general-unwrite','unwrite' )->name('-unwrite');
+  Route::post('/inventory-receipt-general-write','write' )->name('-write');
+  Route::post('/inventory-receipt-general-revoucher', 'revoucher' )->name('-revoucher');
+  Route::post('/inventory-receipt-general-start-voucher', 'start_voucher' )->name('-start-voucher');
+  Route::post('/inventory-receipt-general-change-voucher', 'change_voucher' )->name('-change-voucher');
+  Route::get('/inventory-receipt-general-DownloadExcel', 'DownloadExcel' )->name('-DownloadExcel');
+  Route::any('/inventory-receipt-general-import', 'import')->name('-import');
+  Route::any('/inventory-receipt-general-delete', 'delete')->name('-delete');
+
+  // Ghi , ko ghi , tìm chứng từ trang
+  Route::post('/inventory-receipt-voucher-unwrite','unwrite' )->name('-unwrite');
+  Route::post('/inventory-receipt-voucher-write','write' )->name('-write');
+  Route::post('/inventory-receipt-voucher-find', 'find' )->name('-find');
+  Route::post('/inventory-receipt-voucher-delete', 'delete' )->name('-delete'); 
 
   });  
   
@@ -1374,7 +1399,7 @@ Route::group([
   // Inventory Receipt Detail - Phiếu nhập kho chi tiết
   Route::group([
     'as' => 'inventory-receipt-voucher',
-    'controller' => AccInventoryIssueVoucherController::class
+    'controller' => AccInventoryReceiptVoucherController::class
   ],function () {
   Route::get('/inventory-receipt-voucher', 'show' )->name('');
   Route::post('/inventory-receipt-voucher-save', 'save' )->name('-save');
@@ -1386,7 +1411,7 @@ Route::group([
   // Inventory Transfer - Phiếu chuyển kho
   Route::group([
     'as' => 'inventory-transfer-voucher',
-    'controller' => AccInventoryIssueVoucherController::class
+    'controller' => AccInventoryTransferVoucherController::class
   ],function () {
   Route::get('/inventory-transfer-voucher', 'show' )->name('');
   Route::post('/inventory-transfer-voucher-save', 'save' )->name('-save');

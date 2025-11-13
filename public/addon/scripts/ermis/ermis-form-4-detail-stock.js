@@ -259,7 +259,7 @@ var Ermis = function() {
             var item = e.items[0];
             if (e.action === "itemchange" && (e.field === "price" || e.field === "quantity")) {
                 // here you can access model items using e.items[0].modelName;
-                item.rate == 0 ? item.set("amount",0) : item.set("amount",item.price * item.quantity);
+                item.quantity == 0 ? item.set("amount",0) : item.set("amount",item.price * item.quantity);
             }else if(e.action === "itemchange" && e.field === "amount" ){
                 item.set("amount",item.price * item.quantity);
             }else{

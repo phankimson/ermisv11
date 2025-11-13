@@ -132,7 +132,7 @@
                                                 {"field" : "name","title" : "@lang('acc_supplies_goods.name')" },
                                                 {"field" : "unit_name","title" : "@lang('acc_supplies_goods.unit')" },
                                                 {"field" : "quantity_in_stock","title" : "@lang('acc_voucher.quantity_in_stock')",template: '#= FormatNumberDecimal(quantity_in_stock, {{$decimal}} )#' },
-                                                {"field" : "price","title" :  "@lang('acc_supplies_goods.price')" ,template: '#= FormatNumberDecimal(price, {{$decimal}} )#'  }];
+                                                {"field" : "price","title" :  "@lang('acc_supplies_goods.price_purchase')" ,template: '#= FormatNumberDecimal(price, {{$decimal}} )#'  }];
 
         Ermis.columns    = [{"field" :"id", hidden : true},
                             { "field" : "item_code","title" :"@lang('acc_voucher.item_code')","url" : "{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.supplies-goods')}}" ,editor: ItemsReadGoodsCritDropDownEditor , "crit" : "stock" , "select" : "OnchangeCancel" ,template : "#=getUrlAjaxItemName(item_code,'item_code')#","width" : "300px" ,"set" : "2",aggregates: ['count'], footerTemplate: "<p>@lang('acc_voucher.total_count'): #=count#</p>"},
@@ -141,7 +141,7 @@
                             { "field" : "debit","title" :"@lang('acc_voucher.debt_account')" ,"url" : "{!!route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.account-voucher-filter').'?menu='.$menu.'&type=1&option=true'!!}",editor: ItemsReadDropDownEditor , "select" : "OnchangeItem" ,template : "#=getUrlAjaxItemName(debit,'debit')#" ,"width" : "150px" ,"set" : "2" , "key" :true },
                             { "field" : "credit","title" :"@lang('acc_voucher.credit_account')" ,"url" : "{!!route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.account-voucher-filter').'?menu='.$menu.'&type=2&option=true'!!}",editor: ItemsReadDropDownEditor , "select" : "OnchangeItem" ,template : "#=getUrlAjaxItemName(credit,'credit')#" ,"width" : "150px","set" : "2" , "key" :true},
                             { "field" : "quantity","title" : "@lang('acc_voucher.quantity')" ,"width" : "200px",format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" ,aggregates: ['sum'],footerTemplate: "<p id='quantity_total'>#=FormatNumberDecimal(sum,{{$decimal}})#</p>" },
-                            { "field" : "price","title" :"@lang('acc_voucher.price')",format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}","width" : "150px"  },
+                            { "field" : "price","title" :"@lang('acc_supplies_goods.price_purchase')",format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}","width" : "150px" },
                             { "field" : "amount","title" : "@lang('acc_voucher.amount')" ,"width" : "200px",format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" ,aggregates: ['sum']  ,footerTemplate: "<p id='amount_total'>#=calculateTotalPriceAggregate({{$decimal}})#</p>" },
                             { "field" : "subject_id", hidden: true ,"set" : "6" , "group" : "1"},
                             { "field" : "subject_code","title" : "@lang('acc_voucher.subject_code')"  ,"url" : "{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.object')}}" ,width : '150px',editor: ItemsReadDropDownEditor , "select" : "OnchangeGroup" ,template : "#=getUrlAjaxItemName(subject_code,'subject_code','subject_code')#" ,"set" : "2" , "group" : "1" },

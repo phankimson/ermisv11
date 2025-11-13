@@ -3,10 +3,10 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-use App\Http\Resources\InventoryIssueDetailReadResource;
+use App\Http\Resources\InventoryDetailReadResource;
 use App\Http\Resources\ObjectDropDownListResource;
 
-class InventoryIssueGeneralReadResource extends JsonResource
+class InventoryGeneralReadResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -32,7 +32,7 @@ class InventoryIssueGeneralReadResource extends JsonResource
             'reference' =>  $this->reference,
             'reference_by' =>  $this->reference_by,
             'status' =>  $this->status,
-            'detail' => InventoryIssueDetailReadResource::collection($this->whenLoaded('detail')),
+            'detail' => InventoryDetailReadResource::collection($this->whenLoaded('detail')),
             'active' =>  $this->active,
         ];
     }

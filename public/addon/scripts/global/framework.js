@@ -1314,15 +1314,16 @@ function FormatNumber(container) {
     return result;
 }
 
-function FormatNumberDecimal(container,decimal) {
-    var result = 0;
+function FormatNumberDecimal(container,decimal,defaultValue = 0) {
+    var result = defaultValue;
     if (container === null || container === "") {
-        result = 0;
+        result = defaultValue;
     } else {
         result = kendo.toString(parseInt(container), "n"+decimal);
     }
     return result;
 }
+
 
 function FormatNumberDecimalLinkInput(container,decimal,input) {
   var result = 0;
@@ -1885,7 +1886,7 @@ function DefaultValueField(){
                         transport: {
                             dataType: 'jsonp',
                             read: {
-                                url:  c.url+"?"+c.crit+"="+crit,
+                                url:  c.url+"?"+c.crit+"="+crit+"&price="+Ermis.voucher.code,
                                 cache: false
                             }                          
                         }

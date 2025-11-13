@@ -192,6 +192,7 @@ class AccDropDownListController extends Controller
   public function supplies_goods_dropdown_list(Request $request){
     $val = $request->input('value',null); 
     $stock = $request->input('stock',null); 
+    $price = $request->input('price',null); 
     if($val){
       $rs = AccSuppliesGoods::find($val);
       if(!$rs){
@@ -201,7 +202,7 @@ class AccDropDownListController extends Controller
       }      
     }else if($stock){
       $rs = AccSuppliesGoods::get_has_stock($stock);    
-      $rs_convert = Convert::Array_convert_supplies_goods($rs); 
+      $rs_convert = Convert::Array_convert_supplies_goods($rs,$price); 
       $data = SuppliesGoodsIssueDropDownResource::collection($rs_convert);  
     }else{
     $default = collect([$this->default]);

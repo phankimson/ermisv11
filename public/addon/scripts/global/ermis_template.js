@@ -2127,13 +2127,14 @@ var ErmisKendoDroplistMultiTemplate = function(elem,filter) {
     var text = jQuery(elem).attr('data-text-field');
     var value = jQuery(elem).attr('data-value-field');
     var url = jQuery(elem).attr('data-read-url');
+    var format_description = jQuery(elem).attr('data-format-description') == "number" ? 'FormatNumberDecimal(data.description,'+Ermis.decimal+',"")' : 'data.description';
     jQuery(elem).kendoDropDownList({
         dataTextField: text,
         dataValueField: value,  
         template: `<table>
                     <tr class="combo-tr">
                     <td class="combo-td">#: data.`+text+`#</td>
-                    <td class="combo-td">#: data.description !== undefined ? data.description : "" #</td>
+                    <td class="combo-td">#: data.description !== undefined ? `+format_description+` : "" #</td>
                     </tr>
                    </table>`,     
         dataSource: {
