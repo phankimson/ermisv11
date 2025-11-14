@@ -15,7 +15,7 @@ class ObjectDropDownListResource extends JsonResource
     public function toArray($request)
     {
       // Make sure current locale exists.
-        return [
+        return (object)[
             'id' => $this->id,
             'value' => $this->id,
             'text' => $this->code.' - '. $this->name,

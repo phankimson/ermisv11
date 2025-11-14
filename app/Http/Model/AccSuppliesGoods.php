@@ -117,12 +117,18 @@ class AccSuppliesGoods extends Model
       }
 
       static public function get_has_stock($stock){
-        $result = AccSuppliesGoods::with(['stock_check'=> function ($query) use ($stock) {
-            $query->where('stock', $stock);
-            $query->select('id', 'supplies_goods', 'quantity', 'stock');
-        }],"unit")
-        ->orderBy('code','asc')
-        ->get();
+        if($stock != "none"){
+          $result = AccSuppliesGoods::with(['stock_check'=> function ($query) use ($stock) {
+            $query->where('stock', $stock);         
+            $query->select('id', 'supplies_goods', 'quantity', 'stock');          
+          }],"unit")
+          ->orderBy('code','asc')
+          ->get();
+         }else{
+           $result = AccSuppliesGoods::with("unit")->withSum('stock_check','quantity')
+          ->orderBy('code','asc')
+          ->get();
+         }  
         return $result;
       }
 

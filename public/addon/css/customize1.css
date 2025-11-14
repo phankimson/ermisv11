@@ -329,14 +329,14 @@
 }
 
 .combo-td{
-    width:60%;
-    text-align: center;
+  width:300px;
+  text-align: left;
 }   
 .combo-u-td{
-  width:20%;
+  width:100px;
   text-align: center;
 } 
 .combo-hd-td{
-  width:20%;
-  text-align: center;
+  width:100px;
+  text-align: right;
 } 

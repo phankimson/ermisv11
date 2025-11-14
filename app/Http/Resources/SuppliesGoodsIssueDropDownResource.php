@@ -17,9 +17,10 @@ class SuppliesGoodsIssueDropDownResource extends JsonResource
       // Make sure current locale exists.
       $locale = $request->segment(1);
         return (object)[
-            'value' => $this['id'],
+            'value' => $this['id'], // Lấy id của bảng stock_check
             'text' => $this['code'] ." - ".($locale == "vi" ? $this['name'] :$this['name_en']),
             'item' => $this['item_id'],
+            'item_code' => $this['id'],
             'unit' => $this['unit_id'],
             'stock' => $this['stock'],
             'unit_name' => ($locale == "vi" ? $this['unit'] :$this['unit_en']),
