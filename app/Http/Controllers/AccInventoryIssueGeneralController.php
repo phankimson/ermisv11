@@ -99,7 +99,7 @@ class AccInventoryIssueGeneralController extends Controller
                     $inventory = AccInventory::get_detail_first($d->id);
                     if($inventory){
                       // Trả lại số tồn kho
-                      $this->increaseStock($d->credit,$inventory->stock,$inventory->supplies_goods,$inventory->quantity); 
+                      $this->increaseStock($d->credit,$inventory->stock_issue,$inventory->item_id,$inventory->quantity); 
                       $inventory->update(['active'=>0]);
                     }                              
                 });
@@ -164,7 +164,7 @@ class AccInventoryIssueGeneralController extends Controller
                     $inventory = AccInventory::get_detail_first($d->id);
                     if($inventory){
                       // Trừ số tồn kho
-                      $this->reduceStock($d->credit,$inventory->stock,$inventory->supplies_goods,$inventory->quantity); 
+                      $this->reduceStock($d->credit,$inventory->stock_issue,$inventory->item_id,$inventory->quantity); 
                       $inventory->update(['active'=>1]);
                     }                  
                 });
@@ -347,7 +347,7 @@ class AccInventoryIssueGeneralController extends Controller
                  $inventory = AccInventory::get_detail_first($d->id);
                  if($inventory){
                    // Trả lại số tồn kho
-                   $this->increaseStock($d->credit,$inventory->stock,$inventory->supplies_goods,$inventory->quantity); 
+                   $this->increaseStock($d->credit,$inventory->stock_issue,$inventory->item_id,$inventory->quantity); 
                    $inventory->delete();
                  }          
                }             

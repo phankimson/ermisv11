@@ -530,6 +530,9 @@ var Ermis = function() {
             shortcut.add(key + "T", function(e) {
                 initDeleteRowAll(e);
             });
+            if(jQuery(".droplist[name='bank_account']").length>0){
+                jQuery(".droplist[name='bank_account']").data("kendoDropDownList").value(0);
+            }         
         } else if (flag === 2) { //SAVE
             jQuery('.add,.edit,.copy,.print,.back,.forward,.delete').removeClass('disabled');
             shortcut.add(key + "A", function(e) {
@@ -626,6 +629,9 @@ var Ermis = function() {
             $kGridVat.addClass('disabled');
             shortcut.remove(key + "R");
             shortcut.remove(key + "T");
+            if(jQuery(".droplist[name='bank_account']").length>0){
+                jQuery(".droplist[name='bank_account']").data("kendoDropDownList").value(0);
+            }         
         } else if (flag === 5) { //BIND
             jQuery('.add,.copy,.edit,.print,.back,.forward,.delete,.pageview').removeClass('disabled');
             shortcut.add(key + "A", function(e) {
@@ -907,7 +913,13 @@ var Ermis = function() {
                     });  
             },
             function() {
-
+                dataDefaultGrid.data["bank_account"] = arr; 
+                // Chạy lại giá trị grid
+                    var grid = $kGrid.data("kendoGrid");
+                    var r = grid.dataSource.data();
+                    jQuery.each(r, function(l, k) {
+                            initLoadDropdownGrid(k,"bank_account","value","text",arr);
+                    });  
             });      
             }            
         }
@@ -1079,7 +1091,7 @@ var Ermis = function() {
 
     var initSave = function(e) {
         var obj = {};
-        obj.compare = sessionStorage.compare;
+        obj.compare = sessionStorage.compare == undefined ? "" : sessionStorage.compare;
         obj.detail = $kGrid.data("kendoGrid").dataSource.view();
         obj.tax = $kGridVat.data("kendoGrid").dataSource.data();
         obj.reference_by = reference_by;
@@ -1414,9 +1426,7 @@ var Ermis = function() {
                     if(v.url && a[v.field] == undefined){
                         var sytax =  v.url.includes("?") ? "&" : "?"; 
                          RequestURLcallback(v.url+sytax+"value="+dataItem[v.field],function(rs){
-                            initLoadDropdownGrid(data,v.field,dataValueField,dataTextField,rs);   
-                            // Bắt buộc refresh lại grid mới hiển thị dữ liệu       
-                                $kGridTab.data("kendoGrid").refresh();   
+                            initLoadDropdownGrid(data,v.field,dataValueField,dataTextField,rs);             
                         });                                          
                     }else{
                         var f = findObjectByKey(a[v.field],dataValueField,dataItem[v.field]);    

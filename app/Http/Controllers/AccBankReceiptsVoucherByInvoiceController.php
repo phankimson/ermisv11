@@ -13,26 +13,22 @@ use App\Http\Model\AccVatDetail;
 use App\Http\Model\AccGeneral;
 use App\Http\Model\AccDetail;
 use App\Http\Model\AccSettingVoucher;
-use App\Http\Model\AccCountVoucher;
 use App\Http\Model\AccVatDetailPayment;
-use App\Http\Model\AccSystems;
-use App\Http\Model\AccAttach;
 use App\Http\Model\AccHistoryAction;
 use App\Http\Resources\BankVoucherInvoiceResource;
 use App\Http\Resources\BankGeneralReadResource;
 use App\Http\Model\Error;
-use App\Classes\Convert;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\File;
 use Exception;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use App\Http\Traits\CurrencyCheckTraits;
+use App\Http\Traits\FileAttachTraits;
+use App\Http\Traits\NumberVoucherTraits;
 
 class AccBankReceiptsVoucherByInvoiceController extends Controller
 {
-  use CurrencyCheckTraits;
+  use CurrencyCheckTraits,FileAttachTraits,NumberVoucherTraits;
   protected $url;
   protected $key;
   protected $key_invoice;
@@ -132,39 +128,7 @@ class AccBankReceiptsVoucherByInvoiceController extends Controller
             $general = new AccGeneral();
             $general->user = $user->id;
             // Lưu số nhảy
-            $voucher = AccNumberVoucher::get_menu($this->menu->id);
-            // Thay đổi số nhảy theo yêu cầu DD MM YY
-            $voucher_id = $voucher->id;
-            $voucher_length_number = $voucher->length_number;
-            $format = $voucher->format;
-            $prefix = $voucher->prefix;
-            if($voucher->change_voucher == 1){
-              $val = Convert::dateformatArr($format,$arr->accounting_date);
-              $voucher = AccCountVoucher::get_count_voucher($voucher_id,$format,$val['day_format'],$val['month_format'],$val['year_format']);              
-              if(!$voucher){
-                $voucher = new AccCountVoucher();
-                $voucher->number_voucher = $voucher_id;
-                $voucher->format = $format;
-                $voucher->day = $val['day_format'];
-                $voucher->month = $val['month_format'];
-                $voucher->year = $val['year_format'];
-                $voucher->length_number = $voucher_length_number;
-                $voucher->active = 1;
-              }
-            }                
-            // Load Phiếu tự động / Load AutoNumber             
-              if($voucher->number == 0 ||  !$voucher->number ){
-                $number = 1;
-              }else{
-                $number = $voucher->number + 1;
-              }  
-              $length_number = $voucher->length_number;
-              if(strlen($number."") > $voucher->length_number){
-                $voucher->length_number = $length_number + 1;
-              }
-                $voucher->number = $number;
-               $v = Convert::VoucherMasker1($voucher,$prefix);
-              $voucher->save();
+             $v = $this->saveNumberVoucher($this->menu,$arr);
           }else{
               $check_permission = false;
           }
@@ -291,26 +255,7 @@ class AccBankReceiptsVoucherByInvoiceController extends Controller
                
            }          
            // Lưu file
-           if($request->hasFile('files')) {
-             $files = $request->file('files');
-             foreach($files as $file){
-               $com = $request->session()->get('com');
-               $filename = $file->getClientOriginalName().'_'.Str::random(10);
-               $sys = AccSystems::get_systems($this->path);
-               $path = public_path().'/'.$sys->value.'/'.$com.'/'. $general->id;
-               $pathname = $sys->value . $com.'/'. $general->id.'/'.$filename;
-               if(!File::isDirectory($path)){
-               File::makeDirectory($path, 0777, true, true);
-               }
-               $files->move($path, $filename);
-               // Lưu lại hình ảnh
-               $attach = new AccAttach();
-               $attach->general_id = $general->id;
-               $attach->name = $filename;
-               $attach->path = $pathname;
-               $attach->save();
-             }
-           }
+            $this->saveFile($request,$general->id,$this->path);   
 
            // Lưu lịch sử
            $h = new AccHistoryAction();

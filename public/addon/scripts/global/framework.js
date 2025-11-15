@@ -1472,8 +1472,8 @@ function getAtIndex(i,storedarrId) {
             data[field].set(dataValueField,0);
             data[field].set(dataTextField,'--Select--'); 
         }
-        // Không bỏ đc refresh
-        //$kGridTab.data("kendoGrid").refresh();        
+        // Không bỏ đc refresh mới hiện thị dữ liệu lên grid
+        $kGridTab.data("kendoGrid").refresh();        
     }
 
 function checkboxClicked(element,$kGrid) {

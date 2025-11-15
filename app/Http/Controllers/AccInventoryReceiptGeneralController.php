@@ -99,7 +99,7 @@ class AccInventoryReceiptGeneralController extends Controller
                     $inventory = AccInventory::get_detail_first($d->id);
                     if($inventory){
                        // Trừ số tồn kho
-                      $this->reduceStock($d->debit,$inventory->stock,$inventory->supplies_goods,$inventory->quantity); 
+                      $this->reduceStock($d->debit,$inventory->stock_receipt,$inventory->item_id,$inventory->quantity); 
                       $inventory->update(['active'=>0]);                      
                     }                              
                 });
@@ -164,7 +164,7 @@ class AccInventoryReceiptGeneralController extends Controller
                     $inventory = AccInventory::get_detail_first($d->id);
                     if($inventory){
                      // Trả lại số tồn kho
-                      $this->increaseStock($d->debit,$inventory->stock,$inventory->supplies_goods,$inventory->quantity); 
+                      $this->increaseStock($d->debit,$inventory->stock_receipt,$inventory->item_id,$inventory->quantity); 
                       $inventory->update(['active'=>1]);
                     }                  
                 });
@@ -347,7 +347,7 @@ class AccInventoryReceiptGeneralController extends Controller
                  $inventory = AccInventory::get_detail_first($d->id);
                  if($inventory){                  
                     // Trừ số tồn kho
-                   $this->reduceStock($d->debit,$inventory->stock,$inventory->supplies_goods,$inventory->quantity);                       
+                   $this->reduceStock($d->debit,$inventory->stock_receipt,$inventory->item_id,$inventory->quantity);                       
                    $inventory->delete();
                  }          
                }             

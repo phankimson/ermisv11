@@ -7,14 +7,14 @@ use Illuminate\Support\Facades\File;
 
 trait FileAttachTraits
 {
-      public function saveFile($request,$general_id)
+      public function saveFile($request,$general_id,$path_system)
       {
         if($request->hasFile('files')) {
              $files = $request->file('files');
              $com = $request->session()->get('com');
+             $sys = AccSystems::get_systems($path_system);
              foreach($files as $file){          
-               $filename = $file->getClientOriginalName().'_'.Str::random(10);
-               $sys = AccSystems::get_systems($this->path);
+               $filename = $file->getClientOriginalName().'_'.Str::random(10);           
                $path = public_path().'/'.$sys->value.'/'.$com.'/'. $general_id;
                $pathname = $sys->value . $com.'/'. $general_id.'/'.$filename;
                if(!File::isDirectory($path)){
@@ -38,9 +38,6 @@ trait FileAttachTraits
                 };
                 $a->delete();
               };
-      }
-
-
-    
+      }   
 
 }

@@ -200,13 +200,14 @@ class AccInventoryReceiptVoucherController extends Controller
              $detail->save();     
        
              array_push($removeId,$detail->id);
-             $arr->detail[$k]->id = $detail->id;   
+             $arr->detail[$k]->id = $detail->id;                
              // Lưu kho
+             $item = explode("-", $d->item_code->text);
              $inventory->general_id = $general->id;
              $inventory->detail_id = $detail->id;
              $inventory->item_id = $d->item_code->value;
-             $inventory->item_code = $d->item_code->item;
-             $inventory->item_name = $d->item_code->text;
+             $inventory->item_code = isset($item[0]) ? trim($item[0]) : '';
+             $inventory->item_name = isset($item[1]) ? trim($item[1]) : '';
              $inventory->unit = $d->unit->value;
              $inventory->stock_receipt = $d->stock->value;
              $inventory->quantity = $d->quantity;
@@ -226,7 +227,7 @@ class AccInventoryReceiptVoucherController extends Controller
            AccInventory::get_detail_id_whereNotIn_delete($general->id,$removeId);
           
            // Lưu file
-           $this->saveFile($request,$general->id);           
+           $this->saveFile($request,$general->id,$this->path);           
 
            // Lưu lịch sử
            $h = new AccHistoryAction();

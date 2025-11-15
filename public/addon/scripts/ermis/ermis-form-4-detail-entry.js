@@ -961,7 +961,7 @@ var Ermis = function() {
 
     var initSave = function(e) {
         var obj = {};
-        obj.compare = sessionStorage.compare;
+        obj.compare = sessionStorage.compare == undefined ? "" : sessionStorage.compare;
         obj.detail = $kGrid.data("kendoGrid").dataSource.view();
         obj.tax = $kGridVat.data("kendoGrid").dataSource.data();
         obj.reference_by = reference_by;
@@ -1278,9 +1278,7 @@ var Ermis = function() {
                     if(v.url && a[v.field] == undefined){
                         var sytax =  v.url.includes("?") ? "&" : "?"; 
                          RequestURLcallback(v.url+sytax+"value="+dataItem[v.field],function(rs){
-                            initLoadDropdownGrid(data,v.field,dataValueField,dataTextField,rs); 
-                            // Bắt buộc refresh lại grid mới hiển thị dữ liệu
-                                $kGridTab.data("kendoGrid").refresh();
+                            initLoadDropdownGrid(data,v.field,dataValueField,dataTextField,rs);       
                         });                                          
                     }else{
                         var f = findObjectByKey(a[v.field],dataValueField,dataItem[v.field]);    

@@ -994,7 +994,7 @@ var Ermis = function() {
 
     var initSave = function(e) {
         var obj = {};
-        obj.compare = sessionStorage.compare;
+        obj.compare = sessionStorage.compare == undefined ? "" : sessionStorage.compare;
         obj.detail = $kGrid.data("kendoGrid").dataSource.view();
         obj.reference_by = reference_by;
         var crit1 = initValidationGrid(obj.detail,Ermis.field);
@@ -1315,12 +1315,10 @@ var Ermis = function() {
                             var sytax =  v.url.includes("?") ? "&" : "?"; 
                                 RequestURLcallback(v.url+sytax+"value="+dataItem[v.field],function(rs){
                                 initLoadDropdownGrid(data,v.field,dataValueField,dataTextField,rs);
-                                  // Bắt buộc refresh lại grid mới hiển thị dữ liệu
-                                    $kGridTab.data("kendoGrid").refresh();
                                 });                                                                
                         }else{
                             var f = findObjectByKey(a[v.field],dataValueField,dataItem[v.field]);    
-                            initLoadDropdownGrid(data,v.field,dataValueField,dataTextField,f);                      
+                            initLoadDropdownGrid(data,v.field,dataValueField,dataTextField,f);                   
                         }                                  
                     }
                 } else if (v.set === "3") {

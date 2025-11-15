@@ -10,7 +10,6 @@ use App\Http\Model\Menu;
 use App\Http\Model\AccGeneral;
 use App\Http\Model\AccDetail;
 use App\Http\Model\AccInventory;
-use App\Http\Model\AccAttach;
 use App\Http\Model\AccPeriod;
 use App\Http\Model\AccSystems;
 use App\Http\Model\AccNumberVoucher;
@@ -21,18 +20,17 @@ use App\Http\Resources\InventoryGeneralReadResource;
 use App\Http\Model\Imports\AccBankPaymentGeneralImport;
 use App\Http\Model\Imports\AccBankPaymentVoucherImport;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\File;
 use Maatwebsite\Excel\Facades\Excel;
 use Exception;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Traits\NumberVoucherTraits;
 use App\Http\Traits\StockCheckTraits;
+use App\Http\Traits\FileAttachTraits;
 
 class AccInventoryIssueVoucherController extends Controller
 {
-  use StockCheckTraits,NumberVoucherTraits;
+  use StockCheckTraits,NumberVoucherTraits,FileAttachTraits;
   protected $url;
   protected $key;
   protected $menu;
@@ -205,11 +203,12 @@ class AccInventoryIssueVoucherController extends Controller
              array_push($removeId,$detail->id);
              $arr->detail[$k]->id = $detail->id;   
              // Lưu kho
+             $item = explode("-", $d->item_code->text);
              $inventory->general_id = $general->id;
              $inventory->detail_id = $detail->id;
              $inventory->item_id = $d->item_code->value;
-             $inventory->item_code = $d->item_code->item;
-             $inventory->item_name = $d->item_code->text;
+             $inventory->item_code = isset($item[0]) ? trim($item[0]) : '';
+             $inventory->item_name = isset($item[1]) ? trim($item[1]) : '';
              $inventory->unit = $d->unit->value;
              $inventory->stock_issue = $d->stock->value;
              $inventory->quantity = $d->quantity;
@@ -234,26 +233,7 @@ class AccInventoryIssueVoucherController extends Controller
            AccInventory::get_detail_id_whereNotIn_delete($general->id,$removeId);
           
            // Lưu file
-           if($request->hasFile('files')) {
-             $files = $request->file('files');
-             foreach($files as $file){
-               $com = $request->session()->get('com');
-               $filename = $file->getClientOriginalName().'_'.Str::random(10);
-               $sys = AccSystems::get_systems($this->path);
-               $path = public_path().'/'.$sys->value.'/'.$com.'/'. $general->id;
-               $pathname = $sys->value . $com.'/'. $general->id.'/'.$filename;
-               if(!File::isDirectory($path)){
-               File::makeDirectory($path, 0777, true, true);
-               }
-               $files->move($path, $filename);
-               // Lưu lại hình ảnh
-               $attach = new AccAttach();
-               $attach->general_id = $general->id;
-               $attach->name = $filename;
-               $attach->path = $pathname;
-               $attach->save();
-             }
-           }
+           $this->saveFile($request,$general->id,$this->path);    
 
            // Lưu lịch sử
            $h = new AccHistoryAction();
