@@ -75,6 +75,7 @@ var Ermis = function() {
                         initActive(result.data.active);
                         SetDataAjax(data.columns, result.data);
                         initLoadGrid(result.data);
+                        initLoadAttach(result.data.attach);
                         sessionStorage.dataId = result.data.id;
                         initKendoGridVatChange();
                         initKendoGridChange();
@@ -88,6 +89,32 @@ var Ermis = function() {
                     initStatus(7);
         }); 
     };
+
+    var initLoadAttach = function(dataLoad) {
+        jQuery.each(dataLoad, function(i, item) {
+            var a = jQuery(".item_attach").first().clone();
+            a.find(".attach_name").attr("href","public/"+item.path).text(item.name);
+            a.find(".delete_file").attr("data-id",item.id);
+            a.removeClass("hidden");
+            jQuery(".item_attach").parents("table").append(a); 
+        });
+        initDeleteAttach();
+    }
+
+    var initDeleteAttach = function(){
+        jQuery(".delete_file").on("click", function(e){
+            var $this = this.parents("a").attr("data-id");
+            var postdata = {
+                data: JSON.stringify($this)
+            };
+            ErmisTemplateAjaxPost0(e, postdata, Ermis.link + '-delete-attach', function(result) {
+                 jQuery($this).parents("tr").remove();
+            }, function(result) {
+                kendo.alert(result.message);
+            });
+           
+        })
+    }
 
     var initLoadGrid = function(dataLoad){
           var grid = $kGrid.data("kendoGrid");
@@ -1134,6 +1161,7 @@ var Ermis = function() {
                   initActive("1");
                   jQuery('.voucher').val(result.voucher_name);
                   initLoadGrid(result.data);
+                  initLoadAttach(result.data.attach);
                   initKendoGridChange();
                   // Thay đổi bảng tìm kiếm
                   var grid = $kGridVoucher.data("kendoGrid");

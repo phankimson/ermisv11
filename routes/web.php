@@ -1324,6 +1324,8 @@ Route::group([
     Route::post('/bank-receipts-voucher-change-bank', 'change_bank' )->name('-change-bank');
       // Kiểm tra mst doanh nghiệp
     Route::post('/bank-receipts-voucher-check-subject', 'check_subject' )->name('-check-subject');  
+     // Xóa đính kèm
+    Route::post('/bank-receipts-voucher-delete-attach', 'delete_attach' )->name('-delete-attach');  
     });
 
     Route::controller(AccGeneralController::class)->group(function () {  

@@ -325,7 +325,7 @@ class AccBankReceiptsVoucherController extends Controller
            AccVatDetail::get_detail_whereNotIn_delete($general->id,$removeId_v);
 
             // Lưu file
-           $arr->files = $this->saveFile($request,$general->id,$this->path);   
+           $arr->attach = $this->saveFile($request,$general->id,$this->path);   
 
            // Lưu lịch sử
            $h = new AccHistoryAction();

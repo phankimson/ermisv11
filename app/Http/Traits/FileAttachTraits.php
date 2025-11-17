@@ -15,7 +15,7 @@ trait FileAttachTraits
              $sys = AccSystems::get_systems($path_system);
              $rs = collect();
              foreach($files as $file){          
-               $filename = $file->getClientOriginalName().'_'.Str::random(10);           
+               $filename = Str::random(10).'_'.$file->getClientOriginalName();           
                $path = public_path().'/'.$sys->value.'/'.$com->id.'/'. $general_id;
                $pathname = $sys->value . $com->id.'/'. $general_id.'/'.$filename;
                if(!File::isDirectory($path)){

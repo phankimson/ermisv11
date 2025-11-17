@@ -23,6 +23,7 @@ use App\Http\Model\AccSuppliesGoods;
 use App\Http\Model\KeyAi;
 use App\Http\Model\Error;
 use App\Classes\Convert;
+use App\Http\Model\AccAttach;
 use App\Http\Model\AccCountVoucher;
 use App\Http\Model\AccNumberVoucher;
 use App\Http\Model\AccSuppliesGoodsType;
@@ -449,6 +450,34 @@ class AccVoucherController extends Controller
       $data = $response->json();  
       if($req && $data['code'] == "00"){
         return response()->json(['status'=>true,'data'=> new CheckSubjectResource($data)]);
+      }else{
+        return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
+      }
+     }catch(Exception $e){
+        // Lưu lỗi
+        $err = new Error();
+        $err ->create([
+          'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
+          'user_id' => Auth::id(),
+          'menu_id' => $this->menu->id,
+          'error' => $e->getMessage().' - Line '.$e->getLine(),
+          'url'  => $this->url,
+          'check' => 0 ]);
+        return response()->json(['status'=>false,'message'=> trans('messages.error').' '.$e->getMessage().' - Line '.$e->getLine()]);
+      }
+  }
+
+   public function delete_attach(Request $request){
+    $type = 10;
+    try{
+      $req = json_decode($request->data);
+      $rs = AccAttach::find($req);
+      if(!$rs){
+        return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
+      }
+      if($req && $rs){
+        $rs->delete();
+        return response()->json(['status'=>true]);
       }else{
         return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
       }
