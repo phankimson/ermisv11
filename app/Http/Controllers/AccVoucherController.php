@@ -32,10 +32,12 @@ use App\Http\Resources\BarcodeResource;
 use Illuminate\Support\Facades\Validator;
 use Exception;
 use Illuminate\Support\Facades\Http;
+use App\Http\Traits\FileAttachTraits;
 
 
 class AccVoucherController extends Controller
 {
+  use FileAttachTraits;
   protected $url;
   protected $key;
   protected $menu;
@@ -476,6 +478,7 @@ class AccVoucherController extends Controller
         return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
       }
       if($req && $rs){
+        $this->deleteFile($rs);
         $rs->delete();
         return response()->json(['status'=>true]);
       }else{

@@ -76,6 +76,7 @@ var Ermis = function() {
                     initActive(result.data.active);
                     SetDataAjax(data.columns, result.data);
                     initLoadGrid(result.data.detail);
+                    initLoadAttach(result.data.attach);
                     var grid = $kGrid.data("kendoGrid");
                     var checkHeader = false;
                     checked_header_grid(grid,grid_header_key,checkHeader);
@@ -91,6 +92,34 @@ var Ermis = function() {
                 initStatus(7);
             });
     };
+
+        var initLoadAttach = function(dataLoad) {
+        jQuery.each(dataLoad, function(i, item) {
+            var a = jQuery(".item_attach").first().clone();
+            a.find(".attach_name").attr("href",UrlString(item.path+item.name)).text(item.name);
+            a.find(".delete_file").attr("data-id",item.id);
+            a.removeClass("hidden");
+            jQuery(".item_attach").parents("table").append(a); 
+        });
+        initDeleteAttach();
+    }
+
+    var initDeleteAttach = function(){
+        jQuery(".delete_file").on("click", function(e){
+            var $this = jQuery(this);
+            var data = $this.attr("data-id");
+            var postdata = {
+                data: JSON.stringify(data)
+            };            
+            ErmisTemplateAjaxPost0(e, postdata, Ermis.link + '-delete-attach', function(result) {
+                $this.parents("tr").remove();
+            }, function(result) {
+                kendo.alert(result.message);
+            });
+           
+        })
+    }
+
 
     var initLoadGrid = function(dataLoad){
           var grid = $kGrid.data("kendoGrid");
@@ -883,6 +912,7 @@ var Ermis = function() {
                   initActive("1");
                   jQuery('.voucher').val(result.voucher_name);
                   initLoadGrid(result.data.detail);
+                  initLoadAttach(result.data.attach);
                   initKendoGridChange();
                   // Thay đổi bảng tìm kiếm
                   var grid = $kGridVoucher.data("kendoGrid");

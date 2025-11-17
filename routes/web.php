@@ -1135,6 +1135,8 @@ Route::group([
     Route::post('/cash-receipts-voucher-load-voucher-change', 'load_voucher_change' )->name('-load-voucher-change');
       // Kiểm tra mst doanh nghiệp
     Route::post('/cash-receipts-voucher-check-subject', 'check_subject' )->name('-check-subject');
+      // Xóa đính kèm
+    Route::post('/cash-receipts-voucher-delete-attach', 'delete_attach' )->name('-delete-attach');  
     });
 
     Route::controller(AccGeneralController::class)->group(function () {
@@ -1168,6 +1170,8 @@ Route::group([
     Route::post('/cash-receipts-voucher-by-invoice-currency', 'currency' )->name('-by-invoice-currency');
     Route::post('/cash-receipts-voucher-by-invoice-reference', 'reference' )->name('-by-invoice-reference');  
     Route::post('/cash-receipts-voucher-by-invoice-check-subject', 'check_subject' )->name('-check-subject');
+      // Xóa đính kèm
+    Route::post('/cash-receipts-voucher-by-invoice-delete-attach', 'delete_attach' )->name('-delete-attach');  
     });
 
     Route::controller(AccGeneralController::class)->group(function () {
@@ -1227,6 +1231,8 @@ Route::group([
         Route::post('/cash-payment-voucher-load-voucher-change', 'load_voucher_change' )->name('-load-voucher-change');
         // Kiểm tra mst doanh nghiệp
         Route::post('/cash-payment-voucher-check-subject', 'check_subject' )->name('-check-subject');
+          // Xóa đính kèm
+        Route::post('/cash-payment-voucher-delete-attach', 'delete_attach' )->name('-delete-attach');  
      });
 
      Route::controller(AccGeneralController::class)->group(function () {
@@ -1258,6 +1264,8 @@ Route::group([
     Route::post('/cash-payment-voucher-by-invoice-currency', 'currency' )->name('-by-invoice-currency');
     Route::post('/cash-payment-voucher-by-invoice-reference', 'reference' )->name('-by-invoice-reference');
     Route::post('/cash-payment-voucher-by-invoice-check-subject', 'check_subject' )->name('-check-subject');
+      // Xóa đính kèm
+    Route::post('/cash-payment-voucher-by-invoice-delete-attach', 'delete_attach' )->name('-delete-attach');  
     }); 
 
     Route::controller(AccGeneralController::class)->group(function () {
@@ -1360,6 +1368,8 @@ Route::group([
     Route::post('/bank-receipts-voucher-by-invoice-currency', 'currency' )->name('-by-invoice-currency');
     Route::post('/bank-receipts-voucher-by-invoice-reference', 'reference' )->name('-by-invoice-reference');
     Route::post('/bank-receipts-voucher-by-invoice-check-subject', 'check_subject' )->name('-check-subject'); 
+     // Xóa đính kèm
+    Route::post('/bank-receipts-voucher-by-invoice-delete-attach', 'delete_attach' )->name('-delete-attach');  
     });
 
     Route::controller(AccGeneralController::class)->group(function () {  
@@ -1425,6 +1435,8 @@ Route::group([
     Route::post('/bank-payment-voucher-change-bank', 'change_bank' )->name('-change-bank');
     // Kiểm tra mst doanh nghiệp
     Route::post('/bank-payment-voucher-check-subject', 'check_subject' )->name('-check-subject');
+     // Xóa đính kèm
+    Route::post('/bank-payment-voucher-delete-attach', 'delete_attach' )->name('-delete-attach');  
   });  
 
     Route::controller(AccGeneralController::class)->group(function () {
@@ -1458,6 +1470,8 @@ Route::group([
     Route::post('/bank-payment-voucher-by-invoice-currency', 'currency' )->name('-by-invoice-currency');
     Route::post('/bank-payment-voucher-by-invoice-reference', 'reference' )->name('-by-invoice-reference');
     Route::post('/bank-payment-voucher-by-invoice-check-subject', 'check_subject' )->name('-check-subject');  
+     // Xóa đính kèm
+    Route::post('/bank-payment-voucher-by-invoice-delete-attach', 'delete_attach' )->name('-delete-attach');  
     }); 
 
     Route::controller(AccGeneralController::class)->group(function () {      
@@ -1521,6 +1535,8 @@ Route::group([
     Route::post('/bank-transfer-voucher-load-voucher-change', 'load_voucher_change' )->name('-load-voucher-change');
     // Tìm tài khoản mặc định thay đổi ngân hàng
     Route::post('/bank-transfer-voucher-change-bank', 'change_bank' )->name('-change-bank');  
+    // Xóa đính kèm
+    Route::post('/bank-transfer-voucher-delete-attach', 'delete_attach' )->name('-delete-attach');  
     }); 
 
     Route::controller(AccGeneralController::class)->group(function () {   
@@ -1585,6 +1601,8 @@ Route::group([
     Route::post('/entry-general-voucher-load-voucher-change', 'load_voucher_change' )->name('-load-voucher-change');
     // Kiểm tra mst doanh nghiệp
     Route::post('/entry-general-voucher-check-subject', 'check_subject' )->name('-check-subject');
+     // Xóa đính kèm
+    Route::post('/entry-general-voucher-delete-attach', 'delete_attach' )->name('-delete-attach');  
    });
 
    Route::controller(AccGeneralController::class)->group(function () {  
@@ -1652,6 +1670,8 @@ Route::group([
     Route::post('/inventory-issue-voucher-scan', 'scan' )->name('-scan');
     // Kiểm tra mst doanh nghiệp
     Route::post('/inventory-issue-voucher-check-subject', 'check_subject' )->name('-check-subject');
+     // Xóa đính kèm
+    Route::post('/inventory-issue-voucher-delete-attach', 'delete_attach' )->name('-delete-attach');  
     });
 
     Route::controller(AccGeneralController::class)->group(function () {  
@@ -1720,6 +1740,8 @@ Route::group([
     Route::post('/inventory-receipt-voucher-scan', 'scan' )->name('-scan');
     // Kiểm tra mst doanh nghiệp
     Route::post('/inventory-receipt-voucher-check-subject', 'check_subject' )->name('-check-subject');
+    // Xóa đính kèm
+    Route::post('/inventory-receipt-voucher-delete-attach', 'delete_attach' )->name('-delete-attach');  
    });
 
      Route::controller(AccGeneralController::class)->group(function () {  
@@ -1787,6 +1809,8 @@ Route::group([
     Route::post('/inventory-transfer-voucher-scan', 'scan' )->name('-scan');
     // Kiểm tra mst doanh nghiệp
     Route::post('/inventory-transfer-voucher-check-subject', 'check_subject' )->name('-check-subject');
+    // Xóa đính kèm
+    Route::post('/inventory-transfer-voucher-delete-attach', 'delete_attach' )->name('-delete-attach');  
    });
 
      Route::controller(AccGeneralController::class)->group(function () {  

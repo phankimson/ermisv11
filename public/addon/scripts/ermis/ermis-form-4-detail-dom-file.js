@@ -93,7 +93,7 @@ var Ermis = function() {
     var initLoadAttach = function(dataLoad) {
         jQuery.each(dataLoad, function(i, item) {
             var a = jQuery(".item_attach").first().clone();
-            a.find(".attach_name").attr("href","public/"+item.path).text(item.name);
+            a.find(".attach_name").attr("href",UrlString(item.path+item.name)).text(item.name);
             a.find(".delete_file").attr("data-id",item.id);
             a.removeClass("hidden");
             jQuery(".item_attach").parents("table").append(a); 
@@ -103,12 +103,13 @@ var Ermis = function() {
 
     var initDeleteAttach = function(){
         jQuery(".delete_file").on("click", function(e){
-            var $this = this.parents("a").attr("data-id");
+            var $this = jQuery(this);
+            var data = $this.attr("data-id");
             var postdata = {
-                data: JSON.stringify($this)
-            };
+                data: JSON.stringify(data)
+            };            
             ErmisTemplateAjaxPost0(e, postdata, Ermis.link + '-delete-attach', function(result) {
-                 jQuery($this).parents("tr").remove();
+                $this.parents("tr").remove();
             }, function(result) {
                 kendo.alert(result.message);
             });

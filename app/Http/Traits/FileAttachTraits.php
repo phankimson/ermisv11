@@ -14,10 +14,11 @@ trait FileAttachTraits
              $com = $request->session()->get('com');
              $sys = AccSystems::get_systems($path_system);
              $rs = collect();
-             foreach($files as $file){          
-               $filename = Str::random(10).'_'.$file->getClientOriginalName();           
+             foreach($files as $file){ 
+               $extension = pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);                  
+               $filename = Str::random(10).'.'.$extension;                
                $path = public_path().'/'.$sys->value.'/'.$com->id.'/'. $general_id;
-               $pathname = $sys->value . $com->id.'/'. $general_id.'/'.$filename;
+               $pathname = $sys->value . $com->id.'/'. $general_id.'/';
                if(!File::isDirectory($path)){
                File::makeDirectory($path, 0777, true, true);
                }
@@ -34,7 +35,7 @@ trait FileAttachTraits
              return $rs;
            }
       }   
-      public function deleteFile($attach){
+      public function deleteAllFile($attach){
             foreach($attach as $a){
                 //Xóa ảnh cũ
                 if(File::exists(public_path($a->path))){
@@ -42,6 +43,13 @@ trait FileAttachTraits
                 };
                 $a->delete();
               };
+      }   
+
+       public function deleteFile($file){
+                //Xóa ảnh cũ
+                if(File::exists(public_path($file->path.$file->name))){
+                  File::delete(public_path($file->path.$file->name));
+                };
       }   
 
 }
