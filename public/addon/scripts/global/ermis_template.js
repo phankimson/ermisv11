@@ -393,7 +393,9 @@ var ErmisTemplateAjaxPost10 = function(e, elem, elem_data, url, dataId, obj_add,
                 if (crit === true) {
                     if (crit2) {
                         var fd = new FormData(); // XXX: Neex AJAX2
-                        fd.append('files', a);
+                        for (var x = 0; x < a.length; x++) {
+                            fd.append('files[]', a[x]);
+                        }
                         fd.append('data', JSON.stringify(obj));
                         RequestURLImage(url, 'json', fd, function(result) {
                             if (result.status === true) {
@@ -431,7 +433,9 @@ var ErmisTemplateAjaxPost11 = function(e, elem, elem_data, url, dataId, obj_add,
                 if (crit === true) {
                     if (crit2) {
                         var fd = new FormData(); // XXX: Neex AJAX2
-                        fd.append('files', a);
+                         for (var x = 0; x < a.length; x++) {
+                            fd.append('files[]', a[x]);
+                        }
                         fd.append('data', JSON.stringify(obj));
                         RequestURLImage(url, 'json', fd, function(result) {
                             if (result.status === true) {
@@ -469,7 +473,9 @@ var ErmisTemplateAjaxPost12 = function(e, elem, elem_data, url, dataId, obj_add,
                 if (crit === true) {
                     if (crit2) {
                         var fd = new FormData(); // XXX: Neex AJAX2
-                        fd.append('files', a);
+                        for (var x = 0; x < a.length; x++) {
+                            fd.append('files[]', a[x]);
+                        }
                         fd.append('data', JSON.stringify(obj));
                         RequestURLImage(url, 'json', fd, function(result) {
                             if (result.status === true) {
@@ -2142,6 +2148,7 @@ var ErmisKendoDroplistMultiTemplate = function(elem,filter) {
                 read: {
                     dataType: "jsonp",
                     url: url,
+                    cache: false
                 }
             }
         },
@@ -2162,6 +2169,7 @@ var ErmisKendoDroplistReadTemplate = function(elem,filter) {
                 read: {
                     dataType: "jsonp",
                     url: url,
+                    cache: false
                 }
             }
         },

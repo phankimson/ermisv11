@@ -54,7 +54,7 @@ class AccBankReceiptsVoucherController extends Controller
      $this->key = "bank-receipts-voucher";
      $this->menu = Menu::where('code', '=', $this->key)->first();
      $this->print = 'PT%';
-     $this->path = 'PATH_UPLOAD_BANK_RECEIPTS';
+     $this->path = 'PATH_UPLOAD_BANK_RECEIPT';
      $this->check_cash = 'CHECK_CASH';
      $this->download = 'AccBankReceiptsVoucher.xlsx';
  }
@@ -325,7 +325,7 @@ class AccBankReceiptsVoucherController extends Controller
            AccVatDetail::get_detail_whereNotIn_delete($general->id,$removeId_v);
 
             // Lưu file
-           $this->saveFile($request,$general->id,$this->path);   
+           $arr->files = $this->saveFile($request,$general->id,$this->path);   
 
            // Lưu lịch sử
            $h = new AccHistoryAction();
