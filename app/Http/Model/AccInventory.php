@@ -7,7 +7,7 @@ use App\Http\Model\Casts\Decimal;
 use App\Http\Model\Casts\Date;
 use App\Http\Traits\ScopesTraits;
 use App\Http\Traits\BootedTraits;
-use Illuminate\Support\Facades\DB;
+
 
 class AccInventory extends Model
 {
@@ -19,6 +19,8 @@ class AccInventory extends Model
       public $incrementing = false; // and it doesn't even have to be auto-incrementing!
 
       protected $guarded = []; //Thiếu dòng create bị lỗi Add [code] to fillable property to allow mass assignment on
+
+      protected $with = ['unit_item','stock_receipt_item','stock_issue_item'];
       
       protected $keyType = 'string';
 
@@ -59,8 +61,19 @@ class AccInventory extends Model
         return $result;
       }
 
-       public function detail() {
-        return $this->hasOne(AccDetail::class,'detail_id','id');
-       }
-    
-}
+      public function detail() {
+      return $this->hasOne(AccDetail::class,'id','detail_id');
+      }
+
+      public function unit_item() {
+        return $this->belongsTo(AccUnit::class,'unit','id');
+      }
+
+      public function stock_receipt_item() {
+        return $this->belongsTo(AccStock::class,'stock_receipt','id');
+      }
+
+      public function stock_issue_item() {
+        return $this->belongsTo(AccStock::class,'stock_issue','id');
+      }
+} 

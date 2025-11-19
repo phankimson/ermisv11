@@ -27,7 +27,7 @@ class AccDetail extends Model
 
       protected $guarded = []; //Thiếu dòng create bị lỗi Add [code] to fillable property to allow mass assignment on
 
-      protected $with = ['accounted_fast','debit','credit','case_code','statistical_code','cost_code','work_code','department','bank_account_debit','bank_account_credit','subject_credit','subject_debit'];
+      protected $with = ['accounted_fast','debit','credit','case_code','statistical_code','cost_code','work_code','department','bank_account_debit','bank_account_credit','subject_credit','subject_debit','inventory'];
       
       protected $keyType = 'string';
 
@@ -103,7 +103,10 @@ class AccDetail extends Model
       public function subject_credit() {
         return $this->belongsTo(AccObject::class,'subject_id_credit','id');
       }
-       public function subject_debit() {
+      public function subject_debit() {
         return $this->belongsTo(AccObject::class,'subject_id_debit','id');
+      }
+      public function inventory() {
+        return $this->hasOne(AccInventory::class,'detail_id','id');
       }
 }

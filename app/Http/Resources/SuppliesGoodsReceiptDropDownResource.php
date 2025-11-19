@@ -22,7 +22,7 @@ class SuppliesGoodsReceiptDropDownResource extends JsonResource
             'text' => $this->code ." - ".($locale == "vi" ? $this->name :$this->name_en),
             'item_code' => $this->id,
             'unit' =>  $this->unit_id,
-            'quantity' => $this->stock_check_sum_quantity,
+            'quantity' => number_format($this->stock_check_sum_quantity, 0),
             'unit_name' => $unit_name,
             'price' => $this->price_purchase,
             'account' => $this->stock_account,
