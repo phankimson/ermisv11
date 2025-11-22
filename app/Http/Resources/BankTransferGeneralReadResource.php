@@ -33,6 +33,7 @@ class BankTransferGeneralReadResource extends JsonResource
             'total_amount_rate' => $this->total_amount_rate,
             'reference' =>  $this->reference,
             'reference_by' =>  $this->reference_by,
+            'attach' =>  $this->whenLoaded('attach'),
             'status' =>  $this->status,
             'detail' => BankTransferDetailReadResource::collection($this->whenLoaded('detail')),
             'active' =>  $this->active,

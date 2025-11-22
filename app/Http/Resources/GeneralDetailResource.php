@@ -3,9 +3,8 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-use App\Http\Model\AccStock;
 
-class CashGeneralDetailResource extends JsonResource
+class GeneralDetailResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -15,7 +14,6 @@ class CashGeneralDetailResource extends JsonResource
      */
     public function toArray($request)
     {
-        dd(AccStock::find($this->inventory->stock_receipt));
         if($this->inventory){
             return [
                 'id' => $this->id,
@@ -25,7 +23,8 @@ class CashGeneralDetailResource extends JsonResource
                 'debit' => $this->debit()->first()->code,
                 'credit' => $this->credit()->first()->code,
                 'unit' => $this->inventory->unit_item->code,
-                'stock' => $this->inventory->stock_issue? optional($this->inventory->stock_issue_item)->code:optional($this->inventory->stock_receipt_item)->code,
+                'stock' => $this->inventory->stock_issue ? optional($this->inventory->stock_issue_item)->code : optional($this->inventory->stock_receipt_item)->code,
+                'price' => $this->inventory->price,
                 'quantity' => $this->inventory->quantity,
                 'amount' => $this->amount,
                 'rate' => $this->rate,

@@ -16,18 +16,23 @@ class InventoryDetailReadResource extends JsonResource
      */
     public function toArray($request)
     {
+        $item = (object) [ 
+            'id' => $this->inventory->item_id,
+            'code' => $this->inventory->item_code,
+            'name' => $this->inventory->item_name,
+            'name_en' => $this->inventory->item_name_en,];      
         return [
             'id' => $this->id,
-            'item_id' => $this->item_id,
-            'item_code' => !$this->item_id ? DefaultDropDownResource::make("") : ObjectDropDownResource::make($this->item()->first()),
-            'item_name' => $this->item_name,
+            'item_id' => $this->inventory->item_id,
+            'item_code' => !$this->inventory->item_id ? DefaultDropDownResource::make("") : LangDropDownResource::make($item),
+            'item_name' => $this->inventory->item_name,
             'currency' => $this->currency,
             'debit' => LangDropDownResource::make($this->debit()->first()),
             'credit' => LangDropDownResource::make($this->credit()->first()),
             'unit' => !$this->inventory ? DefaultDropDownResource::make("") : LangDropDownResource::make($this->inventory->unit_item),
             'stock' => !$this->inventory ? DefaultDropDownResource::make("") : LangDropDownResource::make($this->inventory->stock_issue? $this->inventory->stock_issue_item:$this->inventory->stock_receipt_item),
             'quantity' => !$this->inventory ? 0 : $this->inventory->quantity,
-            'price' => $this->price,
+            'price' => $this->inventory->price,
             'amount' => $this->amount,
             'rate' => $this->rate,
             'amount_rate' => $this->amount_rate,

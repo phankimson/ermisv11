@@ -91,7 +91,8 @@ var Ermis = function() {
     };
 
     var initLoadAttach = function(dataLoad) {
-        jQuery.each(dataLoad, function(i, item) {
+        if(dataLoad){
+            jQuery.each(dataLoad, function(i, item) {
             var a = jQuery(".item_attach").first().clone();
             a.find(".attach_name").attr("href",UrlString(item.path+item.name)).text(item.name);
             a.find(".delete_file").attr("data-id",item.id);
@@ -99,6 +100,7 @@ var Ermis = function() {
             jQuery(".item_attach").parents("table").append(a); 
         });
         initDeleteAttach();
+        }        
     }
 
     var initDeleteAttach = function(){

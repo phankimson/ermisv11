@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\ObjectDropDownListResource;
 
-class CashGeneralReadResource extends JsonResource
+class GeneralReadResource extends JsonResource
 {
     /**
      * Transform the resource into an array.

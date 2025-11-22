@@ -70,10 +70,10 @@ class AccInventory extends Model
       }
 
       public function stock_receipt_item() {
-        return $this->belongsTo(AccStock::class,'stock_receipt','id');
+        return $this->hasOne(AccStock::class,'id','stock_receipt');
       }
 
        public function stock_issue_item() {
-        return $this->belongsTo(AccStock::class,'stock_issue','id');
+        return $this->hasOne(AccStock::class,'id','stock_issue');
       }
 } 

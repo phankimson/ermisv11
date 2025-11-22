@@ -13,7 +13,7 @@ use App\Http\Model\AccSystems;
 use App\Http\Model\AccPrintTemplate;
 use App\Http\Model\AccObject;
 use App\Http\Model\Error;
-use App\Http\Resources\CashGeneralDetailResource;
+use App\Http\Resources\GeneralDetailResource;
 use App\Classes\NumberConvert;
 use App\Classes\Replace;
 use Exception;
@@ -35,7 +35,7 @@ class AccGeneralController extends Controller
     $type = 10;
     try{
     $req = json_decode($request->data);
-    $data = CashGeneralDetailResource::collection(AccDetail::get_detail($req));
+    $data = GeneralDetailResource::collection(AccDetail::get_detail($req));
     if($data->count()>0){
       return response()->json(['status'=>true,'data'=> $data]);
     }else{

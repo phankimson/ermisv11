@@ -221,8 +221,9 @@ class AccInventoryIssueVoucherController extends Controller
                                   
                // Lưu số tồn kho bên Có
                 $balance = $this->reduceStock($d->credit->value,$d->stock->value,$d->item_code->value,$d->quantity);   
+                dd($balance);
                   if($ca->value == "1" && $balance->quantity<0){
-                    $acc = $d->item_code->item;
+                    $acc = $d->item_code->text;
                     break;
                   }              
                // End
