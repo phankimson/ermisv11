@@ -167,7 +167,7 @@ class AccInventoryReceiptVoucherController extends Controller
            foreach($arr->detail as $k => $d){
              $detail = collect([]);
              $inventory = collect([]);
-             if($d->id || $d->id != 0){
+             if($d->id){        
                $detail = AccDetail::find($d->id);
                $inventory = AccInventory::get_detail_first($d->id);
                 if(!$detail){
@@ -215,12 +215,13 @@ class AccInventoryReceiptVoucherController extends Controller
              $inventory->amount = $d->quantity * $d->price;
              $inventory->active = 1;
              $inventory->status = 1;
-             $inventory->save();                                   
-              
+             $inventory->save();      
+
+               // Lưu số tồn kho bên Nợ
+               $this->increaseStock($d->debit->value,$d->stock->value,$d->item_code->value,$d->quantity);   
            }      
            
-           // Lưu số tồn kho bên Nợ
-               $this->increaseStock($d->debit->value,$d->stock->value,$d->item_code->value,$d->quantity);   
+          
 
            // Xóa dòng chi tiết
            AccDetail::get_detail_whereNotIn_delete($general->id,$removeId);

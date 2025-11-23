@@ -60,7 +60,10 @@ class BarcodeResource extends JsonResource
             'statistical_code' => !$this->statistical_code ? DefaultDropDownResource::make("") : LangDropDownResource::make($this->statistical_code()->first()),
             'work_code' =>  !$this->work_code ? DefaultDropDownResource::make("") : LangDropDownResource::make($this->work_code()->first()),
             'accounted_fast' => !$this->accounted_fast ? DefaultDropDownResource::make("") : LangDropDownResource::make($this->accounted_fast()->first()),
-            'department' =>  !$this->department ? DefaultDropDownResource::make("") : LangDropDownResource::make($this->department()->first()),     
+            'department' =>  !$this->department ? DefaultDropDownResource::make("") : LangDropDownResource::make($this->department()->first()),    
+            'lot_number' => !$this->lot_number ? "" : $this->lot_number,
+            'contract' => !$this->contract ? "" : $this->contract,
+            'order' => !$this->order ? "" : $this->order,
         ];
     }
 

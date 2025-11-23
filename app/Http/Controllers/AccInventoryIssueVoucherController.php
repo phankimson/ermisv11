@@ -168,7 +168,7 @@ class AccInventoryIssueVoucherController extends Controller
            foreach($arr->detail as $k => $d){
              $detail = collect([]);
              $inventory = collect([]);
-             if($d->id || $d->id != 0){
+            if($d->id){        
                $detail = AccDetail::find($d->id);
                $inventory = AccInventory::get_detail_first($d->id);
                 if(!$detail){
@@ -221,7 +221,6 @@ class AccInventoryIssueVoucherController extends Controller
                                   
                // Lưu số tồn kho bên Có
                 $balance = $this->reduceStock($d->credit->value,$d->stock->value,$d->item_code->value,$d->quantity);   
-                dd($balance);
                   if($ca->value == "1" && $balance->quantity<0){
                     $acc = $d->item_code->text;
                     break;
