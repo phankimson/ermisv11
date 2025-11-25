@@ -390,7 +390,7 @@ var Ermis = function() {
         var data = grid.dataSource.data();
         var dataItem = null;
             $.each(data, function(idx, record) {
-                if (record.item_code.value === item.id) {
+                if (record.item_code.value === item.item_id) {
                     dataItem = record;
                     return false; // Exit loop
                 }
@@ -399,6 +399,8 @@ var Ermis = function() {
             dataItem.set("quantity", dataItem.quantity + 1);
         } else {
             item.quantity = 1;
+            item.amount = item.price*item.quantity;
+            AddDropdownGridResult(item,dataDefaultGrid.data,"subject");
             grid.dataSource.insert(0, item);
         }
     }

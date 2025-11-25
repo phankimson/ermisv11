@@ -1995,6 +1995,16 @@ function DefaultValueField(){
         value = model.text; 
         return value;       
       }
+
+   AddDropdownGridResult = function(dataItem,default_val,field){
+        var arr = [ "id", "code", "name"];
+        dataItem[field] = default_val[field];
+        jQuery.each( arr, function( i, val ) {
+          if(default_val[field+"_"+val] != undefined){
+             dataItem[field+"_"+val] = default_val[field+"_"+val];
+          }   
+        }); 
+   }   
       
    AddChooseObjectResult2 = function(dataItem,key_rs,field){
     var gridVat = $kGridVat.data("kendoGrid");

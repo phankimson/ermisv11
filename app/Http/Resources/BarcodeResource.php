@@ -39,7 +39,7 @@ class BarcodeResource extends JsonResource
             $price = 0;
         }
         return [
-            'id' => $this->id,
+            'item_id' => $this->id,
             'item_code' => $item,
             'item_name' => $this->name,
             'code' => $this->code,
