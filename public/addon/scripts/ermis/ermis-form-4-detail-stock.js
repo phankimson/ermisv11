@@ -491,6 +491,7 @@ var Ermis = function() {
             jQuery(".date-picker,.end,.start").val(kendo.toString(kendo.parseDate(new Date()), 'dd/MM/yyyy'));
             jQuery(".no_copy_value").val(0);
             jQuery(".voucher").val(voucher);
+            jQuery(".stock[name='stock']").data("kendoDropDownList").value(0);
             $kGrid.data('kendoGrid').dataSource.data([]);
             $kGrid.removeClass('disabled');
             $kGridReference.data('kendoGrid').dataSource.data([]);
