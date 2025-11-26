@@ -143,6 +143,8 @@
                             { "field" : "quantity","title" : "@lang('acc_voucher.quantity')" ,"width" : "200px",format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" ,aggregates: ['sum'],footerTemplate: "<p id='quantity_total'>#=FormatNumberDecimal(sum,{{$decimal}})#</p>" },
                             { "field" : "price","title" :"@lang('acc_supplies_goods.price_purchase')",format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}","width" : "150px" },
                             { "field" : "amount","title" : "@lang('acc_voucher.amount')" ,"width" : "200px",format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" ,aggregates: ['sum']  ,footerTemplate: "<p id='amount_total'>#=calculateTotalPriceAggregate({{$decimal}})#</p>" },
+                            { "field" : "rate","title" :"@lang('acc_voucher.rate')",format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}","width" : "150px"  },
+                            { "field" : "amount_rate","title" : "@lang('acc_voucher.amount_rate')" ,"width" : "200px",format: "{0:n{{$decimal}}}",decimals: "{{$decimal}}" ,aggregates: ['sum']  ,footerTemplate: "<p id='amount_rate_total'>#=calculateTotalRateAggregate({{$decimal}})#</p>" },
                             { "field" : "subject_id", hidden: true ,"set" : "6" , "group" : "1"},
                             { "field" : "subject_code","title" : "@lang('acc_voucher.subject_code')"  ,"url" : "{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.object')}}" ,width : '150px',editor: ItemsReadDropDownEditor , "select" : "OnchangeGroup" ,template : "#=getUrlAjaxItemName(subject_code,'subject_code','subject_code')#" ,"set" : "2" , "group" : "1" },
                             { "field" : "subject_name","title" : "@lang('acc_voucher.subject_name')"  ,width : '150px',"set" : "6" ,  "group" : "1"},
@@ -162,6 +164,8 @@
             quantity:     {field : "quantity",type:"number" , defaultValue : 0 , validation: { min: 1, required: true }},
             price:     {field : "price",type:"number",validation: { min: 0, required: true }},
             amount:     {field : "amount",type:"number" , defaultValue : 0 , validation: { min: 1, required: true }},
+            rate:     {field : "rate",type:"number", defaultValue : parseInt(jQuery(".rate").val()) , validation: { min: 0, required: true }},
+            amount_rate:     {field : "amount_rate",type:"number" , defaultValue : 0 , validation: { min: 1, required: true }},
             unit: { field : "unit", defaultValue: DefaultReadValueField() },
             stock: { field : "stock", defaultValue: DefaultReadValueField() },
             case_code: { field : "case_code", defaultValue: DefaultReadValueField() },
@@ -181,7 +185,8 @@
         
         Ermis.aggregate = [ { field: "item_code", aggregate: "count" },
                             { field: "quantity", aggregate: "sum" },
-                            { field: "amount", aggregate: "sum" }
+                            { field: "amount", aggregate: "sum" },
+                            { field: "amount_rate", aggregate: "sum" }
                         ];
 
                                                     

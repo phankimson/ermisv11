@@ -290,12 +290,16 @@ var Ermis = function() {
             if (e.action === "itemchange" && (e.field === "price" || e.field === "quantity")) {
                 // here you can access model items using e.items[0].modelName;
                 item.quantity == 0 ? item.set("amount",0) : item.set("amount",item.price * item.quantity);
-            }else if(e.action === "itemchange" && e.field === "amount" ){
+            }else if(e.action === "itemchange" && (e.field === "amount" || e.field === "rate")) {
+                // here you can access model items using e.items[0].modelName;
                 item.set("amount",item.price * item.quantity);
+                item.rate == 0 ? item.set("amount_rate",0) : item.set("amount_rate",item.amount * item.rate);
+            }else if(e.action === "itemchange" && e.field === "amount_rate" ){
+                item.set("amount_rate",item.amount * item.rate);
             }else{
 
             }   
-            if(e.action === "itemchange" && (e.field === "price" || e.field === "quantity" || e.field === "amount" )){
+            if(e.action === "itemchange" && (e.field === "price" || e.field === "quantity" || e.field === "amount" || e.field === "amount_rate" || e.field === "rate"  )){
                     grid.refresh();
             }             
         });
@@ -348,6 +352,8 @@ var Ermis = function() {
         } else {
             item.quantity = 1;
             item.amount = item.price*item.quantity;
+            item.rate = parseInt(jQuery(".rate[name='rate']").val());
+            item.amount_rate = item.amount * item.rate;
             AddDropdownGridResult(item,dataDefaultGrid.data,"subject");
             grid.dataSource.insert(0, item);
         }
@@ -491,7 +497,7 @@ var Ermis = function() {
             jQuery(".date-picker,.end,.start").val(kendo.toString(kendo.parseDate(new Date()), 'dd/MM/yyyy'));
             jQuery(".no_copy_value").val(0);
             jQuery(".voucher").val(voucher);
-            jQuery(".stock[name='stock']").data("kendoDropDownList").value(0);
+            jQuery('.stock[name="stock"]').data("kendoDropDownList").value(0);
             $kGrid.data('kendoGrid').dataSource.data([]);
             $kGrid.removeClass('disabled');
             $kGridReference.data('kendoGrid').dataSource.data([]);
