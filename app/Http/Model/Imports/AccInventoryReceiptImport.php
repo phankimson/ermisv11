@@ -19,7 +19,7 @@ use App\Http\Model\AccStock;
 use App\Classes\Convert;
 use App\Http\Model\AccSuppliesGoods;
 
-class AccInventoryIssueImport implements  WithHeadingRow, WithMultipleSheets
+class AccInventoryReceiptImport implements  WithHeadingRow, WithMultipleSheets
 { 
   protected $menu;
   protected $group;
@@ -96,8 +96,8 @@ class FirstSheetValImport implements ToModel, HasReferencesToOtherSheets, WithHe
       $accounting_date = $row['accounting_date'] ? Convert::DateExcel($row['accounting_date']) : date("Y-m-d");
       $rate = $row['rate'] ? $row['rate'] : $currency_default->rate;
       $total_amount_rate = $row['total_amount_rate'] ? $row['total_amount_rate'] : $row['total_amount'] * $rate;
-
-      $type = $this->type; // Issue Inventory
+      
+      $type = $this->type; // Receipt Inventory
         if($code_check == null && $row['voucher']){      
           $arr = [
             'id'     => Str::uuid()->toString(),
@@ -150,13 +150,13 @@ class SecondSheetImport implements ToModel, HasReferencesToOtherSheets, WithHead
             $general = AccGeneral::WhereDefault('voucher',$row['voucher'])->first();
             $debit = AccAccountSystems::WhereDefault('code',$row['debit'])->first();
             $credit = AccAccountSystems::WhereDefault('code',$row['credit'])->first();
-            $subject_debit = AccObject::WhereDefault('code',$row['subject'])->first();        
+            $subject_credit = AccObject::WhereDefault('code',$row['subject'])->first();        
             $currency = AccCurrency::WhereDefault('code',$row['currency'])->first();
-            $detail_id = Str::uuid()->toString();
-            $price = $row['price'] ? $row['price'] : $item->price;
+            $price = $row['price'] ? $row['price'] : $item->price_purchase;
             $amount = $row['amount'] ? $row['amount'] : $row['quantity']*$price;
             $rate = $row['rate'] ? $row['rate'] : $currency_default->rate;
             $amount_rate = $row['amount_rate'] ? $row['amount_rate'] :  $amount * $rate;
+            $detail_id = Str::uuid()->toString();
             $arr = [
               'id'     => $detail_id,
               'general_id'    => $general == null ? 0 : $general->id,
@@ -164,11 +164,11 @@ class SecondSheetImport implements ToModel, HasReferencesToOtherSheets, WithHead
               'currency' => $currency == null ? $currency_default->id : $currency->id,
               'debit'    => $debit == null ? 0 : $debit->id,
               'credit'    => $credit == null ? $item->stock_account : $credit->id,
-              'subject_id_debit'    => $subject_debit == null ? 0 : $subject_debit->id,
-              'subject_name_debit'    => $subject_debit == null ? 0 : $subject_debit->code." - ".$subject_debit->name,
+              'subject_id_credit'    => $subject_credit == null ? 0 : $subject_credit->id,
+              'subject_name_credit'    => $subject_credit == null ? 0 : $subject_credit->code." - ".$subject_credit->name,
               'amount'    => $amount,   
               'rate'    => $rate,
-              'amount_rate'    => $amount_rate,          
+              'amount_rate'    => $amount_rate ,          
               'status'    => $row['status'] == null ? 1 : $row['status'], 
               'active'    => $row['active'] == null ? 1 : $row['active'],
             ];
@@ -185,7 +185,7 @@ class SecondSheetImport implements ToModel, HasReferencesToOtherSheets, WithHead
                 'stock' => $stock == null ? $item->stock_default : $stock->id,
                 'quantity'    => $row['quantity'],  
                 'price'    => $price,  
-                'amount'    => $amount,            
+                'amount'    => $amount,             
               ];
         }     
 

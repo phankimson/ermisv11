@@ -184,7 +184,8 @@ class AccInventoryReceiptVoucherController extends Controller
              $detail->debit = $d->debit->value;  // Đổi từ id value dạng read
              $detail->credit = $d->credit->value;  // Đổi từ id value dạng read
              $detail->amount = $d->amount;
-             $detail->amount_rate = $d->amount * $arr->rate;             
+             $detail->rate = $d->rate;
+             $detail->amount_rate = $d->amount * $d->rate;                
              $detail->department = $d->department->value; // Đổi từ id value dạng read
              $detail->case_code = $d->case_code->value;  // Đổi từ id value dạng read
              $detail->cost_code = $d->cost_code->value;  // Đổi từ id value dạng read

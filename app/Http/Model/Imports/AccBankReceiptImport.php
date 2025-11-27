@@ -105,6 +105,9 @@ class FirstSheetValImport implements ToModel, HasReferencesToOtherSheets, WithHe
       $currency = AccCurrency::WhereDefault('code',$row['currency'])->first(); 
       $voucher_date = $row['voucher_date'] ? Convert::DateExcel($row['voucher_date']) : date("Y-m-d");
       $accounting_date = $row['accounting_date'] ? Convert::DateExcel($row['accounting_date']) : date("Y-m-d");
+      $rate = $row['rate'] ? $row['rate'] : $currency_default->rate;
+      $total_amount_rate = $row['total_amount_rate'] ? $row['total_amount_rate'] : $row['total_amount'] * $rate;
+
        $type = $this->type; //Payment bank
         if($code_check == null && $row['voucher']){        
           $arr = [
@@ -118,9 +121,9 @@ class FirstSheetValImport implements ToModel, HasReferencesToOtherSheets, WithHe
             'traders'    => $row['traders'],
             'subject'    => $subject == null ? 0 : $subject->id,
             'total_amount'    => $row['total_amount'],
-            'rate'    => $row['rate'],
+            'rate'    => $rate,
             'group'=>  $this->group,   
-            'total_amount_rate'    => $row['total_amount_rate'],        
+            'total_amount_rate'    => $total_amount_rate,          
             'status'    => $row['status'] == null ? 1 : $row['status'], 
             'active'    => $row['active'] == null ? 1 : $row['active'],
           ];
@@ -159,6 +162,9 @@ class SecondSheetImport implements ToModel, HasReferencesToOtherSheets, WithHead
         $department = AccDepartment::WhereDefault('code',$row['department'])->first();
         $bank_account = AccBankAccount::WhereDefault('bank_account',$row['bank_account'])->first();
         $currency = AccCurrency::WhereDefault('code',$row['currency'])->first();
+        $rate = $row['rate'] ? $row['rate'] : $currency_default->rate;
+        $amount_rate = $row['amount_rate'] ? $row['amount_rate'] :  $row['amount'] * $rate;
+
         $arr = [
           'id'     => Str::uuid()->toString(),
           'general_id'    => $general == null ? 0 : $general->id,
@@ -169,8 +175,8 @@ class SecondSheetImport implements ToModel, HasReferencesToOtherSheets, WithHead
           'subject_id_credit'    => $subject_credit == null ? 0 : $subject_credit->id,
           'subject_name_credit'    => $subject_credit == null ? 0 : $subject_credit->code." - ".$subject_credit->name,
           'amount'    => $row['amount'],
-          'rate'    => $row['rate'],
-          'amount_rate'    => $row['amount_rate'],       
+          'rate'    => $rate,
+          'amount_rate'    =>  $amount_rate,   
           'department'    => $department == null ? 0 : $department->id,
           'bank_account_credit'    => $bank_account == null ? 0 : $bank_account->id,         
           'status'    => $row['status'] == null ? 1 : $row['status'], 
@@ -184,7 +190,7 @@ class SecondSheetImport implements ToModel, HasReferencesToOtherSheets, WithHead
           'currency' => $currency == null ? $currency_default->id : $currency->id,
           'bank_account' => $bank_account == null ? 0 : $bank_account->id,
           'amount'    => $row['amount'],
-          'rate'    => $row['rate'],
+          'rate'    => $rate,
           'amount_rate'    => $row['amount_rate'],  
         ];
         $data = new AccBankReceiptImport("","");
@@ -218,6 +224,8 @@ class SecondSheetImport implements ToModel, HasReferencesToOtherSheets, WithHead
       {
         $general = AccGeneral::WhereDefault('voucher',$row['voucher'])->first();
         $subject = AccObject::WhereDefault('code',$row['subject'])->first();
+        $total_amount = $row['total_amount'] ? $row['total_amount'] : ($row['amount'] * $row['tax'])/100;
+        $total_amount_rate = $row['total_amount_rate'] ? $row['total_amount_rate'] : $total_amount * $row['rate'];
         $date_invoice = $row['date_invoice'] ? Convert::DateExcel($row['date_invoice']) : date("Y-m-d");
         $arr_check = array(
                   ['invoice', '=',$row['invoice']],
@@ -241,9 +249,9 @@ class SecondSheetImport implements ToModel, HasReferencesToOtherSheets, WithHead
           'tax_code'    => $row['tax_code'],
           'amount'    => $row['amount'],
           'tax'    => $row['tax'],
-          'total_amount'    => $row['total_amount'],   
+          'total_amount'    => $total_amount,   
           'rate'    => $row['rate'],   
-          'total_amount_rate'    => $row['total_amount_rate'],
+          'total_amount_rate'    => $total_amount_rate,
           'payment'    => 1,           
           'status'    => $row['status'] == null ? 1 : $row['status'], 
           'active'    => $row['active'] == null ? 1 : $row['active'],

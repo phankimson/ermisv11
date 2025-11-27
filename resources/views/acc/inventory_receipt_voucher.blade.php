@@ -164,7 +164,7 @@
             quantity:     {field : "quantity",type:"number" , defaultValue : 0 , validation: { min: 1, required: true }},
             price:     {field : "price",type:"number",validation: { min: 0, required: true }},
             amount:     {field : "amount",type:"number" , defaultValue : 0 , validation: { min: 1, required: true }},
-            rate:     {field : "rate",type:"number", defaultValue : parseInt(jQuery(".rate").val()) , validation: { min: 0, required: true }},
+            rate:     {field : "rate",type:"number", defaultValue : parseInt(jQuery(".rate[name='rate']").val()) , validation: { min: 0, required: true }},
             amount_rate:     {field : "amount_rate",type:"number" , defaultValue : 0 , validation: { min: 1, required: true }},
             unit: { field : "unit", defaultValue: DefaultReadValueField() },
             stock: { field : "stock", defaultValue: DefaultReadValueField() },

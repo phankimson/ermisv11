@@ -41,6 +41,7 @@ class AccInventoryIssueGeneralController extends Controller
   protected $action;
   protected $download;
   protected $key_voucher;
+  protected $check_stock;
   public function __construct(Request $request)
  {
      $this->url =  $request->segment(3);
@@ -50,6 +51,7 @@ class AccInventoryIssueGeneralController extends Controller
      $this->menu = Menu::where('code', '=', $this->key)->first();
      $this->print = 'XK%';
      $this->date_range = "DATE_RANGE_GENERAL";
+     $this->check_stock = 'CHECK_STOCK';
      $this->download = "AccIssueInventory.xlsx";
  }
 
@@ -431,9 +433,18 @@ class AccInventoryIssueGeneralController extends Controller
       //  $arr->push($data);
       //}
        $data = $import->getData();
+      // Lấy giá trị kiểm tra kho có âm không
+        $ca = AccSystems::get_systems($this->check_stock);
+        $acc = "";
       foreach($data['crit'] as $item){
-        // Lưu số tồn bên nợ
-         $this->increaseStock($item->acc,$item->stock,$item->item_id,$item->quantity);
+          // Lưu số tồn kho bên Có
+                $balance = $this->reduceStock($item->acc,$item->stock,$item->item_id,$item->quantity);   
+                  if($ca->value == "1" && $balance->quantity<0){
+                    $acc = $item->item_code;
+                    break;
+                  }              
+               // End
+
          // Lưu Inventory
          $inventory = new AccInventory(); 
          $inventory->general_id = $item->general_id;
@@ -441,7 +452,6 @@ class AccInventoryIssueGeneralController extends Controller
          $inventory->item_id = $item->item_id;
          $inventory->item_code = $item->item_code;
          $inventory->item_name = $item->item_name;
-         $inventory->item_name_en = $item->name_en;
          $inventory->unit = $item->unit;
          $inventory->stock_issue = $item->stock;
          $inventory->quantity = $item->quantity;
@@ -464,8 +474,14 @@ class AccInventoryIssueGeneralController extends Controller
     //
     //Storage::delete($savePath.$filename);
     //broadcast(new \App\Events\DataSendCollection($merged));
-    DB::connection(env('CONNECTION_DB_ACC'))->commit();
-    return response()->json(['status'=>true,'message'=> trans('messages.success_import'),'data' => $merged]);
+      if($acc == ""){
+        DB::connection(env('CONNECTION_DB_ACC'))->rollBack();
+        return response()->json(['status'=>false,'message'=> trans('messages.code_negative',['code'=>$acc])]);
+      }else{
+        DB::connection(env('CONNECTION_DB_ACC'))->commit();
+        return response()->json(['status'=>true,'message'=> trans('messages.success_import'),'data' => $merged]);
+      }
+    
     }else{
      return response()->json(['status'=>false,'message'=> trans('messages.incorrect_file')]);
     }    

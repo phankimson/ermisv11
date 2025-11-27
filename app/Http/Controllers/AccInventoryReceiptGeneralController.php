@@ -20,7 +20,7 @@ use App\Http\Model\Error;
 use App\Http\Resources\InventoryGeneralResource;
 use App\Http\Resources\TypeGeneralResource;
 use App\Http\Resources\TypeListGeneralResource;
-use App\Http\Model\Imports\AccInventoryIssueImport;
+use App\Http\Model\Imports\AccInventoryReceiptImport;
 use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
@@ -407,7 +407,7 @@ class AccInventoryReceiptGeneralController extends Controller
 
       $file = $request->file;
       // Import dữ liệu
-      $import = new AccInventoryIssueImport($this->menu->id,$this->group);
+      $import = new AccInventoryReceiptImport($this->menu->id,$this->group);
       Excel::import($import, $file);
       // Lấy lại dữ liệu
       //$array = AccGeneral::with('detail','tax')->get();
@@ -435,7 +435,6 @@ class AccInventoryReceiptGeneralController extends Controller
          $inventory->item_id = $item->item_id;
          $inventory->item_code = $item->item_code;
          $inventory->item_name = $item->item_name;
-         $inventory->item_name_en = $item->name_en;
          $inventory->unit = $item->unit;
          $inventory->stock_receipt = $item->stock;
          $inventory->quantity = $item->quantity;
