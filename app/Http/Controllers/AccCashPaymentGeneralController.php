@@ -36,6 +36,7 @@ class AccCashPaymentGeneralController extends Controller
   use CurrencyCheckTraits;
   protected $url;
   protected $key;
+  protected $key_voucher;
   protected $menu;
   protected $group;
   protected $print;
@@ -47,6 +48,7 @@ class AccCashPaymentGeneralController extends Controller
      $this->url =  $request->segment(3);
      $this->group = 2; // 1 Nhóm chi tiền mặt
      $this->key = "cash-payment-general";
+     $this->key_voucher = "cash-payment-voucher";
      $this->menu = Menu::where('code', '=', $this->key)->first();
      $this->print = 'PC%';
      $this->date_range = "DATE_RANGE_GENERAL";
@@ -487,10 +489,10 @@ class AccCashPaymentGeneralController extends Controller
               'application/vnd.ms-excel',
     ]);
       $rs = json_decode($request->data);
-
+      $menu = Menu::where('code', '=', $this->key_voucher)->first();
       $file = $request->file;
       // Import dữ liệu
-      $import = new AccCashPaymentImport($this->menu->id,$this->group);
+      $import = new AccCashPaymentImport($menu->id,$this->group);
       Excel::import($import, $file);
       // Lấy lại dữ liệu
       //$array = AccGeneral::with('detail','tax')->get();

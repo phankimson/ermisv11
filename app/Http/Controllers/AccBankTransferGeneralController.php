@@ -464,10 +464,10 @@ class AccBankTransferGeneralController extends Controller
               'application/vnd.ms-excel',
     ]);
       $rs = json_decode($request->data);
-
+      $menu = Menu::where('code', '=', $this->key_voucher)->first();
       $file = $request->file;
       // Import dữ liệu
-      $import = new AccBankTransferImport($this->menu->id,$this->group);
+      $import = new AccBankTransferImport($menu->id,$this->group);
       Excel::import($import, $file);
       // Lấy lại dữ liệu
       //$array = AccGeneral::with('detail','tax')->get();

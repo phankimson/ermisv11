@@ -52,7 +52,7 @@ class AccInventoryIssueGeneralController extends Controller
      $this->print = 'XK%';
      $this->date_range = "DATE_RANGE_GENERAL";
      $this->check_stock = 'CHECK_STOCK';
-     $this->download = "AccIssueInventory.xlsx";
+     $this->download = "AccInventoryIssue.xlsx";
  }
 
   public function show(){
@@ -412,10 +412,10 @@ class AccInventoryIssueGeneralController extends Controller
               'application/vnd.ms-excel',
     ]);
       $rs = json_decode($request->data);
-
+      $menu = Menu::where('code', '=', $this->key_voucher)->first();
       $file = $request->file;
       // Import dữ liệu
-      $import = new AccInventoryIssueImport($this->menu->id,$this->group);
+      $import = new AccInventoryIssueImport($menu->id,$this->group);
       Excel::import($import, $file);
       // Lấy lại dữ liệu
       //$array = AccGeneral::with('detail','tax')->get();
@@ -438,25 +438,24 @@ class AccInventoryIssueGeneralController extends Controller
         $acc = "";
       foreach($data['crit'] as $item){
           // Lưu số tồn kho bên Có
-                $balance = $this->reduceStock($item->acc,$item->stock,$item->item_id,$item->quantity);   
+                $balance = $this->reduceStock($item['acc'],$item['stock'],$item['item_id'],$item['quantity']);   
                   if($ca->value == "1" && $balance->quantity<0){
-                    $acc = $item->item_code;
+                    $acc = $item['item_code'];
                     break;
                   }              
                // End
-
-         // Lưu Inventory
+  // Lưu Inventory
          $inventory = new AccInventory(); 
-         $inventory->general_id = $item->general_id;
-         $inventory->detail_id = $item->detail_id;
-         $inventory->item_id = $item->item_id;
-         $inventory->item_code = $item->item_code;
-         $inventory->item_name = $item->item_name;
-         $inventory->unit = $item->unit;
-         $inventory->stock_issue = $item->stock;
-         $inventory->quantity = $item->quantity;
-         $inventory->price = $item->price;
-         $inventory->amount = $item->amount;
+         $inventory->general_id = $item['general_id'];
+         $inventory->detail_id = $item['detail_id'];
+         $inventory->item_id = $item['item_id'];
+         $inventory->item_code = $item['item_code'];
+         $inventory->item_name = $item['item_name'];
+         $inventory->unit = $item['unit'];
+         $inventory->stock_issue = $item['stock'];
+         $inventory->quantity = $item['quantity'];
+         $inventory->price = $item['price'];
+         $inventory->amount = $item['amount'];
          $inventory->status = 1;
          $inventory->active = 1;
          $inventory->save();

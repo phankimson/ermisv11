@@ -18,6 +18,7 @@ use App\Http\Model\AccSystems;
 use App\Http\Model\AccStock;
 use App\Classes\Convert;
 use App\Http\Model\AccSuppliesGoods;
+use Illuminate\Support\Facades\Auth;
 
 class AccInventoryIssueImport implements  WithHeadingRow, WithMultipleSheets
 { 
@@ -96,6 +97,7 @@ class FirstSheetValImport implements ToModel, HasReferencesToOtherSheets, WithHe
       $accounting_date = $row['accounting_date'] ? Convert::DateExcel($row['accounting_date']) : date("Y-m-d");
       $rate = $row['rate'] ? $row['rate'] : $currency_default->rate;
       $total_amount_rate = $row['total_amount_rate'] ? $row['total_amount_rate'] : $row['total_amount'] * $rate;
+      $user = Auth::user();
 
       $type = $this->type; // Issue Inventory
         if($code_check == null && $row['voucher']){      
@@ -112,7 +114,8 @@ class FirstSheetValImport implements ToModel, HasReferencesToOtherSheets, WithHe
             'total_quantity'    => $row['total_quantity'],
             'total_amount'    => $row['total_amount'],
             'rate'    => $rate,
-            'total_amount_rate'    => $total_amount_rate,    
+            'total_amount_rate'    => $total_amount_rate, 
+            'user' => $user->id,   
             'group'=>  $this->group,   
             'status'    => $row['status'] == null ? 1 : $row['status'], 
             'active'    => $row['active'] == null ? 1 : $row['active'],
@@ -143,13 +146,14 @@ class SecondSheetImport implements ToModel, HasReferencesToOtherSheets, WithHead
     public function model(array $row)
     {
         $data = new AccInventoryIssueImport("",""); 
-        $item = AccSuppliesGoods::WhereDefault('code',$row['item_code'])->first();         
-        if($item != null && $row['item_code']){             
+        $item = AccSuppliesGoods::WhereDefault('code',$row['item_code'])->first();        
+        $debit = AccAccountSystems::WhereDefault('code',$row['debit'])->first(); 
+        $credit = AccAccountSystems::WhereDefault('code',$row['credit'])->first();
+        $credit_import = $credit == null ? $item->stock_account : $credit->id;
+        if($item != null && $row['item_code'] && $debit != null && $credit_import != null){             
             $stock = AccStock::WhereDefault('code',$row['stock'])->first(); 
             $currency_default = $data->getCurrencyDefault();
-            $general = AccGeneral::WhereDefault('voucher',$row['voucher'])->first();
-            $debit = AccAccountSystems::WhereDefault('code',$row['debit'])->first();
-            $credit = AccAccountSystems::WhereDefault('code',$row['credit'])->first();
+            $general = AccGeneral::WhereDefault('voucher',$row['voucher'])->first();           
             $subject_debit = AccObject::WhereDefault('code',$row['subject'])->first();        
             $currency = AccCurrency::WhereDefault('code',$row['currency'])->first();
             $detail_id = Str::uuid()->toString();
@@ -160,10 +164,10 @@ class SecondSheetImport implements ToModel, HasReferencesToOtherSheets, WithHead
             $arr = [
               'id'     => $detail_id,
               'general_id'    => $general == null ? 0 : $general->id,
-              'description'    => $row['description'],
+              'description'    => $row['item_name'] ? $row['item_name'] : $item->code." - ". $item->name,
               'currency' => $currency == null ? $currency_default->id : $currency->id,
               'debit'    => $debit == null ? 0 : $debit->id,
-              'credit'    => $credit == null ? $item->stock_account : $credit->id,
+              'credit'    => $credit_import,
               'subject_id_debit'    => $subject_debit == null ? 0 : $subject_debit->id,
               'subject_name_debit'    => $subject_debit == null ? 0 : $subject_debit->code." - ".$subject_debit->name,
               'amount'    => $amount,   

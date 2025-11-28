@@ -20,7 +20,8 @@ class InventoryDetailReadResource extends JsonResource
             'id' => $this->inventory->item_id,
             'code' => $this->inventory->item_code,
             'name' => $this->inventory->item_name,
-            'name_en' => $this->inventory->item_name_en,];      
+            'name_en' => $this->inventory->item_name_en,
+        ];      
         return [
             'id' => $this->id,
             'item_id' => $this->inventory->item_id,
@@ -29,7 +30,7 @@ class InventoryDetailReadResource extends JsonResource
             'currency' => $this->currency,
             'debit' => LangDropDownResource::make($this->debit()->first()),
             'credit' => LangDropDownResource::make($this->credit()->first()),
-            'unit' => !$this->inventory ? DefaultDropDownResource::make("") : LangDropDownResource::make($this->inventory->unit_item),
+            'unit' => !optional($this->inventory)->unit_item ? DefaultDropDownResource::make("") : LangDropDownResource::make($this->inventory->unit_item),
             'stock' => !$this->inventory ? DefaultDropDownResource::make("") : LangDropDownResource::make($this->inventory->stock_issue? $this->inventory->stock_issue_item:$this->inventory->stock_receipt_item),
             'quantity' => !$this->inventory ? 0 : $this->inventory->quantity,
             'price' => $this->inventory->price,

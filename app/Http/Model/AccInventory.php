@@ -66,7 +66,7 @@ class AccInventory extends Model
       }
 
       public function unit_item() {
-        return $this->belongsTo(AccUnit::class,'unit','id');
+        return $this->hasOne(AccUnit::class,'id','unit');
       }
 
       public function stock_receipt_item() {

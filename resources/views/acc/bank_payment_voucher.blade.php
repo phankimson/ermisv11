@@ -219,7 +219,7 @@
             amount:     {field : "amount",type:"number" , defaultValue : 0, validation: { min: 0, required: true }},
             tax:     {field : "tax" ,type:"number", defaultValue : 0 },
             tax_amount:     {field : "tax_amount",type:"number" , defaultValue : 0, validation: { min: 0, required: true }},
-            tax_rate:     {field : "tax_rate",type:"number", defaultValue : parseInt(jQuery(".rate").val()) , validation: { min: 0, required: true }},
+            tax_rate:     {field : "tax_rate",type:"number", defaultValue : parseInt(jQuery(".rate[name='rate']").val())  , validation: { min: 0, required: true }},
             tax_amount_rate:     {field : "tax_amount_rate",type:"number" , defaultValue : 0 , validation: { min: 1, required: true }},
         };
         Ermis.aggregate = [ { field: "description", aggregate: "count" },

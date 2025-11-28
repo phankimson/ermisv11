@@ -50,7 +50,7 @@ class AccInventoryReceiptGeneralController extends Controller
      $this->menu = Menu::where('code', '=', $this->key)->first();
      $this->print = 'NK%';
      $this->date_range = "DATE_RANGE_GENERAL";
-     $this->download = "AccReceiptInventory.xlsx";
+     $this->download = "AccInventoryReceipt.xlsx";
  }
 
   public function show(){
@@ -404,10 +404,10 @@ class AccInventoryReceiptGeneralController extends Controller
               'application/vnd.ms-excel',
     ]);
       $rs = json_decode($request->data);
-
+      $menu = Menu::where('code', '=', $this->key_voucher)->first();
       $file = $request->file;
       // Import dữ liệu
-      $import = new AccInventoryReceiptImport($this->menu->id,$this->group);
+      $import = new AccInventoryReceiptImport($menu->id,$this->group);
       Excel::import($import, $file);
       // Lấy lại dữ liệu
       //$array = AccGeneral::with('detail','tax')->get();
@@ -427,19 +427,19 @@ class AccInventoryReceiptGeneralController extends Controller
        $data = $import->getData();
       foreach($data['crit'] as $item){
         // Lưu số tồn bên nợ
-         $this->increaseStock($item->acc,$item->stock,$item->item_id,$item->quantity);
+         $this->increaseStock($item['acc'],$item['stock'],$item['item_id'],$item['quantity']);
          // Lưu Inventory
          $inventory = new AccInventory(); 
-         $inventory->general_id = $item->general_id;
-         $inventory->detail_id = $item->detail_id;
-         $inventory->item_id = $item->item_id;
-         $inventory->item_code = $item->item_code;
-         $inventory->item_name = $item->item_name;
-         $inventory->unit = $item->unit;
-         $inventory->stock_receipt = $item->stock;
-         $inventory->quantity = $item->quantity;
-         $inventory->price = $item->price;
-         $inventory->amount = $item->amount;
+         $inventory->general_id = $item['general_id'];
+         $inventory->detail_id = $item['detail_id'];
+         $inventory->item_id = $item['item_id'];
+         $inventory->item_code = $item['item_code'];
+         $inventory->item_name = $item['item_name'];
+         $inventory->unit = $item['unit'];
+         $inventory->stock_receipt = $item['stock'];
+         $inventory->quantity = $item['quantity'];
+         $inventory->price = $item['price'];
+         $inventory->amount = $item['amount'];
          $inventory->status = 1;
          $inventory->active = 1;
          $inventory->save();

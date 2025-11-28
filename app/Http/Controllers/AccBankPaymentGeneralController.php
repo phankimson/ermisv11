@@ -36,6 +36,7 @@ class AccBankPaymentGeneralController extends Controller
   use CurrencyCheckTraits;
   protected $url;
   protected $key;
+  protected $key_voucher;
   protected $menu;
   protected $group;
   protected $print;
@@ -47,6 +48,7 @@ class AccBankPaymentGeneralController extends Controller
      $this->url =  $request->segment(3);
      $this->group = 4; // 4 Nhóm chi ngân hàng
      $this->key = "bank-payment-general";
+     $this->key_voucher = "bank-payment-voucher";
      $this->menu = Menu::where('code', '=', $this->key)->first();
      $this->print = 'BN%';
      $this->date_range = "DATE_RANGE_GENERAL";
@@ -485,10 +487,10 @@ class AccBankPaymentGeneralController extends Controller
               'application/vnd.ms-excel',
     ]);
       $rs = json_decode($request->data);
-
+      $menu = Menu::where('code', '=', $this->key_voucher)->first();
       $file = $request->file;
       // Import dữ liệu
-      $import = new AccBankPaymentImport($this->menu->id,$this->group);
+      $import = new AccBankPaymentImport($menu->id,$this->group);
       Excel::import($import, $file);
       // Lấy lại dữ liệu
       //$array = AccGeneral::with('detail','tax')->get();

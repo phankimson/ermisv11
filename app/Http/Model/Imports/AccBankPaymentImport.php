@@ -19,6 +19,7 @@ use App\Http\Model\AccBankAccount;
 use App\Http\Model\AccCurrency;
 use App\Http\Model\AccSystems;
 use App\Classes\Convert;
+use Illuminate\Support\Facades\Auth;
 
 
 class AccBankPaymentImport implements  WithHeadingRow, WithMultipleSheets
@@ -103,6 +104,7 @@ class FirstSheetValImport implements ToModel, HasReferencesToOtherSheets, WithHe
       $accounting_date = $row['accounting_date'] ? Convert::DateExcel($row['accounting_date']) : date("Y-m-d");
       $rate = $row['rate'] ? $row['rate'] : $currency_default->rate;
       $total_amount_rate = $row['total_amount_rate'] ? $row['total_amount_rate'] : $row['total_amount'] * $rate;
+      $user = Auth::user();
 
       $type = $this->type; //Payment bank
         if($code_check == null && $row['voucher']){      
@@ -118,7 +120,8 @@ class FirstSheetValImport implements ToModel, HasReferencesToOtherSheets, WithHe
             'subject'    => $subject == null ? 0 : $subject->id,
             'total_amount'    => $row['total_amount'],
             'rate'    => $rate ,
-            'total_amount_rate'    => $total_amount_rate,    
+            'total_amount_rate'    => $total_amount_rate, 
+            'user' => $user->id,   
             'group'=>  $this->group,   
             'status'    => $row['status'] == null ? 1 : $row['status'], 
             'active'    => $row['active'] == null ? 1 : $row['active'],
