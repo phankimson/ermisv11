@@ -26,9 +26,11 @@ use Maatwebsite\Excel\Facades\Excel;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use App\Http\Traits\FileAttachTraits;
 
 class AccEntryGeneralController extends Controller
 {
+  use FileAttachTraits;
   protected $url;
   protected $key;
   protected $key_voucher;
@@ -327,14 +329,11 @@ class AccEntryGeneralController extends Controller
                 // Xóa các dòng thuế
                $data->tax()->delete();                        
 
-               $attach = $data->attach();
-               foreach($attach as $a){
-                 //Xóa ảnh cũ
-                 if(File::exists(public_path($a->path))){
-                    File::delete(public_path($a->path));
-                 };
-                 $a->delete();
-               };
+               //Xóa đính kèm
+                $attach = $data->attach;
+                 if($attach->count()>0){
+                  $this->deleteFile($attach);  
+                }    
 
                $data->delete(); 
                DB::connection(env('CONNECTION_DB_ACC'))->commit();

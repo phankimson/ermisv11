@@ -27,12 +27,12 @@ use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
 use Exception;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\File;
+use App\Http\Traits\FileAttachTraits;
 use App\Http\Traits\CurrencyCheckTraits;
 
 class AccBankTransferGeneralController extends Controller
 {
-  use CurrencyCheckTraits;
+  use CurrencyCheckTraits,FileAttachTraits;
   protected $url;
   protected $key;
   protected $key_voucher;
@@ -366,57 +366,19 @@ class AccBankTransferGeneralController extends Controller
                foreach($detail as $d){
                 //Clear số tiền bên nợ
                 $this->reduceCurrencyEdit($d->debit,$d->currency,$d->amount,$d->bank_account_debit);
-                // $b1 = AccCurrencyCheck::get_type_first($d->debit,$d->currency,$d->bank_account_debit);
-                // if($b1){          
-                //   $b1->amount = $b1->amount - $d->amount;
-                //   $b1->save();
-                // }
+
                 //Clear số tiền bên có
                 $this->increaseCurrencyEdit($d->credit,$d->currency,$d->amount,$d->bank_account_credit);
-                // $b2 = AccCurrencyCheck::get_type_first($d->credit,$d->currency,$d->bank_account_credit);
-                // if($b2){
-                //   $b2->amount = $b2->amount + $d->amount;
-                //   $b2->save();
-                // }             
+       
                }             
 
                // Xóa các dòng chi tiết
-               $data->detail()->delete();              
+               $data->detail()->delete();                                     
 
-               // Update lại trạng thái thanh toán
-               $tax_payment = $data->vat_detail_payment;
-               foreach($tax_payment as $v){
-                 $p = AccVatDetail::find($v->vat_detail_id);
-                 if($p){
-                 $p->payment = 0;
-                 $p->save(); 
-                 }
-                // Update lại số tiền đã thanh toán của từng phiếu
-                $tax_payment_update = AccVatDetailPayment::vat_detail_payment_created_at_not_id($v->vat_detail_id,$v->created_at,$v->id);
-                foreach($tax_payment_update as $t){
-                  if($t->paid > $v->paid){
-                  $t->paid = $t->paid - $v->payment;
-                  $t->remaining = $t->remaining + $v->payment;
-                  $t->save();
-                  }          
-                }               
-               }; 
-
-              
-                // Xóa các dòng thuế
-               $data->tax()->delete();
-
-                // Xóa các dòng thanh toán
-                $data->vat_detail_payment()->delete();                         
-
-               $attach = $data->attach();
-               foreach($attach as $a){
-                 //Xóa ảnh cũ
-                 if(File::exists(public_path($a->path))){
-                    File::delete(public_path($a->path));
-                 };
-                 $a->delete();
-               };
+               $attach = $data->attach;
+                 if($attach->count()>0){
+                  $this->deleteFile($attach);  
+                }     
 
                $data->delete(); 
                DB::connection(env('CONNECTION_DB_ACC'))->commit();

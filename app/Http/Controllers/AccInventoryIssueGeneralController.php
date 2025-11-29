@@ -26,12 +26,12 @@ use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
 use Exception;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\File;
 use App\Http\Traits\StockCheckTraits;
+use App\Http\Traits\FileAttachTraits;
 
 class AccInventoryIssueGeneralController extends Controller
 {
-  use StockCheckTraits;
+  use StockCheckTraits,FileAttachTraits;
   protected $url;
   protected $key;
   protected $menu;
@@ -357,14 +357,10 @@ class AccInventoryIssueGeneralController extends Controller
                // Xóa các dòng chi tiết
                $data->detail()->delete();                                  
 
-               $attach = $data->attach();
-               foreach($attach as $a){
-                 //Xóa ảnh cũ
-                 if(File::exists(public_path($a->path))){
-                    File::delete(public_path($a->path));
-                 };
-                 $a->delete();
-               };
+               $attach = $data->attach;
+                 if($attach->count()>0){
+                  $this->deleteFile($attach);  
+                }        
 
                $data->delete(); 
                DB::connection(env('CONNECTION_DB_ACC'))->commit();

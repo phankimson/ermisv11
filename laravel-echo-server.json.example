@@ -1,5 +1,5 @@
 {
-	"authHost": "http://ermis.top",
+	"authHost": "http://ermis.io.vn",
 	"authEndpoint": "/broadcasting/auth",
 	"clients": [
 		{

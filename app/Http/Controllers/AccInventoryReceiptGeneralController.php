@@ -355,8 +355,10 @@ class AccInventoryReceiptGeneralController extends Controller
                // Xóa các dòng chi tiết
                $data->detail()->delete();                                  
 
-               $attach = $data->attach();
-               $this->deleteFile($attach);                 
+               $attach = $data->attach;
+               if($attach->count()>0){
+               $this->deleteFile($attach);  
+               }                
 
                $data->delete(); 
                DB::connection(env('CONNECTION_DB_ACC'))->commit();

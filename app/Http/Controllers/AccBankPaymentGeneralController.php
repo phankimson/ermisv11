@@ -10,14 +10,11 @@ use App\Http\Model\AccHistoryAction;
 use App\Http\Model\Menu;
 use App\Http\Model\AccGeneral;
 use App\Http\Model\AccDetail;
-use App\Http\Model\AccVatDetail;
 use App\Http\Model\AccSystems;
 use App\Http\Model\AccPeriod;
 use App\Http\Model\AccNumberVoucher;
 use App\Http\Model\AccCountVoucher;
 use App\Http\Model\AccPrintTemplate;
-use App\Http\Model\AccVatDetailPayment;
-use App\Http\Model\AccBankCompare;
 use App\Http\Model\Error;
 use App\Http\Resources\BankGeneralResource;
 use App\Http\Resources\TypeGeneralResource;
@@ -28,12 +25,14 @@ use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
 use Exception;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\File;
 use App\Http\Traits\CurrencyCheckTraits;
+use App\Http\Traits\FileAttachTraits;
+use App\Http\Traits\VatDetailPaymentTraits;
+use App\Http\Traits\BankCompareTraits;
 
 class AccBankPaymentGeneralController extends Controller
 {
-  use CurrencyCheckTraits;
+  use CurrencyCheckTraits,FileAttachTraits,VatDetailPaymentTraits,BankCompareTraits;
   protected $url;
   protected $key;
   protected $key_voucher;
@@ -383,63 +382,32 @@ class AccBankPaymentGeneralController extends Controller
                foreach($detail as $d){
                 //Clear số tiền bên nợ
                $this->reduceCurrencyEdit($d->debit,$d->currency,$d->amount);
-                //$b1 = AccCurrencyCheck::get_type_first($d->debit,$d->currency,null);
-                //if($b1){          
-                //  $b1->amount = $b1->amount - $d->amount;
-                //  $b1->save();
-                //}
+
                 //Clear số tiền bên có
                $this->increaseCurrencyEdit($d->credit,$d->currency,$d->amount,$d->bank_account_credit);
-                //  $b2 = AccCurrencyCheck::get_type_first($d->credit,$d->currency,$d->bank_account_credit);
-                //   if($b2){
-                //    $b2->amount = $b2->amount + $d->amount;
-                //    $b2->save();
-                //  }             
+         
                }             
 
                // Xóa các dòng chi tiết
                $data->detail()->delete();              
 
                // Update lại trạng thái thanh toán
-               $tax_payment = $data->vat_detail_payment;
-               foreach($tax_payment as $v){
-                 $p = AccVatDetail::find($v->vat_detail_id);
-                 if($p){
-                    $p->payment = 0;
-                    $p->save(); 
-                 }                 
+              $tax_payment = $data->vat_detail_payment;
+              $this->updateStatusPayment($tax_payment);
 
-                // Update lại số tiền đã thanh toán của từng phiếu
-                $tax_payment_update = AccVatDetailPayment::vat_detail_payment_created_at_not_id($v->vat_detail_id,$v->created_at,$v->id);
-                foreach($tax_payment_update as $t){
-                  if($t->paid > $v->paid){
-                  $t->paid = $t->paid - $v->payment;
-                  $t->remaining = $t->remaining + $v->payment;
-                  $t->save();
-                  }          
-                }               
-               }; 
                 // Update lại trạng thái so sánh ngân hàng
-              $compare = AccBankCompare::find($data->compare_id);
-              if($compare){
-                $compare->status = 1;
-                $compare->save();
-              }
+               $this->updateActiveCompare($data->compare_id); 
               
                 // Xóa các dòng thuế
                $data->tax()->delete();
 
                 // Xóa các dòng thanh toán
-                $data->vat_detail_payment()->delete();                         
-
-               $attach = $data->attach();
-               foreach($attach as $a){
-                 //Xóa ảnh cũ
-                 if(File::exists(public_path($a->path))){
-                    File::delete(public_path($a->path));
-                 };
-                 $a->delete();
-               };
+                $data->vat_detail_payment()->delete();                        
+             
+                $attach = $data->attach;
+                 if($attach->count()>0){
+                  $this->deleteFile($attach);  
+                }      
 
                $data->delete(); 
                DB::connection(env('CONNECTION_DB_ACC'))->commit();

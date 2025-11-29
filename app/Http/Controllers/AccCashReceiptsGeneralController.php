@@ -11,13 +11,11 @@ use App\Http\Model\AccHistoryAction;
 use App\Http\Model\Menu;
 use App\Http\Model\AccGeneral;
 use App\Http\Model\AccDetail;
-use App\Http\Model\AccVatDetail;
 use App\Http\Model\AccSystems;
 use App\Http\Model\AccPeriod;
 use App\Http\Model\AccNumberVoucher;
 use App\Http\Model\AccCountVoucher;
 use App\Http\Model\AccPrintTemplate;
-use App\Http\Model\AccVatDetailPayment;
 use App\Http\Model\Error;
 use App\Http\Resources\CashGeneralResource;
 use App\Http\Resources\TypeGeneralResource;
@@ -28,12 +26,13 @@ use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
 use Exception;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\File;
 use App\Http\Traits\CurrencyCheckTraits;
+use App\Http\Traits\FileAttachTraits;
+use App\Http\Traits\VatDetailPaymentTraits;
 
 class AccCashReceiptsGeneralController extends Controller
 {
-   use CurrencyCheckTraits;
+   use CurrencyCheckTraits,VatDetailPaymentTraits,FileAttachTraits;
   protected $url;
   protected $key;
   protected $key_voucher;
@@ -408,25 +407,9 @@ class AccCashReceiptsGeneralController extends Controller
                // Xóa các dòng chi tiết
                $data->detail()->delete();              
 
-               // Update lại trạng thái thanh toán
-               $tax_payment = $data->vat_detail_payment;
-               foreach($tax_payment as $v){
-                 $p = AccVatDetail::find($v->vat_detail_id);
-                if($p){
-                 $p->payment = 0;
-                 $p->save(); 
-                }
-                // Update lại số tiền đã thanh toán của từng phiếu
-                $tax_payment_update = AccVatDetailPayment::vat_detail_payment_created_at_not_id($v->vat_detail_id,$v->created_at,$v->id);
-                foreach($tax_payment_update as $t){
-                  if($t->paid > $v->paid){
-                  $t->paid = $t->paid - $v->payment;
-                  $t->remaining = $t->remaining + $v->payment;
-                  $t->save();
-                  }          
-                }               
-               }; 
-
+              // Update lại trạng thái thanh toán
+              $tax_payment = $data->vat_detail_payment;
+              $this->updateStatusPayment($tax_payment);
               
                 // Xóa các dòng thuế
                $data->tax()->delete();
@@ -434,14 +417,10 @@ class AccCashReceiptsGeneralController extends Controller
                 // Xóa các dòng thanh toán
                 $data->vat_detail_payment()->delete();                         
 
-               $attach = $data->attach();
-               foreach($attach as $a){
-                 //Xóa ảnh cũ
-                 if(File::exists(public_path($a->path))){
-                    File::delete(public_path($a->path));
-                 };
-                 $a->delete();
-               };
+                $attach = $data->attach;
+                 if($attach->count()>0){
+                  $this->deleteFile($attach);  
+                }      
 
                $data->delete(); 
                DB::connection(env('CONNECTION_DB_ACC'))->commit();
