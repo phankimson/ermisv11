@@ -11,7 +11,6 @@ use Maatwebsite\Excel\Concerns\HasReferencesToOtherSheets;
 use Maatwebsite\Excel\Concerns\WithStartRow;
 use App\Http\Model\AccAccountSystems;
 use App\Http\Model\AccDepartment;
-use App\Http\Model\AccBankAccount;
 use App\Http\Model\AccCaseCode;
 use App\Http\Model\AccCostCode;
 use App\Http\Model\AccStatisticalCode;
@@ -19,6 +18,8 @@ use App\Http\Model\AccWorkCode;
 use App\Http\Model\AccSystems;
 use App\Http\Model\AccCurrency;
 use App\Http\Model\AccSettingVoucher;
+use App\Http\Model\AccStock;
+use App\Http\Model\AccSuppliesGoods;
 use App\Http\Resources\LangDropDownResource;
 use App\Http\Resources\BankDropDownResource;
 use App\Http\Resources\DefaultDropDownResource;
@@ -81,36 +82,42 @@ class FirstSheetCritImport implements ToModel, HasReferencesToOtherSheets, WithH
     }   
     public function model(array $row)
     {
-      if($row['description'] && $row['no']){
-      $data = new AccCashPaymentVoucherImport($this->menu);
+      if($row['item_code'] && $row['no']){
+      $data = new AccInventoryReceiptVoucherImport($this->menu);
       $currency_default = $data->getCurrencyDefault();
       $setting_default = $data->getSettingDefault();
-      if(substr($row['credit'],0,3) === "112"){
-      $credit = AccAccountSystems::WhereDefault('code',$row['credit'])->first();
+      $item = AccSuppliesGoods::WhereDefault('code',$row['item_code'])->first();
+      if(substr($row['debit'],0,2) === "15"){
+      $debit = AccAccountSystems::WhereDefault('code',$row['debit'])->first();
+      }else if($item->stock_account){
+      $debit = AccAccountSystems::find($item->stock_account);
       }else{
-      $credit = AccAccountSystems::find($setting_default->credit);
+      $debit = AccAccountSystems::find($setting_default->debit);
       }
-      $debit = AccAccountSystems::WhereDefault('code',$row['debit'])->first();     
+      $credit = AccAccountSystems::WhereDefault('code',$row['credit'])->first();     
       $department = AccDepartment::WhereDefault('code',$row['department'])->first();
-      $bank_account = AccBankAccount::WhereDefault('bank_account',$row['bank_account'])->first();
+      $stock = AccStock::WhereDefault('code',$row['stock'])->first();
       $cost_code = AccCostCode::WhereDefault('code',$row['cost_code'])->first();
       $case_code = AccCaseCode::WhereDefault('code',$row['case_code'])->first();
       $statistical_code = AccStatisticalCode::WhereDefault('code',$row['statistical_code'])->first();
       $work_code = AccWorkCode::WhereDefault('code',$row['work_code'])->first(); 
-      $row['amount'] = $row['amount'] == null ? 0 : $row['amount'];
+      $row['quantity'] = $row['quantity'] == null ? 0 : $row['quantity'];
+      $row['price'] = $row['price'] == null ? $item->price_purchase : $row['price'];
       $row['rate'] = $row['rate'] == null ? 0 : $row['rate'];
       $arr = [
-        'description'    => $row['description'],
+        'item_code'    => $item ? LangDropDownResource::make($item) : DefaultDropDownResource::make(""),
         'debit'    =>  $debit ? LangDropDownResource::make($debit) : DefaultDropDownResource::make(""),
         'credit'    => $credit ? LangDropDownResource::make($credit) : DefaultDropDownResource::make(""),
         'currency'    => $currency_default != null ? $currency_default->id : 0,
-        'amount'    => $row['amount'],
+        'quantity'    => $row['quantity'],
+        'price'    => $row['price'],
+        'amount'    =>  $row['amount_rate']== null ? $row['quantity']*$row['price'] : $row['amount'],
         'rate'    => $row['rate'],
         'amount_rate'    => $row['amount_rate']== null ? $row['amount']*$row['rate'] : $row['amount_rate'],    
         'accounted_fast'    => DefaultDropDownResource::make(null),
         'subject_code'    => DefaultDropDownResource::make(null),      
         'department'    => $department ? LangDropDownResource::make($department) : DefaultDropDownResource::make(""),
-        'bank_account'    => $bank_account ? BankDropDownResource::make($bank_account) : DefaultDropDownResource::make(""),
+        'stock'    => $stock ? LangDropDownResource::make($stock) : DefaultDropDownResource::make(""),
         'cost_code'    => $cost_code ? LangDropDownResource::make($cost_code) : DefaultDropDownResource::make(""),
         'case_code'    => $case_code ? LangDropDownResource::make($case_code) : DefaultDropDownResource::make(""),
         'statistical_code'    => $statistical_code ? LangDropDownResource::make($statistical_code) : DefaultDropDownResource::make(""),

@@ -16,8 +16,8 @@ use App\Http\Model\AccPrintTemplate;
 use App\Http\Model\Error;
 use App\Http\Model\AccObjectType;
 use App\Http\Resources\InventoryGeneralReadResource;
-use App\Http\Model\Imports\AccBankPaymentGeneralImport;
-use App\Http\Model\Imports\AccBankPaymentVoucherImport;
+use App\Http\Model\Imports\AccInventoryReceiptGeneralImport;
+use App\Http\Model\Imports\AccInventoryReceiptVoucherImport;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
 use Exception;
@@ -26,10 +26,11 @@ use Illuminate\Support\Facades\Storage;
 use App\Http\Traits\NumberVoucherTraits;
 use App\Http\Traits\StockCheckTraits;
 use App\Http\Traits\FileAttachTraits;
+use App\Http\Traits\ReferenceTraits;
 
 class AccInventoryReceiptVoucherController extends Controller
 {
-  use StockCheckTraits,NumberVoucherTraits,FileAttachTraits;
+  use StockCheckTraits,NumberVoucherTraits,FileAttachTraits,ReferenceTraits;
   protected $url;
   protected $key;
   protected $menu;
@@ -138,28 +139,8 @@ class AccInventoryReceiptVoucherController extends Controller
           $general->save();
                   
           // Tham chiếu / Reference
-          // Ktra dòng dư tham chiếu
-          if(collect($arr->reference_by)->count()>0){
-            $rb = AccGeneral::get_reference_by_whereNotIn($arr->reference_by);
-            $rb->each(function ($item, $key) {
-              $item->reference_by = 0;
-              $item->save();
-            });
-          // Lưu tham chiếu
-            foreach($arr->reference_by as $s => $f){
-              $general_reference = AccGeneral::find($f);
-              if($general_reference->reference_by == 0){
-                $general_reference-> reference_by = $general->id;
-                $general_reference->save();
-              }
-            };
-          }else{
-              $rb = AccGeneral::get_reference_by($general->id);
-              $rb->each(function ($item, $key) {
-                $item->reference_by = 0;
-                $item->save();
-              });
-          };
+          $this->saveReference($arr->reference_by,$general->id);
+          
              // Lấy giá trị kiểm tra kho có âm không
           //$ca = AccSystems::get_systems($this->check_stock);
           $acc = "";
@@ -319,9 +300,9 @@ class AccInventoryReceiptVoucherController extends Controller
         $file = $request->file;
         // Đổi dữ liệu Excel sang collect
         config(['excel.imports.read_only' => false]);
-        $data = new AccBankPaymentGeneralImport($this->menu);   
+        $data = new AccInventoryReceiptGeneralImport($this->menu);   
         Excel::import($data , $file);
-        $detail = new AccBankPaymentVoucherImport($this->menu);   
+        $detail = new AccInventoryReceiptVoucherImport($this->menu);   
         Excel::import($detail, $file); 
         $merged = collect($data->getData())->push($detail->getData());            
         return response()->json(['status'=>true,'message'=> trans('messages.success_import'),'data'=>$merged]);

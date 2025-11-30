@@ -93,7 +93,7 @@ class FirstSheetCritImport implements ToModel, HasReferencesToOtherSheets, WithH
     public function model(array $row)
     {    
       if($row['description'] && $row['no']){
-      $data = new AccCashPaymentVoucherImport($this->menu);
+      $data = new AccBankReceiptVoucherImport($this->menu);
       $currency_default = $data->getCurrencyDefault();
       $setting_default = $data->getSettingDefault();
       if(substr($row['debit'],0,3) === "112"){
