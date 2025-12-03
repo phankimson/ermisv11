@@ -93,6 +93,8 @@ return [
     "item_name" => "Tên hàng",
     "unit" => "Đơn vị tính",
     "stock" => "Kho",
+    "stock_issue" => "Kho xuất",
+    "stock_receipt" => "Kho nhập",
     "price" => "Giá bán",
     "expiry_date" => "Hạn sử dụng",
     "exporter"=>"Người xuất",

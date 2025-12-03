@@ -93,6 +93,8 @@ return [
     "item_name" => "Item name",
     "unit" => "unit",
     "stock" => "Stock",
+    "stock_issue" => "Stock Issue",
+    "stock_receipt" => "Stock Receipt",
     "price" => "Price",
     "expiry_date" => "Expiry date",
     "exporter"=>"Exporter",
