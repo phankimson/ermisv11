@@ -2048,7 +2048,7 @@ function DefaultValueField(){
        }else{
        key_rs = v.field;
        };
-       if(key_rs){
+       if(key_rs && dataItem['id']){
         var column = grid.columns.find(p => p.field === key_rs);
         var dataTextField = "code";
         var dataValueField = "id";

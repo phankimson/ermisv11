@@ -17,8 +17,8 @@ use App\Http\Model\AccPrintTemplate;
 use App\Http\Model\Error;
 use App\Http\Model\AccObjectType;
 use App\Http\Resources\InventoryGeneralReadResource;
-use App\Http\Model\Imports\AccInventoryIssueGeneralImport;
-use App\Http\Model\Imports\AccInventoryIssueVoucherImport;
+use App\Http\Model\Imports\AccInventoryTransferGeneralImport;
+use App\Http\Model\Imports\AccInventoryTransferVoucherImport;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
 use Exception;
@@ -29,7 +29,7 @@ use App\Http\Traits\StockCheckTraits;
 use App\Http\Traits\FileAttachTraits;
 use App\Http\Traits\ReferenceTraits;
 
-class AccInventoryIssueVoucherController extends Controller
+class AccInventoryTransferVoucherController extends Controller
 {
   use StockCheckTraits,NumberVoucherTraits,FileAttachTraits,ReferenceTraits;
   protected $url;
@@ -45,14 +45,14 @@ class AccInventoryIssueVoucherController extends Controller
   public function __construct(Request $request)
  {
      $this->url =  $request->segment(3);
-     $this->group = 6; // 6 Nhóm xuất kho
+     $this->group = 8; // 6 Nhóm xuất kho
      $this->type_object = 2; // 1 Nhà cung cấp (VD : 2,3 nếu nhiều đối tượng)
-     $this->key = "inventory-issue-voucher";
+     $this->key = "inventory-transfer-voucher";
      $this->menu = Menu::where('code', '=', $this->key)->first();
-     $this->print = 'XK%';
-     $this->path = 'PATH_UPLOAD_INVENTORY_ISSUE';
+     $this->print = 'CK%';
+     $this->path = 'PATH_UPLOAD_INVENTORY_TRANSFER';
      $this->check_stock = 'CHECK_STOCK';
-     $this->download = 'AccInventoryIssueVoucher.xlsx';
+     $this->download = 'AccInventoryTransferVoucher.xlsx';
  }
 
   public function show(){
@@ -192,7 +192,8 @@ class AccInventoryIssueVoucherController extends Controller
              $inventory->item_code = isset($item[0]) ? trim($item[0]) : '';
              $inventory->item_name = isset($item[1]) ? trim($item[1]) : '';
              $inventory->unit = $d->unit->value;
-             $inventory->stock_issue = $d->stock->value;
+             $inventory->stock_issue = $d->stock_issue->value;
+             $inventory->stock_receipt = $d->stock_receipt->value;
              $inventory->quantity = $d->quantity;
              $inventory->price = $d->price;
              $inventory->amount = $d->quantity * $d->price;
@@ -202,7 +203,10 @@ class AccInventoryIssueVoucherController extends Controller
        
                                   
                // Lưu số tồn kho bên Có
-                $balance = $this->reduceStock($d->credit->value,$d->stock->value,$d->item_code->value,$d->quantity);   
+                $balance = $this->reduceStock($d->credit->value,$d->stock_issue->value,$d->item_code->value,$d->quantity); 
+                // Lưu số tồn kho bên Nợ
+                $this->increaseStock($d->debit->value,$d->stock_receipt->value,$d->item_code->value,$d->quantity);
+                // Kiểm tra kho âm  
                   if($ca->value == "1" && $balance->quantity<0){
                     $acc = $d->item_code->text;
                     break;
@@ -305,9 +309,9 @@ class AccInventoryIssueVoucherController extends Controller
         $file = $request->file;
         // Đổi dữ liệu Excel sang collect
         config(['excel.imports.read_only' => false]);
-        $data = new AccInventoryIssueGeneralImport($this->menu);   
+        $data = new AccInventoryTransferGeneralImport($this->menu);   
         Excel::import($data , $file);
-        $detail = new AccInventoryIssueVoucherImport($this->menu);   
+        $detail = new AccInventoryTransferVoucherImport($this->menu);   
         Excel::import($detail, $file); 
         $merged = collect($data->getData())->push($detail->getData());            
         return response()->json(['status'=>true,'message'=> trans('messages.success_import'),'data'=>$merged]);

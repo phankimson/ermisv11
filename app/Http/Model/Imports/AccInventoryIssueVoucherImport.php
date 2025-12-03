@@ -24,7 +24,7 @@ use App\Http\Model\AccSuppliesGoods;
 use App\Http\Resources\LangDropDownResource;
 use App\Http\Resources\DefaultDropDownResource;
 
-class AccInventoryReceiptVoucherImport implements  WithHeadingRow, WithMultipleSheets
+class AccInventoryIssueVoucherImport implements  WithHeadingRow, WithMultipleSheets
 {
   protected $menu;
   public static $first = array();
@@ -87,14 +87,14 @@ class FirstSheetCritImport implements ToModel, HasReferencesToOtherSheets, WithH
       $currency_default = $data->getCurrencyDefault();
       $setting_default = $data->getSettingDefault();
       $item = AccSuppliesGoods::WhereDefault('code',$row['item_code'])->first();
-      if(substr($row['debit'],0,2) === "15"){
-      $debit = AccAccountSystems::WhereDefault('code',$row['debit'])->first();
+      if(substr($row['credit'],0,2) === "15"){
+      $credit = AccAccountSystems::WhereDefault('code',$row['credit'])->first();
       }else if($item->stock_account){
-      $debit = AccAccountSystems::find($item->stock_account);
+      $credit = AccAccountSystems::find($item->stock_account);
       }else{
-      $debit = AccAccountSystems::find($setting_default->debit);
+      $credit = AccAccountSystems::find($setting_default->debit);
       }
-      $credit = AccAccountSystems::WhereDefault('code',$row['credit'])->first();     
+      $debit = AccAccountSystems::WhereDefault('code',$row['debit'])->first();     
       $department = AccDepartment::WhereDefault('code',$row['department'])->first();
       $stock = AccStock::WhereDefault('code',$row['stock'])->first();
       $unit = AccUnit::find($item->unit_id);
@@ -128,7 +128,7 @@ class FirstSheetCritImport implements ToModel, HasReferencesToOtherSheets, WithH
         'contract'    => $row['contract'], 
         'order'    => $row['order'], 
       ];
-      $data = new AccInventoryReceiptVoucherImport($this->menu);
+      $data = new AccInventoryIssueVoucherImport($this->menu);
       $data->setDataFirst($arr);
       }      
       return;
