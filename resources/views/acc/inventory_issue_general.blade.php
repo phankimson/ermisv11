@@ -60,7 +60,7 @@
                                 { "field" : "item_code","title" : "@lang('acc_voucher.item_code') " ,"width" : "100px" },
                                 { "field" : "item_name","title" : "@lang('acc_voucher.item_name') " ,"width" : "200px" ,aggregates: ['count'], footerTemplate: "<p>@lang('acc_voucher.total_count'): #=count#</p>" },
                                 { "field" : "unit","title" : "@lang('acc_voucher.unit') " ,"width" : "100px" },
-                                { "field" : "stock","title" : "@lang('acc_voucher.stock') " ,"width" : "100px" },
+                                { "field" : "stock_issue","title" : "@lang('acc_voucher.stock_issue') " ,"width" : "100px" },
                                 { "field" : "quantity","title" : "@lang('acc_voucher.quantity') " ,"width" : "150px", template: '#= FormatNumberDecimal(quantity,{{$decimal}}) #' ,aggregates: ['sum'] , footerTemplate:"#= FormatNumberDecimal(sum,{{$decimal}}) #"},
                                 { "field" : "price","title" : "@lang('acc_voucher.price') " ,"width" : "150px" ,template: '#= FormatNumberDecimal(price,{{$decimal}}) #'},
                                 { "field" : "amount","title" : "@lang('acc_voucher.amount') " ,"width" : "150px" ,template: '#= FormatNumberDecimal(amount,{{$decimal}}) #' ,aggregates: ['sum'] , footerTemplate:"#= FormatNumberDecimal(sum,{{$decimal}}) #"},
