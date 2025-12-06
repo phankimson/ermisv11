@@ -25,7 +25,8 @@ class SuppliesGoodsReceiptDropDownResource extends JsonResource
             'quantity' => number_format($this->stock_check_sum_quantity, 0),
             'unit_name' => $unit_name,
             'price' => $this->price_purchase,
-            'account' => $this->stock_account,
+            'debit' => $this->stock_account,
+            'credit' => '', 
         ];
     }
 }

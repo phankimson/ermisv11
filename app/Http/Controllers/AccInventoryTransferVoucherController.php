@@ -129,7 +129,6 @@ class AccInventoryTransferVoucherController extends Controller
           $general->voucher_date = $arr->voucher_date;
           $general->accounting_date = $arr->accounting_date;
           $general->traders = $arr->traders;
-          $general->subject = $arr->subject_id;
           $general->reference = $arr->reference;
           $general->total_quantity = $arr->total_quantity;
           $general->total_amount = $arr->total_amount;
@@ -167,17 +166,7 @@ class AccInventoryTransferVoucherController extends Controller
              $detail->credit = $d->credit->value;  // Đổi từ id value dạng read
              $detail->amount = $d->amount;
              $detail->rate = $d->rate;
-             $detail->amount_rate = $d->amount * $d->rate;             
-             $detail->department = $d->department->value; // Đổi từ id value dạng read
-             $detail->case_code = $d->case_code->value;  // Đổi từ id value dạng read
-             $detail->cost_code = $d->cost_code->value;  // Đổi từ id value dạng read
-             $detail->statistical_code = $d->statistical_code->value;  // Đổi từ id value dạng read
-             $detail->work_code = $d->work_code->value;  // Đổi từ id value dạng read
-             $detail->lot_number = $d->lot_number;
-             $detail->contract = $d->contract;
-             $detail->order = $d->order;
-             $detail->subject_id_debit = $d->subject_code->value;// Đổi từ id value dạng read
-             $detail->subject_name_debit = $d->subject_code->text;// Đổi từ name text dạng read
+             $detail->amount_rate = $d->amount * $d->rate;
              $detail->active = 1;
              $detail->status = 1;
              $detail->save();     
@@ -192,8 +181,8 @@ class AccInventoryTransferVoucherController extends Controller
              $inventory->item_code = isset($item[0]) ? trim($item[0]) : '';
              $inventory->item_name = isset($item[1]) ? trim($item[1]) : '';
              $inventory->unit = $d->unit->value;
-             $inventory->stock_issue = $d->stock_issue->value;
-             $inventory->stock_receipt = $d->stock_receipt->value;
+             $inventory->stock_issue = $arr->stock_issue;
+             $inventory->stock_receipt = $arr->stock_receipt;
              $inventory->quantity = $d->quantity;
              $inventory->price = $d->price;
              $inventory->amount = $d->quantity * $d->price;
@@ -203,9 +192,9 @@ class AccInventoryTransferVoucherController extends Controller
        
                                   
                // Lưu số tồn kho bên Có
-                $balance = $this->reduceStock($d->credit->value,$d->stock_issue->value,$d->item_code->value,$d->quantity); 
+                $balance = $this->reduceStock($d->credit->value,$arr->stock_issue,$d->item_code->value,$d->quantity); 
                 // Lưu số tồn kho bên Nợ
-                $this->increaseStock($d->debit->value,$d->stock_receipt->value,$d->item_code->value,$d->quantity);
+                $this->increaseStock($d->debit->value,$arr->stock_receipt,$d->item_code->value,$d->quantity);
                 // Kiểm tra kho âm  
                   if($ca->value == "1" && $balance->quantity<0){
                     $acc = $d->item_code->text;

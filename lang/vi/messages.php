@@ -135,6 +135,8 @@ return [
       "connect_fail"=>"Kết nối thất bại !",
       "bank_transfer_is_duplicated"=>"Ngân hàng chuyển nội bộ bị trùng !",
       "bank_sender_or_bank_receive_is_empty"=>"Ngân hàng nhận hoặc ngân hàng chuyển bị trống",
+      "stock_transfer_is_duplicated"=>"Kho chuyển nội bộ bị trùng !",
+      "stock_issue_or_stock_receive_is_empty"=>"Kho nhận hoặc kho chuyển bị trống",
       "enter_search_keyword"=>"Nhập từ khóa tìm kiếm",
       "bank_account_not_correct"=>"Tài khoản ngân hàng không đúng !",
       "debit_and_credit_amount_not_correct"=>"Số tiền nợ và có không khớp nhau !",

@@ -2,7 +2,7 @@
     <tr>
         <td class="row-label-responsive"><label>@lang('acc_voucher.stock_issue')</label></td>
         <td colspan="2">
-            <select class="droplist read large xxlarge bank_account" name="stock_issue"  data-type="string" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.stock')}}" data-change="credit">
+            <select class="droplist read large xxlarge stock" name="stock_issue"  data-type="string" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.stock')}}" data-change="credit">
                  <option readonly selected value="0">--Select--</option>         
             </select>            
         </td>   
@@ -26,7 +26,7 @@
     <tr>
        <td class="row-label-responsive"><label>@lang('acc_voucher.stock_receipt')</label></td>
         <td colspan="2">
-            <select class="droplist read large xxlarge stock" name="stock_receipt"  data-type="string" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.stock')}}" data-change="debit">
+            <select class="droplist read large xxlarge stock" name="stock_receipt"  data-type="string" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.stock')}}">
                 <option readonly selected value="0">--Select--</option>
                           
             </select>            

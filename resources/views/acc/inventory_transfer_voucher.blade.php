@@ -149,15 +149,15 @@
 
         Ermis.field = {
             id : {field :"id" ,defaultValue: 0},
+            item_code: { field : "item_code", defaultValue : DefaultReadValueField() },
             quantity:     {field : "quantity",type:"number" , defaultValue : 0 , validation: { min: 1, required: true }},
             price:     {field : "price",type:"number",validation: { min: 0, required: true }},
             amount:     {field : "amount",type:"number" , defaultValue : 0 , validation: { min: 1, required: true }},
             rate:     {field : "rate",type:"number", defaultValue : parseInt(jQuery(".rate[name='rate']").val()) , validation: { min: 0, required: true }},
             amount_rate:     {field : "amount_rate",type:"number" , defaultValue : 0 , validation: { min: 1, required: true }},
             unit: { field : "unit", defaultValue: DefaultReadValueField() },
-            case_code: { field : "case_code", defaultValue: DefaultReadValueField() },
-            cost_code: { field : "cost_code", defaultValue: DefaultReadValueField() },
-            statistical_code: { field : "statistical_code", defaultValue: DefaultReadValueField() },
+            debit: { field : "debit", defaultValue: RequestURL("{!!route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.account-voucher-default').'?menu='.$menu.'&type=1'!!}"), validation: { min: 1 ,required: true }},
+            credit: { field : "credit", defaultValue: RequestURL("{!!route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.account-voucher-default').'?menu='.$menu.'&type=2'!!}"), validation: { min: 1, required: true }},
         };
         
         Ermis.aggregate = [ { field: "item_code", aggregate: "count" },
@@ -178,5 +178,5 @@
 <script>kendo.culture('en-DE')</script>
 @endif
 <script src="{{ url('addon/scripts/ermis/ermis-form-global-detail.js') }}"></script>
-<script src="{{ url('addon/scripts/ermis/ermis-form-4-detail-stock.js') }}"></script>
+<script src="{{ url('addon/scripts/ermis/ermis-form-6-detail-stock.js') }}"></script>
 @endsection

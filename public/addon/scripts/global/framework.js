@@ -1863,7 +1863,7 @@ function DefaultValueField(){
 
   ItemsReadGoodsCritDropDownEditor = function (container, options) {
     var c  = findObjectByKey($kGridTab_column,"field",options.field);
-    var crit = Ermis.voucher.code == "NK" ?"none" :jQuery('.'+c.crit+'[name="' + c.crit + '"]').data('kendoDropDownList').value();
+    var crit = Ermis.voucher.code == "NK" ?"none" :jQuery('.'+c.crit+'[name="' + c.crit + '"],[name="' + c.crit + '_issue"]').data('kendoDropDownList').value();
     if(crit && crit != "0"){
       jQuery('<input required id="' + options.field + '" data-url="'+c.url+'"  class="dropdown-list-ajax" name="' + options.field + '"/>')
            .appendTo(container)

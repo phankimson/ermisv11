@@ -171,23 +171,42 @@ class Convert
                 'unit_en' => '',
                 'quantity' => '',
                 'price' => '',
-                'account' => '',
+                'debit' => '',
+                'credit' => '',
               ]);
       $rs_convert->push($co);
       $data->each(function ($item, int $key) use($rs_convert,$price){
           $item->stock_check->each(function ($it, int $k) use($item,$rs_convert,$price){
+          if($price == "NK"){
+            $item_price = $item->price_purchase;
+            $debit = $item->stock_account;
+            $credit = '';
+          }else if($price == "XK"){
+            $item_price = $item->price;
+            $debit = $item->cost_account;
+            $credit =  $it->type;
+          }else if($price == "CK"){
+            $item_price = $item->price_purchase;
+            $debit = '';
+            $credit = $it->type;
+          }else{
+            $item_price = 0;
+            $debit = '';
+            $credit = '';
+          }
           $co = collect(['id' =>  $it->id,
                 'item_id' => $item->id,
                 'code' => $item->code,
                 'name' => $item->name,
                 'name_en' => $item->name_en,
-                'unit_id' => $item->unit->id,
+                'unit_id' => $item->unit_id,
                 'stock' => $it->stock,
-                'unit' => $item->unit->name,
-                'unit_en' => $item->unit->name_en,
+                'unit' => optional($item->unit)->name?optional($item->unit)->name:'',
+                'unit_en' => optional($item->unit)->name_en?optional($item->unit)->name_en:'',
                 'quantity' => $it->quantity,
-                'price' => $price =="XK"?$item->price:$item->price_purchase,
-                'account' => $item->stock_account,
+                'price' => $item_price,
+                'debit' => $debit,
+                'credit' => $credit,
               ]);
          $rs_convert->push($co);
         });         

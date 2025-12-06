@@ -123,8 +123,6 @@ class AccBankTransferVoucherController extends Controller
           $general->description = $arr->description;
           $general->voucher_date = $arr->voucher_date;
           $general->accounting_date = $arr->accounting_date;
-          $general->traders = $arr->traders;
-          $general->subject = $arr->subject_id;
           $general->reference = $arr->reference;
           $general->total_amount = $arr->total_amount;
           $general->total_amount_rate = $arr->total_amount_rate;
@@ -161,8 +159,8 @@ class AccBankTransferVoucherController extends Controller
              $detail->rate = $d->rate;
              $detail->amount_rate = $d->amount * $d->rate;
              $detail->accounted_fast = $d->accounted_fast->value;  // Đổi từ id value dạng read
-             $detail->bank_account_debit = $d->bank_account_debit->value;  // Đổi từ id value dạng read   
-             $detail->bank_account_credit = $d->bank_account_credit->value;  // Đổi từ id value dạng read             
+             $detail->bank_account_debit = $arr->bank_account_debit;  // Đổi từ id value dạng read   
+             $detail->bank_account_credit = $arr->bank_account_credit;  // Đổi từ id value dạng read             
              $detail->active = 1;
              $detail->status = 1;
              $detail->save();
@@ -171,7 +169,7 @@ class AccBankTransferVoucherController extends Controller
              $arr->detail[$k]->id = $detail->id;      
              // Lưu số tồn tiền bên Nợ
              if(substr($d->debit->text,0,3) === '112'){ 
-               $balance = $this->increaseCurrency($d->debit->value,$arr->currency,$d->amount,$d->rate,$d->bank_account_debit->value);    
+               $balance = $this->increaseCurrency($d->debit->value,$arr->currency,$d->amount,$d->rate,$arr->bank_account_debit);    
               //  $balance = AccCurrencyCheck::get_type_first($d->debit->value,$arr->currency,$d->bank_account_debit->value);     
               //  if($balance){
               //    $balance->amount = $balance->amount + ($d->amount * $d->rate);
@@ -189,7 +187,7 @@ class AccBankTransferVoucherController extends Controller
            
                // Lưu số tồn tiền bên Có
               if(substr($d->credit->text,0,3) == '112'){
-                $balance = $this->reduceCurrency($d->credit->value,$arr->currency,$d->amount,$d->rate,$d->bank_account_credit->value);
+                $balance = $this->reduceCurrency($d->credit->value,$arr->currency,$d->amount,$d->rate,$arr->bank_account_credit);
                 //  $balance = AccCurrencyCheck::get_type_first($d->credit->value,$arr->currency,$d->bank_account_credit->value);     
                 //  if($balance){
                 //    $balance->amount = $balance->amount - ($d->amount * $d->rate);

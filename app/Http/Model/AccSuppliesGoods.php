@@ -120,7 +120,7 @@ class AccSuppliesGoods extends Model
         if($stock != "none"){
           $result = AccSuppliesGoods::with(['stock_check'=> function ($query) use ($stock) {
             $query->where('stock', $stock);         
-            $query->select('id', 'supplies_goods', 'quantity', 'stock');          
+            $query->select('id', 'supplies_goods', 'quantity', 'stock','type');          
           }],"unit")
           ->orderBy('code','asc')
           ->get();

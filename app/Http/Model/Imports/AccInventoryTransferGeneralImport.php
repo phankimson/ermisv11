@@ -5,12 +5,12 @@ namespace App\Http\Model\Imports;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithMappedCells;
 use App\Http\Model\AccGeneral;
-use App\Http\Model\AccCurrency;
 use App\Http\Model\AccSystems;
 use App\Classes\Convert;
+use App\Http\Model\AccCurrency;
 use App\Http\Traits\NumberVoucherTraits;
 
-class AccEntryGeneralImport implements WithMappedCells,ToModel
+class AccInventoryTransferGeneralImport implements WithMappedCells,ToModel
 {
   use NumberVoucherTraits;
   protected $menu;
@@ -22,12 +22,14 @@ class AccEntryGeneralImport implements WithMappedCells,ToModel
   public function mapping(): array
   {
       return [
-              'subject'  => 'C3',
-              'traders' => 'C4',
+              'stock_issue'  => 'C3',
+              'stock_receipt' => 'C4',
               'description' => 'C5',
+              'currency' => 'C6',
               'accounting_date' => 'K3',
               'voucher_date' => 'K4',
-              'voucher' => 'K5'
+              'voucher' => 'K5',              
+              'rate' => 'K6'
         ];
     
   } 
@@ -40,9 +42,9 @@ class AccEntryGeneralImport implements WithMappedCells,ToModel
   public function getData()
   {
      return self::$data[0];
-  }   
-
-   public function getCurrencyDefault()
+  } 
+  
+  public function getCurrencyDefault()
   {
       $default = AccSystems::get_systems("CURRENCY_DEFAULT");
       $currency_default = AccCurrency::get_code($default->value);
@@ -50,9 +52,9 @@ class AccEntryGeneralImport implements WithMappedCells,ToModel
   } 
 
   public function model(array $row)
-  {             
-    $data = new AccBankTransferGeneralImport($this->menu);
-    $currency_default = $data->getCurrencyDefault();     
+  {  
+    $data = new AccBankPaymentGeneralImport($this->menu);
+    $currency_default = $data->getCurrencyDefault();                   
     $code_check = AccGeneral::WhereCheck('voucher',$row['voucher'],'id',null)->first();
     $currency = AccCurrency::WhereDefault('code',$row['currency'])->first();
     if(is_numeric($row['accounting_date'])){
@@ -62,21 +64,22 @@ class AccEntryGeneralImport implements WithMappedCells,ToModel
       $row['voucher_date'] = $row['voucher_date'] ? Convert::DateExcel($row['voucher_date']):date("Y-m-d");
     }
     if($code_check == null){
-      if(!$row['voucher']){        
-         // Lưu số nhảy
-          $row['voucher'] =  $this->loadNumberVoucher($this->menu,$row);                
+      if(!$row['voucher']){      
+           // Load Phiếu tự động / Load AutoNumber
+           $row['voucher'] =  $this->loadNumberVoucher($this->menu,$row);        
         }
       }  
+       
       $arr =  [
         'voucher'    => $row['voucher'],
         'description'    => $row['description'],
-        'voucher_date'    => $row['voucher_date'],
-        'accounting_date'    => $row['accounting_date'],
+        'voucher_date'    => $row['accounting_date'],
+        'accounting_date'    => $row['voucher_date'],
         'currency'   => $currency?$currency->id:$currency_default->id,
         'rate'      =>$row['rate'],
-      ]; 
- 
-      AccEntryGeneralImport::setData($arr);      
+        'traders'    => $row['traders'],
+      ];    
+      AccInventoryTransferGeneralImport::setData($arr);     
       return ;
    }
 

@@ -8,27 +8,26 @@ use Maatwebsite\Excel\Concerns\WithBatchInserts;
 use Maatwebsite\Excel\Concerns\WithLimit;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 use Maatwebsite\Excel\Concerns\HasReferencesToOtherSheets;
+use Maatwebsite\Excel\Concerns\WithStartRow;
 use App\Http\Model\AccAccountSystems;
-use App\Http\Model\AccBankAccount;
 use App\Http\Model\AccSystems;
 use App\Http\Model\AccCurrency;
 use App\Http\Model\AccSettingVoucher;
+use App\Http\Model\AccUnit;
+use App\Http\Model\AccSuppliesGoods;
 use App\Http\Resources\LangDropDownResource;
-use App\Http\Resources\BankDropDownResource;
 use App\Http\Resources\DefaultDropDownResource;
 
-class AccBankTransferVoucherImport implements  WithHeadingRow, WithMultipleSheets
+class AccInventoryTransferVoucherImport implements  WithHeadingRow, WithMultipleSheets
 {
   protected $menu;
   public static $first = array();
-  public static $second = array();
+    
+   function __construct($menu) { //this will NOT overwrite the parents construct
+       $this->menu = $menu;
+    }   
   
-
-    public function __construct($menu)
-  {
-      $this->menu = $menu;
-  }
-
+  
   public function setDataFirst($arr)
   {
       array_push(self::$first,$arr);
@@ -39,16 +38,10 @@ class AccBankTransferVoucherImport implements  WithHeadingRow, WithMultipleSheet
    {
       $data['detail'] = self::$first;
       return $data;
-   }   
-
-  public function sheets(): array
-    {
-        return [
-          'detail' => new FirstSheetCritImport($this->menu),
-        ];
-    }
-
-      public function getCurrencyDefault()
+   }  
+     
+   
+     public function getCurrencyDefault()
     {
        $default = AccSystems::get_systems("CURRENCY_DEFAULT");
        $currency_default = AccCurrency::get_code($default->value);
@@ -61,6 +54,13 @@ class AccBankTransferVoucherImport implements  WithHeadingRow, WithMultipleSheet
        return $setting_voucher;
     } 
 
+  public function sheets(): array
+    {
+        return [
+          'detail' => new FirstSheetCritImport($this->menu)
+        ];
+    }
+
   /**
     * @param array $row
     *
@@ -70,46 +70,48 @@ class AccBankTransferVoucherImport implements  WithHeadingRow, WithMultipleSheet
 
 class FirstSheetCritImport implements ToModel, HasReferencesToOtherSheets, WithHeadingRow, WithBatchInserts, WithLimit
 {
-    protected $menu;
+   protected $menu;
     function __construct($menu) { //this will NOT overwrite the parents construct
        $this->menu = $menu;
     }   
-
     public function model(array $row)
     {
-      if($row['description'] && $row['no']){
-      $data = new AccBankTransferVoucherImport($this->menu);
+      if($row['item_code'] && $row['no']){
+      $data = new AccInventoryReceiptVoucherImport($this->menu);
       $currency_default = $data->getCurrencyDefault();
       $setting_default = $data->getSettingDefault();
-        if(substr($row['debit'],0,3) === "112"){
-        $debit = AccAccountSystems::WhereDefault('code',$row['debit'])->first();
-        }else{
-          $debit = AccAccountSystems::find($setting_default->debit);
-        }
-        if(substr($row['debit'],0,3) === "112"){
-        $credit = AccAccountSystems::WhereDefault('code',$row['credit'])->first(); 
-        }else{
-        $credit = AccAccountSystems::find($setting_default->credit);
-        }
-      $row['amount'] = $row['amount'] == null ? 0 : $row['amount'];
+      $item = AccSuppliesGoods::WhereDefault('code',$row['item_code'])->first();
+      if(substr($row['credit'],0,2) === "15"){
+      $credit = AccAccountSystems::WhereDefault('code',$row['credit'])->first();
+      }else if($item->stock_account){
+      $credit = AccAccountSystems::find($item->stock_account);
+      }else{
+      $credit = AccAccountSystems::find($setting_default->debit);
+      }
+      $debit = AccAccountSystems::WhereDefault('code',$row['debit'])->first();
+      $unit = AccUnit::find($item->unit_id);
+      $row['quantity'] = $row['quantity'] == null ? 0 : $row['quantity'];
+      $row['price'] = $row['price'] == null ? $item->price_purchase : $row['price'];
       $row['rate'] = $row['rate'] == null ? 0 : $row['rate'];
       $arr = [
-        'description'    => $row['description'],
+        'item_code'    => $item ? LangDropDownResource::make($item) : DefaultDropDownResource::make(""),
         'debit'    =>  $debit ? LangDropDownResource::make($debit) : DefaultDropDownResource::make(""),
         'credit'    => $credit ? LangDropDownResource::make($credit) : DefaultDropDownResource::make(""),
-        'amount'    => $row['amount'],
         'currency'    => $currency_default != null ? $currency_default->id : 0,
+        'quantity'    => $row['quantity'],
+        'price'    => $row['price'],
+        'amount'    =>  $row['amount_rate']== null ? $row['quantity']*$row['price'] : $row['amount'],
         'rate'    => $row['rate'],
-        'amount_rate'    => $row['amount_rate']== null ? $row['amount']*$row['rate'] : $row['amount_rate'],    
-        'accounted_fast'    => DefaultDropDownResource::make(null),    
+        'amount_rate'    => $row['amount_rate']== null ? $row['amount']*$row['rate'] : $row['amount_rate'],
+        'unit'    => $unit ? LangDropDownResource::make($unit) : DefaultDropDownResource::make(""),
       ];
-      $data = new AccBankTransferVoucherImport($this->menu);
+      $data = new AccInventoryTransferVoucherImport($this->menu);
       $data->setDataFirst($arr);
       }      
       return;
     }
 
-      public function batchSize(): int
+   public function batchSize(): int
     {
       return (int) config('excel.setting.IMPORT_SIZE');
     }   
@@ -123,7 +125,7 @@ class FirstSheetCritImport implements ToModel, HasReferencesToOtherSheets, WithH
     {
         return 9;
     }
-
-  
+   
   }
+
 

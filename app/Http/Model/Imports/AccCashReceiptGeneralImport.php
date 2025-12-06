@@ -5,16 +5,16 @@ namespace App\Http\Model\Imports;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithMappedCells;
 use App\Http\Model\AccGeneral;
-use App\Http\Model\AccNumberVoucher;
 use App\Http\Model\AccObject;
 use App\Http\Model\AccCurrency;
-use App\Http\Model\AccCountVoucher;
 use App\Http\Model\AccSystems;
 use App\Classes\Convert;
 use App\Http\Resources\ObjectDropDownListResource;
+use App\Http\Traits\NumberVoucherTraits;
 
 class AccCashReceiptGeneralImport implements WithMappedCells,ToModel
 {
+  use NumberVoucherTraits;
   protected $menu;
   public static $data = array();
   public function __construct($menu)
@@ -68,28 +68,7 @@ class AccCashReceiptGeneralImport implements WithMappedCells,ToModel
     if($code_check == null){
       if(!$row['voucher']){        
         // Lưu số nhảy
-        $voucher = AccNumberVoucher::get_menu($this->menu->id);        
-        // Thay đổi số nhảy theo yêu cầu DD MM YY
-        $voucher_id = $voucher->id;
-        $voucher_length_number = $voucher->length_number;
-        $format = $voucher->format;
-        $prefix = $voucher->prefix;
-        if($voucher->change_voucher == 1){
-          $val = Convert::dateformatArr($format,$row['accounting_date']);
-          $voucher = AccCountVoucher::get_count_voucher($voucher_id,$format,$val['day_format'],$val['month_format'],$val['year_format']);              
-          if(!$voucher){
-            $voucher = new AccCountVoucher();
-            $voucher->number_voucher = $voucher_id;
-            $voucher->format = $format;
-            $voucher->day = $val['day_format'];
-            $voucher->month = $val['month_format'];
-            $voucher->year = $val['year_format'];
-            $voucher->length_number = $voucher_length_number;
-            $voucher->active = 1;
-          }
-        }  
-           // Load Phiếu tự động / Load AutoNumber
-           $row['voucher'] = Convert::VoucherMasker1($voucher,$prefix);           
+          $row['voucher'] =  $this->loadNumberVoucher($this->menu,$row);          
         }
       }  
       $arr =  [

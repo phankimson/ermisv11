@@ -26,7 +26,8 @@ class SuppliesGoodsIssueDropDownResource extends JsonResource
             'unit_name' => ($locale == "vi" ? $this['unit'] :$this['unit_en']),
             'quantity' => $this['quantity'],
             'price' => $this['price'],
-            'account' => $this['account'],
+            'debit' => $this['debit'],
+            'credit' => $this['credit'],
         ];
     }
 }

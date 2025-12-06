@@ -206,7 +206,7 @@ class AccDropDownListController extends Controller
       if($stock == "none"){
         $data = SuppliesGoodsReceiptDropDownResource::collection($rs);  
       }else{
-        $rs_convert = Convert::Array_convert_supplies_goods($rs,$price); 
+        $rs_convert = Convert::Array_convert_supplies_goods($rs,$price);
         $data = SuppliesGoodsIssueDropDownResource::collection($rs_convert);  
       }    
    
