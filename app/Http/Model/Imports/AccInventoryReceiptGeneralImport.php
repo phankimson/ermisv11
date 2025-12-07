@@ -60,16 +60,20 @@ class AccInventoryReceiptGeneralImport implements WithMappedCells,ToModel
     $subject = AccObject::WhereDefault('code',$row['subject'])->first();
     $code_check = AccGeneral::WhereCheck('voucher',$row['voucher'],'id',null)->first();
     $currency = AccCurrency::WhereDefault('code',$row['currency'])->first();
-    if(is_numeric($row['accounting_date'])){
+      if(is_numeric($row['accounting_date'])){
       $row['accounting_date'] =  $row['accounting_date'] ? Convert::DateExcel($row['accounting_date']):date("Y-m-d");
+    }else{
+      $row['accounting_date'] = date("Y-m-d");
     }
     if(is_numeric($row['voucher_date'])){
       $row['voucher_date'] = $row['voucher_date'] ? Convert::DateExcel($row['voucher_date']):date("Y-m-d");
+    }else{
+      $row['voucher_date'] = date("Y-m-d");
     }
     if($code_check == null){
       if(!$row['voucher']){      
            // Load Phiếu tự động / Load AutoNumber
-           $row['voucher'] =  $this->loadNumberVoucher($this->menu,$row);        
+           $row['voucher'] =  $this->loadMaskerNumberVoucher($this->menu,$row);        
         }
       }  
        

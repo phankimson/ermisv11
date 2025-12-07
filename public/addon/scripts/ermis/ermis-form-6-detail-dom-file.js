@@ -667,6 +667,7 @@ var Ermis = function() {
         function(results){
             SetDataAjax(data.columns, results.data);    
             initLoadGrid(results.data[0]);  
+            $rate.trigger("change");
           },
          function(){},
          function(results){
@@ -847,7 +848,7 @@ var Ermis = function() {
                 
                  }    
              var mes1 = initShowValidationGrid(obj.detail,crit,$kGrid);        
-             kendo.alert(mes1.join("</br>")+mes2);
+             kendo.alert(mes1.join("<br>")+"<br>"+mes2);
         }
 
     };

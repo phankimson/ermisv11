@@ -738,9 +738,10 @@ var Ermis = function() {
           arr.com = Chat.com;
           arr.key = Ermis.link;
           ErmisTemplateAjaxPostAdd3(e,'#import-form',Ermis.link+'-import',arr,
-        function(results){
+        function(results){            
             SetDataAjax(data.columns, results.data);    
             initLoadGrid(results.data[0]);  
+            $rate.trigger("change");
           },
          function(){},
          function(results){
@@ -939,7 +940,7 @@ var Ermis = function() {
                 
                  }    
              var mes1 = initShowValidationGrid(obj.detail,crit,$kGrid);        
-             kendo.alert(mes1.join("</br>")+mes2);
+             kendo.alert(mes1.join("<br>")+"<br>"+mes2);
         }
 
     };

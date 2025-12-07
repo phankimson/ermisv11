@@ -77,7 +77,7 @@ class FirstSheetCritImport implements ToModel, HasReferencesToOtherSheets, WithH
     public function model(array $row)
     {
       if($row['item_code'] && $row['no']){
-      $data = new AccInventoryReceiptVoucherImport($this->menu);
+      $data = new AccInventoryTransferVoucherImport($this->menu);
       $currency_default = $data->getCurrencyDefault();
       $setting_default = $data->getSettingDefault();
       $item = AccSuppliesGoods::WhereDefault('code',$row['item_code'])->first();

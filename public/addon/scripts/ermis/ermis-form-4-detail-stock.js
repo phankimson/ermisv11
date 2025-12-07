@@ -798,6 +798,7 @@ var Ermis = function() {
             SetDataAjax(data.columns, results.data);    
             initLoadGrid(results.data[0]);   
             AddChooseObjectResult(results.data['object']);
+            $rate.trigger("change");
           },
          function(){},
          function(results){
@@ -1046,7 +1047,7 @@ var Ermis = function() {
           initSaveDetail(e,obj);     
         }else{        
              var mes1 = initShowValidationGrid(obj.detail,crit,$kGrid);        
-             kendo.alert(mes1.join("</br>"));
+             kendo.alert(mes1.join("<br>"));
         }
 
     };

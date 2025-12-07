@@ -76,6 +76,15 @@ class Convert
     return $voucher;
   }
 
+   static public function VoucherMasker2($data,$prefix,$char = "X"){
+    $voucher = "";  
+    $number = $data->length_number;
+    $replace_crt = array("DD", "MM", "YYYY","X");
+    $replace_str = array($data->day, $data->month, $data->year,str_repeat($char,$number - strlen($data->number."")) . $data->number);
+    $voucher = $prefix.str_replace($replace_crt,$replace_str,$data->format);
+    return $voucher;
+  }
+
   static public function dateformatArr($format,$date)
   {
     $obj = array();

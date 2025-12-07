@@ -6,6 +6,7 @@ use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithMappedCells;
 use App\Http\Model\AccGeneral;
 use App\Http\Model\AccCurrency;
+use App\Http\Model\AccBankAccount;
 use App\Http\Model\AccSystems;
 use App\Classes\Convert;
 use App\Http\Traits\NumberVoucherTraits;
@@ -22,8 +23,8 @@ class AccBankTransferGeneralImport implements WithMappedCells,ToModel
   public function mapping(): array
   {
       return [
-              'subject'  => 'C3',
-              'traders' => 'C4',
+              'bank_account_payment'  => 'C3',
+              'bank_account_receipt' => 'C4',
               'description' => 'C5',
               'accounting_date' => 'K3',
               'voucher_date' => 'K4',
@@ -55,15 +56,21 @@ class AccBankTransferGeneralImport implements WithMappedCells,ToModel
     $currency_default = $data->getCurrencyDefault();     
     $code_check = AccGeneral::WhereCheck('voucher',$row['voucher'],'id',null)->first();
     $currency = AccCurrency::WhereDefault('code',$row['currency'])->first();
+    $bank_account_payment = AccBankAccount::WhereDefault('code',$row['bank_account_payment'])->first();
+    $bank_account_receipt = AccBankAccount::WhereDefault('code',$row['bank_account_receipt'])->first();
     if(is_numeric($row['accounting_date'])){
       $row['accounting_date'] =  $row['accounting_date'] ? Convert::DateExcel($row['accounting_date']):date("Y-m-d");
+    }else{
+      $row['accounting_date'] = date("Y-m-d");
     }
     if(is_numeric($row['voucher_date'])){
       $row['voucher_date'] = $row['voucher_date'] ? Convert::DateExcel($row['voucher_date']):date("Y-m-d");
+    }else{
+      $row['voucher_date'] = date("Y-m-d");
     }
     if($code_check == null){
       if(!$row['voucher']){        
-           $row['voucher'] =  $this->loadNumberVoucher($this->menu,$row);           
+           $row['voucher'] =  $this->loadMaskerNumberVoucher($this->menu,$row);           
         }
       }  
       $arr =  [
@@ -73,7 +80,8 @@ class AccBankTransferGeneralImport implements WithMappedCells,ToModel
         'accounting_date'    => $row['accounting_date'],
         'currency'   => $currency?$currency->id:$currency_default->id,
         'rate'      =>$row['rate'],
-        'traders'    => $row['traders'],
+        'bank_account_debit'    => optional($bank_account_receipt)->id,
+        'bank_account_credit'    => optional($bank_account_payment)->id,
       ]; 
  
       AccBankTransferGeneralImport::setData($arr);      
