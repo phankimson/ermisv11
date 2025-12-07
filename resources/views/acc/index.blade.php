@@ -384,12 +384,12 @@
                        </g>
                       </svg>
                             <dl>
-                                <dd><a class="text-center lazyload" data-uk-tooltip title="@lang('acc_index.receipt_warehouse_voucher')" href="{{url('')}}"><img src="{{url('addon/img/icon/trolley.png')}}" /></a><p>@lang('acc_index.receipt_warehouse_voucher')</p></dd>
-                                <dd><a class="text-center lazyload" data-uk-tooltip title="@lang('acc_index.issue_warehouse_voucher')" href="{{url('')}}"><img src="{{url('addon/img/icon/caravan.png')}}" /></a><p>@lang('acc_index.issue_warehouse_voucher')</p></dd>
+                                <dd><a class="text-center lazyload" data-uk-tooltip title="@lang('acc_index.receipt_warehouse_voucher')" href="{{url($lang.'/acc/inventory-receipt-general')}}"><img src="{{url('addon/img/icon/trolley.png')}}" /></a><p>@lang('acc_index.receipt_warehouse_voucher')</p></dd>
+                                <dd><a class="text-center lazyload" data-uk-tooltip title="@lang('acc_index.issue_warehouse_voucher')" href="{{url($lang.'/acc/inventory-issue-general')}}"><img src="{{url('addon/img/icon/caravan.png')}}" /></a><p>@lang('acc_index.issue_warehouse_voucher')</p></dd>
                                 <dd><a class="text-center lazyload" data-uk-tooltip title="@lang('acc_index.report_stock')" href="{{url('')}}"><img src="{{url('addon/img/icon/report.png')}}" /></a><p>@lang('acc_index.report_stock')</p></dd>
                                 <dd><a class="text-center lazyload" data-uk-tooltip title="@lang('acc_index.report_general_stock')" href="{{url('')}}"><img src="{{url('addon/img/icon/notebook.png')}}" /></a><p>@lang('acc_index.report_general_stock')</p></dd>
-                                <dd><a class="text-center lazyload" data-uk-tooltip title="@lang('acc_index.inventory')" href="{{url('')}}"><img src="{{url('addon/img/icon/checklist.png')}}" /></a><p>@lang('acc_index.inventory')</p></dd>
-                                <dd><a class="text-center lazyload" data-uk-tooltip title="@lang('acc_index.marial_goods')" href="{{url('')}}"><img src="{{url('addon/img/icon/list.png')}}" /></a><p>@lang('acc_index.marial_goods')</p></dd>
+                                <dd><a class="text-center lazyload" data-uk-tooltip title="@lang('acc_index.inventory')" href="{{url($lang.'/acc/stock')}}"><img src="{{url('addon/img/icon/checklist.png')}}" /></a><p>@lang('acc_index.inventory')</p></dd>
+                                <dd><a class="text-center lazyload" data-uk-tooltip title="@lang('acc_index.marial_goods')" href="{{url($lang.'/acc/supplies-goods')}}"><img src="{{url('addon/img/icon/list.png')}}" /></a><p>@lang('acc_index.marial_goods')</p></dd>
                             </dl>
 
                         </div>

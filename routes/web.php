@@ -1613,7 +1613,7 @@ Route::group([
 
   // Inventory Issue General - Xuất kho
   Route::group([
-    'as' => 'inventory-issue'
+    'as' => 'inventory-issue-general'
   ],function () {
 
   Route::controller(AccInventoryIssueGeneralController::class)->group(function () {  
@@ -1683,7 +1683,7 @@ Route::group([
 
   // Inventory Receipt General - Tổng hợp nhập kho
   Route::group([
-    'as' => 'inventory-receipt'
+    'as' => 'inventory-receipt-general'
   ],function () {
 
       Route::controller(AccInventoryReceiptGeneralController::class)->group(function () {  
@@ -1752,7 +1752,7 @@ Route::group([
 
   // Inventory Transfer General - Tổng hợp chuyển kho
   Route::group([
-    'as' => 'inventory-transfer'
+    'as' => 'inventory-transfer-general'
   ],function () {
 
       Route::controller(AccInventoryTransferGeneralController::class)->group(function () {  
@@ -1815,6 +1815,145 @@ Route::group([
 
      Route::controller(AccGeneralController::class)->group(function () {  
       Route::post('/inventory-transfer-voucher-print','prints');  
+    });
+
+  });
+
+  // Purchase General - Tổng hợp mua hàng
+  Route::group([
+    'as' => 'purchase-general'
+  ],function () {
+
+      Route::controller(AccInventoryTransferGeneralController::class)->group(function () {  
+      Route::get('/purchase-general', 'show' )->name('');
+      Route::post('/purchase-general-get','find' )->name('-find');
+      Route::post('/purchase-general-unwrite','unwrite' )->name('-unwrite');
+      Route::post('/purchase-general-write','write' )->name('-write');
+      Route::post('/purchase-general-revoucher', 'revoucher' )->name('-revoucher');
+      Route::post('/purchase-general-start-voucher', 'start_voucher' )->name('-start-voucher');
+      Route::post('/purchase-general-change-voucher', 'change_voucher' )->name('-change-voucher');
+      Route::get('/purchase-general-DownloadExcel', 'DownloadExcel' )->name('-DownloadExcel');
+      Route::any('/purchase-general-import', 'import')->name('-import');
+      Route::any('/purchase-general-delete', 'delete')->name('-delete');
+      });
+
+      Route::controller(AccGeneralController::class)->group(function () {    
+      Route::post('/purchase-general-detail','detail');  
+      Route::post('/purchase-general-print','prints'); 
+      });
+
+  });  
+
+    // Purchase voucher - Phiếu mua hàng
+    Route::group([
+    'as' => 'purchase-voucher'
+  ],function () {
+
+    Route::controller(AccInventoryTransferVoucherController::class)->group(function () { 
+    Route::get('/purchase-voucher', 'show' )->name('');
+    Route::post('/purchase-voucher-save', 'save' )->name('-save');
+    Route::post('/purchase-voucher-bind', 'bind' )->name('-bind');
+    Route::get('/purchase-voucher-DownloadExcel', 'DownloadExcel' )->name('-DownloadExcel');
+    Route::any('/purchase-voucher-import', 'import')->name('-import');
+    });   
+
+    Route::controller(AccInventoryTransferGeneralController::class)->group(function () {   
+    // Ghi , ko ghi , tìm chứng từ trang
+    Route::post('/purchase-voucher-unwrite','unwrite' )->name('-unwrite');
+    Route::post('/purchase-voucher-write','write' )->name('-write');
+    Route::post('/purchase-voucher-find', 'find' )->name('-find');
+    Route::post('/purchase-voucher-delete', 'delete' )->name('-delete'); 
+    });  
+
+    Route::controller(AccVoucherController::class)->group(function () { 
+    Route::post('/purchase-voucher-get', 'get' )->name('-get');
+    Route::post('/purchase-voucher-auto', 'auto' )->name('-auto');
+    Route::post('/purchase-voucher-ai', 'ai' )->name('-ai');
+    Route::post('/purchase-voucher-currency', 'currency' )->name('-currency');
+    Route::post('/purchase-voucher-reference', 'reference' )->name('-reference');
+    Route::post('/purchase-voucher-voucher-change', 'voucher_change' )->name('-voucher-change');
+    Route::post('/purchase-voucher-load-voucher-change', 'load_voucher_change' )->name('-load-voucher-change');
+      // Tìm vật tư hàng hóa
+    Route::post('/purchase-voucher-load', 'load' )->name('-load');
+    Route::post('/purchase-voucher-scan', 'scan' )->name('-scan');
+    // Kiểm tra mst doanh nghiệp
+    Route::post('/purchase-voucher-check-subject', 'check_subject' )->name('-check-subject');
+    // Xóa đính kèm
+    Route::post('/purchase-voucher-delete-attach', 'delete_attach' )->name('-delete-attach');  
+   });
+
+     Route::controller(AccGeneralController::class)->group(function () {  
+      Route::post('/purchase-voucher-print','prints');  
+    });
+
+  });
+
+
+  // Purchase General - Tổng hợp mua hàng
+  Route::group([
+    'as' => 'sales-general'
+  ],function () {
+
+      Route::controller(AccInventoryTransferGeneralController::class)->group(function () {  
+      Route::get('/sales-general', 'show' )->name('');
+      Route::post('/sales-general-get','find' )->name('-find');
+      Route::post('/sales-general-unwrite','unwrite' )->name('-unwrite');
+      Route::post('/sales-general-write','write' )->name('-write');
+      Route::post('/sales-general-revoucher', 'revoucher' )->name('-revoucher');
+      Route::post('/sales-general-start-voucher', 'start_voucher' )->name('-start-voucher');
+      Route::post('/sales-general-change-voucher', 'change_voucher' )->name('-change-voucher');
+      Route::get('/sales-general-DownloadExcel', 'DownloadExcel' )->name('-DownloadExcel');
+      Route::any('/sales-general-import', 'import')->name('-import');
+      Route::any('/sales-general-delete', 'delete')->name('-delete');
+      });
+
+      Route::controller(AccGeneralController::class)->group(function () {    
+      Route::post('/sales-general-detail','detail');  
+      Route::post('/sales-general-print','prints'); 
+      });
+
+  });  
+
+    // Purchase voucher - Phiếu mua hàng
+    Route::group([
+    'as' => 'purchase-voucher'
+  ],function () {
+
+    Route::controller(AccInventoryTransferVoucherController::class)->group(function () { 
+    Route::get('/sales-voucher', 'show' )->name('');
+    Route::post('/sales-voucher-save', 'save' )->name('-save');
+    Route::post('/sales-voucher-bind', 'bind' )->name('-bind');
+    Route::get('/sales-voucher-DownloadExcel', 'DownloadExcel' )->name('-DownloadExcel');
+    Route::any('/sales-voucher-import', 'import')->name('-import');
+    });   
+
+    Route::controller(AccInventoryTransferGeneralController::class)->group(function () {   
+    // Ghi , ko ghi , tìm chứng từ trang
+    Route::post('/sales-voucher-unwrite','unwrite' )->name('-unwrite');
+    Route::post('/sales-voucher-write','write' )->name('-write');
+    Route::post('/sales-voucher-find', 'find' )->name('-find');
+    Route::post('/sales-voucher-delete', 'delete' )->name('-delete'); 
+    });  
+
+    Route::controller(AccVoucherController::class)->group(function () { 
+    Route::post('/sales-voucher-get', 'get' )->name('-get');
+    Route::post('/sales-voucher-auto', 'auto' )->name('-auto');
+    Route::post('/sales-voucher-ai', 'ai' )->name('-ai');
+    Route::post('/sales-voucher-currency', 'currency' )->name('-currency');
+    Route::post('/sales-voucher-reference', 'reference' )->name('-reference');
+    Route::post('/sales-voucher-voucher-change', 'voucher_change' )->name('-voucher-change');
+    Route::post('/sales-voucher-load-voucher-change', 'load_voucher_change' )->name('-load-voucher-change');
+      // Tìm vật tư hàng hóa
+    Route::post('/sales-voucher-load', 'load' )->name('-load');
+    Route::post('/sales-voucher-scan', 'scan' )->name('-scan');
+    // Kiểm tra mst doanh nghiệp
+    Route::post('/sales-voucher-check-subject', 'check_subject' )->name('-check-subject');
+    // Xóa đính kèm
+    Route::post('/sales-voucher-delete-attach', 'delete_attach' )->name('-delete-attach');  
+   });
+
+     Route::controller(AccGeneralController::class)->group(function () {  
+      Route::post('/sales-voucher-print','prints');  
     });
 
   });
