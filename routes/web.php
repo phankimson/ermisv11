@@ -1824,7 +1824,7 @@ Route::group([
     'as' => 'purchase-general'
   ],function () {
 
-      Route::controller(AccInventoryTransferGeneralController::class)->group(function () {  
+      Route::controller(AccPurchaseGeneralController::class)->group(function () {  
       Route::get('/purchase-general', 'show' )->name('');
       Route::post('/purchase-general-get','find' )->name('-find');
       Route::post('/purchase-general-unwrite','unwrite' )->name('-unwrite');
@@ -1849,7 +1849,7 @@ Route::group([
     'as' => 'purchase-voucher'
   ],function () {
 
-    Route::controller(AccInventoryTransferVoucherController::class)->group(function () { 
+    Route::controller(AccPurchaseVoucherController::class)->group(function () { 
     Route::get('/purchase-voucher', 'show' )->name('');
     Route::post('/purchase-voucher-save', 'save' )->name('-save');
     Route::post('/purchase-voucher-bind', 'bind' )->name('-bind');
@@ -1857,7 +1857,7 @@ Route::group([
     Route::any('/purchase-voucher-import', 'import')->name('-import');
     });   
 
-    Route::controller(AccInventoryTransferGeneralController::class)->group(function () {   
+    Route::controller(AccPurchaseGeneralController::class)->group(function () {   
     // Ghi , ko ghi , tìm chứng từ trang
     Route::post('/purchase-voucher-unwrite','unwrite' )->name('-unwrite');
     Route::post('/purchase-voucher-write','write' )->name('-write');
@@ -1894,7 +1894,7 @@ Route::group([
     'as' => 'sales-general'
   ],function () {
 
-      Route::controller(AccInventoryTransferGeneralController::class)->group(function () {  
+      Route::controller(AccSalesGeneralController::class)->group(function () {  
       Route::get('/sales-general', 'show' )->name('');
       Route::post('/sales-general-get','find' )->name('-find');
       Route::post('/sales-general-unwrite','unwrite' )->name('-unwrite');
@@ -1916,10 +1916,10 @@ Route::group([
 
     // Purchase voucher - Phiếu mua hàng
     Route::group([
-    'as' => 'purchase-voucher'
+    'as' => 'sales-voucher'
   ],function () {
 
-    Route::controller(AccInventoryTransferVoucherController::class)->group(function () { 
+    Route::controller(AccSalesVoucherController::class)->group(function () { 
     Route::get('/sales-voucher', 'show' )->name('');
     Route::post('/sales-voucher-save', 'save' )->name('-save');
     Route::post('/sales-voucher-bind', 'bind' )->name('-bind');
@@ -1927,7 +1927,7 @@ Route::group([
     Route::any('/sales-voucher-import', 'import')->name('-import');
     });   
 
-    Route::controller(AccInventoryTransferGeneralController::class)->group(function () {   
+    Route::controller(AccSalesGeneralController::class)->group(function () {   
     // Ghi , ko ghi , tìm chứng từ trang
     Route::post('/sales-voucher-unwrite','unwrite' )->name('-unwrite');
     Route::post('/sales-voucher-write','write' )->name('-write');

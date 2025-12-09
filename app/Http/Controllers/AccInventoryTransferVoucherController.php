@@ -45,7 +45,7 @@ class AccInventoryTransferVoucherController extends Controller
   public function __construct(Request $request)
  {
      $this->url =  $request->segment(3);
-     $this->group = 8; // 6 Nhóm xuất kho
+     $this->group = 8; // 8 Nhóm chuyển kho
      $this->type_object = 2; // 1 Nhà cung cấp (VD : 2,3 nếu nhiều đối tượng)
      $this->key = "inventory-transfer-voucher";
      $this->menu = Menu::where('code', '=', $this->key)->first();
