@@ -25,26 +25,41 @@
 @endsection
 
 @section('uktab')
-<div class="uk-width-medium-4-4">
-    <select class="droplist get_option fix" id="test" name="test">
-             <option readonly selected value="0">--Select--</option>
-     </select>
+<div class="uk-width-1-1 margin-top-20 margin-left-20">
+    <span class="row-label-responsive">@lang('acc_voucher.pay_now') </span><input type="checkbox" data-md-icheck="" id="payment" />
+    <select class="droplist" id="payment_method" disabled>
+        <option selected value="1">@lang('acc_voucher.cash')</option>
+        <option value="2">@lang('acc_voucher.bank')</option>
+    </select>
+    <select class="droplist" id="stock_status">
+        <option selected value="1">@lang('acc_voucher.cash')</option>
+        <option value="2">@lang('acc_voucher.bank')</option>
+    </select>
+     <select class="droplist" id="invoice_status">
+        <option selected value="1">@lang('acc_voucher.cash')</option>
+        <option value="2">@lang('acc_voucher.bank')</option>
+    </select>
 </div>
-<div class="uk-grid uk-tab uk-width-1-1">
-    @foreach($menu_tab as $m)
-    <li class={{($m->id== $menu )? 'uk-active' : ''}}><a href="{{url($lang.'/'.$m->link)}}">{{ $lang=='vi'? $m->name : $m->name_en}}</a></li>
-    @endforeach
-    <li><a href="#">@lang('global.expand')</a></li>
-    <li class="uk-disabled"><a href="#">@lang('global.expand')</a></li>
-</div>      
+<div class="uk-grid uk-tab uk-width-1-1" data-uk-tab="{connect:'#tabs_anim', animation:'slide-left', swiping: false}">
+        <li class="uk-active" data-tabs="MH"><a href="javascript:;">@lang('acc_voucher.purchase')</a></li>
+        <li id="cash_tabs"><a href="javascript:;">@lang('acc_voucher.cash')</a></li>          
+        <li id="bank_tabs"><a href="javascript:;">@lang('acc_voucher.bank')</a></li>
+        <li  class="uk-disabled"><a href="javascript:;">@lang('global.expand')</a></li>
+</div>  
+    
 @endsection
 
 @section('content_add')
-<div class="uk-width-medium-4-4 search-table-outter">
-    @include('action.content_8',['voucher'=>$voucher,'menu'=>$menu , 'change'=>'credit'])
+<div id="tabs_anim" class="uk-switcher uk-width-medium-4-4 search-table-outter">
+<div>
+     @include('action.content_8',['voucher'=>$voucher,'menu'=>$menu , 'change'=>'credit'])
 </div>
 <div>
-
+     @include('action.content_1',['voucher'=>$voucher,'menu'=>$menu])
+</div>
+<div>
+     @include('action.content_3',['voucher'=>$voucher,'menu'=>$menu,'change'=>'debit'])
+</div>
 </div>
 @endsection
 

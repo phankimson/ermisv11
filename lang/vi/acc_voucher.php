@@ -105,4 +105,8 @@ return [
     "updated_at" => "Ngày cập nhật",
     "seller" => "Người bán",
     "purchaser" => "Người mua",
+    "cash" => "Tiền mặt",
+    "bank" => "Ngân hàng",
+    "purchase" => "Mua hàng",
+    "pay_now" => "Trả tiền ngay",
 ];

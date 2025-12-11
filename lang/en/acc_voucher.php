@@ -105,4 +105,8 @@ return [
     "updated_at" => "Updated at",
     "seller" => "Seller",
     "purchaser" => "Purchaser",
+    "cash" => "Cash",
+    "bank" => "bank",
+    "purchase" => "Purchase",
+    "pay_now" => "Pay now",
 ];
