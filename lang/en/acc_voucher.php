@@ -103,4 +103,6 @@ return [
     "quantity_in_stock"=>"Quantity in stock",
     "check_subject" => "Check subject",
     "updated_at" => "Updated at",
+    "seller" => "Seller",
+    "purchaser" => "Purchaser",
 ];

@@ -25,11 +25,16 @@
 @endsection
 
 @section('uktab')
+<div class="uk-width-medium-4-4">
+    <select class="droplist get_option fix" id="test" name="test">
+             <option readonly selected value="0">--Select--</option>
+     </select>
+</div>
 <div class="uk-grid uk-tab uk-width-1-1">
     @foreach($menu_tab as $m)
     <li class={{($m->id== $menu )? 'uk-active' : ''}}><a href="{{url($lang.'/'.$m->link)}}">{{ $lang=='vi'? $m->name : $m->name_en}}</a></li>
     @endforeach
-   
+    <li><a href="#">@lang('global.expand')</a></li>
     <li class="uk-disabled"><a href="#">@lang('global.expand')</a></li>
 </div>      
 @endsection
@@ -37,6 +42,9 @@
 @section('content_add')
 <div class="uk-width-medium-4-4 search-table-outter">
     @include('action.content_8',['voucher'=>$voucher,'menu'=>$menu , 'change'=>'credit'])
+</div>
+<div>
+
 </div>
 @endsection
 

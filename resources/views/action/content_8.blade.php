@@ -42,7 +42,11 @@
         @if($voucher->code == "XK")
         <td><label>@lang('acc_voucher.exporter')</label></td>    
         @elseif($voucher->code == "NK")
-        <td><label>@lang('acc_voucher.importer')</label></td>    
+        <td><label>@lang('acc_voucher.importer')</label></td>   
+        @elseif($voucher->code == "MH") 
+        <td><label>@lang('acc_voucher.purchaser')</label></td>   
+        @elseif($voucher->code == "BH") 
+        <td><label>@lang('acc_voucher.seller')</label></td>    
         @endif     
         <td colspan="2"><input type="text" class="k-textbox xxlarge" name="traders" /></td>
         
