@@ -109,4 +109,10 @@ return [
     "bank" => "bank",
     "purchase" => "Purchase",
     "pay_now" => "Pay now",
+    "enter_the_warehouse" => "Enter the warehouse",
+    "dont_enter_the_warehouse" => "Don't enter the warehouse",
+    "have_invoice"=>"Have invoice",
+    "no_invoice_yet"=>"No invoice yet",
+    "no_invoice"=>"No invoice",
+    "other"=>"Other",
 ];

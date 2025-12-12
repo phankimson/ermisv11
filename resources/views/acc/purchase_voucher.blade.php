@@ -32,18 +32,19 @@
         <option value="2">@lang('acc_voucher.bank')</option>
     </select>
     <select class="droplist" id="stock_status">
-        <option selected value="1">@lang('acc_voucher.cash')</option>
-        <option value="2">@lang('acc_voucher.bank')</option>
+        <option selected value="1">@lang('acc_voucher.enter_the_warehouse')</option>
+        <option value="2">@lang('acc_voucher.dont_enter_the_warehouse')</option>
     </select>
      <select class="droplist" id="invoice_status">
-        <option selected value="1">@lang('acc_voucher.cash')</option>
-        <option value="2">@lang('acc_voucher.bank')</option>
+        <option selected value="1">@lang('acc_voucher.have_invoice')</option>
+        <option value="2">@lang('acc_voucher.no_invoice_yet')</option>
+        <option value="3">@lang('acc_voucher.no_invoice')</option>
     </select>
 </div>
 <div class="uk-grid uk-tab uk-width-1-1" data-uk-tab="{connect:'#tabs_anim', animation:'slide-left', swiping: false}">
-        <li class="uk-active" data-tabs="MH"><a href="javascript:;">@lang('acc_voucher.purchase')</a></li>
-        <li id="cash_tabs"><a href="javascript:;">@lang('acc_voucher.cash')</a></li>          
-        <li id="bank_tabs"><a href="javascript:;">@lang('acc_voucher.bank')</a></li>
+        <li class="uk-active" id="default_tabs"><a href="javascript:;">@lang('acc_voucher.purchase')</a></li>
+        <li class="hidden" id="cash_tabs"><a href="javascript:;">@lang('acc_voucher.cash')</a></li>          
+        <li class="hidden" id="bank_tabs"><a href="javascript:;">@lang('acc_voucher.bank')</a></li>
         <li  class="uk-disabled"><a href="javascript:;">@lang('global.expand')</a></li>
 </div>  
     
@@ -55,10 +56,10 @@
      @include('action.content_8',['voucher'=>$voucher,'menu'=>$menu , 'change'=>'credit'])
 </div>
 <div>
-     @include('action.content_1',['voucher'=>$voucher,'menu'=>$menu])
+     @include('action.content_10',['voucher'=>$voucher,'menu'=>$menu])
 </div>
 <div>
-     @include('action.content_3',['voucher'=>$voucher,'menu'=>$menu,'change'=>'debit'])
+     @include('action.content_11',['voucher'=>$voucher,'menu'=>$menu,'change'=>'debit'])
 </div>
 </div>
 @endsection
@@ -68,10 +69,29 @@
     <ul style="display:none">
         <li class="k-state-active">@lang('acc_voucher.detail')</li>
         <li>@lang('acc_voucher.vat')</li>
+        <li>@lang('acc_voucher.other')</li>
         <li>@lang('global.expand')</li>
     </ul>
     <div><div id="grid"></div> </div>
     <div><div id="grid_vat"></div> </div>
+    <div>
+         <table>
+         <tr>
+                <td class="row-label-responsive"><label>@lang('global.expand')</label></td>
+                <td colspan="2"><input type="text" readonly class="k-textbox xxlarge" name="name" /></td>
+         </tr>
+           <tr>
+                <td><label>@lang('global.expand')</label></td>
+                <td colspan="2"><input type="text" class="k-textbox large" /></td>
+
+            </tr>
+              <tr>
+                <td><label>@lang('global.expand')</label></td>
+                <td colspan="2"><input type="text" class="k-textbox large" /></td>
+
+            </tr>
+       </table>
+    </div>
     <div>
         <table>
             <tr>
@@ -268,5 +288,5 @@
 <script>kendo.culture('en-DE')</script>
 @endif
 <script src="{{ url('addon/scripts/ermis/ermis-form-global-detail.js') }}"></script>
-<script src="{{ url('addon/scripts/ermis/ermis-form-4-detail-stock.js') }}"></script>
+<script src="{{ url('addon/scripts/ermis/ermis-form-4-detail-pur-sell.js') }}"></script>
 @endsection

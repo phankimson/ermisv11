@@ -109,4 +109,10 @@ return [
     "bank" => "Ngân hàng",
     "purchase" => "Mua hàng",
     "pay_now" => "Trả tiền ngay",
+    "enter_the_warehouse" => "Nhập vào kho",
+    "dont_enter_the_warehouse" => "Không nhập vào kho",
+    "have_invoice"=>"Có hóa đơn",
+    "no_invoice_yet"=>"Chưa có hóa đơn",
+    "no_invoice"=>"Không có hóa đơn",
+    "other"=>"Khác",
 ];
