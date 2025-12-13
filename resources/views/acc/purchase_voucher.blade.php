@@ -27,7 +27,7 @@
 @section('uktab')
 <div class="uk-width-1-1 margin-top-20 margin-left-20">
     <span class="row-label-responsive">@lang('acc_voucher.pay_now') </span><input type="checkbox" data-md-icheck="" id="payment" />
-    <select class="droplist" id="payment_method" disabled>
+    <select class="droplist" id="payment_method" column_change="credit" disabled>
         <option selected value="1">@lang('acc_voucher.cash')</option>
         <option value="2">@lang('acc_voucher.bank')</option>
     </select>
@@ -77,16 +77,16 @@
     <div>
          <table>
          <tr>
-                <td class="row-label-responsive"><label>@lang('global.expand')</label></td>
+                <td class="row-label-responsive"><label>@lang('acc_voucher.seller')</label></td>
                 <td colspan="2"><input type="text" readonly class="k-textbox xxlarge" name="name" /></td>
          </tr>
            <tr>
-                <td><label>@lang('global.expand')</label></td>
+                <td><label>@lang('acc_object.address')</label></td>
                 <td colspan="2"><input type="text" class="k-textbox large" /></td>
 
             </tr>
               <tr>
-                <td><label>@lang('global.expand')</label></td>
+                <td><label>@lang('acc_object.identity_card')</label></td>
                 <td colspan="2"><input type="text" class="k-textbox large" /></td>
 
             </tr>
@@ -269,6 +269,7 @@
         };
         
         Ermis.aggregate = [ { field: "item_code", aggregate: "count" },
+                            { field: "description", aggregate: "count" },
                             { field: "quantity", aggregate: "sum" },
                             { field: "amount", aggregate: "sum" },
                             { field: "amount_rate", aggregate: "sum" },

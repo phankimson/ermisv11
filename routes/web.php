@@ -1878,6 +1878,8 @@ Route::group([
     Route::post('/purchase-voucher-scan', 'scan' )->name('-scan');
     // Kiểm tra mst doanh nghiệp
     Route::post('/purchase-voucher-check-subject', 'check_subject' )->name('-check-subject');
+    // Chuyển hình thức thanh toán thành định khoản
+    Route::post('/purchase-voucher-payment-method', 'payment_method' )->name('-payment-method');
     // Xóa đính kèm
     Route::post('/purchase-voucher-delete-attach', 'delete_attach' )->name('-delete-attach');  
    });
@@ -1948,6 +1950,8 @@ Route::group([
     Route::post('/sales-voucher-scan', 'scan' )->name('-scan');
     // Kiểm tra mst doanh nghiệp
     Route::post('/sales-voucher-check-subject', 'check_subject' )->name('-check-subject');
+    // Chuyển hình thức thanh toán thành định khoản
+    Route::post('/sales-voucher-payment-method', 'payment_method' )->name('-payment-method');
     // Xóa đính kèm
     Route::post('/sales-voucher-delete-attach', 'delete_attach' )->name('-delete-attach');  
    });

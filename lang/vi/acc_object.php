@@ -29,7 +29,7 @@ return [
     "website" => "Website",
     "issued_by_identity_card" => "Nơi cấp",
     "date_identity_card" => "Ngày cấp",
-    "identity_card"=>"Chứng minh nhân dân",
+    "identity_card"=>"Căn cước công dân",
     "bank_account" => "Số tài khoản ngân hàng",
     "bank_name" => "Tên tài khoản",
     "full_name_contact" => "Tên người liên hệ",

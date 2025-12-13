@@ -26,6 +26,7 @@ use App\Classes\Convert;
 use App\Http\Model\AccAttach;
 use App\Http\Model\AccCountVoucher;
 use App\Http\Model\AccNumberVoucher;
+use App\Http\Model\AccSettingAccountGroup;
 use App\Http\Model\AccSuppliesGoodsType;
 use App\Http\Resources\DropDownResource;
 use App\Http\Resources\BarcodeResource;
@@ -481,6 +482,37 @@ class AccVoucherController extends Controller
         $this->deleteFile($rs);
         $rs->delete();
         return response()->json(['status'=>true]);
+      }else{
+        return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
+      }
+     }catch(Exception $e){
+        // Lưu lỗi
+        $err = new Error();
+        $err ->create([
+          'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
+          'user_id' => Auth::id(),
+          'menu_id' => $this->menu->id,
+          'error' => $e->getMessage().' - Line '.$e->getLine(),
+          'url'  => $this->url,
+          'check' => 0 ]);
+        return response()->json(['status'=>false,'message'=> trans('messages.error').' '.$e->getMessage().' - Line '.$e->getLine()]);
+      }
+  }
+
+  public function payment_method(Request $request){
+    $type = 10;
+    try{
+      $req = json_decode($request->data);
+      $rs = AccSettingAccountGroup::get_code($req);
+      if(!$rs){
+        return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
+      }
+      $data = AccAccountSystems::find($rs->account_default);
+      if(!$data){
+        return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
+      }
+      if($req && $data){
+        return response()->json(['status'=>true,'data'=> new DropDownResource($data)]);
       }else{
         return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
       }
