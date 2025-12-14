@@ -15,6 +15,7 @@ class MenuComposer
      * @var MenuRepository
      */
     protected $data;
+    protected $current;
 
     /**
      * Create a new profile composer.
@@ -28,6 +29,12 @@ class MenuComposer
         $type = $request->session()->get('type');
         $data = Menu::get_menu_by_type($type,"0");
         $this->data = $data;
+        $menu_current = Menu::get_menu_by_code(request()->segment(3));
+        if(optional($menu_current)->group>0){
+          $this->current = optional($menu_current)->parent_id;  
+        }else{
+          $this->current = optional($menu_current)->id;
+        }
     }
 
     /**
@@ -39,5 +46,6 @@ class MenuComposer
     public function compose(View $view)
     {
         $view->with('menu',$this->data);
+        $view->with('menu_current',$this->current);
     }
 }

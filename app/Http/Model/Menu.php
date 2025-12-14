@@ -26,6 +26,11 @@ class Menu extends Model
         return $result;
       }
 
+       static public function get_menu_by_code($code) {
+        $result = Menu::where('code','=',$code)->first();
+        return $result;
+      }
+
       static public function get_menu_like_code($code) {
         $result = Menu::where('code','like',$code)->orWhere('code','=',$code)->where('active',1)->orderBy('created_at', 'asc')->get();
         return $result;

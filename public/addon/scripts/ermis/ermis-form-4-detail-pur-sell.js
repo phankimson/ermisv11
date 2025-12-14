@@ -447,7 +447,7 @@ var Ermis = function() {
 
     var initKendoUiContextMenuGrid = function() {
         jQuery("#context-menu-grid").kendoContextMenu({
-            target: "#grid",
+            target: "#grid,#grid_vat",
             select: function(e) {
                 var $this = e;
                 var grid = $kGridTab.data("kendoGrid");

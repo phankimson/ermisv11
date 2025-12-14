@@ -258,7 +258,7 @@
             subject_name:     {field : "subject_name"},
             tax_code:     {field : "tax_code"},
             address:     {field : "address"},
-            description:     {field : "description"},
+            description:     {field : "description"},            
             vat_type:     {field : "vat_type", defaultValue: DefaultReadValueField(), validation: { required: true }},
             vat_tax:     {field : "vat_tax" , defaultValue : 0, editable: false},
             amount:     {field : "amount",type:"number" , defaultValue : 0, validation: { min: 0, required: true }},
