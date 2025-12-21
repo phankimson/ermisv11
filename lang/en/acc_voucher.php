@@ -18,6 +18,7 @@ return [
     "detail" => "Detail",
     "vat" => "Vat",
     "vat_tax" => "Vat Tax",
+    "vat_account" => "Vat account",
     "subject" => "Subject",
     "subject_code" => "Subject code",
     "subject_name" => "Subject name",

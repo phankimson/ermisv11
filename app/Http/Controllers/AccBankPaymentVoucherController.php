@@ -307,6 +307,7 @@ class AccBankPaymentVoucherController extends Controller
              $tax->tax_code = $x->tax_code;
              $tax->address = $x->address;
              $tax->description = $x->description;
+             $tax->vat_account = $x->vat_account->value;// Đổi từ id value dạng read
              $tax->vat_type = $x->vat_type->value;// Đổi từ id value dạng read
              $tax->amount = $x->amount;
              $tax->tax = $x->tax;

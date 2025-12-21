@@ -18,6 +18,7 @@ return [
     "detail" => "Chi tiết",
     "vat" => "Thuế",
     "vat_tax" => "Thuế suất",
+    "vat_account" => "Tài khoản thuế",
     "subject" => "Đối tượng",
     "subject_code" => "Mã đối tượng",
     "subject_name" => "Tên đối tượng",

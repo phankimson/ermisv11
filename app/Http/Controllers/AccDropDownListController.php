@@ -611,6 +611,13 @@ class AccDropDownListController extends Controller
            $credit_default = new LangDropDownResource(AccAccountSystems::find($setting_voucher->credit));
          } 
          $data = $credit_default;
+      }else if ($type == 3){ // Mặc định vat account
+         if($setting_voucher->vat_account == 0){
+           $vat_account_default =  $default;
+         }else{
+           $vat_account_default = new LangDropDownResource(AccAccountSystems::find($setting_voucher->vat_account));
+         } 
+         $data = $vat_account_default;
       }else{
 
       }      
