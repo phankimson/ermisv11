@@ -1,4 +1,4 @@
-<table>
+<table class="TableForm_NH">
     <tr>
         <td class="row-label-responsive"><label>@lang('acc_voucher.subject')</label></td>
         <td>

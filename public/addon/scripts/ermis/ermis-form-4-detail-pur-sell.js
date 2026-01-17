@@ -956,6 +956,7 @@ var Ermis = function() {
         function payment_method_change(e) {
             var value = this.value();
             var code_val = '';
+            var code_page = Ermis.voucher.code;
             if(value == "1"){
                 jQuery("#bank_tabs").addClass("hidden");
                 jQuery("#cash_tabs").removeClass("hidden");
@@ -969,9 +970,17 @@ var Ermis = function() {
 
              //
                var postdata = {
-                    data: JSON.stringify(code_val)
+                    data: JSON.stringify({"code_val": code_val,"code_page": code_page})
                 };
                 ErmisTemplateAjaxPost0(e, postdata, Ermis.link + '-payment-method', function(result) {
+                    var voucher_mask = "";
+                if(result.voucher.change_voucher == 1){
+                    voucher_mask = initErmisVoucher(result.voucher);
+                }else{
+                    voucher_mask = initErmisBarcodeMaskerHide(result.voucher);
+                }
+                // Hiển thị lại voucher
+                jQuery(".TableForm_"+code_val).find("input[name='voucher']").val(voucher_mask);
                 // Set giá trị default
                 dataDefaultGrid.data[column_change] = result.data;
                 // Chạy lại giá trị grid

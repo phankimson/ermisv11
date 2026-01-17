@@ -48,4 +48,9 @@ class AccNumberVoucher extends Model
         $result = AccNumberVoucher::where('menu_id',$menu)->orWhere('menu_general_id',$menu)->first();
         return $result;
       }
+
+       static public function get_code($code) {
+        $result = AccNumberVoucher::where('code',$code)->first();
+        return $result;
+      }
 }

@@ -503,16 +503,27 @@ class AccVoucherController extends Controller
     $type = 10;
     try{
       $req = json_decode($request->data);
-      $rs = AccSettingAccountGroup::get_code($req);
-      if(!$rs){
+      $rs = AccSettingAccountGroup::get_code($req->code_val);
+      $code = "";
+      if($req->code_val == "TM" & $req->code_page == "MH"){
+        $code = "PC";
+      }else if($req->code_val == "TM" & $req->code_page == "BH"){
+        $code = "PT";
+      }else if($req->code_val == "NH" & $req->code_page == "MH"){
+        $code = "BN";
+      }else if($req->code_val == "NH" & $req->code_page == "BH"){
+        $code = "BC";
+      };
+      $voucher = AccNumberVoucher::get_code($code);
+      if(!$rs || !$voucher){
         return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
       }
       $data = AccAccountSystems::find($rs->account_default);
       if(!$data){
         return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
       }
-      if($req && $data){
-        return response()->json(['status'=>true,'data'=> new DropDownResource($data)]);
+      if($req && $data && $voucher){
+        return response()->json(['status'=>true,'data'=> new DropDownResource($data) ,'voucher' => $voucher]);
       }else{
         return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
       }
