@@ -2026,7 +2026,7 @@ function DefaultValueField(){
 
    AddChooseObjectResult1 = function(dataItem){
     jQuery.each(Ermis.columns_subject, function(i, v) {
-      jQuery('input[name="' + v.field + '"]').val(dataItem[v.field]);
+      jQuery('input[name^="' + v.field + '"]').val(dataItem[v.field]);
     }
    )};
 
@@ -2036,7 +2036,7 @@ function DefaultValueField(){
      //var checkid = arr.find(p => p.id === dataItem['id']);     
 
     jQuery.each(Ermis.columns_subject, function(i, v) {
-     jQuery('#form-action').find('input[name="' + v.field + '"]').val(dataItem[v.field]);
+     jQuery('#form-action').find('input[name^="' + v.field + '"]').val(dataItem[v.field]);
      var grid = $kGrid.data("kendoGrid");
      var r = grid.dataSource.data();
      if($kGridVat.length > 0){

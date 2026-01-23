@@ -964,8 +964,15 @@ var Ermis = function() {
             }else{
                 jQuery("#cash_tabs").addClass("hidden");
                 jQuery("#bank_tabs").removeClass("hidden");    
-                code_val = 'NH';         
+                code_val = 'NH';
             }
+
+            if(code_page == 'MH'){
+            jQuery("input[name='description_"+code_val+"']").val(Lang.get('messages.description_1_'+code_val) + ' '+jQuery("input[name='description']").val());
+            }else{
+            jQuery("input[name='description_"+code_val+"']").val(Lang.get('messages.description_2_'+code_val) + ' '+jQuery("input[name='description']").val());
+            }
+           
              jQuery('#default_tabs').click(); 
 
              //
@@ -980,7 +987,7 @@ var Ermis = function() {
                     voucher_mask = initErmisBarcodeMaskerHide(result.voucher);
                 }
                 // Hiển thị lại voucher
-                jQuery(".TableForm_"+code_val).find("input[name='voucher']").val(voucher_mask);
+                jQuery(".TableForm_"+code_val).find("input[name='voucher_"+code_val+"']").val(voucher_mask);
                 // Set giá trị default
                 dataDefaultGrid.data[column_change] = result.data;
                 // Chạy lại giá trị grid
