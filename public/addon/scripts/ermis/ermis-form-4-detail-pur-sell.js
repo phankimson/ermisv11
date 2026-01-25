@@ -1241,7 +1241,9 @@ var Ermis = function() {
           obj.type = jQuery('#tabstrip').find('.k-state-active').attr("data-search");
           obj.total_quantity = ConvertNumber(jQuery('#quantity_total').html(),Ermis.decimal_symbol);
           obj.total_amount = ConvertNumber(jQuery('#amount_total').html(),Ermis.decimal_symbol);
-          obj.total_amount_rate = ConvertNumber(jQuery('#amount_rate_total').html(),Ermis.decimal_symbol);         
+          obj.total_amount_rate = ConvertNumber(jQuery('#amount_rate_total').html(),Ermis.decimal_symbol);   
+          var data_type = GetAllDataForm('#form-data-type', 2);  
+          obj.crit_type = GetDataAjax(data_type.columns);  
           initSaveDetail(e,obj);     
         }else{        
              var mes1 = initShowValidationGrid(obj.detail,crit,$kGrid);      

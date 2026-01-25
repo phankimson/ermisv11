@@ -109,6 +109,9 @@ class AccPurchaseVoucherController extends Controller
           $permission = $request->session()->get('per');
           $check_permission = true;
           $user = Auth::user();
+          $general_payment = collect();
+          $arr_payment = collect(); 
+          $menu_payment = '';
           if($permission['e'] == true && $arr->id ){
             $general = AccGeneral::find($arr->id);
             if(!$general){
@@ -124,9 +127,28 @@ class AccPurchaseVoucherController extends Controller
             $general->user = $user->id;
             // Lưu số nhảy
                 $v = $this->saveNumberVoucher($this->menu,$arr);
+                   // Lấy menu id Phiếu thu & Báo nợ
+                if($arr->crit_type->payment_method == 1 && $arr->crit_type->payment == true){
+                  $menu_payment = Menu::where('code', '=', 'cash-payment-voucher')->first();  
+                  $arr_payment->put('accounting_date', $arr->accounting_date_TM);
+                  $arr_payment->put('voucher_date', $arr->voucher_date_TM);
+                  $arr_payment->put('currency', $arr->currency_TM);  
+                  $arr_payment->put('rate', $arr->rate_TM); 
+                  $arr_payment->put('description', $arr->description_TM); 
+                  $arr_payment->put('traders', $arr-> traders_TM);        
+                }else if($arr->crit_type->payment_method == 2 && $arr->crit_type->payment == true){
+                  $menu_payment = Menu::where('code', '=', 'bank-payment-voucher')->first();
+                  $arr_payment->put('accounting_date', $arr->accounting_date_NH);
+                  $arr_payment->put('voucher_date', $arr->voucher_date_NH);  
+                  $arr_payment->put('currency', $arr->currency_NH);   
+                  $arr_payment->put('rate', $arr->rate_NH);  
+                  $arr_payment->put('description', $arr->description_NH);      
+                  $arr_payment->put('traders', $arr-> traders_NH);             
+                }         
           }else{
                 $check_permission = false;
-          }       
+          }
+
           $general->type = $this->menu->id;
           $general->voucher = $v;
           $general->currency = $arr->currency;
@@ -143,16 +165,9 @@ class AccPurchaseVoucherController extends Controller
           $general->status = 1;
           $general->active = 1;
           $general->group = $this->group;
-          $general->save();
-          
-        // Kiểm tra và lưu trang thái và id detail
-        if($arr->compare != ""){
-          $compare = AccBankCompare::find($arr->compare);
-          if($compare){
-            $compare->status = 2;
-            $compare->save();
-          }
-        }
+          $general->save();         
+    
+    
           // Tham chiếu / Reference
          $this->saveReference($arr->reference_by,$general->id);
 
@@ -196,61 +211,59 @@ class AccPurchaseVoucherController extends Controller
              $detail->save();     
        
              array_push($removeId,$detail->id);
-             $arr->detail[$k]->id = $detail->id;       
-          
-             // Lưu số tồn tiền bên Nợ
-             if(substr($d->debit->text,0,3) === ('111' || '113' )){ 
-               $balance = $this->increaseCurrency($d->debit->value,$arr->currency,$d->amount,$d->rate);    
-               //$balance = AccCurrencyCheck::get_type_first($d->debit->value,$arr->currency,null);            
-               //if($balance){
-               //  $balance->amount = $balance->amount + ($d->amount * $d->rate);
-               //  $balance->save();
-               //}else{
-               //  $balance = new AccCurrencyCheck();
-               //  $balance->type = $d->debit->value;
-               //  $balance->currency = $arr->currency;
-               //  $balance->bank_account = null;
-               //  $balance->amount = $d->amount * $d->rate;
-               //  $balance->save();
-               //}
-             }
-             //else if(substr($d->debit->text,0,3) == '112'){
-             //    $balance = AccCurrencyCheck::get_type_first($d->debit->value,$arr->currency,$d->bank_account->value);
-             //    if($balance){
-             //      $balance->amount = $balance->amount + ($d->amount * $d->rate);
-             //      $balance->save();
-             //    }else{
-             //      $balance = new AccCurrencyCheck();
-             //      $balance->type = $d->debit->value;
-             //      $balance->currency = $arr->currency;
-             //      $balance->bank_account = $d->bank_account->value;
-             //      $balance->amount = $d->amount * $d->rate;
-             //      $balance->save();
-             //    }
-             //  }
-               // End
+             $arr->detail[$k]->id = $detail->id;   
+             
+              // Lưu phiếu chi giấy báo nợ nếu có
+            if($arr->crit_type->payment == true){
 
-               // Lưu số tồn tiền bên Có
-               if(substr($d->credit->text,0,3) === '112'){    
-                $balance = $this->reduceCurrency($d->credit->value,$arr->currency,$d->amount,$d->rate,$arr->bank_account);
-                 //$balance = AccCurrencyCheck::get_type_first($d->credit->value,$arr->currency,$arr->bank_account);
-                 //if($balance){
-                 //  $balance->amount = $balance->amount - ($d->amount * $d->rate);
-                 //  $balance->save();
-                 //}else{
-                 //  $balance = new AccCurrencyCheck();
-                 //  $balance->type = $d->credit->value;
-                 //  $balance->currency = $arr->currency;
-                 //  $balance->bank_account = $arr->bank_account;
-                 //  $balance->amount = 0 - ($d->amount * $d->rate);
-                 //  $balance->save();
-                 //}
-                  if($ca->value == "1" && $balance->amount<0){
-                    $acc = $d->credit->text;
-                    break;
+              // Kiểm tra và lưu trang thái và id detail
+                if($arr->compare != "" && $arr->crit_type->payment_method == 2 ){
+                  $compare = AccBankCompare::find($arr->compare);
+                  if($compare){
+                    $compare->status = 2;
+                    $compare->save();
                   }
-               }                  
-               // End
+              }
+
+              $v_payment = $this->saveNumberVoucher($menu_payment,$arr_payment);
+              $general_payment = new AccGeneral();
+              $general_payment->type = $menu_payment->id;
+              $general_payment->voucher = $v_payment;
+              $general_payment->currency = $arr_payment->currency;
+              $general_payment->rate = $arr_payment->rate;
+              $general_payment->description = $arr_payment->description;
+              $general_payment->voucher_date = $arr_payment->voucher_date;
+              $general_payment->accounting_date = $arr_payment->accounting_date;
+              $general_payment->traders = $arr_payment->traders;           
+              $general_payment->currency = $arr_payment->currency;
+              $general_payment->reference = $arr->reference;
+              $general_payment->total_amount = $arr->total_amount;
+              $general_payment->total_amount_rate = $arr->total_amount_rate;
+              $general_payment->compare_id = $arr->compare;
+              $general_payment->status = 1;
+              $general_payment->active = 1;
+              $general_payment->group = $this->group;
+              $general_payment->user = $user->id;
+              $general_payment->save();
+
+              // Lưu số tồn tiền bên Có
+              if(substr($d->credit->text,0,3) === '112'){    
+              $balance = $this->reduceCurrency($d->credit->value,$arr->currency_NH,$d->amount,$d->rate_NH,$arr->bank_account_NH);
+              
+                if($ca->value == "1" && $balance->amount<0){
+                  $acc = $d->credit->text;
+                  break;
+                }
+              }else if(substr($d->credit->text,0,3) === ('111' || '113' )){
+                $balance = $this->reduceCurrency($d->credit->value,$arr->currency_TM,$d->amount,$d->rate_TM);
+                 if($ca->value == "1" && $balance->amount<0){
+                  $acc = $d->credit->text;
+                  break;
+                }
+              }            
+              // End
+            }
+            
            }
 
            

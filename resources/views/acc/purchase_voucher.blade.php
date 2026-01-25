@@ -25,17 +25,17 @@
 @endsection
 
 @section('uktab')
-<div class="uk-width-1-1 margin-top-20 margin-left-20">
-    <span class="row-label-responsive">@lang('acc_voucher.pay_now') </span><input type="checkbox" data-md-icheck="" id="payment" />
-    <select class="droplist" id="payment_method" column_change="credit" disabled>
+<div id="form-data-type" class="uk-width-1-1 margin-top-20 margin-left-20">
+    <span class="row-label-responsive">@lang('acc_voucher.pay_now') </span><input type="checkbox" data-md-icheck="" id="payment" name="payment" />
+    <select class="droplist" id="payment_method" name="payment_method" column_change="credit" disabled>
         <option selected value="1">@lang('acc_voucher.cash')</option>
         <option value="2">@lang('acc_voucher.bank')</option>
     </select>
-    <select class="droplist" id="stock_status">
+    <select class="droplist" name="stock_status" id="stock_status">
         <option selected value="1">@lang('acc_voucher.enter_the_warehouse')</option>
         <option value="2">@lang('acc_voucher.dont_enter_the_warehouse')</option>
     </select>
-     <select class="droplist" id="invoice_status">
+     <select class="droplist" name="invoice_status" id="invoice_status">
         <option selected value="1">@lang('acc_voucher.have_invoice')</option>
         <option value="2">@lang('acc_voucher.no_invoice_yet')</option>
         <option value="3">@lang('acc_voucher.no_invoice')</option>
