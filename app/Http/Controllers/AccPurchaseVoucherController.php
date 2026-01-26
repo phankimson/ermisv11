@@ -9,6 +9,7 @@ use App\Http\Model\AccHistoryAction;
 use App\Http\Model\Menu;
 use App\Http\Model\AccGeneral;
 use App\Http\Model\AccDetail;
+use App\Http\Model\AccInventory;
 use App\Http\Model\AccVatDetail;
 use App\Http\Model\AccPeriod;
 use App\Http\Model\AccSystems;
@@ -27,13 +28,14 @@ use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Traits\CurrencyCheckTraits;
+use App\Http\Traits\StockCheckTraits;
 use App\Http\Traits\FileAttachTraits;
 use App\Http\Traits\NumberVoucherTraits;
 use App\Http\Traits\ReferenceTraits;
 
 class AccPurchaseVoucherController extends Controller
 {
-  use CurrencyCheckTraits,FileAttachTraits,NumberVoucherTraits,ReferenceTraits;
+  use StockCheckTraits,CurrencyCheckTraits,FileAttachTraits,NumberVoucherTraits,ReferenceTraits;
   protected $url;
   protected $key;
   protected $menu;
@@ -179,12 +181,18 @@ class AccPurchaseVoucherController extends Controller
              $detail = collect([]);
              if($d->id){
                $detail = AccDetail::find($d->id);
+                if($arr->crit_type->stock_status == 1){
+                  $inventory = AccInventory::get_detail_first($d->id);
+                }
                 if(!$detail){
                   DB::connection(env('CONNECTION_DB_ACC'))->rollBack();
                   return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
                 }
              }else{
                $detail = new AccDetail();
+               if($arr->crit_type->stock_status == 1){
+               $inventory = new AccInventory();
+               }
              }
              $detail->general_id = $general->id;
              $detail->description = $d->description;
@@ -212,10 +220,30 @@ class AccPurchaseVoucherController extends Controller
        
              array_push($removeId,$detail->id);
              $arr->detail[$k]->id = $detail->id;   
+
+
+             
+            if($arr->crit_type->stock_status == 1){
+                $inventory->general_id = $general->id;
+                $inventory->detail_id = $detail->id;
+                $inventory->item_id = $d->item_code->value;
+                $inventory->item_code = isset($item[0]) ? trim($item[0]) : '';
+                $inventory->item_name = isset($item[1]) ? trim($item[1]) : '';
+                $inventory->unit = $d->unit->value;
+                $inventory->stock_receipt = $d->stock->value;
+                $inventory->quantity = $d->quantity;
+                $inventory->price = $d->price;
+                $inventory->amount = $d->quantity * $d->price;
+                $inventory->active = 1;
+                $inventory->status = 1;
+                $inventory->save();      
+
+                // Lưu số tồn kho bên Nợ
+               $this->increaseStock($d->debit->value,$d->stock->value,$d->item_code->value,$d->quantity);   
+            }
              
               // Lưu phiếu chi giấy báo nợ nếu có
             if($arr->crit_type->payment == true){
-
               // Kiểm tra và lưu trang thái và id detail
                 if($arr->compare != "" && $arr->crit_type->payment_method == 2 ){
                   $compare = AccBankCompare::find($arr->compare);
@@ -223,8 +251,31 @@ class AccPurchaseVoucherController extends Controller
                     $compare->status = 2;
                     $compare->save();
                   }
-              }
+              }              
 
+              // Lưu số tồn tiền bên Có
+              if(substr($d->credit->text,0,3) === '112'){    
+              $balance = $this->reduceCurrency($d->credit->value,$arr->currency_NH,$d->amount,$d->rate_NH,$arr->bank_account_NH);
+              
+                if($ca->value == "1" && $balance->amount<0){
+                  $acc = $d->credit->text;
+                  break;
+                }
+              }else if(substr($d->credit->text,0,3) === ('111' || '113' )){
+                $balance = $this->reduceCurrency($d->credit->value,$arr->currency_TM,$d->amount,$d->rate_TM);
+                 if($ca->value == "1" && $balance->amount<0){
+                  $acc = $d->credit->text;
+                  break;
+                }
+              }            
+              // End
+            }           
+
+            
+           }
+
+           // Tạo phiếu chi giấy báo nợ nếu có
+            if($arr->crit_type->payment == true){
               $v_payment = $this->saveNumberVoucher($menu_payment,$arr_payment);
               $general_payment = new AccGeneral();
               $general_payment->type = $menu_payment->id;
@@ -245,26 +296,10 @@ class AccPurchaseVoucherController extends Controller
               $general_payment->group = $this->group;
               $general_payment->user = $user->id;
               $general_payment->save();
-
-              // Lưu số tồn tiền bên Có
-              if(substr($d->credit->text,0,3) === '112'){    
-              $balance = $this->reduceCurrency($d->credit->value,$arr->currency_NH,$d->amount,$d->rate_NH,$arr->bank_account_NH);
-              
-                if($ca->value == "1" && $balance->amount<0){
-                  $acc = $d->credit->text;
-                  break;
-                }
-              }else if(substr($d->credit->text,0,3) === ('111' || '113' )){
-                $balance = $this->reduceCurrency($d->credit->value,$arr->currency_TM,$d->amount,$d->rate_TM);
-                 if($ca->value == "1" && $balance->amount<0){
-                  $acc = $d->credit->text;
-                  break;
-                }
-              }            
-              // End
+            }else if($arr->crit_type->payment == false){
+              // Xoá phiếu chi giấy báo nợ nếu hủy
+      
             }
-            
-           }
 
            
 
