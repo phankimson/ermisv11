@@ -1293,55 +1293,12 @@ var Ermis = function() {
     };
 
     var initLoadColumn = function(data, dataItem) {
-        jQuery.each($kGridTab_column, function(i, v) {          
-            if (v.set === "1") {
-                var value = dataItem[v.field] ? dataItem[v.field] : 0;
-                data.set(v.field,value);
-            } else if (v.set === "2" || v.set === "5") {         
-                if(v.url){
-                    dataTextField = "text";
-                    dataValueField = "value"; 
-                }else{
-                    dataTextField = "code";
-                    dataValueField = "id"; 
-                }
-                data_check =  data[v.field] == null ? data[v.field] :  data[v.field][dataValueField];
-                if (dataItem[v.field] && dataItem[v.field] != data_check) {                                      
-                    if(v.url && a[v.field] == undefined){
-                        var sytax =  v.url.includes("?") ? "&" : "?"; 
-                         RequestURLcallback(v.url+sytax+"value="+dataItem[v.field],function(rs){
-                            initLoadDropdownGrid(data,v.field,dataValueField,dataTextField,rs);       
-                        });                                          
-                    }else{
-                        var f = findObjectByKey(a[v.field],dataValueField,dataItem[v.field]);    
-                        initLoadDropdownGrid(data,v.field,dataValueField,dataTextField,f);                      
-                    }                                  
-                }
-            } else if (v.set === "3") {
-                var value = dataItem[v.field] ? FormatNumber(parseInt(dataItem[v.field])) : 0
-                data.set(v.field,value);                
-            } else if (v.set === "4") {
-                data.set(v.field,1);
-            } else if (v.set === "6") {
-                data.set(v.field,dataItem[v.field]);                
-            }else{
-                
-            }
-           
-        }); 
-              
+        addLoadColumn(data, dataItem, $kGridTab_column, dataDefaultGrid);              
     }
 
-    var initLoadGroupColumn = function(data, dataItem,group) {
-        jQuery.each($kGridTab_column, function(i, v) {
-            if (v.group === group) {
-              if(dataItem == undefined){
-                  data[v.field] = '';
-              }else{
-                  data[v.field] = dataItem[v.field];
-              }
-            }         
-        });   
+    var initLoadGroupColumn = function(data, dataItem,item) {
+        var search_column = $kGridTab_column.filter(s => s.group === item["group"] && s.field !== item["field"]);
+        addLoadGroupColumn(data, dataItem, item["group"], search_column);
     }
 
     OnDataBoundDropDownEditor = function(e){
@@ -1357,7 +1314,8 @@ var Ermis = function() {
         var grid = $kGridTab.data("kendoGrid");
         var data = grid.dataSource.data()[row];
         initLoadColumn(data, dataItem);
-        initFixScrollGrid();
+        grid.table.focus();
+        //initFixScrollGrid();
     };
 
     OnchangeCancel = function(e) {        
@@ -1372,14 +1330,15 @@ var Ermis = function() {
             var grid = $kGridTab.data("kendoGrid");
             var data = grid.dataSource.data()[row];      
             initLoadColumn(data, dataItem);
-            initFixScrollGrid();
+              grid.table.focus();
+           //initFixScrollGrid();
         }
    
     };
 
     OnchangeItem = function(e){
          var select = this.dataItem(e.item);            
-         initFixScrollGrid();
+         //initFixScrollGrid();
          if (select == undefined) {
             // TEST
          //$kGridTab.data("kendoGrid").refresh();
@@ -1400,8 +1359,9 @@ var Ermis = function() {
         var columnTitle = e.sender.element.attr("id");
         var searchResultArray = findObjectByKey(a ,'field', columnTitle);
         var data = grid.dataSource.data()[row];
-        initLoadGroupColumn(data, dataItem ,searchResultArray['group']);
-        initFixScrollGrid();
+        initLoadGroupColumn(data, dataItem ,searchResultArray);
+         grid.table.focus();
+        //initFixScrollGrid();
     };
 
 

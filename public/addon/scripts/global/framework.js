@@ -2172,6 +2172,61 @@ function DefaultValueField(){
       }
    }
 
+   // Load data set column
+    var addLoadColumn = function(data, dataItem,$kGridTab,dataDefaultGrid) {
+        jQuery.each($kGridTab, function(i, v) {          
+            if (v.set === "1") {
+                var value = dataItem[v.field] ? dataItem[v.field] : 0;
+                data.set(v.field,value);
+            } else if (v.set === "2" || v.set === "5") {         
+                if(v.url){
+                    dataTextField = "text";
+                    dataValueField = "value"; 
+                }else{
+                    dataTextField = "code";
+                    dataValueField = "id"; 
+                }
+                data_check =  data[v.field] == null ? data[v.field] :  data[v.field][dataValueField];
+                if (dataItem[v.field] && dataItem[v.field] != data_check) {                                      
+                    if(v.url && a[v.field] == undefined){
+                        var sytax =  v.url.includes("?") ? "&" : "?"; 
+                         RequestURLcallback(v.url+sytax+"value="+dataItem[v.field],function(rs){
+                            initLoadDropdownGrid(data,v.field,dataValueField,dataTextField,rs);             
+                        });                                          
+                    }else{
+                        var f = findObjectByKey(a[v.field],dataValueField,dataItem[v.field]);    
+                        initLoadDropdownGrid(data,v.field,dataValueField,dataTextField,f);                      
+                    }                                  
+                }
+            } else if (v.set === "3") {
+                var value = dataItem[v.field] ? FormatNumber(parseInt(dataItem[v.field])) : 0
+                data.set(v.field,value);                
+            } else if (v.set === "4") {
+                data.set(v.field,1);
+            } else if (v.set === "6") {
+                const data_set = dataItem[v.field] ? dataItem[v.field] : dataDefaultGrid.data[v.field];
+                data.set(v.field,data_set);                
+            }else{
+
+            }
+           
+        }); 
+              
+    }
+
+    // Load data set group column
+     var addLoadGroupColumn = function(data, dataItem,group,$kGridTab) {
+        jQuery.each($kGridTab, function(i, v) {
+            if (v.group === group) {
+              if(dataItem == undefined){
+                  data.set(v.field, '');
+              }else{
+                  data.set(v.field, dataItem[v.field]);
+              }
+            }         
+        });   
+    }
+
    //Filter
    var initFilterMultiSelectContent = function(a,field,type){
     if(a == null || (Array.isArray(a) && a.length == 0)){
