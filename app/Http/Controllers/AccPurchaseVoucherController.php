@@ -53,7 +53,7 @@ class AccPurchaseVoucherController extends Controller
  {
      $this->url =  $request->segment(3);
      $this->invoice_type = 1; // 1 Hóa đơn đầu vào , // 2 Hóa đơn đầu ra
-     $this->group = 9; // 4 Nhóm mua hàng
+     $this->group = 9; // 9 Nhóm mua hàng
      $this->type_object = 1; // 1 Nhà cung cấp (VD : 2,3 nếu nhiều đối tượng)
      $this->key = "purchase-voucher";
      $this->key_cash = "cash-payment-voucher";

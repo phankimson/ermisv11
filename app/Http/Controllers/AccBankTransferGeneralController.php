@@ -45,13 +45,13 @@ class AccBankTransferGeneralController extends Controller
   public function __construct(Request $request)
  {
      $this->url =  $request->segment(3);
-     $this->group = 0; // Nhóm chuyển nội bộ
+     $this->group = 11; // Nhóm chuyển ngân hàng nội bộ
      $this->key = "bank-transfer-general";
      $this->key_voucher = "bank-transfer-voucher";
      $this->menu = Menu::where('code', '=', $this->key)->first();
      $this->print = 'BT%';
      $this->date_range = "DATE_RANGE_GENERAL";
-     $this->download = 'AccBankPayment.xlsx';
+     $this->download = 'AccBankTransferGeneral.xlsx';
  }
 
   public function show(){

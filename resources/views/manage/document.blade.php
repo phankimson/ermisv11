@@ -42,7 +42,7 @@
                  <td><input type="text" id="start" class="k-widget k-datepicker k-header k-textbox" data-position="8" data-title="@lang('document.date_start')" data-template="#= FormatDate(date_start) #" data-width="200px" data-type="date" name="date_start" /></td>
              </tr>
              <tr>
-                 <td><label>@lang('document.date_start') *</label></td>
+                 <td><label>@lang('document.date_end') *</label></td>
                  <td><input type="text" id="end" class="k-widget k-datepicker k-header k-textbox" data-position="9" data-title="@lang('document.date_end')" data-template="#= FormatDate(date_end) #" data-width="200px" data-type="date" name="date_end" /></td>
              </tr>
                <tr>
