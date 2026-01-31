@@ -17,21 +17,22 @@
 			"databasePath": "/database/laravel-echo-server.sqlite"
 		}
 	},
-	"devMode": true,
-	"host": null,
+	"devMode": false,
+	"host: null,
 	"port": "6001",
-	"protocol": "http",
+	"protocol": "https",
+	"sslCertPath": "/etc/letsencrypt/live/ermis.io.vn/fullchain.pem", // Đường dẫn SSL certificate
+  	"sslKeyPath": "/etc/letsencrypt/live/ermis.io.vn/privkey.pem",   // Đường dẫn SSL private key
+	// Optional: if you have a certificate chain file
+	"sslCertChainPath": "", 
+	"sslPassphrase": "", // Optional: if your key has a passphrase
 	"socketio": {},
-	"sslCertPath": "",
-	"sslKeyPath": "",
-	"sslCertChainPath": "",
-	"sslPassphrase": "",
 	"subscribers": {
 		"http": true,
 		"redis": true
 	},
 	"apiOriginAllow": {
-		"allowCors": true,
+	 "allowCors": true,
      "allowOrigin": "*",
      "allowMethods": "GET, POST",
      "allowHeaders": "Origin, Content-Type, X-Auth-Token, X-Requested-With, Accept, Authorization, X-CSRF-TOKEN, X-Socket-Id"
