@@ -3,6 +3,7 @@
 /public/build
 /public/hot
 /public/storage
+/public/mix/socket.js
 /storage/*.key
 /vendor
 .env
