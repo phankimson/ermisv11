@@ -20,12 +20,12 @@
 	"devMode": false,
 	"host: null,
 	"port": "6001",
-	"protocol": "https",
-	"sslCertPath": "/etc/letsencrypt/live/ermis.io.vn/fullchain.pem", // Đường dẫn SSL certificate
-  	"sslKeyPath": "/etc/letsencrypt/live/ermis.io.vn/privkey.pem",   // Đường dẫn SSL private key
-	// Optional: if you have a certificate chain file
-	"sslCertChainPath": "", 
-	"sslPassphrase": "", // Optional: if your key has a passphrase
+	"protocol": "http",
+	"socketio": {},
+	"sslCertPath": "",
+	"sslKeyPath": "",
+	"sslCertChainPath": "",
+	"sslPassphrase": "",
 	"socketio": {},
 	"subscribers": {
 		"http": true,

@@ -32938,8 +32938,7 @@ if (token) {
 
 window.Echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_0__["default"]({
   broadcaster: 'socket.io',
-  host: window.location.hostname,
-  secure: true,
+  host: window.location.origin,
   pingTimeout: 25000,
   upgradeTimeout: 21000,
   pingInterval: 40000,
