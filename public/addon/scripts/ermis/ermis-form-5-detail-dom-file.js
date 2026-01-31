@@ -1173,11 +1173,14 @@ var Ermis = function() {
     };
 
     OnchangeItem = function(e){
-         var select = this.dataItem(e.item);            
-         initFixScrollGrid();
-         if (select == undefined) {
-         $kGridTab.data("kendoGrid").refresh();
-       };
+         var grid = $kGridTab.data("kendoGrid");
+             grid.table.focus();
+         //var select = this.dataItem(e.item);            
+         //initFixScrollGrid();
+         //if (select == undefined) {
+            // TEST
+         //$kGridTab.data("kendoGrid").refresh();
+       //};
     };
 
     var initBackTo = function (e) {

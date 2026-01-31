@@ -38,6 +38,8 @@ class AccPurchaseVoucherController extends Controller
   use StockCheckTraits,CurrencyCheckTraits,FileAttachTraits,NumberVoucherTraits,ReferenceTraits;
   protected $url;
   protected $key;
+  protected $key_cash;
+  protected $key_bank;
   protected $menu;
   protected $group;
   protected $print;
@@ -54,6 +56,8 @@ class AccPurchaseVoucherController extends Controller
      $this->group = 9; // 4 Nhóm mua hàng
      $this->type_object = 1; // 1 Nhà cung cấp (VD : 2,3 nếu nhiều đối tượng)
      $this->key = "purchase-voucher";
+     $this->key_cash = "cash-payment-voucher";
+     $this->key_bank = "bank-payment-voucher";
      $this->menu = Menu::where('code', '=', $this->key)->first();
      $this->print = 'MH%';
      $this->path = 'PATH_UPLOAD_PURCHASE';
@@ -131,7 +135,7 @@ class AccPurchaseVoucherController extends Controller
                 $v = $this->saveNumberVoucher($this->menu,$arr);
                    // Lấy menu id Phiếu thu & Báo nợ
                 if($arr->crit_type->payment_method == 1 && $arr->crit_type->payment == true){
-                  $menu_payment = Menu::where('code', '=', 'cash-payment-voucher')->first();  
+                  $menu_payment = Menu::where('code', '=', $this->key_cash)->first();  
                   $arr_payment->put('accounting_date', $arr->accounting_date_TM);
                   $arr_payment->put('voucher_date', $arr->voucher_date_TM);
                   $arr_payment->put('currency', $arr->currency_TM);  
@@ -139,7 +143,7 @@ class AccPurchaseVoucherController extends Controller
                   $arr_payment->put('description', $arr->description_TM); 
                   $arr_payment->put('traders', $arr-> traders_TM);        
                 }else if($arr->crit_type->payment_method == 2 && $arr->crit_type->payment == true){
-                  $menu_payment = Menu::where('code', '=', 'bank-payment-voucher')->first();
+                  $menu_payment = Menu::where('code', '=', $this->key_bank)->first();
                   $arr_payment->put('accounting_date', $arr->accounting_date_NH);
                   $arr_payment->put('voucher_date', $arr->voucher_date_NH);  
                   $arr_payment->put('currency', $arr->currency_NH);   
@@ -255,14 +259,14 @@ class AccPurchaseVoucherController extends Controller
 
               // Lưu số tồn tiền bên Có
               if(substr($d->credit->text,0,3) === '112'){    
-              $balance = $this->reduceCurrency($d->credit->value,$arr->currency_NH,$d->amount,$d->rate_NH,$arr->bank_account_NH);
+              $balance = $this->reduceCurrency($d->credit->value,$arr->currency_NH,$d->amount,$d->rate,$arr->bank_account);
               
                 if($ca->value == "1" && $balance->amount<0){
                   $acc = $d->credit->text;
                   break;
                 }
               }else if(substr($d->credit->text,0,3) === ('111' || '113' )){
-                $balance = $this->reduceCurrency($d->credit->value,$arr->currency_TM,$d->amount,$d->rate_TM);
+                $balance = $this->reduceCurrency($d->credit->value,$arr->currency_TM,$d->amount,$d->rate);
                  if($ca->value == "1" && $balance->amount<0){
                   $acc = $d->credit->text;
                   break;

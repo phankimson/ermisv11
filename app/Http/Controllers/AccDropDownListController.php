@@ -70,7 +70,7 @@ class AccDropDownListController extends Controller
   }
   public function country_dropdown_list(Request $request){
      $val = $request->input('value',null); 
-    if($val){
+    if($val != null){
       $rs = Country::find($val);
       if(!$rs){
         $data = collect($this->default);
@@ -87,7 +87,7 @@ class AccDropDownListController extends Controller
 
   public function regions_dropdown_list(Request $request){
     $val = $request->input('value',null); 
-    if($val){
+    if($val != null){
       $rs = Regions::find($val);
       if(!$rs){
         $data = collect($this->default);
@@ -105,7 +105,7 @@ class AccDropDownListController extends Controller
 
   public function area_dropdown_list(Request $request){
      $val = $request->input('value',null); 
-    if($val){
+    if($val != null){
       $rs = Area::find($val);
       if(!$rs){
         $data = collect($this->default);
@@ -122,7 +122,7 @@ class AccDropDownListController extends Controller
 
   public function distric_dropdown_list(Request $request){
     $val = $request->input('value',null); 
-    if($val){
+    if($val != null){
       $rs = Distric::find($val);
       if(!$rs){
         $data = collect($this->default);
@@ -140,7 +140,7 @@ class AccDropDownListController extends Controller
   // Đơn vị tính Droplist
   public function unit_dropdown_list(Request $request){
     $val = $request->input('value',null); 
-    if($val){
+    if($val != null){
       $rs = AccUnit::find($val);
       if(!$rs){
         $data = collect($this->default);
@@ -157,7 +157,7 @@ class AccDropDownListController extends Controller
   // Loại hàng hóa Droplist
   public function supplies_goods_type_dropdown_list(Request $request){
     $val = $request->input('value',null); 
-    if($val){
+    if($val != null){
       $rs = AccSuppliesGoodsType::find($val);
       if(!$rs){
         $data = collect($this->default);
@@ -174,7 +174,7 @@ class AccDropDownListController extends Controller
   // Nhóm hàng hóa Droplist
   public function supplies_goods_group_dropdown_list(Request $request){
     $val = $request->input('value',null); 
-    if($val){
+    if($val != null){
       $rs = AccSuppliesGoodsGroup::find($val);
       if(!$rs){
         $data = collect($this->default);
@@ -194,14 +194,14 @@ class AccDropDownListController extends Controller
     $val = $request->input('value',null); 
     $stock = $request->input('stock',null); 
     $price = $request->input('price',null); 
-    if($val){
+    if($val != null){
       $rs = AccSuppliesGoods::find($val);
       if(!$rs){
         $data = collect($this->default);
       }else{
         $data = new LangDropDownResource($rs);
       }      
-    }else if($stock){
+    }else if($stock != null){
       $rs = AccSuppliesGoods::get_has_stock($stock);
       if($stock == "none"){
         $data = SuppliesGoodsReceiptDropDownResource::collection($rs);  
@@ -220,7 +220,7 @@ class AccDropDownListController extends Controller
   // Bảo hành Droplist
   public function warranty_period_dropdown_list(Request $request){
     $val = $request->input('value',null); 
-    if($val){
+    if($val != null){
       $rs = AccWarrantyPeriod::find($val);
       if(!$rs){
         $data = collect($this->default);
@@ -239,14 +239,14 @@ class AccDropDownListController extends Controller
      $val = $request->input('value',null); 
     // Lấy tất cả tài khoản
     $df = $request->input('default',null);   
-    if($val){
+    if($val != null){
       $rs = AccStock::find($val);
       if(!$rs){
         $data = collect($this->default);
       }else{
         $data = new LangDropDownResource($rs);
       }      
-    }else if($df){
+    }else if($df != null){
     $data = LangDropDownResource::collection(AccStock::active()->orderBy('code','asc')->get());
     }else{
     $default = collect([$this->default]);
@@ -280,7 +280,7 @@ class AccDropDownListController extends Controller
   // Thuế TTDB Droplist
   public function excise_tax_dropdown_list(Request $request){
     $val = $request->input('value',null); 
-    if($val){
+    if($val != null){
       $rs = AccExcise::find($val);
       if(!$rs){
         $data = collect($this->default);
@@ -297,7 +297,7 @@ class AccDropDownListController extends Controller
   // Thuế Tài nguyên
   public function natural_resources_dropdown_list(Request $request){
      $val = $request->input('value',null); 
-    if($val){
+    if($val != null){
       $rs = AccNaturalResources::find($val);
       if(!$rs){
         $data = collect($this->default);
@@ -336,7 +336,7 @@ class AccDropDownListController extends Controller
    // Mã vụ việc
    public function case_code_dropdown_list(Request $request){
     $val = $request->input('value',null); 
-    if($val){
+    if($val != null){
       $rs = AccCaseCode::find($val);
       if(!$rs){
         $data = collect($this->default);
@@ -354,7 +354,7 @@ class AccDropDownListController extends Controller
    // Mã chi phí
    public function cost_code_dropdown_list(Request $request){
     $val = $request->input('value',null); 
-    if($val){
+    if($val != null){
       $rs = AccCostCode::find($val);
       if(!$rs){
         $data = collect($this->default);
@@ -372,7 +372,7 @@ class AccDropDownListController extends Controller
    // Mục thu chi
    public function revenue_expenditure_type_dropdown_list(Request $request){
     $val = $request->input('value',null); 
-    if($val){
+    if($val != null){
       $rs = AccRevenueExpenditure::find($val);
       if(!$rs){
         $data = collect($this->default);
@@ -390,7 +390,7 @@ class AccDropDownListController extends Controller
    // Mã thống kê
    public function statistical_code_dropdown_list(Request $request){
     $val = $request->input('value',null); 
-    if($val){
+    if($val != null){
       $rs = AccStatisticalCode::find($val);
       if(!$rs){
         $data = collect($this->default);
@@ -408,7 +408,7 @@ class AccDropDownListController extends Controller
   // Mã công việc
   public function work_code_dropdown_list(Request $request){
     $val = $request->input('value',null); 
-    if($val){
+    if($val != null){
       $rs = AccWorkCode::find($val);
       if(!$rs){
         $data = collect($this->default);
@@ -427,14 +427,14 @@ class AccDropDownListController extends Controller
   public function bank_account_dropdown_list(Request $request){
     $val = $request->input('value',null); 
     $detail = $request->input('detail',null); 
-    if($val){
+    if($val != null){
       $rs = AccBankAccount::find($val);
       if(!$rs){
         $data = collect($this->default);
       }else{
         $data = new BankDropDownResource($rs);
       }      
-    }else if($detail){
+    }else if($detail != null){
       $default = collect([$this->default_multi]);
       $rs = AccBankAccount::get_has_detail();
       $data = BankMultiDropDownResource::collection($rs);
@@ -450,7 +450,7 @@ class AccDropDownListController extends Controller
    // Ngân hàng
   public function bank_dropdown_list(Request $request){
     $val = $request->input('value',null); 
-    if($val){
+    if($val != null){
       $rs = AccBank::find($val);
       if(!$rs){
         $data = collect($this->default);
@@ -468,7 +468,7 @@ class AccDropDownListController extends Controller
   // Nhóm đối tượng
   public function object_group_dropdown_list(Request $request){
     $val = $request->input('value',null); 
-    if($val){
+    if($val != null){
       $rs = AccObjectGroup::find($val);
       if(!$rs){
         $data = collect($this->default);
@@ -492,7 +492,7 @@ class AccDropDownListController extends Controller
    // Đối tượng
    public function object_dropdown_list(Request $request){
      $val = $request->input('value',null); 
-    if($val){
+    if($val != null){
       $rs = AccObject::find($val);
       if(!$rs){
         $data = collect($this->default);
@@ -510,7 +510,7 @@ class AccDropDownListController extends Controller
    // Bộ phận
    public function department_dropdown_list(Request $request){
     $val = $request->input('value',null); 
-    if($val){
+    if($val != null){
       $rs = AccDepartment::find($val);
       if(!$rs){
         $data = collect($this->default);
@@ -528,7 +528,7 @@ class AccDropDownListController extends Controller
   // Loại Tài khoản
   public function account_type_dropdown_list(Request $request){
     $val = $request->input('value',null); 
-    if($val){
+    if($val != null){
       $rs = AccAccountType::find($val);
       if(!$rs){
         $data = collect($this->default);
@@ -546,7 +546,7 @@ class AccDropDownListController extends Controller
    // Tính chất Tài khoản
    public function account_nature_dropdown_list(Request $request){
     $val = $request->input('value',null); 
-    if($val){
+    if($val != null){
       $rs = AccAccountNature::find($val);
       if(!$rs){
         $data = collect($this->default);
@@ -652,7 +652,7 @@ class AccDropDownListController extends Controller
     }else{
       
     }  
-    if($val){
+    if($val != null){
       $data = $data->filter(function ($item) use ($val) {
         return $item->id == $val;
      })->first();
@@ -663,7 +663,7 @@ class AccDropDownListController extends Controller
   // Group User
   public function group_user_dropdown_list(Request $request){
     $val = $request->input('value',null); 
-    if($val){
+    if($val != null){
       $rs = GroupUsers::find($val);
       if(!$rs){
         $data = collect($this->default);
@@ -682,10 +682,10 @@ class AccDropDownListController extends Controller
   public function accounted_fast_dropdown_list(Request $request){    
     $val = $request->input('value',null);
     $pro = $request->input('pro',null);
-    if($val){
+    if($val != null){
       $arr = AccAccountedFast::find($val);   
       $data = new AccountedFastDropDownResource($arr);
-    }else if($pro){
+    }else if($pro != null){
       $default = collect([$this->default]);
       $arr = AccAccountedFast::get_profession($pro);   
       $data = AccountedFastDropDownResource::collection($arr);
@@ -702,7 +702,7 @@ class AccDropDownListController extends Controller
    // Số chứng từ
    public function number_voucher_dropdown_list(Request $request){
      $val = $request->input('value',null); 
-    if($val){
+    if($val != null){
       $rs = AccNumberVoucher::find($val);
       if(!$rs){
         $data = collect($this->default);
@@ -736,7 +736,7 @@ class AccDropDownListController extends Controller
    // Tài liệu
    public function document_dropdown_list(Request $request){
      $val = $request->input('value',null); 
-    if($val){
+    if($val != null){
       $rs = Document::find($val);
       if(!$rs){
         $data = collect($this->default);
