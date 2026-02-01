@@ -8,7 +8,7 @@ trait ReferenceTraits
       {
          // Ktra dòng dư tham chiếu
           if(isset($reference_by) && collect($reference_by)->count()>0){
-            $rb = AccGeneral::get_reference_by_whereNotIn($reference_by);
+            $rb = AccGeneral::get_reference_by($general_id);
             $rb->each(function ($item, $key) {
               $item->reference_by = 0;
               $item->save();
@@ -16,7 +16,7 @@ trait ReferenceTraits
           // Lưu tham chiếu
             foreach($reference_by as $s => $f){
               $general_reference = AccGeneral::find($f);
-              if($general_reference->reference_by == 0){
+              if($general_reference->reference_by == 0 || $general_reference->reference_by == ''){
                 $general_reference-> reference_by = $general_id;
                 $general_reference->save();
               }

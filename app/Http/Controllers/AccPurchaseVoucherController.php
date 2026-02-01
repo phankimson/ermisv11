@@ -106,6 +106,7 @@ class AccPurchaseVoucherController extends Controller
     try{
       DB::connection(env('CONNECTION_DB_ACC'))->beginTransaction();
       $arr = json_decode($request->data);
+      dd($arr);
       if($arr){
          $period = AccPeriod::get_date(Carbon::parse($arr->accounting_date)->format('Y-m'),1);
         if(!$period){
@@ -134,7 +135,7 @@ class AccPurchaseVoucherController extends Controller
             // Lưu số nhảy
                 $v = $this->saveNumberVoucher($this->menu,$arr);
                    // Lấy menu id Phiếu thu & Báo nợ
-                if($arr->crit_type->payment_method == 1 && $arr->crit_type->payment == true){
+                if($arr->crit_type->obj->payment_method == "1" && $arr->crit_type->obj->payment == "1"){
                   $menu_payment = Menu::where('code', '=', $this->key_cash)->first();  
                   $arr_payment->put('accounting_date', $arr->accounting_date_TM);
                   $arr_payment->put('voucher_date', $arr->voucher_date_TM);
@@ -142,7 +143,7 @@ class AccPurchaseVoucherController extends Controller
                   $arr_payment->put('rate', $arr->rate_TM); 
                   $arr_payment->put('description', $arr->description_TM); 
                   $arr_payment->put('traders', $arr-> traders_TM);        
-                }else if($arr->crit_type->payment_method == 2 && $arr->crit_type->payment == true){
+                }else if($arr->crit_type->obj->payment_method == "2" && $arr->crit_type->obj->payment == "1"){
                   $menu_payment = Menu::where('code', '=', $this->key_bank)->first();
                   $arr_payment->put('accounting_date', $arr->accounting_date_NH);
                   $arr_payment->put('voucher_date', $arr->voucher_date_NH);  
@@ -185,7 +186,7 @@ class AccPurchaseVoucherController extends Controller
              $detail = collect([]);
              if($d->id){
                $detail = AccDetail::find($d->id);
-                if($arr->crit_type->stock_status == 1){
+                if($arr->crit_type->obj->stock_status == "1"){
                   $inventory = AccInventory::get_detail_first($d->id);
                 }
                 if(!$detail){
@@ -194,7 +195,7 @@ class AccPurchaseVoucherController extends Controller
                 }
              }else{
                $detail = new AccDetail();
-               if($arr->crit_type->stock_status == 1){
+               if($arr->crit_type->obj->stock_status == "1"){
                $inventory = new AccInventory();
                }
              }
@@ -226,8 +227,7 @@ class AccPurchaseVoucherController extends Controller
              $arr->detail[$k]->id = $detail->id;   
 
 
-             
-            if($arr->crit_type->stock_status == 1){
+             if($arr->crit_type->obj->stock_status == "1"){
                 $inventory->general_id = $general->id;
                 $inventory->detail_id = $detail->id;
                 $inventory->item_id = $d->item_code->value;
@@ -247,9 +247,9 @@ class AccPurchaseVoucherController extends Controller
             }
              
               // Lưu phiếu chi giấy báo nợ nếu có
-            if($arr->crit_type->payment == true){
+            if($arr->crit_type->obj->payment == "1"){
               // Kiểm tra và lưu trang thái và id detail
-                if($arr->compare != "" && $arr->crit_type->payment_method == 2 ){
+                if($arr->compare != "" && $arr->crit_type->obj->payment_method =="2" ){
                   $compare = AccBankCompare::find($arr->compare);
                   if($compare){
                     $compare->status = 2;
@@ -279,7 +279,7 @@ class AccPurchaseVoucherController extends Controller
            }
 
            // Tạo phiếu chi giấy báo nợ nếu có
-            if($arr->crit_type->payment == true){
+            if($arr->crit_type->obj->payment == "1"){
               $v_payment = $this->saveNumberVoucher($menu_payment,$arr_payment);
               $general_payment = new AccGeneral();
               $general_payment->type = $menu_payment->id;
@@ -295,17 +295,26 @@ class AccPurchaseVoucherController extends Controller
               $general_payment->total_amount = $arr->total_amount;
               $general_payment->total_amount_rate = $arr->total_amount_rate;
               $general_payment->compare_id = $arr->compare;
+              $general_payment->reference_by = $general->id;
               $general_payment->status = 1;
               $general_payment->active = 1;
               $general_payment->group = $this->group;
               $general_payment->user = $user->id;
               $general_payment->save();
-            }else if($arr->crit_type->payment == false){
+            }else if($arr->crit_type->obj->payment == "0"){
               // Xoá phiếu chi giấy báo nợ nếu hủy
-      
+              $general_payment = AccGeneral::where('reference_by',$general->id)->first();
+              if($general_payment){
+                AccDetail::get_detail($general_payment->id)->delete();
+                $general_payment->delete();
+              }
+               // Cập nhật phiếu chi vào phiếu mua hàng
+                $general->reference = '';
+                $general->save();
             }
-
-           
+            // Cập nhật phiếu chi vào phiếu mua hàng
+           $general->reference = $general_payment->id;
+           $general->save();
 
            // Xóa dòng chi tiết
            AccDetail::get_detail_whereNotIn_delete($general->id,$removeId);
