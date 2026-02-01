@@ -106,7 +106,6 @@ class AccPurchaseVoucherController extends Controller
     try{
       DB::connection(env('CONNECTION_DB_ACC'))->beginTransaction();
       $arr = json_decode($request->data);
-      dd($arr);
       if($arr){
          $period = AccPeriod::get_date(Carbon::parse($arr->accounting_date)->format('Y-m'),1);
         if(!$period){
