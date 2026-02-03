@@ -135,8 +135,8 @@
                                                 {"field" : "price","title" :  "@lang('acc_supplies_goods.price')" ,template: '#= FormatNumberDecimal(price, {{$decimal}} )#'  }];
 
         Ermis.columns    = [{"field" :"id", hidden : true},
-                            { "field" : "item_code","title" :"@lang('acc_voucher.item_code')","url" : "{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.supplies-goods')}}" ,editor: ItemsReadGoodsCritDropDownEditor , "crit" : "stock" , "select" : "OnchangeCancel" ,template : "#=getUrlAjaxItemName(item_code,'item_code')#","width" : "300px" ,"set" : "2",aggregates: ['count'], footerTemplate: "<p>@lang('acc_voucher.total_count'): #=count#</p>"},
-                            { "field" : "unit","title" :"@lang('acc_voucher.unit')","url" : "{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.unit')}}" ,editor: ItemsReadDropDownEditor , "select" : "OnchangeCancel" ,template : "#=getUrlAjaxItemName(unit,'unit')#","width" : "150px" ,"set" : "5" },
+                            { "field" : "item_code","title" :"@lang('acc_voucher.item_code')","url" : "{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.supplies-goods')}}" ,editor: ItemsReadGoodsCritDropDownEditor , "crit" : "stock" , "select" : "OnchangeCancel" ,template : "#=getUrlAjaxItemName(item_code,'item_code')#","width" : "300px" ,"set" : "2",aggregates: ['count'], footerTemplate: "<p>@lang('acc_voucher.total_count'): #=count#</p>", "key" :true },
+                            { "field" : "unit","title" :"@lang('acc_voucher.unit')","url" : "{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.unit')}}" ,editor: ItemsReadDropDownEditor , "select" : "OnchangeCancel" ,template : "#=getUrlAjaxItemName(unit,'unit')#","width" : "150px" ,"set" : "5", "key" :true  },
                             //{ "field" : "stock","title" :"@lang('acc_voucher.stock')","url" : "{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.stock')}}" ,editor: ItemsReadDropDownEditor , "select" : "OnchangeCancel" ,template : "#=getUrlAjaxItemName(stock,'stock')#","width" : "150px" ,"set" : "5" },
                             { "field" : "debit","title" :"@lang('acc_voucher.debt_account')" ,"url" : "{!!route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.account-voucher-filter').'?menu='.$menu.'&type=1&option=true'!!}",editor: ItemsReadDropDownEditor , "select" : "OnchangeItem" ,template : "#=getUrlAjaxItemName(debit,'debit')#" ,"width" : "150px" ,"set" : "2" , "key" :true },
                             { "field" : "credit","title" :"@lang('acc_voucher.credit_account')" ,"url" : "{!!route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.account-voucher-filter').'?menu='.$menu.'&type=2&option=true'!!}",editor: ItemsReadDropDownEditor , "select" : "OnchangeItem" ,template : "#=getUrlAjaxItemName(credit,'credit')#" ,"width" : "150px","set" : "2" , "key" :true},
@@ -150,7 +150,7 @@
         Ermis.field = {
             id : {field :"id" ,defaultValue: 0},
             item_code: { field : "item_code", defaultValue : DefaultReadValueField() },
-            quantity:     {field : "quantity",type:"number" , defaultValue : 0 , validation: { min: 1, required: true }},
+            quantity:     {field : "quantity",type:"number" , defaultValue : 0 , validation: { min: 0, required: true }},
             price:     {field : "price",type:"number",validation: { min: 0, required: true }},
             amount:     {field : "amount",type:"number" , defaultValue : 0 , validation: { min: 1, required: true }},
             rate:     {field : "rate",type:"number", defaultValue : parseInt(jQuery(".rate[name='rate']").val()) , validation: { min: 0, required: true }},

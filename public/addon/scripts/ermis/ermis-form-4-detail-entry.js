@@ -1221,46 +1221,7 @@ var Ermis = function() {
     };
 
     var initKeyCode = function() {
-        jQuery(document).keyup(function(e) {
-          var grid = $kGridTab.data("kendoGrid");
-          var row = $kGridTab.find('tr.k-state-selected');
-          var dataItem = $kGridTab.data("kendoGrid").dataSource.data()[0];
-          if (type == 0) {
-              var dataGrid = dataDefaultGrid.data;
-          } else {
-              var dataGrid = dataDefaultGrid.vat;
-          };
-            $kGridTab.find(" tbody tr").removeClass("k-state-selected");
-            if (e.keyCode === 13) {
-                if (e.target.id == "barcode") {
-                    initScanBarcode(e.target);
-                } else {
-                  if(dataGrid.hasOwnProperty("description") || dataGrid.hasOwnProperty("subject_code_debit") || dataGrid.hasOwnProperty("subject_code_credit")){
-                     grid.dataSource.add(dataGrid);
-                  }else{
-                     grid.addRow();
-                  }
-                }
-            } else if (e.keyCode === 45) {
-                var dataItem = grid.dataSource.data()[0];
-                if (dataItem) {
-                    grid.dataSource.add(dataItem.toJSON());
-                } else {
-                    kendo.alert(Lang.get('messages.no_row'));
-                }
-            } else if (e.keyCode === 27) {
-                grid.cancelChanges();
-            } else if (e.keyCode === 46) {
-                if (dataItem) {
-                    var row = grid.tbody.find("tr[data-uid='" + dataItem + "']");
-                    grid.removeRow(row);
-                } else {
-                    kendo.alert(Lang.get('messages.no_row'));
-                }
-            }else{
-
-            }
-        });
+        return addKeyCode();
     };
 
     var initDeleteRowAll = function(e) {

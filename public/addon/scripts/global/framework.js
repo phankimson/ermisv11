@@ -439,11 +439,7 @@ var initValidationGridColumnKey = function(data,arr_column){
                   }
                   var v = findObjectByKey(arr_column,'field', m);
                   if(v != null ){
-                    if(v.hasOwnProperty('select')){
-                      tex = /[1-9]/;
-                    }else{
-                      tex = /[a-z]/;
-                    };
+                    tex = /[a-zA-Z0-9*]/g
                     if(n == 1 && (tex.test(p[m][dataValueField])) != true){
                       var h = ret.findIndex(i => i.key === m);
                       if(h < 0){
@@ -460,7 +456,7 @@ var initValidationGridColumnKey = function(data,arr_column){
               });
             }else{
               mes = Lang.get('validation.required', { attribute: Lang.get('acc_voucher.'+col.field).toLowerCase() });
-              ret.push({"key" : col.field , "mes" : mes, "arr" : ""});
+              ret.push({"key" : col.field , "mes" : mes, "arr" : [l]});
             }
         });
       }
@@ -2170,6 +2166,52 @@ function DefaultValueField(){
           kendo.alert(Lang.get('messages.no_row'));
         }
       }
+   }
+
+   addKeyCode = function(){
+        jQuery(document).keyup(function(e) {
+        if(e.keyCode === 45 || e.keyCode === 27 || e.keyCode === 13 || e.keyCode === 46){
+          e.preventDefault();
+          var grid = $kGridTab.data("kendoGrid");
+          var row = $kGridTab.find('tr.k-state-selected');
+          var dataItem = $kGridTab.data("kendoGrid").dataSource.data()[0];
+          if (type == 0) {
+              var dataGrid = dataDefaultGrid.data;
+          } else {
+              var dataGrid = dataDefaultGrid.vat;
+          };
+            $kGridTab.find(" tbody tr").removeClass("k-state-selected");
+            if (e.keyCode === 13) {
+                if (e.target.id == "barcode") {
+                    initScanBarcode(e.target);
+                } else {
+                  if(dataGrid.hasOwnProperty("description") || dataGrid.hasOwnProperty("subject_code")){
+                     grid.dataSource.add(dataGrid);
+                  }else{
+                     grid.addRow();
+                  }
+                }
+            } else if (e.keyCode === 45) {
+                var dataItem = grid.dataSource.data()[0];
+                if (dataItem) {
+                    grid.dataSource.add(dataItem.toJSON());
+                } else {
+                    kendo.alert(Lang.get('messages.no_row'));
+                }
+            } else if (e.keyCode === 27) {
+                grid.cancelChanges();
+            } else if (e.keyCode === 46) {
+                if (dataItem) {
+                    var row = grid.tbody.find("tr[data-uid='" + dataItem.uid + "']");
+                    grid.removeRow(row);
+                } else {
+                    kendo.alert(Lang.get('messages.no_row'));
+                }
+            }
+        }else{
+            return;
+        }          
+        });
    }
 
    // Load data set column

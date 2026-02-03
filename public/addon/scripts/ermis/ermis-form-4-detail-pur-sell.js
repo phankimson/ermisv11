@@ -1236,8 +1236,11 @@ var Ermis = function() {
         obj.reference_by = reference_by;
         var crit1 = initValidationGrid(obj.detail,Ermis.field);
         var crit2 = initValidationGridColumnKey(obj.detail,Ermis.columns);
+        var crit3 = initValidationGrid(obj.tax,Ermis.field_tax);
+        var crit4 = initValidationGridColumnKey(obj.tax,Ermis.column_grid);
         var crit = crit1.concat(crit2);
-        if(crit.length == 0){
+        var crit_tax = crit3.concat(crit4);
+        if(crit.length == 0 && crit_tax.length == 0){
           obj.type = jQuery('#tabstrip').find('.k-state-active').attr("data-search");
           obj.total_quantity = ConvertNumber(jQuery('#quantity_total').html(),Ermis.decimal_symbol);
           obj.total_amount = ConvertNumber(jQuery('#amount_total').html(),Ermis.decimal_symbol);
@@ -1450,46 +1453,7 @@ var Ermis = function() {
     };
 
     var initKeyCode = function() {
-        jQuery(document).keyup(function(e) {
-          var grid = $kGridTab.data("kendoGrid");
-          var row = $kGridTab.find('tr.k-state-selected');
-          var dataItem = $kGridTab.data("kendoGrid").dataSource.data()[0];
-          if (type == 0) {
-              var dataGrid = dataDefaultGrid.data;
-          } else {
-              var dataGrid = dataDefaultGrid.vat;
-          };
-            $kGridTab.find(" tbody tr").removeClass("k-state-selected");
-            if (e.keyCode === 13) {
-                if (e.target.id == "barcode") {
-                    initScanBarcode(e.target);
-                } else {
-                  if(dataGrid.hasOwnProperty("description") || dataGrid.hasOwnProperty("subject_code")){
-                     grid.dataSource.add(dataGrid);
-                  }else{
-                     grid.addRow();
-                  }
-                }
-            } else if (e.keyCode === 45) {
-                var dataItem = grid.dataSource.data()[0];
-                if (dataItem) {
-                    grid.dataSource.add(dataItem.toJSON());
-                } else {
-                    kendo.alert(Lang.get('messages.no_row'));
-                }
-            } else if (e.keyCode === 27) {
-                grid.cancelChanges();
-            } else if (e.keyCode === 46) {
-                if (dataItem) {
-                    var row = grid.tbody.find("tr[data-uid='" + dataItem + "']");
-                    grid.removeRow(row);
-                } else {
-                    kendo.alert(Lang.get('messages.no_row'));
-                }
-            }else{
-
-            }
-        });
+        return addKeyCode();
     };
 
     var initDeleteRowAll = function(e) {
