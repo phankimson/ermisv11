@@ -2168,7 +2168,7 @@ function DefaultValueField(){
       }
    }
 
-   addKeyCode = function(){
+   addKeyCode = function(initScanBarcode){
         jQuery(document).keyup(function(e) {
         if(e.keyCode === 45 || e.keyCode === 27 || e.keyCode === 13 || e.keyCode === 46){
           e.preventDefault();
@@ -2182,7 +2182,7 @@ function DefaultValueField(){
           };
             $kGridTab.find(" tbody tr").removeClass("k-state-selected");
             if (e.keyCode === 13) {
-                if (e.target.id == "barcode") {
+                if (e.target.id == "barcode" && initScanBarcode) {
                     initScanBarcode(e.target);
                 } else {
                   if(dataGrid.hasOwnProperty("description") || dataGrid.hasOwnProperty("subject_code")){

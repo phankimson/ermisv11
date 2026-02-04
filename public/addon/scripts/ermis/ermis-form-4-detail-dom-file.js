@@ -1353,7 +1353,7 @@ var Ermis = function() {
     };
 
     var initKeyCode = function() {
-        return addKeyCode();
+        return addKeyCode(initScanBarcode);
     };
 
     var initDeleteRowAll = function(e) {

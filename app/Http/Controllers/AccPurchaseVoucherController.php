@@ -149,7 +149,8 @@ class AccPurchaseVoucherController extends Controller
                   $arr_payment->put('currency', $arr->currency_NH);   
                   $arr_payment->put('rate', $arr->rate_NH);  
                   $arr_payment->put('description', $arr->description_NH);      
-                  $arr_payment->put('traders', $arr-> traders_NH);             
+                  $arr_payment->put('traders', $arr-> traders_NH);   
+                  $arr_payment->put('bank_account', $arr-> bank_account);                
                 }         
           }else{
                 $check_permission = false;
@@ -208,7 +209,9 @@ class AccPurchaseVoucherController extends Controller
              $detail->amount_rate = $d->amount * $d->rate;
              $detail->accounted_fast = $d->accounted_fast->value;  // Đổi từ id value dạng read
              $detail->department = $d->department->value; // Đổi từ id value dạng read
-             $detail->bank_account_credit = $arr->bank_account; 
+             if($arr_payment->bank_account){
+                $detail->bank_account_credit = $arr_payment->bank_account; 
+             }
              $detail->case_code = $d->case_code->value;  // Đổi từ id value dạng read
              $detail->cost_code = $d->cost_code->value;  // Đổi từ id value dạng read
              $detail->statistical_code = $d->statistical_code->value;  // Đổi từ id value dạng read

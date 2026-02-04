@@ -1081,7 +1081,7 @@ var Ermis = function() {
     }
 
     var initKeyCode = function() {
-        return addKeyCode();
+        return addKeyCode(null);
     };
 
     var initDeleteRowAll = function(e) {
