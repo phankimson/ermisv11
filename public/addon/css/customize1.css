@@ -349,3 +349,6 @@
   width:100px;
   text-align: right;
 } 
+.k-loading-mask{
+  z-index: 11000!important;
+}

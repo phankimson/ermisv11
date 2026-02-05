@@ -150,7 +150,7 @@ class AccPurchaseVoucherController extends Controller
                   $arr_payment->put('rate', $arr->rate_NH);  
                   $arr_payment->put('description', $arr->description_NH);      
                   $arr_payment->put('traders', $arr-> traders_NH);   
-                  $arr_payment->put('bank_account', $arr-> bank_account);                
+                  $arr_payment->put('bank_account', $arr-> bank_account_NH);                
                 }         
           }else{
                 $check_permission = false;
@@ -200,7 +200,7 @@ class AccPurchaseVoucherController extends Controller
                }
              }
              $detail->general_id = $general->id;
-             $detail->description = $d->description;
+             $detail->description = $d->item_code->text;
              $detail->currency = $arr->currency;
              $detail->debit = $d->debit->value;  // Đổi từ id value dạng read
              $detail->credit = $d->credit->value;  // Đổi từ id value dạng read
@@ -209,7 +209,7 @@ class AccPurchaseVoucherController extends Controller
              $detail->amount_rate = $d->amount * $d->rate;
              $detail->accounted_fast = $d->accounted_fast->value;  // Đổi từ id value dạng read
              $detail->department = $d->department->value; // Đổi từ id value dạng read
-             if($arr_payment->bank_account){
+             if(isset($arr_payment->bank_account)){
                 $detail->bank_account_credit = $arr_payment->bank_account; 
              }
              $detail->case_code = $d->case_code->value;  // Đổi từ id value dạng read
@@ -261,14 +261,14 @@ class AccPurchaseVoucherController extends Controller
 
               // Lưu số tồn tiền bên Có
               if(substr($d->credit->text,0,3) === '112'){    
-              $balance = $this->reduceCurrency($d->credit->value,$arr->currency_NH,$d->amount,$d->rate,$arr->bank_account);
+              $balance = $this->reduceCurrency($d->credit->value,$arr_payment->currency_NH,$d->amount,$d->rate,$arr_payment->bank_account);
               
                 if($ca->value == "1" && $balance->amount<0){
                   $acc = $d->credit->text;
                   break;
                 }
               }else if(substr($d->credit->text,0,3) === ('111' || '113' )){
-                $balance = $this->reduceCurrency($d->credit->value,$arr->currency_TM,$d->amount,$d->rate);
+                $balance = $this->reduceCurrency($d->credit->value,$arr_payment->currency_TM,$d->amount,$d->rate);
                  if($ca->value == "1" && $balance->amount<0){
                   $acc = $d->credit->text;
                   break;
@@ -303,6 +303,9 @@ class AccPurchaseVoucherController extends Controller
               $general_payment->group = $this->group;
               $general_payment->user = $user->id;
               $general_payment->save();
+              // Cập nhật phiếu chi vào phiếu mua hàng
+              $general->reference = $general_payment->id;
+              $general->save();
             }else if($arr->crit_type->obj->payment == "0"){
               // Xoá phiếu chi giấy báo nợ nếu hủy
               $general_payment = AccGeneral::where('reference_by',$general->id)->first();
@@ -313,10 +316,7 @@ class AccPurchaseVoucherController extends Controller
                // Cập nhật phiếu chi vào phiếu mua hàng
                 $general->reference = '';
                 $general->save();
-            }
-            // Cập nhật phiếu chi vào phiếu mua hàng
-           $general->reference = $general_payment->id;
-           $general->save();
+            }     
 
            // Xóa dòng chi tiết
            AccDetail::get_detail_whereNotIn_delete($general->id,$removeId);
