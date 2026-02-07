@@ -132,29 +132,31 @@ class AccPurchaseVoucherController extends Controller
             $general = new AccGeneral();
             $general->user = $user->id;
             // Lưu số nhảy
-                $v = $this->saveNumberVoucher($this->menu,$arr);
-                   // Lấy menu id Phiếu thu & Báo nợ
-                if($arr->crit_type->obj->payment_method == "1" && $arr->crit_type->obj->payment == "1"){
-                  $menu_payment = Menu::where('code', '=', $this->key_cash)->first();  
-                  $arr_payment->put('accounting_date', $arr->accounting_date_TM);
-                  $arr_payment->put('voucher_date', $arr->voucher_date_TM);
-                  $arr_payment->put('currency', $arr->currency_TM);  
-                  $arr_payment->put('rate', $arr->rate_TM); 
-                  $arr_payment->put('description', $arr->description_TM); 
-                  $arr_payment->put('traders', $arr-> traders_TM);        
-                }else if($arr->crit_type->obj->payment_method == "2" && $arr->crit_type->obj->payment == "1"){
-                  $menu_payment = Menu::where('code', '=', $this->key_bank)->first();
-                  $arr_payment->put('accounting_date', $arr->accounting_date_NH);
-                  $arr_payment->put('voucher_date', $arr->voucher_date_NH);  
-                  $arr_payment->put('currency', $arr->currency_NH);   
-                  $arr_payment->put('rate', $arr->rate_NH);  
-                  $arr_payment->put('description', $arr->description_NH);      
-                  $arr_payment->put('traders', $arr-> traders_NH);   
-                  $arr_payment->put('bank_account', $arr-> bank_account_NH);                
-                }         
+                $v = $this->saveNumberVoucher($this->menu,$arr);                   
           }else{
                 $check_permission = false;
           }
+
+          // Lấy menu id Phiếu thu & Báo nợ
+            if($arr->crit_type->obj->payment_method == "1" && $arr->crit_type->obj->payment == "1"){
+              $menu_payment = Menu::where('code', '=', $this->key_cash)->first();  
+              $arr_payment->put('accounting_date', $arr->accounting_date_TM);
+              $arr_payment->put('voucher_date', $arr->voucher_date_TM);
+              $arr_payment->put('currency', $arr->currency_TM);  
+              $arr_payment->put('rate', $arr->rate_TM); 
+              $arr_payment->put('description', $arr->description_TM); 
+              $arr_payment->put('traders', $arr-> traders_TM);        
+              dd($arr_payment->items);
+            }else if($arr->crit_type->obj->payment_method == "2" && $arr->crit_type->obj->payment == "1"){
+              $menu_payment = Menu::where('code', '=', $this->key_bank)->first();
+              $arr_payment->put('accounting_date', $arr->accounting_date_NH);
+              $arr_payment->put('voucher_date', $arr->voucher_date_NH);  
+              $arr_payment->put('currency', $arr->currency_NH);   
+              $arr_payment->put('rate', $arr->rate_NH);  
+              $arr_payment->put('description', $arr->description_NH);      
+              $arr_payment->put('traders', $arr-> traders_NH);   
+              $arr_payment->put('bank_account', $arr-> bank_account_NH);                
+            }     
 
           $general->type = $this->menu->id;
           $general->voucher = $v;
@@ -207,7 +209,6 @@ class AccPurchaseVoucherController extends Controller
              $detail->amount = $d->amount;
              $detail->rate = $d->rate;
              $detail->amount_rate = $d->amount * $d->rate;
-             $detail->accounted_fast = $d->accounted_fast->value;  // Đổi từ id value dạng read
              $detail->department = $d->department->value; // Đổi từ id value dạng read
              if(isset($arr_payment->bank_account)){
                 $detail->bank_account_credit = $arr_payment->bank_account; 
@@ -282,10 +283,14 @@ class AccPurchaseVoucherController extends Controller
 
            // Tạo phiếu chi giấy báo nợ nếu có
             if($arr->crit_type->obj->payment == "1"){
+              $general_payment = AccGeneral::get_reference_by($general->id)->first();
+              if(!$general_payment){
               $v_payment = $this->saveNumberVoucher($menu_payment,$arr_payment);
               $general_payment = new AccGeneral();
-              $general_payment->type = $menu_payment->id;
               $general_payment->voucher = $v_payment;
+              $general_payment->type = $menu_payment->id;
+              $general_payment->reference_by = $general->id;
+              }             
               $general_payment->currency = $arr_payment->currency;
               $general_payment->rate = $arr_payment->rate;
               $general_payment->description = $arr_payment->description;
@@ -297,14 +302,13 @@ class AccPurchaseVoucherController extends Controller
               $general_payment->total_amount = $arr->total_amount;
               $general_payment->total_amount_rate = $arr->total_amount_rate;
               $general_payment->compare_id = $arr->compare;
-              $general_payment->reference_by = $general->id;
               $general_payment->status = 1;
               $general_payment->active = 1;
               $general_payment->group = $this->group;
               $general_payment->user = $user->id;
               $general_payment->save();
               // Cập nhật phiếu chi vào phiếu mua hàng
-              $general->reference = $general_payment->id;
+              $general->reference = $general_payment->voucher;
               $general->save();
             }else if($arr->crit_type->obj->payment == "0"){
               // Xoá phiếu chi giấy báo nợ nếu hủy

@@ -102,6 +102,7 @@ class AccSuppliesGoods extends Model
           ->join('stock_check', 'stock_check.supplies_goods', '=', 'supplies_goods.id')
           ->where('stock_check.stock',$stock)
           ->where('stock_check.type',$account_default)
+          ->where('supplies_goods.active',1)
           ->orderBy('supplies_goods.created_at','asc')
           ->get(['supplies_goods.*','unit.id as unit_id','unit.code as unit_code','unit.name as unit','unit.name_en as unit_en','stock_check.quantity as quantity_in_stock']);
         }else{
@@ -110,6 +111,7 @@ class AccSuppliesGoods extends Model
           ->join('stock_check', 'stock_check.supplies_goods', '=', 'supplies_goods.id')
           ->where('stock_check.stock',$stock)
           ->where('stock_check.type',$account_default)
+          ->where('supplies_goods.active',1)
           ->orderBy('supplies_goods.created_at','asc')
           ->get(['supplies_goods.*','unit.id as unit_id','unit.code as unit_code','unit.name as unit','unit.name_en as unit_en','stock_check.quantity as quantity_in_stock']);
         }        
@@ -122,10 +124,12 @@ class AccSuppliesGoods extends Model
             $query->where('stock', $stock);         
             $query->select('id', 'supplies_goods', 'quantity', 'stock','type');          
           }],"unit")
+          ->active()
           ->orderBy('code','asc')
           ->get();
          }else{
            $result = AccSuppliesGoods::with("unit")->withSum('stock_check','quantity')
+          ->active()
           ->orderBy('code','asc')
           ->get();
          }  
@@ -138,6 +142,7 @@ class AccSuppliesGoods extends Model
           ->leftJoin('unit', 'supplies_goods.unit_id', '=', 'unit.id')
           ->join('stock_check', 'stock_check.supplies_goods', '=', 'supplies_goods.id')
           ->where('stock_check.stock',$stock)
+          ->where('supplies_goods.active',1)
           ->orderBy('supplies_goods.created_at','asc')
           ->get(['supplies_goods.*','unit.id as unit_id','unit.code as unit_code','unit.name as unit','unit.name_en as unit_en','stock_check.quantity as quantity_in_stock','stock_check.type as account_default']);       
         return $result;
