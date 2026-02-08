@@ -227,6 +227,11 @@ class AccPurchaseVoucherController extends Controller
 
                 // Lưu số tồn kho bên Nợ
                $this->increaseStock($d->debit->value,$d->stock->value,$d->item_code->value,$d->quantity);   
+            }else{
+                // Xóa số tồn kho bên Nợ
+                $this->reduceStock($d->debit->value,$d->stock->value,$d->item_code->value,$d->quantity);
+                // Xoa ton kho
+                AccInventory::where('detail_id',$detail->id)->delete();
             }
              
               // Lưu phiếu chi giấy báo nợ nếu có
@@ -308,6 +313,7 @@ class AccPurchaseVoucherController extends Controller
            AccDetail::get_detail_whereNotIn_delete($general->id,$removeId);
            $check_invoice = false;
            $invoice = '';
+          if($arr->crit_type->obj->invoice_status == "1"){
            // Lưu VAT
            foreach($arr->tax as $l => $x){
              $tax = collect([]);
@@ -370,7 +376,10 @@ class AccPurchaseVoucherController extends Controller
            }
            // Xóa dòng chi tiết Vat
            AccVatDetail::get_detail_whereNotIn_delete($general->id,$removeId_v);
-
+          }else{
+            // Xóa tất cả dòng chi tiết Vat
+            AccVatDetail::get_detail_whereNotIn_delete($general->id,[]);
+          }
 
            // Lưu file           
            $this->saveFile($request,$general->id,$this->path);   

@@ -2,6 +2,8 @@
 
 namespace App\Http\Resources;
 
+use App\Http\Model\AccGeneral;
+use App\Http\Model\Menu;
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\PurSellDetailReadResource;
 use App\Http\Resources\ObjectDropDownListResource;
@@ -17,6 +19,9 @@ class PurSellGeneralReadResource extends JsonResource
     public function toArray($request)
     {
         $stock = $this->whenLoaded('detail')->first()->inventory->stock_receipt ? $this->whenLoaded('detail')->first()->inventory->stock_receipt : $this->whenLoaded('detail')->first()->inventory->stock_issue;
+        $reference_data = AccGeneral::get_reference_by($this->id);
+        $reference_type = Menu::find($reference_data->type);
+
         return [
             'id' => $this->id,
             'currency' => $this->currency,
