@@ -19,7 +19,7 @@ use App\Http\Model\Error;
 use App\Http\Model\AccBankCompare;
 use App\Http\Model\AccObject;
 use App\Http\Model\AccObjectType;
-use App\Http\Resources\BankPaymentGeneralReadResource;
+use App\Http\Resources\PurSellGeneralReadResource;
 use App\Http\Model\Imports\AccBankPaymentGeneralImport;
 use App\Http\Model\Imports\AccBankPaymentVoucherImport;
 use Carbon\Carbon;
@@ -69,26 +69,6 @@ class AccPurchaseVoucherController extends Controller
     $ot = AccObjectType::get_filter($this->type_object);
     $voucher = AccNumberVoucher::get_menu($this->menu->id);
     $menu_tab =  Menu::get_menu_like_code($this->key.'%');
-    //$setting_voucher = AccSettingVoucher::get_menu($this->menu->id);
-    //$debt_default = new AccountSystemsDropDownListResource(AccAccountSystems::find($setting_voucher->debit));
-    //if($setting_voucher->credit == 0){
-    //  $credit_default = collect(['id' => 0 ,'code' => '---SELECT---','name' => '---SELECT---']);
-    //}else{
-    //  $credit_default = new AccountSystemsDropDownListResource(AccAccountSystems::find($setting_voucher->credit));
-    //};
-    //$work_code = json_encode(LangDropDownListResource::collection(AccWorkCode::active()->orderBy('code','asc')->get()));
-    //$sys = AccSystems::get_systems($this->document);
-    //$document = Document::get_code($sys->value);
-    //$debt_account = json_encode(AccountSystemsDropDownListResource::collection(AccAccountSystems::get_wherein_id($document->id,$setting_voucher->debit_filter)));
-    //$credit_account = json_encode(AccountSystemsDropDownListResource::collection(AccAccountSystems::get_wherein_id($document->id,$setting_voucher->credit_filter)));
-    //$department = json_encode(LangDropDownListResource::collection(AccDepartment::active()->orderBy('code','asc')->get()));
-    //$bank_account = json_encode(BankAccountDropDownListResource::collection(AccBankAccount::active()->orderBy('bank_account','asc')->get()));
-    //$case_code = json_encode(LangDropDownListResource::collection(AccCaseCode::active()->orderBy('code','asc')->get()));
-    //$cost_code = json_encode(LangDropDownListResource::collection(AccCostCode::active()->orderBy('code','asc')->get()));
-    //$statistical_code = json_encode(LangDropDownListResource::collection(AccStatisticalCode::active()->orderBy('code','asc')->get()));
-    //$accounted_fast = json_encode(AccountedFastDropDownListResource::collection(AccAccountedFast::active()->orderBy('code','asc')->get()));
-    //$vat = json_encode(LangTaxDropDownListResource::collection(AccVat::active()->orderBy('code','asc')->get()));
-    //$subject_code = json_encode(ObjectDropDownListResource::collection(AccObject::active()->orderBy('code','asc')->get()));
     $voucher_list = AccNumberVoucher::all();
     $print = AccPrintTemplate::get_code($this->print);
     return view('acc.'.str_replace("-", "_", $this->key),[ 'key' => $this->key , 'voucher' => $voucher, 'menu'=>$this->menu->id, 'menu_tab' => $menu_tab,                                    
@@ -140,22 +120,21 @@ class AccPurchaseVoucherController extends Controller
           // Lấy menu id Phiếu thu & Báo nợ
             if($arr->crit_type->obj->payment_method == "1" && $arr->crit_type->obj->payment == "1"){
               $menu_payment = Menu::where('code', '=', $this->key_cash)->first();  
-              $arr_payment->put('accounting_date', $arr->accounting_date_TM);
-              $arr_payment->put('voucher_date', $arr->voucher_date_TM);
-              $arr_payment->put('currency', $arr->currency_TM);  
-              $arr_payment->put('rate', $arr->rate_TM); 
-              $arr_payment->put('description', $arr->description_TM); 
-              $arr_payment->put('traders', $arr-> traders_TM);        
-              dd($arr_payment->items);
+              $arr_payment = (object) ['accounting_date' => $arr->accounting_date_TM,
+                                         'voucher_date' => $arr->voucher_date_TM,
+                                         'currency' => $arr->currency_TM,
+                                         'rate' => $arr->rate_TM,
+                                         'description' => $arr->description_TM,
+                                         'traders' => $arr-> traders_TM ];     
             }else if($arr->crit_type->obj->payment_method == "2" && $arr->crit_type->obj->payment == "1"){
               $menu_payment = Menu::where('code', '=', $this->key_bank)->first();
-              $arr_payment->put('accounting_date', $arr->accounting_date_NH);
-              $arr_payment->put('voucher_date', $arr->voucher_date_NH);  
-              $arr_payment->put('currency', $arr->currency_NH);   
-              $arr_payment->put('rate', $arr->rate_NH);  
-              $arr_payment->put('description', $arr->description_NH);      
-              $arr_payment->put('traders', $arr-> traders_NH);   
-              $arr_payment->put('bank_account', $arr-> bank_account_NH);                
+               $arr_payment = (object) ['accounting_date' => $arr->accounting_date_NH,
+                                         'voucher_date' => $arr->voucher_date_NH,
+                                         'currency' => $arr->currency_NH,
+                                         'rate' => $arr->rate_NH,
+                                         'description' => $arr->description_NH,
+                                         'traders' => $arr-> traders_NH ,
+                                         'bank_account' => $arr->bank_account_NH];            
             }     
 
           $general->type = $this->menu->id;
@@ -231,6 +210,7 @@ class AccPurchaseVoucherController extends Controller
 
 
              if($arr->crit_type->obj->stock_status == "1"){
+                $item = explode("-", $d->item_code->text);
                 $inventory->general_id = $general->id;
                 $inventory->detail_id = $detail->id;
                 $inventory->item_id = $d->item_code->value;
@@ -310,6 +290,7 @@ class AccPurchaseVoucherController extends Controller
               // Cập nhật phiếu chi vào phiếu mua hàng
               $general->reference = $general_payment->voucher;
               $general->save();
+              $arr->reference = $general_payment->voucher;
             }else if($arr->crit_type->obj->payment == "0"){
               // Xoá phiếu chi giấy báo nợ nếu hủy
               $general_payment = AccGeneral::where('reference_by',$general->id)->first();
@@ -320,6 +301,7 @@ class AccPurchaseVoucherController extends Controller
                // Cập nhật phiếu chi vào phiếu mua hàng
                 $general->reference = '';
                 $general->save();
+                $arr->reference = '';
             }     
 
            // Xóa dòng chi tiết
@@ -442,7 +424,7 @@ class AccPurchaseVoucherController extends Controller
     $type = 10;
     try{
       $req = json_decode($request->data);
-      $data = new BankPaymentGeneralReadResource(AccGeneral::get_data_load_all($req));
+      $data = new PurSellGeneralReadResource(AccGeneral::get_data_load_all($req));
       if($req && $data->count()>0 ){
         return response()->json(['status'=>true,'data'=> $data]);
       }else{
