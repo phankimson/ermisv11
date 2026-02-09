@@ -10,6 +10,7 @@ use App\Http\Resources\ObjectDropDownListResource;
 
 class PurSellGeneralReadResource extends JsonResource
 {
+      private static $data;
     /**
      * Transform the resource into an array.
      *
@@ -21,7 +22,16 @@ class PurSellGeneralReadResource extends JsonResource
         $stock = $this->whenLoaded('detail')->first()->inventory->stock_receipt ? $this->whenLoaded('detail')->first()->inventory->stock_receipt : $this->whenLoaded('detail')->first()->inventory->stock_issue;
         $reference_data = AccGeneral::get_reference_by($this->id);
         $reference_type = Menu::find($reference_data->type);
-
+        if($reference_type->code == self::$data->key_cash){
+            $payment_method = "1";  //Tiền mặt
+            $payment = "1";
+        }else if($reference_type->code == self::$data->key_bank){
+            $payment_method = "2";  //Tiền gửi
+            $payment = "1";
+        }else{
+            $payment_method = "";  //Khác
+            $payment = "0";
+        }
         return [
             'id' => $this->id,
             'currency' => $this->currency,
@@ -33,16 +43,29 @@ class PurSellGeneralReadResource extends JsonResource
             'subject_id' => $this->subject,
             'rate' => $this->rate,
             'stock'=> $stock,
+            'payment_method'=> $payment_method,
+            'payment'=> $payment,
             'object' => $this->whenLoaded('object')?new ObjectDropDownListResource($this->whenLoaded('object')):new ObjectDropDownDefaultListResource(""),
             'total_quantity' => $this->total_quantity,
             'total_amount' => $this->total_amount,
-            'total_amount_rate' =>  $this->total_amount,
+            'total_amount_rate' =>  $this->total_amount_rate,
             'reference' =>  $this->reference,
             'reference_by' =>  $this->reference_by,
             'attach' =>  $this->whenLoaded('attach'),
             'status' =>  $this->status,
             'detail' => PurSellDetailReadResource::collection($this->whenLoaded('detail')),
+            'tax' => TaxReadResource::collection($this->whenLoaded('tax')),
             'active' =>  $this->active,
         ];
     }
+
+    
+  //I made custom function that returns collection type
+  public static function customCollection($resource, $data): \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+  {
+   //you can add as many params as you want.
+    self::$data =  $data;
+    return parent::collection($resource);
+  }
 }
+

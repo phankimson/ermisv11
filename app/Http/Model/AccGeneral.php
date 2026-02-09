@@ -99,6 +99,11 @@ class AccGeneral extends Model
         return $result;
       }
 
+      static public function find_reference_by($id) {
+        $result = AccGeneral::where('reference_by',$id)->first();
+        return $result;
+      }
+
       static public function get_reference_by_whereNotIn($arr) {
           $result = AccGeneral::whereNotIn('id',$arr)->get();
           return $result;

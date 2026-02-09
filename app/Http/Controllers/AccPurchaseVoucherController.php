@@ -268,7 +268,7 @@ class AccPurchaseVoucherController extends Controller
 
            // Tạo phiếu chi giấy báo nợ nếu có
             if($arr->crit_type->obj->payment == "1"){
-              $general_payment = AccGeneral::get_reference_by($general->id)->first();
+              $general_payment = AccGeneral::find_reference_by($general->id);
               if(!$general_payment){
               $v_payment = $this->saveNumberVoucher($menu_payment,$arr_payment);
               $general_payment = new AccGeneral();
@@ -298,7 +298,7 @@ class AccPurchaseVoucherController extends Controller
               $arr->reference = $general_payment->voucher;
             }else if($arr->crit_type->obj->payment == "0"){
               // Xoá phiếu chi giấy báo nợ nếu hủy
-              $general_payment = AccGeneral::where('reference_by',$general->id)->first();
+              $general_payment = AccGeneral::find_reference_by($general->id);
               if($general_payment){
                 AccDetail::get_detail($general_payment->id)->delete();
                 $general_payment->delete();
@@ -433,7 +433,8 @@ class AccPurchaseVoucherController extends Controller
     $type = 10;
     try{
       $req = json_decode($request->data);
-      $data = new PurSellGeneralReadResource(AccGeneral::get_data_load_all($req));
+      $arr = AccGeneral::get_data_load_all($req);
+      $data = PurSellGeneralReadResource::customCollection($arr, (object)['key_cash'=>$this->key_cash,'key_bank'=>$this->key_bank]);
       if($req && $data->count()>0 ){
         return response()->json(['status'=>true,'data'=> $data]);
       }else{

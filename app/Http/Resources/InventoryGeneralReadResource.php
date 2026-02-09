@@ -31,7 +31,7 @@ class InventoryGeneralReadResource extends JsonResource
             'object' => $this->whenLoaded('object')?new ObjectDropDownListResource($this->whenLoaded('object')):new ObjectDropDownDefaultListResource(""),
             'total_quantity' => $this->total_quantity,
             'total_amount' => $this->total_amount,
-            'total_amount_rate' =>  $this->total_amount,
+            'total_amount_rate' =>  $this->total_amount_rate,
             'reference' =>  $this->reference,
             'reference_by' =>  $this->reference_by,
             'attach' =>  $this->whenLoaded('attach'),

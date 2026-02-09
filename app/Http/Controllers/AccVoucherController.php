@@ -362,7 +362,8 @@ class AccVoucherController extends Controller
     try{
       $req = json_decode($request->data);
       $type = AccSuppliesGoodsType::find($req->filter_type_barcode);
-      $data = BarcodeResource::customCollection(AccSuppliesGoods::get_type_field($req->filter_type_barcode,$req->filter_field_barcode,$req->filter_value_barcode,$req->stock,optional($type)->account_default),["account_default"=>optional($type)->account_default,"code_page"=>$req->code_page,"stock"=>$req->stock]);
+      $arr = AccSuppliesGoods::get_type_field($req->filter_type_barcode,$req->filter_field_barcode,$req->filter_value_barcode,$req->stock,optional($type)->account_default);
+      $data = BarcodeResource::customCollection($arr,["account_default"=>optional($type)->account_default,"code_page"=>$req->code_page,"stock"=>$req->stock]);
       if(!$data){
           return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
         }
