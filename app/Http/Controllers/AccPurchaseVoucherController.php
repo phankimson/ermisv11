@@ -434,7 +434,7 @@ class AccPurchaseVoucherController extends Controller
     try{
       $req = json_decode($request->data);
       $arr = AccGeneral::get_data_load_all($req);
-      $data = PurSellGeneralReadResource::customCollection($arr, (object)['key_cash'=>$this->key_cash,'key_bank'=>$this->key_bank]);
+      $data = new PurSellGeneralReadResource($arr, ['key_cash'=>$this->key_cash,'key_bank'=>$this->key_bank]);
       if($req && $data->count()>0 ){
         return response()->json(['status'=>true,'data'=> $data]);
       }else{

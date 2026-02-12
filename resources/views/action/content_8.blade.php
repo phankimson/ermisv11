@@ -27,13 +27,24 @@
     </tr>
 
     <tr>
-       <td class="row-label-responsive"><label>@lang('acc_voucher.stock')</label></td>
-        <td colspan="2">
+       <td class="row-label-responsive row-stock">
+        <label>@lang('acc_voucher.stock')</label>
+       </td>
+        <td class="row-stock" colspan="2">
             <select class="droplist read large xxlarge stock" name="stock"  data-type="string" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.stock')}}" data-change="{{ $change ?? '' }}">
                 <option readonly selected value="0">--Select--</option>
                           
             </select>            
-        </td>        
+        </td>
+        <td class="row-label-responsive hidden row-department">
+        <label>@lang('acc_voucher.department')</label>
+       </td>
+        <td class="hidden row-department" colspan="2">
+            <select class="droplist read large xxlarge department" name="department"  data-type="string" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.department')}}" data-change="{{ $change ?? '' }}">
+                <option readonly selected value="0">--Select--</option>
+                          
+            </select>            
+        </td>                
         <td class="row-label-responsive"></td>
         <td><label>@lang('acc_voucher.rate')</label></td>
         <td colspan="2"><input type="text" class="k-textbox number fix rate" value="{{$currency_rate}}" name="rate" /></td>

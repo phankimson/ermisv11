@@ -10,7 +10,14 @@ use App\Http\Resources\ObjectDropDownListResource;
 
 class PurSellGeneralReadResource extends JsonResource
 {
-      private static $data;
+    protected $customData;
+
+    public function __construct($resource, $customData = [])
+    {
+        parent::__construct($resource);
+        $this->customData = $customData;
+    }
+
     /**
      * Transform the resource into an array.
      *
@@ -20,12 +27,22 @@ class PurSellGeneralReadResource extends JsonResource
     public function toArray($request)
     {
         $stock = $this->whenLoaded('detail')->first()->inventory->stock_receipt ? $this->whenLoaded('detail')->first()->inventory->stock_receipt : $this->whenLoaded('detail')->first()->inventory->stock_issue;
-        $reference_data = AccGeneral::get_reference_by($this->id);
+        if($stock){
+            $stock_status = "1"; //Nhập vào tồn kho
+        }else{
+            $stock_status = "0"; //Không nhập vào tồn kho
+        }
+        if($this->tax){
+            $invoice_status = "1"; //Có thuế
+        }else{
+            $invoice_status = "2"; //Không có thuế
+        }
+        $reference_data = AccGeneral::find_reference_by($this->id);
         $reference_type = Menu::find($reference_data->type);
-        if($reference_type->code == self::$data->key_cash){
+        if($reference_type->code == $this->customData['key_cash']){
             $payment_method = "1";  //Tiền mặt
             $payment = "1";
-        }else if($reference_type->code == self::$data->key_bank){
+        }else if($reference_type->code == $this->customData['key_bank']){
             $payment_method = "2";  //Tiền gửi
             $payment = "1";
         }else{
@@ -43,6 +60,8 @@ class PurSellGeneralReadResource extends JsonResource
             'subject_id' => $this->subject,
             'rate' => $this->rate,
             'stock'=> $stock,
+            'stock_status'=> $stock_status,
+            'invoice_status'=> $invoice_status,
             'payment_method'=> $payment_method,
             'payment'=> $payment,
             'object' => $this->whenLoaded('object')?new ObjectDropDownListResource($this->whenLoaded('object')):new ObjectDropDownDefaultListResource(""),
@@ -59,13 +78,5 @@ class PurSellGeneralReadResource extends JsonResource
         ];
     }
 
-    
-  //I made custom function that returns collection type
-  public static function customCollection($resource, $data): \Illuminate\Http\Resources\Json\AnonymousResourceCollection
-  {
-   //you can add as many params as you want.
-    self::$data =  $data;
-    return parent::collection($resource);
-  }
 }
 

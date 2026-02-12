@@ -1009,8 +1009,16 @@ var Ermis = function() {
             var value = this.value();
              var grid = $kGrid.data("kendoGrid");
             if(value == "1"){    
+                jQuery(".row-stock").removeClass("hidden");
+                jQuery(".row-department").addClass("hidden");
+                $stock.trigger("change");
+                dataDefaultGrid.data["department"] = {"value": "0", "text": "--Select--"};
                 grid.showColumn("stock");         
             }else{
+                jQuery(".row-department").removeClass("hidden");
+                jQuery(".row-stock").addClass("hidden");
+                $department.trigger("change");
+                dataDefaultGrid.data["stock"] = {"value": "0", "text": "--Select--"};
                 grid.hideColumn("stock");   
             }
         }
@@ -1057,6 +1065,26 @@ var Ermis = function() {
         }
         if($stock){
             $stock.bind("change", OnChangeStock);  
+        }      
+    }
+
+    var initChangeDepartment = function(){
+        function OnChangeDepartment(e){
+            var arr = {};
+            var value = this.value;
+            arr["value"] = value;
+            arr["text"] = jQuery(this).find("option:selected").text();
+            $department_val = value;
+            //var column_change = jQuery(e.target).attr("data-change");
+            var grid = $kGrid.data("kendoGrid");
+            var r = grid.dataSource.data();
+            jQuery.each(r, function(l, k) {
+                initLoadDropdownGrid(k,"department","value","text",arr);
+            });
+            dataDefaultGrid.data["department"] = arr;      
+        }
+        if($department){
+            $department.bind("change", OnChangeDepartment);  
         }      
     }
 
@@ -1606,6 +1634,7 @@ var Ermis = function() {
             initGetStoredArrId();
             initChangeCurrency();
             initChangeStock();
+            initChangeDepartment();
             initVoucherChange();
             initCheckSubject();
             initChangePayment();
