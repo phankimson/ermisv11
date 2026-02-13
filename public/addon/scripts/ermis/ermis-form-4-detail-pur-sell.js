@@ -67,12 +67,13 @@ var Ermis = function() {
     
             ErmisTemplateAjaxPost0(null, postdata, Ermis.link + '-bind',
                 function(result) {
-                    if (result.data) {
-                        initActive(result.data.active);
+                    if (result.data) {                       
+                        initActive(result.data.active);    
+                        initLoadDataType(result.data);                   
                         SetDataAjax(data.columns, result.data);
                         initLoadGrid(result.data);
                         initLoadAttach(result.data.attach);
-                        sessionStorage.dataId = result.data.id;
+                        sessionStorage.dataId = result.data.id; 
                         initKendoGridVatChange();
                         initKendoGridChange();
                         //$kGrid.addClass('disabled');
@@ -140,6 +141,23 @@ var Ermis = function() {
               aggregate: Ermis.aggregate
           });
           grid_vat.setDataSource(dataSource);
+    }
+
+    var initLoadDataType = function(dataLoad){
+        if(dataLoad.payment == "1"){
+            jQuery("#payment").iCheck('check');
+        }else{
+            jQuery("#payment").iCheck('uncheck');
+        }
+        var payment_method = jQuery("#payment_method").data("kendoDropDownList");
+        payment_method.value(dataLoad.payment_method);
+        payment_method.trigger("change");
+        var stock_status = jQuery("#stock_status").data("kendoDropDownList");
+        stock_status.value(dataLoad.stock_status);
+        stock_status.trigger("change");
+        var invoice_status = jQuery("#invoice_status").data("kendoDropDownList");
+        invoice_status.value(dataLoad.invoice_status);
+        invoice_status.trigger("change");
     }
 
         var initBindData = function() {
@@ -576,6 +594,7 @@ var Ermis = function() {
             shortcut.add(key + "T", function(e) {
                 initDeleteRowAll(e);
             });
+            initChangePayment();
         } else if (flag === 2) { //SAVE
             jQuery('.add,.edit,.copy,.print,.back,.forward,.delete').removeClass('disabled');
             shortcut.add(key + "A", function(e) {
@@ -1637,7 +1656,6 @@ var Ermis = function() {
             initChangeDepartment();
             initVoucherChange();
             initCheckSubject();
-            initChangePayment();
             initChangeStockStatus();
             initChangeInvoiceStatus();
         }

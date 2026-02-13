@@ -42,18 +42,21 @@ class PurSellGeneralReadResource extends JsonResource
         if($reference_type->code == $this->customData['key_cash']){
             $payment_method = "1";  //Tiền mặt
             $payment = "1";
+            $type_code = "TM";
         }else if($reference_type->code == $this->customData['key_bank']){
             $payment_method = "2";  //Tiền gửi
             $payment = "1";
+            $type_code = "NH";
         }else{
             $payment_method = "";  //Khác
             $payment = "0";
+            $type_code = "";
         }
         return [
             'id' => $this->id,
             'currency' => $this->currency,
             'voucher' => $this->voucher,
-            'description' => $this->description,
+            'description' => $this->description,          
             'voucher_date' => $this->voucher_date,
             'accounting_date' => $this->accounting_date,
             'traders' => $this->traders,
@@ -74,6 +77,13 @@ class PurSellGeneralReadResource extends JsonResource
             'status' =>  $this->status,
             'detail' => PurSellDetailReadResource::collection($this->whenLoaded('detail')),
             'tax' => TaxReadResource::collection($this->whenLoaded('tax')),
+            'description_'.$type_code => $reference_data->description,
+            'rate_'.$type_code => $reference_data->rate,
+            'voucher_'.$type_code => $reference_data->voucher,
+            'currency_'.$type_code => $reference_data->currency,
+            'voucher_date_'.$type_code => $reference_data->voucher_date,
+            'accounting_date_'.$type_code => $reference_data->accounting_date,
+            'traders_'.$type_code => $reference_data->traders,
             'active' =>  $this->active,
         ];
     }
