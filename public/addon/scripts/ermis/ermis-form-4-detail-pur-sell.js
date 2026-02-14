@@ -1304,6 +1304,8 @@ var Ermis = function() {
     };
 
     var initSaveDetail = function(e,obj){
+        var tax_info_add = GetAllDataForm('#vat_info', 2);
+        $.extend(data.columns, tax_info_add.columns);
          ErmisTemplateAjaxPost11(e, "#attach", data.columns, Ermis.link + '-save', sessionStorage.dataId, obj, obj.detail.length > 0,
               function(result) {
                   sessionStorage.dataId = result.dataId;
@@ -1312,7 +1314,8 @@ var Ermis = function() {
                   sessionStorage[Ermis.type] = JSON.stringify(storedarrId);
                   initStatus(2);
                   initActive("1");
-                  jQuery('.voucher').val(result.voucher_name);
+                  jQuery('.voucher[name="voucher"]').val(result.voucher_name);
+                  jQuery('.voucher[name="voucher_payment"]').val(result.voucher_payment_name);
                   initLoadGrid(result.data);
                   initLoadAttach(result.data.attach);
                   initKendoGridChange();

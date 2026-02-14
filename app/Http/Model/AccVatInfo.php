@@ -24,8 +24,8 @@ class AccVatInfo extends Model
           static::BootedBaseTrait();
       }
 
-      static public function get_info($general_id) {
-        $result = AccVatInfo::where('general_id',$general_id)->get();
+      static public function find_info($general_id) {
+        $result = AccVatInfo::where('general_id',$general_id)->first();
         return $result;
       }
 }

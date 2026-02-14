@@ -25,11 +25,11 @@ class BarcodeResource extends JsonResource
             $account_default = AccAccountSystems::find(self::$data['account_default']);
         }    
         $account = AccAccountSystems::find($this->stock_account);
-        if(self::$data['code_page'] === "NK" && self::$data['account_default']){           
+        if((self::$data['code_page'] === "NK" || self::$data['code_page'] === "MH") && self::$data['account_default']){           
            $account_debit =  $account ? LangDropDownResource::make($account) : LangDropDownResource::make($account_default);
            $account_credit = DefaultDropDownResource::make("");
            $price = $this->price_purchase;
-        }else if(self::$data['code_page'] === "XK"  && self::$data['account_default']){          
+        }else if((self::$data['code_page'] === "XK" || self::$data['code_page'] === "BH") && self::$data['account_default']){          
            $account_debit = DefaultDropDownResource::make("");
            $account_credit =  $account ? LangDropDownResource::make($account) : LangDropDownResource::make($account_default);
            $price = $this->price;

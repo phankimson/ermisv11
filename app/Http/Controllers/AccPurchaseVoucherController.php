@@ -11,6 +11,7 @@ use App\Http\Model\AccGeneral;
 use App\Http\Model\AccDetail;
 use App\Http\Model\AccInventory;
 use App\Http\Model\AccVatDetail;
+use App\Http\Model\AccVatInfo;
 use App\Http\Model\AccPeriod;
 use App\Http\Model\AccSystems;
 use App\Http\Model\AccNumberVoucher;
@@ -112,7 +113,7 @@ class AccPurchaseVoucherController extends Controller
             $general = new AccGeneral();
             $general->user = $user->id;
             // Lưu số nhảy
-                $v = $this->saveNumberVoucher($this->menu,$arr);                   
+            $v = $this->saveNumberVoucher($this->menu,$arr);                   
           }else{
                 $check_permission = false;
           }
@@ -153,8 +154,23 @@ class AccPurchaseVoucherController extends Controller
           $general->status = 1;
           $general->active = 1;
           $general->group = $this->group;
-          $general->save();         
-    
+          $general->save();     
+          
+          // Lưu thông tin không có hóa đơn
+        if($arr->crit_type->obj->invoice_status == "2"){
+          $vat_info = AccVatInfo::find_info($general->id);
+          if(!$vat_info){
+            $vat_info = new AccVatInfo();
+          }
+          $vat_info->general_id = $general->id;
+          $vat_info->name = $arr->subject_name;
+          $vat_info->address = $arr->address;
+          $vat_info->identity_card = $arr->identity_card;
+          $vat_info->save();
+        }else{
+          // Xóa thông tin không có hóa đơn nếu có
+          AccVatInfo::where('general_id',$general->id)->delete();
+        }
     
           // Tham chiếu / Reference
          $this->saveReference($arr->reference_by,$general->id);
@@ -296,6 +312,7 @@ class AccPurchaseVoucherController extends Controller
               $general->reference = $general_payment->voucher;
               $general->save();
               $arr->reference = $general_payment->voucher;
+              $v_payment = $general_payment->voucher;
             }else if($arr->crit_type->obj->payment == "0"){
               // Xoá phiếu chi giấy báo nợ nếu hủy
               $general_payment = AccGeneral::find_reference_by($general->id);
@@ -403,7 +420,7 @@ class AccPurchaseVoucherController extends Controller
             return response()->json(['status'=>false,'message'=> trans('messages.you_are_not_permission')]);
            }else{
            DB::connection(env('CONNECTION_DB_ACC'))->commit();
-           return response()->json(['status'=>true,'message'=> trans('messages.'.$action.'_success'), 'voucher_name' => $v , 'dataId' => $general->id ,  'data' => $arr ]);
+           return response()->json(['status'=>true,'message'=> trans('messages.'.$action.'_success'), 'voucher_name' => $v , 'voucher_payment_name' => $v_payment , 'dataId' => $general->id ,  'data' => $arr ]);
            }
            //
       }else{
