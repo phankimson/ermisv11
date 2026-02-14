@@ -127,7 +127,7 @@ class AccPurchaseVoucherController extends Controller
                                          'description' => $arr->description_TM,
                                          'traders' => $arr-> traders_TM ];     
             }else if($arr->crit_type->obj->payment_method == "2" && $arr->crit_type->obj->payment == "1"){
-              $menu_payment = Menu::where('code', '=', $this->key_bank)->first();
+               $menu_payment = Menu::where('code', '=', $this->key_bank)->first();
                $arr_payment = (object) ['accounting_date' => $arr->accounting_date_NH,
                                          'voucher_date' => $arr->voucher_date_NH,
                                          'currency' => $arr->currency_NH,

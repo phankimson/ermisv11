@@ -75,19 +75,19 @@
     <div><div id="grid"></div> </div>
     <div><div id="grid_vat"></div> </div>
     <div>
-         <table>
+         <table id="vat_info" class="table-input">
          <tr>
                 <td class="row-label-responsive"><label>@lang('acc_voucher.seller')</label></td>
-                <td colspan="2"><input type="text" readonly class="k-textbox xxlarge" name="name" /></td>
+                <td colspan="2"><input type="text" class="k-textbox xxlarge" name="subject_name" /></td>
          </tr>
            <tr>
                 <td><label>@lang('acc_object.address')</label></td>
-                <td colspan="2"><input type="text" class="k-textbox large" /></td>
+                <td colspan="2"><input type="text" class="k-textbox large" name="address" /></td>
 
             </tr>
               <tr>
                 <td><label>@lang('acc_object.identity_card')</label></td>
-                <td colspan="2"><input type="text" class="k-textbox large" /></td>
+                <td colspan="2"><input type="text" class="k-textbox large" name="identity_card" /></td>
 
             </tr>
        </table>

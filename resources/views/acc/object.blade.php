@@ -62,7 +62,7 @@
                    <td class="row-label"><label>@lang('acc_object.name_1')</label></td>
                    <td><input type="text" class="k-textbox large" data-position="4" data-title="@lang('acc_object.name_1')" maxlength="100" data-width="200px" data-type="string" name="name_1" /></td>
                </tr>
-               <tr  class="object_type_3 hidden filter_tr">
+               <tr  class="object_type_1 object_type_2 object_type_3 filter_tr">
                    <td class="row-label"><label>@lang('acc_object.identity_card') </label></td>
                     <td><input type="text" class="k-textbox large" data-position="5" data-title="@lang('acc_object.identity_card')" maxlength="50" data-width="200px" data-type="string" name="identity_card" /></td>
                </tr>

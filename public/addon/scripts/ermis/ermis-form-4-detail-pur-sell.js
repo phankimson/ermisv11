@@ -1520,6 +1520,8 @@ var Ermis = function() {
                 var dataItem = grid.dataItem($kGridSubject.find('tr.k-state-selected'));
                 $kWindow.close();
                 AddChooseObjectResult(dataItem);
+                var c = GetAllDataForm('#vat_info', 2);
+                AddChooseObjectResult3(dataItem, c.columns);
                 jQuery("#check_subject_tax_code").val(dataItem.tax_code);
             } else {
                 kendo.alert(Lang.get('messages.please_select_line_choose'));

@@ -26,6 +26,7 @@ class ObjectDropDownListResource extends JsonResource
             'code' => $this->code,
             'name' => $this->name,
             'address' => $this->address,
+            'identity_card' => $this->identity_card,
             'invoice_form' => $this->invoice_form,
             'invoice_symbol' => $this->invoice_symbol,
         ];

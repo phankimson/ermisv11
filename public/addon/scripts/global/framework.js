@@ -2001,6 +2001,12 @@ function DefaultValueField(){
           }   
         }); 
    }   
+
+   AddChooseObjectResult3 = function(dataItem,columns){
+      jQuery.each(columns, function(i, v) {
+        jQuery('input[name="' + v.field + '"]').val(dataItem[v.field]);
+      });
+   }
       
    AddChooseObjectResult2 = function(dataItem,key_rs,field){
     var gridVat = $kGridVat.data("kendoGrid");
@@ -2025,6 +2031,7 @@ function DefaultValueField(){
       jQuery('input[name^="' + v.field + '"]').val(dataItem[v.field]);
     }
    )};
+   
 
    AddChooseObjectResult = function(dataItem){
      // Check array

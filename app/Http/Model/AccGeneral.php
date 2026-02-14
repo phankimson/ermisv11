@@ -57,7 +57,7 @@ class AccGeneral extends Model
       }
 
       static public function get_data_load_all($general_id){
-        $result = AccGeneral::where('id',$general_id)->first()->load('object','tax','attach','detail');
+        $result = AccGeneral::where('id',$general_id)->first()->load('object','tax','tax_info','attach','detail');
         return $result;
       }
 
@@ -135,6 +135,10 @@ class AccGeneral extends Model
 
     public function tax() {
       return $this->hasMany(AccVatDetail::class,'general_id','id');
+    }
+
+    public function tax_info() {
+      return $this->hasMany(AccVatInfo::class,'general_id','id');
     }
 
     public function vat_detail_payment() {
