@@ -12,6 +12,7 @@ var $stock = jQuery(".stock");
 var $department = jQuery(".department");
 var $stock_val = '';
 var $department_val = '';
+var code_val = '';
 var $import = '';
 var myWindow = jQuery("#form-window-filter");
 var $kWindow = '';

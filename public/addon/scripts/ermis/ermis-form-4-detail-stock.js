@@ -154,12 +154,7 @@ var Ermis = function() {
     };
 
     var initVoucherMasker = function() {
-        if(Ermis.voucher.change_voucher == 1){
-            return voucher = initErmisVoucher(Ermis.voucher);
-        }else{
-            return voucher = initErmisBarcodeMaskerHide(Ermis.voucher);
-        }
-        
+        return voucher = ErmisChangeVoucherMasker(Ermis.voucher);      
     };
 
     var initCheckSession = function() {

@@ -68,12 +68,12 @@ var Ermis = function() {
             ErmisTemplateAjaxPost0(null, postdata, Ermis.link + '-bind',
                 function(result) {
                     if (result.data) {                       
-                        initActive(result.data.active);    
-                        initLoadDataType(result.data);                   
+                        initActive(result.data.active);   
                         SetDataAjax(data.columns, result.data);
                         initLoadGrid(result.data);
                         initLoadAttach(result.data.attach);
                         sessionStorage.dataId = result.data.id; 
+                        initLoadDataType(result.data);      
                         initKendoGridVatChange();
                         initKendoGridChange();
                         //$kGrid.addClass('disabled');
@@ -143,22 +143,19 @@ var Ermis = function() {
           grid_vat.setDataSource(dataSource);
     }
 
-    var initLoadDataType = function(dataLoad){
-        if(dataLoad.payment == "1"){
-            jQuery("#payment").iCheck('check');
-        }else{
-            jQuery("#payment").iCheck('uncheck');
+        var initLoadDataType = function(dataLoad){
+            ErmisIchecked("#payment", dataLoad.payment);
+            ErmiskendoDropDownListTrigger("#payment_method", dataLoad.payment_method, false);
+            ErmiskendoDropDownListTrigger("#stock_status", dataLoad.stock_status, true);
+            ErmiskendoDropDownListTrigger("#invoice_status", dataLoad.invoice_status, true);           
         }
-        var payment_method = jQuery("#payment_method").data("kendoDropDownList");
-        payment_method.value(dataLoad.payment_method);
-        payment_method.trigger("change");
-        var stock_status = jQuery("#stock_status").data("kendoDropDownList");
-        stock_status.value(dataLoad.stock_status);
-        stock_status.trigger("change");
-        var invoice_status = jQuery("#invoice_status").data("kendoDropDownList");
-        invoice_status.value(dataLoad.invoice_status);
-        invoice_status.trigger("change");
-    }
+
+        var initLoadDataTypeDefault = function(){
+            ErmiskendoDropDownListTrigger("#payment_method", 1 , false);         
+            ErmisIchecked("#payment", 0);            
+            ErmiskendoDropDownListTrigger("#stock_status", 1, true);
+            ErmiskendoDropDownListTrigger("#invoice_status", 1, true);       
+        }
 
         var initBindData = function() {
         if(sessionStorage.data){
@@ -192,14 +189,10 @@ var Ermis = function() {
         return data;
     };
 
-    var initVoucherMasker = function() {
-        if(Ermis.voucher.change_voucher == 1){
-            return voucher = initErmisVoucher(Ermis.voucher);
-        }else{
-            return voucher = initErmisBarcodeMaskerHide(Ermis.voucher);
-        }
-        
+     var initVoucherMasker = function() {
+        return voucher = ErmisChangeVoucherMasker(Ermis.voucher);        
     };
+
 
     var initCheckSession = function() {
         return status = initErmisCheckSession();
@@ -263,8 +256,8 @@ var Ermis = function() {
                 data: JSON.stringify(c.obj)
             };
             ErmisTemplateAjaxPost0(e, postdata, Ermis.link + '-voucher-change', function(result) {
-                var voucher = initVoucherMasker();
-                jQuery(".voucher").val(voucher);
+                const voucher_masker = ErmisChangeVoucherMasker(result.data);
+                jQuery(".voucher[name='voucher']").val(voucher_masker);
                 $kWindow5.close();
             }, function(result) {
                 kendo.alert(result.message);
@@ -583,7 +576,7 @@ var Ermis = function() {
             jQuery('input').not('[type=radio]').not(".date-picker,.start,.end,.month-picker,.voucher,.fast_date,.rate,.no_clear").val("");
             jQuery(".date-picker,.end,.start").val(kendo.toString(kendo.parseDate(new Date()), 'dd/MM/yyyy'));
             jQuery(".no_copy_value").val(0);
-            jQuery(".voucher").val(voucher);
+            jQuery(".voucher[name='voucher']").val(voucher);
             jQuery('.stock[name="stock"]').data("kendoDropDownList").value(0);
             $kGrid.data('kendoGrid').dataSource.data([]);
             $kGrid.removeClass('disabled');
@@ -593,8 +586,8 @@ var Ermis = function() {
             $kGridBarcode.data('kendoGrid').dataSource.data([]);
             shortcut.add(key + "T", function(e) {
                 initDeleteRowAll(e);
-            });
-            initChangePayment();
+            });    
+            initLoadDataTypeDefault(); 
         } else if (flag === 2) { //SAVE
             jQuery('.add,.edit,.copy,.print,.back,.forward,.delete').removeClass('disabled');
             shortcut.add(key + "A", function(e) {
@@ -755,7 +748,7 @@ var Ermis = function() {
             jQuery('.add').on('click', initAdd);
             jQuery('input').not('[type=radio]').not(".date-picker,.start,.end,.month-picker,.voucher,.fast_date,.rate,.no_clear").val("");
             jQuery(".date-picker,.date-value").val(kendo.toString(kendo.parseDate(new Date()), 'dd/MM/yyyy'));
-            jQuery(".voucher").val(voucher);
+            jQuery(".voucher[name='voucher']").val(voucher);
             $kGrid.data('kendoGrid').dataSource.data([]);
             $kGridVat.data('kendoGrid').dataSource.data([]);
         }else if (flag === 8) { // Copy
@@ -796,10 +789,11 @@ var Ermis = function() {
               initDeleteRowAll(e);
           });            
             jQuery(".no_copy").val("");
-            jQuery(".voucher").val(voucher);           
+            jQuery(".voucher[name='voucher']").val(voucher);           
             jQuery(".no_copy_value").val(0);
             initDefaultIdGrid();
             reference_by =[];
+            initLoadDataTypeDefault();
         }else{
             
         }
@@ -974,7 +968,6 @@ var Ermis = function() {
         payment_method.bind("change", payment_method_change);
         function payment_method_change(e) {
             var value = this.value();
-            var code_val = '';
             var code_page = Ermis.voucher.code;
             if(value == "1"){
                 jQuery("#bank_tabs").addClass("hidden");
@@ -995,16 +988,12 @@ var Ermis = function() {
              jQuery('#default_tabs').click(); 
 
              //
-               var postdata = {
+                if(!sessionStorage.dataId){
+                var postdata = {
                     data: JSON.stringify({"code_val": code_val,"code_page": code_page})
                 };
                 ErmisTemplateAjaxPost0(e, postdata, Ermis.link + '-payment-method', function(result) {
-                    var voucher_mask = "";
-                if(result.voucher.change_voucher == 1){
-                    voucher_mask = initErmisVoucher(result.voucher);
-                }else{
-                    voucher_mask = initErmisBarcodeMaskerHide(result.voucher);
-                }
+                var voucher_mask = ErmisChangeVoucherMasker(result.voucher);
                 // Hiển thị lại voucher
                 jQuery(".TableForm_"+code_val).find("input[name='voucher_"+code_val+"']").val(voucher_mask);
                 // Set giá trị default
@@ -1017,7 +1006,9 @@ var Ermis = function() {
                     });    
                 }, function(result) {
                     kendo.alert(result.message);
-                });
+                });                
+            }            
+               
         }
     }
 
@@ -1304,9 +1295,9 @@ var Ermis = function() {
     };
 
     var initSaveDetail = function(e,obj){
-        var tax_info_add = GetAllDataForm('#vat_info', 2);
-        $.extend(data.columns, tax_info_add.columns);
-         ErmisTemplateAjaxPost11(e, "#attach", data.columns, Ermis.link + '-save', sessionStorage.dataId, obj, obj.detail.length > 0,
+        var tax_info = GetAllDataForm('#vat_info', 2);
+        var columns = mergeTwoObjects(data.columns,tax_info.columns);
+         ErmisTemplateAjaxPost11(e, "#attach", columns, Ermis.link + '-save', sessionStorage.dataId, obj, obj.detail.length > 0,
               function(result) {
                   sessionStorage.dataId = result.dataId;
                   sessionStorage.link = Ermis.link;
@@ -1315,7 +1306,7 @@ var Ermis = function() {
                   initStatus(2);
                   initActive("1");
                   jQuery('.voucher[name="voucher"]').val(result.voucher_name);
-                  jQuery('.voucher[name="voucher_payment"]').val(result.voucher_payment_name);
+                  jQuery('.voucher[name="voucher_"'+code_val+']').val(result.voucher_payment_name);
                   initLoadGrid(result.data);
                   initLoadAttach(result.data.attach);
                   initKendoGridChange();
@@ -1663,6 +1654,7 @@ var Ermis = function() {
             initCheckSubject();
             initChangeStockStatus();
             initChangeInvoiceStatus();
+            initChangePayment();
         }
 
     };

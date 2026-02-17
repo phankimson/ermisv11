@@ -131,6 +131,22 @@ function arrayColumn(array, columnName) {
     })
 }
 
+function ErmisIchecked(elem, value){
+  if(value == "1" || value == 1 || value === true){
+     jQuery(elem).iCheck('check');
+  }else{
+     jQuery(elem).iCheck('uncheck');
+  }
+}
+
+function ErmiskendoDropDownListTrigger(elem, value, triggerChange = true){
+      var droplist = jQuery(elem).data("kendoDropDownList");
+          droplist.value(value);
+          if(triggerChange){
+              droplist.trigger("change");
+          }
+}
+
 function UIkitshowNotify (message, status ,timeout,group , pos) {
   thisNotify = UIkit.notify({
       message: message ? message : '',
@@ -160,36 +176,50 @@ var initErmisBarcodeMasker = function (data) {
     var char = '0'; var voucher = "";
     var number = data.length_number;
     var middle = data.middle ? data.middle : '';
+    var v = '';
     if (data.number) {
-        voucher = data.prefix+middle+char.repeat(number - (data.number+"").length) + data.number+data.suffixes;
+        v = data.prefix+middle+char.repeat(number - (data.number+"").length) + data.number+data.suffixes;
     } else {
-        voucher = char.repeat(number);
+        v = char.repeat(number);
     }
-    return voucher
+    return v;
 };
 
-var initErmisBarcodeMaskerHide = function(d){
-  var data = d;
-  var char = 'x';
-  var number = parseInt(data.length_number);
-  if (data.suffixed) {
-      voucher = data.prefix + char.repeat(number) + data.suffixed;
-  } else {
-      voucher = data.prefix + char.repeat(number);
-  }
-  return voucher
+
+var ErmisChangeVoucherMasker = function(data){
+      var v  = '';
+      if(data.change_voucher == 1){
+          v = ErmisVoucher(data);
+      }else{
+          v = ErmisBarcodeMaskerHide(data);
+      }
+      return v;
 }
 
-var initErmisVoucher = function(d){
+var ErmisBarcodeMaskerHide = function(d){
   var data = d;
   var char = 'x';
   var number = parseInt(data.length_number);
-  if (data.format) {
-      voucher = data.prefix + data.format.replace("X",char.repeat(number));
+  var v = '';
+  if (data.suffixed) {
+      v = data.prefix + char.repeat(number) + data.suffixed;
   } else {
-      voucher = data.prefix + char.repeat(number);
+      v = data.prefix + char.repeat(number);
   }
-  return voucher
+  return v;
+}
+
+var ErmisVoucher = function(d){
+  var data = d;
+  var char = 'x';
+  var number = parseInt(data.length_number);
+  var v = '';
+  if (data.format) {
+      v = data.prefix + data.format.replace("X",char.repeat(number));
+  } else {
+      v = data.prefix + char.repeat(number);
+  }
+  return v;
 }
 
 var initErmisCountVoucher = function(d , i){
@@ -726,7 +756,6 @@ function GetDataAjaxTabstrip(elem) {
         } else {
             data[key + '_active'] = 0;
         }
-
     })
     return { obj : data };
 }
@@ -2358,3 +2387,23 @@ function isNumeric(value) {
             })
           }
     }
+
+function mergeTwoObjects(a, b) {
+  var length_a = Object.keys(a).length;
+  var length_b = Object.keys(b).length;
+  var o = {};
+  var d = {};
+  if(length_a >= length_b){
+    o = a;
+    d = b;
+  }else{
+    o = b;
+    d = a;
+  }
+  for (var key in d) {
+    if (d.hasOwnProperty(key)) {
+      o.push(d[key]);
+    }
+  }
+  return o;
+}
