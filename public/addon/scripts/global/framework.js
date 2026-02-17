@@ -139,12 +139,13 @@ function ErmisIchecked(elem, value){
   }
 }
 
-function ErmiskendoDropDownListTrigger(elem, value, triggerChange = true){
+function ErmiskendoDropDownListTrigger(elem, value){
       var droplist = jQuery(elem).data("kendoDropDownList");
+      var droplist_value = droplist.value();
+      if(droplist_value != value){
           droplist.value(value);
-          if(triggerChange){
-              droplist.trigger("change");
-          }
+          droplist.trigger("change");
+      }
 }
 
 function UIkitshowNotify (message, status ,timeout,group , pos) {
@@ -596,7 +597,7 @@ function SetDataAjax(data, dataItem){
             if (classes == 'droplist') {    
               if(get_option == "get_option"){
                 var data = jQuery("select[name='" + col.field + "'] option");
-                var found = $.map(data, e => $(e).val());
+                var found = $.map(data, e => $(e).val()).some(el => el == v);
               }else if(get_option == "find_val"){
                 var found = false;
                 jQuery("select[name='" + col.field + "']").each(function(){
@@ -605,10 +606,10 @@ function SetDataAjax(data, dataItem){
                   }               
                 });
               }else{
-                var data = jQuery("select[name='" + col.field + "']").data("kendoDropDownList").dataSource.view();
+                var data = jQuery("select[name='" + col.field + "']").data("kendoDropDownList").dataSource.view();                
                 var found = data.some(el => el.value === v);
               }              
-              if(found){
+              if(found && (v != null && v != "")){
                 jQuery('.'+classes+'[name="' + col.field + '"]').data('kendoDropDownList').value(v);
               }else{
                 jQuery('.'+classes+'[name="' + col.field + '"]').data('kendoDropDownList').value("0");

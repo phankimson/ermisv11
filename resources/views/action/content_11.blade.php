@@ -66,8 +66,7 @@
             <td><label>@lang('acc_voucher.voucher')</label></td>
             <td colspan="2">
             <span class="k-textbox k-space-right medium">
-                <input type="text" class="voucher no_copy" name="voucher_NH"/>
-                <a href="javascript:;" style="right : 10px"  class="k-icon k-i-table-cell-properties voucher-change">&nbsp;</a>
+                <input type="text" class="voucher no_copy" name="voucher_NH"/>                
             </span>               
             </td>
         </tr>

@@ -145,16 +145,16 @@ var Ermis = function() {
 
         var initLoadDataType = function(dataLoad){
             ErmisIchecked("#payment", dataLoad.payment);
-            ErmiskendoDropDownListTrigger("#payment_method", dataLoad.payment_method, false);
-            ErmiskendoDropDownListTrigger("#stock_status", dataLoad.stock_status, true);
-            ErmiskendoDropDownListTrigger("#invoice_status", dataLoad.invoice_status, true);           
+            ErmiskendoDropDownListTrigger("#payment_method", dataLoad.payment_method);
+            ErmiskendoDropDownListTrigger("#stock_status", dataLoad.stock_status);
+            ErmiskendoDropDownListTrigger("#invoice_status", dataLoad.invoice_status);           
         }
 
         var initLoadDataTypeDefault = function(){
-            ErmiskendoDropDownListTrigger("#payment_method", 1 , false);         
+            ErmiskendoDropDownListTrigger("#payment_method", 1);         
             ErmisIchecked("#payment", 0);            
-            ErmiskendoDropDownListTrigger("#stock_status", 1, true);
-            ErmiskendoDropDownListTrigger("#invoice_status", 1, true);       
+            ErmiskendoDropDownListTrigger("#stock_status", 1);
+            ErmiskendoDropDownListTrigger("#invoice_status", 1);       
         }
 
         var initBindData = function() {
@@ -256,8 +256,10 @@ var Ermis = function() {
                 data: JSON.stringify(c.obj)
             };
             ErmisTemplateAjaxPost0(e, postdata, Ermis.link + '-voucher-change', function(result) {
-                const voucher_masker = ErmisChangeVoucherMasker(result.data);
-                jQuery(".voucher[name='voucher']").val(voucher_masker);
+                if(sessionStorage.dataId){
+                    const voucher_masker = initVoucherMasker();
+                    jQuery(".voucher[name='voucher']").val(voucher_masker);
+                }
                 $kWindow5.close();
             }, function(result) {
                 kendo.alert(result.message);
@@ -1306,7 +1308,7 @@ var Ermis = function() {
                   initStatus(2);
                   initActive("1");
                   jQuery('.voucher[name="voucher"]').val(result.voucher_name);
-                  jQuery('.voucher[name="voucher_"'+code_val+']').val(result.voucher_payment_name);
+                  jQuery('.voucher[name="voucher_'+code_val+'"]').val(result.voucher_payment_name);
                   initLoadGrid(result.data);
                   initLoadAttach(result.data.attach);
                   initKendoGridChange();

@@ -44,7 +44,7 @@ class AccDetail extends Model
       ];
 
       static public function get_detail($general_id) {
-        $result = AccDetail::where('general_id',$general_id)->get();
+        $result = AccDetail::where('general_id',$general_id)->orWhere('reference_general_id',$general_id)->get();
         return $result;
       }
 

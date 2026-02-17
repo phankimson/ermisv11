@@ -207,8 +207,10 @@ var Ermis = function() {
                 data: JSON.stringify(c.obj)
             };
             ErmisTemplateAjaxPost0(e, postdata, Ermis.link + '-voucher-change', function(result) {
-                var voucher = initVoucherMasker();
-                jQuery(".voucher").val(voucher);
+             if(sessionStorage.dataId){
+                const voucher_masker = initVoucherMasker();
+                jQuery(".voucher").val(voucher_masker);
+               };
                 $kWindow5.close();
             }, function(result) {
                 kendo.alert(result.message);

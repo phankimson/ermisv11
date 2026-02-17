@@ -155,6 +155,60 @@ class AccPurchaseVoucherController extends Controller
           $general->active = 1;
           $general->group = $this->group;
           $general->save();     
+
+          // Tham chiếu / Reference
+         $this->saveReference($arr->reference_by,$general->id);
+
+           // Tạo phiếu chi giấy báo nợ nếu có
+            if($arr->crit_type->obj->payment == "1"){
+              $general_payment = AccGeneral::find_reference_by($general->id);
+              if(!$general_payment){
+              $v_payment = $this->saveNumberVoucher($menu_payment,$arr_payment);
+              $general_payment = new AccGeneral();
+              $general_payment->voucher = $v_payment;
+              $general_payment->type = $menu_payment->id;
+              $general_payment->reference_by = $general->id;
+              }             
+              $general_payment->currency = $arr_payment->currency;
+              $general_payment->rate = $arr_payment->rate;
+              $general_payment->description = $arr_payment->description;
+              $general_payment->voucher_date = $arr_payment->voucher_date;
+              $general_payment->accounting_date = $arr_payment->accounting_date;
+              $general_payment->traders = $arr_payment->traders;           
+              $general_payment->currency = $arr_payment->currency;
+              $general_payment->reference = "";
+              $general_payment->total_amount = $arr->total_amount;
+              $general_payment->total_amount_rate = $arr->total_amount_rate;
+              $general_payment->compare_id = $arr->compare;
+              $general_payment->status = 1;
+              $general_payment->active = 1;
+              $general_payment->group = $this->group;
+              $general_payment->user = $user->id;
+              $general_payment->save();
+
+              // Cập nhật phiếu chi vào phiếu mua hàng
+              $general->reference = $general_payment->voucher;
+              $general->save();
+              if(!str_contains($arr->reference, $general_payment->voucher) && $arr->reference != ''){
+                $arr->reference .= ','.$general_payment->voucher;
+              }else if($arr->reference == ''){
+                $arr->reference = $general_payment->voucher;
+              }
+              $v_payment = $general_payment->voucher;
+            }else if($arr->crit_type->obj->payment == "0"){
+              // Xoá phiếu chi giấy báo nợ nếu hủy
+              $general_payment = AccGeneral::find_reference_by($general->id);
+              if($general_payment){
+                AccDetail::get_detail($general_payment->id)->update(['reference_general_id'=> null]);
+                $general_payment->delete();
+              }
+               // Cập nhật phiếu chi vào phiếu mua hàng
+                $search = [",".$general_payment->voucher, $general_payment->voucher."," , $general_payment->voucher];
+                $new_reference = str_replace($search, "", $general->reference);
+                $general->reference = $new_reference;
+                $general->save();
+                $arr->reference = $new_reference;
+            }     
           
           // Lưu thông tin không có hóa đơn
         if($arr->crit_type->obj->invoice_status == "2"){
@@ -170,10 +224,7 @@ class AccPurchaseVoucherController extends Controller
         }else{
           // Xóa thông tin không có hóa đơn nếu có
           AccVatInfo::where('general_id',$general->id)->delete();
-        }
-    
-          // Tham chiếu / Reference
-         $this->saveReference($arr->reference_by,$general->id);
+        }  
 
              // Lấy giá trị kiểm tra tiền mặt có âm không
           $ca = AccSystems::get_systems($this->check_cash);
@@ -197,6 +248,7 @@ class AccPurchaseVoucherController extends Controller
                }
              }
              $detail->general_id = $general->id;
+             $detail->reference_general_id = optional($general_payment)->id;
              $detail->description = $d->item_code->text;
              $detail->currency = $arr->currency;
              $detail->debit = $d->debit->value;  // Đổi từ id value dạng read
@@ -277,54 +329,8 @@ class AccPurchaseVoucherController extends Controller
                 }
               }            
               // End
-            }           
-
-            
-           }
-
-           // Tạo phiếu chi giấy báo nợ nếu có
-            if($arr->crit_type->obj->payment == "1"){
-              $general_payment = AccGeneral::find_reference_by($general->id);
-              if(!$general_payment){
-              $v_payment = $this->saveNumberVoucher($menu_payment,$arr_payment);
-              $general_payment = new AccGeneral();
-              $general_payment->voucher = $v_payment;
-              $general_payment->type = $menu_payment->id;
-              $general_payment->reference_by = $general->id;
-              }             
-              $general_payment->currency = $arr_payment->currency;
-              $general_payment->rate = $arr_payment->rate;
-              $general_payment->description = $arr_payment->description;
-              $general_payment->voucher_date = $arr_payment->voucher_date;
-              $general_payment->accounting_date = $arr_payment->accounting_date;
-              $general_payment->traders = $arr_payment->traders;           
-              $general_payment->currency = $arr_payment->currency;
-              $general_payment->reference = $arr->reference;
-              $general_payment->total_amount = $arr->total_amount;
-              $general_payment->total_amount_rate = $arr->total_amount_rate;
-              $general_payment->compare_id = $arr->compare;
-              $general_payment->status = 1;
-              $general_payment->active = 1;
-              $general_payment->group = $this->group;
-              $general_payment->user = $user->id;
-              $general_payment->save();
-              // Cập nhật phiếu chi vào phiếu mua hàng
-              $general->reference = $general_payment->voucher;
-              $general->save();
-              $arr->reference = $general_payment->voucher;
-              $v_payment = $general_payment->voucher;
-            }else if($arr->crit_type->obj->payment == "0"){
-              // Xoá phiếu chi giấy báo nợ nếu hủy
-              $general_payment = AccGeneral::find_reference_by($general->id);
-              if($general_payment){
-                AccDetail::get_detail($general_payment->id)->delete();
-                $general_payment->delete();
-              }
-               // Cập nhật phiếu chi vào phiếu mua hàng
-                $general->reference = '';
-                $general->save();
-                $arr->reference = '';
-            }     
+            }                    
+           }          
 
            // Xóa dòng chi tiết
            AccDetail::get_detail_whereNotIn_delete($general->id,$removeId);

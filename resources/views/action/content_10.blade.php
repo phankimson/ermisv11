@@ -61,7 +61,6 @@
             <td colspan="2">
             <span class="k-textbox k-space-right medium">
                 <input type="text" class="voucher no_copy" name="voucher_TM"/>
-                <a href="javascript:;" style="right : 10px"  class="k-icon k-i-table-cell-properties voucher-change">&nbsp;</a>
             </span>               
             </td>
         </tr>
