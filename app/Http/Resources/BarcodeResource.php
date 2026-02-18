@@ -28,15 +28,15 @@ class BarcodeResource extends JsonResource
         if((self::$data['code_page'] === "NK" || self::$data['code_page'] === "MH") && self::$data['account_default']){           
            $account_debit =  $account ? LangDropDownResource::make($account) : LangDropDownResource::make($account_default);
            $account_credit = DefaultDropDownResource::make("");
-           $price = $this->price_purchase;
+           $price = (float)$this->price_purchase;
         }else if((self::$data['code_page'] === "XK" || self::$data['code_page'] === "BH") && self::$data['account_default']){          
            $account_debit = DefaultDropDownResource::make("");
            $account_credit =  $account ? LangDropDownResource::make($account) : LangDropDownResource::make($account_default);
-           $price = $this->price;
+           $price = (float)$this->price;
         }else if(self::$data['code_page'] === "CK"  && self::$data['account_default']){          
            $account_debit = DefaultDropDownResource::make("");
            $account_credit =  $account ? LangDropDownResource::make($account) : LangDropDownResource::make($account_default);
-           $price = $this->price_purchase;
+           $price = (float)$this->price_purchase;
         }else{    
             $account_debit = DefaultDropDownResource::make("");
             $account_credit = DefaultDropDownResource::make("");
@@ -51,7 +51,7 @@ class BarcodeResource extends JsonResource
             'name_en' => $this->name_en,
             'unit' => $unit ,
             'unit_name' => $unit->get('text'),
-            'quantity_in_stock' => $this->quantity_in_stock,
+            'quantity_in_stock' => $this->quantity_in_stock?$this->quantity_in_stock:1,
             'price' => $price,
             'debit' =>  $account_debit ,
             'credit' =>  $account_credit,

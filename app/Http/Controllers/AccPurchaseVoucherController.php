@@ -79,8 +79,6 @@ class AccPurchaseVoucherController extends Controller
                                         'print' => $print]);
   }
 
-
-
   public function save(Request $request){
     $type = 0;
     $action = '';
@@ -398,7 +396,7 @@ class AccPurchaseVoucherController extends Controller
              $arr->tax[$l]->id = $tax->id;
            }
            // Xóa dòng chi tiết Vat
-           AccVatDetail::get_detail_whereNotIn_delete($general->id,$removeId_v);
+            AccVatDetail::get_detail_whereNotIn_delete($general->id,$removeId_v);
           }else{
             // Xóa tất cả dòng chi tiết Vat
             AccVatDetail::get_detail_whereNotIn_delete($general->id,[]);

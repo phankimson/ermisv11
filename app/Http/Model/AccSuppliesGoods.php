@@ -148,6 +148,15 @@ class AccSuppliesGoods extends Model
         return $result;
       }
 
+      static public function get_code_field_not_stock($code) {
+          $result = AccSuppliesGoods::where('supplies_goods.code',$code)
+          ->leftJoin('unit', 'supplies_goods.unit_id', '=', 'unit.id')
+          ->where('supplies_goods.active',1)
+          ->orderBy('supplies_goods.created_at','asc')
+          ->get(['supplies_goods.*','unit.id as unit_id','unit.code as unit_code','unit.name as unit','unit.name_en as unit_en']);       
+        return $result;
+      }
+
 
         public function balance()
     {

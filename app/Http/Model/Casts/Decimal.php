@@ -3,7 +3,6 @@
 namespace App\Http\Model\Casts;
 
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
-use App\Http\Model\AccSystems;
 
 class Decimal implements CastsAttributes
 {

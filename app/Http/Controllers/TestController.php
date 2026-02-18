@@ -25,4 +25,8 @@ class TestController extends Controller
      return view('global.test1');
   }
 
+    public function tet(){
+     return view('global.tet');
+  }
+
 }

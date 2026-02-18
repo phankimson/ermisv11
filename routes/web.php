@@ -17,6 +17,7 @@ Route::controller(TestController::class)->group(function () {
 Route::get('/test1', 'test1');
 Route::get('/test1', 'test2');
 Route::get('/test', 'test');
+//Route::get('/tet', 'tet');
 Route::post('/test-get','get');
 });
 
