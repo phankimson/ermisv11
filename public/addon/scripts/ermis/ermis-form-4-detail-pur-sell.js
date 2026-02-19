@@ -381,7 +381,8 @@ var Ermis = function() {
 
     var initScanBarcode = function(e) {
         var obj = {};
-        if($stock_val != ""){
+        var stock_status = jQuery("#stock_status").data("kendoDropDownList").value();
+        if(stock_status != "1" || $stock_val != ""){
         var $this = e.currentTarget ? e.currentTarget : e ;      
         obj.value = jQuery($this).val();
         obj.stock = $stock_val;
@@ -1129,7 +1130,8 @@ var Ermis = function() {
         jQuery('#search_barcode').on('click', function(e) {
             var filter = GetAllDataForm('#form-window-barcode', 2);
             var c = GetDataAjax(filter.columns, filter.elem);
-            if($stock_val != ""){
+            var stock_status = jQuery("#stock_status").data("kendoDropDownList").value();
+            if(stock_status != "1" || $stock_val != ""){
                 c.obj.stock = $stock_val;
                 c.obj.code_page = Ermis.voucher.code;
                 var postdata = {
