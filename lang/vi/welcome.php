@@ -17,4 +17,5 @@ return [
     'note1' => 'Bạn đã đăng ký thành công',
     'note2' => 'Cám ơn bạn đã đăng ký xài phần mềm của chúng tôi. Nếu quý khách muốn mua phần mềm vui lòng liên hệ phòng kinh doanh !',
     'back' => 'Quay lại trang chủ',
+    'features' => 'Tính năng :name',
 ];

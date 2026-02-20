@@ -17,4 +17,5 @@ return [
     'note1' => 'You have successfully registered',
     'note2' => 'Thank you for registering our software. If you want to buy software please contact the sales department!',
     'back' => 'Go back to the main page',
+    'features' => ':name features',
 ];

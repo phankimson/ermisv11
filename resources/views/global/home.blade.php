@@ -66,7 +66,7 @@
                                      @else
                                     <li>
                                      @endif
-                                      Tính năng {{$s->name}}
+                                      @lang('welcome.features', ['name' => $lang == 'vi'? $s->name : $s->name_en])
                                     </li>
                                     @endforeach
                                 </ul>
