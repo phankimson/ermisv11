@@ -438,6 +438,65 @@ var initValidationGrid = function(data,arr_field){
   return ret;
 }
 
+
+var initValidationGridColumnKeyPass = function(data,arr_column,pass = []){
+  var ret = [];
+    jQuery.each(arr_column, function (k, col) {
+      let b = pass.includes(col.field);
+      if(col.key == true && b == false){
+        var mes = '';
+        var tex;
+        var dataValueField = 'id';
+        var r = [];
+        if(col.url){
+          dataValueField = "value";
+          if(a[col.field] == undefined){
+            r = RequestURL(col.url);
+          }else{
+            r = a[col.field];
+          }          
+        }else{
+            r  = jQuery('#'+col.field+"_dropdown_list").data("json");
+        }        
+        jQuery.each(data, function (l, p) {
+            var d = findObjectByKey(r,dataValueField,p[col.field][dataValueField]);
+            if(d != null){
+              jQuery.each(d, function (m, n) {
+                if(m != "id" && m != "code" && m != "name"&& m != "value" && m != "text"){
+                  if(m == 'object'){
+                    if(col.field_check){
+                       m = col.field_check;
+                    }else{
+                       m = jQuery("input[data-get='object.code']").attr("data-find");
+                    }                   
+                  }
+                  var v = findObjectByKey(arr_column,'field', m);
+                  if(v != null ){
+                    tex = /[a-zA-Z0-9*]/g
+                    if(n == 1 && (tex.test(p[m][dataValueField])) != true){
+                      var h = ret.findIndex(i => i.key === m);
+                      if(h < 0){
+                        var c = [];
+                        c.push(l);
+                        mes = Lang.get('validation.required', { attribute: Lang.get('acc_voucher.'+m).toLowerCase() });
+                        ret.push({"key" : m , "mes" : mes, "arr" : c});
+                      }else{
+                        ret[h].arr.push(l);
+                      }
+                    }
+                  }
+                }
+              });
+            }else{
+              mes = Lang.get('validation.required', { attribute: Lang.get('acc_voucher.'+col.field).toLowerCase() });
+              ret.push({"key" : col.field , "mes" : mes, "arr" : [l]});
+            }
+        });
+      }
+    });
+   return ret;
+}
+
 var initValidationGridColumnKey = function(data,arr_column){
   var ret = [];
     jQuery.each(arr_column, function (k, col) {

@@ -324,6 +324,9 @@ var Ermis = function() {
             // Không bỏ refresh được
             if(e.action === "itemchange" && (e.field === "amount" || e.field === "vat_type" || e.field === "tax_amount_rate" || e.field === "tax" || e.field === "tax_rate" ||  e.field === "tax_amount" )){
                     gridVat.refresh();
+                      if( e.field === "vat_type"){
+                        gridVat.current(jQuery("th[data-field='tax_amount_rate']")); 
+                    }
             }            
         });
 

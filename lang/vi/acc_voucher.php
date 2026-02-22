@@ -116,4 +116,6 @@ return [
     "no_invoice_yet"=>"Chưa có hóa đơn",
     "no_invoice"=>"Không có hóa đơn",
     "other"=>"Khác",
+    "tax_amount_rate" => "Thành tiền quy đổi",
+    "tax_amount" => "Thành tiền",
 ];

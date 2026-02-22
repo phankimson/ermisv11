@@ -115,5 +115,7 @@ return [
     "have_invoice"=>"Have invoice",
     "no_invoice_yet"=>"No invoice yet",
     "no_invoice"=>"No invoice",
-    "other"=>"Other",
+    "other"=>"Other",  
+    "tax_amount_rate" => "Tax amount rate",
+    "tax_amount" => "Tax amount",
 ];

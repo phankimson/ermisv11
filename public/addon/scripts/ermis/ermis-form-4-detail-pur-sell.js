@@ -346,6 +346,9 @@ var Ermis = function() {
             // Không bỏ refresh được
             if(e.action === "itemchange" && (e.field === "amount" || e.field === "vat_type" || e.field === "tax_amount_rate"|| e.field === "tax" || e.field === "tax_rate" ||  e.field === "tax_amount" )){
                     gridVat.refresh();
+                    if( e.field === "vat_type"){
+                        gridVat.current(jQuery("th[data-field='tax_amount_rate']")); 
+                    }
             }            
         });
 
@@ -1019,20 +1022,22 @@ var Ermis = function() {
         let stock_status = jQuery("#stock_status").data("kendoDropDownList");
         stock_status.bind("change", stock_status_change);
         function stock_status_change(e) {
-            var value = this.value();
+             var value = this.value();
              var grid = $kGrid.data("kendoGrid");
             if(value == "1"){    
                 jQuery(".row-stock").removeClass("hidden");
                 jQuery(".row-department").addClass("hidden");
                 $stock.trigger("change");
                 dataDefaultGrid.data["department"] = {"value": "0", "text": "--Select--"};
-                grid.showColumn("stock");         
+                grid.showColumn("stock"); 
+                pass_val = [];          
             }else{
                 jQuery(".row-department").removeClass("hidden");
                 jQuery(".row-stock").addClass("hidden");
                 $department.trigger("change");
                 dataDefaultGrid.data["stock"] = {"value": "0", "text": "--Select--"};
-                grid.hideColumn("stock");   
+                grid.hideColumn("stock"); 
+                pass_val = ["stock"];  
             }
         }
     }
@@ -1277,7 +1282,7 @@ var Ermis = function() {
         obj.tax = $kGridVat.data("kendoGrid").dataSource.data();
         obj.reference_by = reference_by;
         var crit1 = initValidationGrid(obj.detail,Ermis.field);
-        var crit2 = initValidationGridColumnKey(obj.detail,Ermis.columns);
+        var crit2 = initValidationGridColumnKeyPass(obj.detail,Ermis.columns,pass_val);
         var crit3 = initValidationGrid(obj.tax,Ermis.field_tax);
         var crit4 = initValidationGridColumnKey(obj.tax,Ermis.column_grid);
         var crit = crit1.concat(crit2);

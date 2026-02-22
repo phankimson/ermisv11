@@ -158,6 +158,7 @@ class AccPurchaseVoucherController extends Controller
          $this->saveReference($arr->reference_by,$general->id);
 
            // Tạo phiếu chi giấy báo nợ nếu có
+           $v_payment = "";
             if($arr->crit_type->obj->payment == "1"){
               $general_payment = AccGeneral::find_reference_by($general->id);
               if(!$general_payment){
@@ -199,10 +200,12 @@ class AccPurchaseVoucherController extends Controller
               if($general_payment){
                 AccDetail::get_detail($general_payment->id)->update(['reference_general_id'=> null]);
                 $general_payment->delete();
-              }
-               // Cập nhật phiếu chi vào phiếu mua hàng
+                 // Cập nhật phiếu chi vào phiếu mua hàng
                 $search = [",".$general_payment->voucher, $general_payment->voucher."," , $general_payment->voucher];
                 $new_reference = str_replace($search, "", $general->reference);
+              }else{
+                $new_reference = $general->reference;
+              }
                 $general->reference = $new_reference;
                 $general->save();
                 $arr->reference = $new_reference;
@@ -246,7 +249,7 @@ class AccPurchaseVoucherController extends Controller
                }
              }
              $detail->general_id = $general->id;
-             $detail->reference_general_id = optional($general_payment)->id;
+             $detail->reference_general_id = optional($general_payment)->id?optional($general_payment)->id: 0;
              $detail->description = $d->item_code->text;
              $detail->currency = $arr->currency;
              $detail->debit = $d->debit->value;  // Đổi từ id value dạng read
