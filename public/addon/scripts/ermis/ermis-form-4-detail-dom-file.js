@@ -337,7 +337,10 @@ var Ermis = function() {
         });
 
         jQuery("input[name='description']").on("change", function(e) {
-            AddChangeDescriptionResult(jQuery(e.target).val());
+            const value = jQuery(e.target).val();
+                if(value){
+                AddChangeDescriptionResult(value);
+                }
         });
     }
 

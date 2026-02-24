@@ -353,7 +353,10 @@ var Ermis = function() {
         });
 
         jQuery("input[name='description']").on("change", function(e) {
-            AddChangeDescriptionResult(jQuery(e.target).val());
+            const value = jQuery(e.target).val();
+            if(value){
+            AddChangeDescriptionResult(value);
+            }
         });
     }
 
@@ -984,11 +987,11 @@ var Ermis = function() {
                 jQuery("#bank_tabs").removeClass("hidden");    
                 code_val = 'NH';
             }
-
+            const value_description = jQuery("input[name='description']").val();
             if(code_page == 'MH'){
-            jQuery("input[name='description_"+code_val+"']").val(Lang.get('messages.description_1_'+code_val) + ' '+jQuery("input[name='description']").val());
+            jQuery("input[name='description_"+code_val+"']").val(Lang.get('messages.description_1_'+code_val) + ' '+value_description);
             }else{
-            jQuery("input[name='description_"+code_val+"']").val(Lang.get('messages.description_2_'+code_val) + ' '+jQuery("input[name='description']").val());
+            jQuery("input[name='description_"+code_val+"']").val(Lang.get('messages.description_2_'+code_val) + ' '+value_description);
             }
            
              jQuery('#default_tabs').click(); 

@@ -316,14 +316,14 @@ class AccPurchaseVoucherController extends Controller
 
               // Lưu số tồn tiền bên Có
               if(substr($d->credit->text,0,3) === '112'){    
-              $balance = $this->reduceCurrency($d->credit->value,$arr_payment->currency_NH,$d->amount,$d->rate,$arr_payment->bank_account);
+              $balance = $this->reduceCurrency($d->credit->value,$arr_payment->currency,$d->amount,$d->rate,$arr_payment->bank_account);
               
                 if($ca->value == "1" && $balance->amount<0){
                   $acc = $d->credit->text;
                   break;
                 }
               }else if(substr($d->credit->text,0,3) === ('111' || '113' )){
-                $balance = $this->reduceCurrency($d->credit->value,$arr_payment->currency_TM,$d->amount,$d->rate);
+                $balance = $this->reduceCurrency($d->credit->value,$arr_payment->currency,$d->amount,$d->rate);
                  if($ca->value == "1" && $balance->amount<0){
                   $acc = $d->credit->text;
                   break;
