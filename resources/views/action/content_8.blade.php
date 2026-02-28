@@ -34,7 +34,7 @@
             <select class="droplist read large xxlarge stock" name="stock"  data-type="string" data-width="200px" data-value-field="value" data-text-field="text" data-read-url="{{route(env('URL_API').'.acc.'.env('URL_DROPDOWN').'.stock')}}" data-change="{{ $change ?? '' }}">
                 <option readonly selected value="0">--Select--</option>
                           
-            </select>            
+            </select>                   
         </td>
         <td class="row-label-responsive hidden row-department">
         <label>@lang('acc_voucher.department')</label>

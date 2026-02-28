@@ -142,6 +142,7 @@ return [
   "account_details_do_not_match_balance_sheet"=>"Account details :account do not match balance sheet !",
   "amount_cannot_be_zero"=>"Account details :account amount cannot be zero !",
   "please_select_stock" => "Please select stock !",
+  "please_select_bank_account" => "Please select bank account !",
   "message_tax_1" => "Những thông tin trên chỉ mang tính tham khảo. Để chắc chắn, vui lòng liên hệ cơ quan thuế.",
   "description_1_TM"=>"Cash payment",
   "description_1_NH"=>"Bank payment",

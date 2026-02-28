@@ -1288,9 +1288,22 @@ var Ermis = function() {
         var crit2 = initValidationGridColumnKeyPass(obj.detail,Ermis.columns,pass_val);
         var crit3 = initValidationGrid(obj.tax,Ermis.field_tax);
         var crit4 = initValidationGridColumnKey(obj.tax,Ermis.column_grid);
+        var stock_status = jQuery('#stock_status').data('kendoDropDownList').value();
+        var stock = jQuery('.stock[name="stock"]').data('kendoDropDownList').value();
+        var crit5 = true;
+        if(stock_status != "1" || stock == "0"){
+            crit5 = false;
+        }
+        var crit6 = true;
+        var payment = jQuery('#payment').is(':checked');
+        var bank_status = jQuery('#payment_method').data('kendoDropDownList').value();
+        var bank_account = jQuery('.bank_account[name="bank_account_NH"]').data('kendoDropDownList').value();
+        if(bank_status != "2" || !payment || bank_account == "0" ){
+            crit6 = false;
+        }
         var crit = crit1.concat(crit2);
         var crit_tax = crit3.concat(crit4);
-        if(crit.length == 0 && crit_tax.length == 0){
+        if(crit.length == 0 && crit_tax.length == 0 && crit5 && crit6){
           obj.type = jQuery('#tabstrip').find('.k-state-active').attr("data-search");
           obj.total_quantity = ConvertNumber(jQuery('#quantity_total').html(),Ermis.decimal_symbol);
           obj.total_amount = ConvertNumber(jQuery('#amount_total').html(),Ermis.decimal_symbol);
@@ -1298,10 +1311,17 @@ var Ermis = function() {
           var data_type = GetAllDataForm('#form-data-type', 2);  
           obj.crit_type = GetDataAjax(data_type.columns);  
           initSaveDetail(e,obj);     
-        }else{        
+        }else{ 
+            var mes3 = "";  
+            if(crit5 == false){
+                mes3 += "<br>"+Lang.get('messages.please_select_stock');   
+            }
+            if(crit6 == false){
+                mes3 += "<br>"+Lang.get('messages.please_select_bank_account');   
+            }          
              var mes1 = initShowValidationGrid(obj.detail,crit,$kGrid);      
              var mes2 = initShowValidationGrid(obj.tax,crit_tax,$kGridVat);     
-             kendo.alert(mes1.join("<br>")+"<br>"+mes2.join("<br>"));
+             kendo.alert(mes1.join("<br>")+"<br>"+mes2.join("<br>")+mes3);
         }
 
     };

@@ -37,6 +37,7 @@ class PurSellGeneralReadResource extends JsonResource
         }else{
             $invoice_status = "2"; //Không có thuế
         }
+        $bank_account = $this->whenLoaded('detail')->first()->bank_account_debit ? $this->whenLoaded('detail')->first()->bank_account_debit : $this->whenLoaded('detail')->first()->bank_account_credit;
         $reference_data = AccGeneral::find_reference_by($this->id);
         $reference_type = Menu::find($reference_data->type);
         if($reference_type->code == $this->customData['key_cash']){
@@ -77,6 +78,7 @@ class PurSellGeneralReadResource extends JsonResource
             'status' =>  $this->status,
             'detail' => PurSellDetailReadResource::collection($this->whenLoaded('detail')),
             'tax' => TaxReadResource::collection($this->whenLoaded('tax')),
+            'bank_account_NH' => $bank_account,
             'description_'.$type_code => $reference_data->description,
             'rate_'.$type_code => $reference_data->rate,
             'voucher_'.$type_code => $reference_data->voucher,

@@ -253,8 +253,10 @@ class AccSuppliesGoodsController extends Controller
        $data->active = $arr->active;
        $data->save();
 
+       // Kiếm loại supplies goods để lưu mã code
+        $type_sg = AccSuppliesGoodsType::find($arr->type);
        // Lưu mã code tự tăng
-       $ir = AccNumberCode::get_code($this->key.'_'.$arr->type);
+       $ir = AccNumberCode::get_code($this->key.'_'.$type_sg->filter);
        $ir->number = $ir->number + 1;
        $ir->save();
 
