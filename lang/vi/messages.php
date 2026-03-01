@@ -144,6 +144,7 @@ return [
       "amount_cannot_be_zero"=>"Tài khoản :account thành tiền không được bằng 0 !",
       "please_select_stock" => "Xin vui lòng chọn kho !",
       "please_select_bank_account" => "Xin vui lòng chọn tài khoản ngân hàng !",
+      "please_select_department" => "Xin vui lòng chọn bộ phận!",
       "message_tax_1" => "Thông tin trên chỉ mang tính chất tham khảo. Để chắc chắn, vui lòng liên hệ với cơ quan thuế.",
       "description_1_TM"=>"Chi tiền mặt",
       "description_1_NH"=>"Chi tiền ngân hàng",

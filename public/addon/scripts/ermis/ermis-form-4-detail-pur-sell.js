@@ -1290,20 +1290,25 @@ var Ermis = function() {
         var crit4 = initValidationGridColumnKey(obj.tax,Ermis.column_grid);
         var stock_status = jQuery('#stock_status').data('kendoDropDownList').value();
         var stock = jQuery('.stock[name="stock"]').data('kendoDropDownList').value();
+        var department = jQuery('.department[name="department"]').data('kendoDropDownList').value();
         var crit5 = true;
-        if(stock_status != "1" || stock == "0"){
+        if(stock_status == "1" && stock == "0"){
             crit5 = false;
+        }
+        var crit7 = true;
+        if(stock_status == "2" && department == "0"){
+            crit7 = false;
         }
         var crit6 = true;
         var payment = jQuery('#payment').is(':checked');
         var bank_status = jQuery('#payment_method').data('kendoDropDownList').value();
         var bank_account = jQuery('.bank_account[name="bank_account_NH"]').data('kendoDropDownList').value();
-        if(bank_status != "2" || !payment || bank_account == "0" ){
+        if(payment == true && bank_account == "0" && bank_status == "2"){
             crit6 = false;
         }
         var crit = crit1.concat(crit2);
         var crit_tax = crit3.concat(crit4);
-        if(crit.length == 0 && crit_tax.length == 0 && crit5 && crit6){
+        if(crit.length == 0 && crit_tax.length == 0 && crit5 && crit6 && crit7){
           obj.type = jQuery('#tabstrip').find('.k-state-active').attr("data-search");
           obj.total_quantity = ConvertNumber(jQuery('#quantity_total').html(),Ermis.decimal_symbol);
           obj.total_amount = ConvertNumber(jQuery('#amount_total').html(),Ermis.decimal_symbol);
@@ -1313,8 +1318,11 @@ var Ermis = function() {
           initSaveDetail(e,obj);     
         }else{ 
             var mes3 = "";  
-            if(crit5 == false){
+            if(crit5 == false && stock_status == "1"){
                 mes3 += "<br>"+Lang.get('messages.please_select_stock');   
+            }
+            if(crit7 == false && stock_status == "2"){
+                mes3 += "<br>"+Lang.get('messages.please_select_department');   
             }
             if(crit6 == false){
                 mes3 += "<br>"+Lang.get('messages.please_select_bank_account');   

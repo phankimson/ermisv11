@@ -10,6 +10,7 @@ use App\Http\Model\AccHistoryAction;
 use App\Http\Model\Menu;
 use App\Http\Model\AccGeneral;
 use App\Http\Model\AccDetail;
+use App\Http\Model\AccInventory;
 use App\Http\Model\AccSystems;
 use App\Http\Model\AccPeriod;
 use App\Http\Model\AccNumberVoucher;
@@ -94,34 +95,28 @@ class AccPurchaseGeneralController extends Controller
                $data->active = 0;
                $data->save();
 
+               // REFERENCE
+               $data_reference = AccGeneral::find_reference_by($data->id);
+               if($data_reference){
+                 $data_reference->update(['active'=>0]);
+               }
+
                //DETAIL
                $detail->each(function ($d){
                     $d->update(['active'=>0]);                    
-                    // Lưu số lại số tồn bên nợ
-                    if(substr($d->debit()->first()->code,0,3) == ("111" || "113")){
-                      $this->reduceCurrencyEdit($d->debit,$d->currency,$d->amount);
-                      //  $ba = AccCurrencyCheck::get_type_first($d->debit,$d->currency,null);
-                      //if($ba){
-                      //  $ba->amount = $ba->amount - $d->amount;
-                      //  $ba->save();
-                      //}
-                     }
-                    //else if(substr($d->debit()->first()->code,0,3) == "112"){
-                    //   $ba = AccCurrencyCheck::get_type_first($d->debit,$d->currency,$d->bank_account);
-                    //  if($ba){
-                    //    $ba->amount = $ba->amount - $d->amount;
-                    //    $ba->save();
-                    //  }
-                    //}
                     // Lưu số lại số tồn bên có
                     if(substr($d->credit()->first()->code,0,3) == "112"){
                       $this->increaseCurrencyEdit($d->credit,$d->currency,$d->amount,$d->bank_account_credit);
-                      //  $ca = AccCurrencyCheck::get_type_first($d->credit,$d->currency,$d->bank_account);
-                      //if($ca){
-                      //  $ca->amount = $ca->amount + $d->amount;
-                      //  $ca->save();
-                      //}
-                    }
+                    }else if(substr($d->credit()->first()->code,0,3) == ("111" || "113")){
+                      $this->increaseCurrencyEdit($d->credit,$d->currency,$d->amount);
+                    }                     
+                   // inventory
+                  $inventory = AccInventory::get_detail_first($d->id);
+                  if($inventory){                  
+                      // Trừ số tồn kho
+                    $this->reduceStock($d->debit,$inventory->stock_receipt,$inventory->item_id,$inventory->quantity);                       
+                    $inventory->delete();
+                  }                    
                 });
                 DB::connection(env('CONNECTION_DB_ACC'))->commit();
                return response()->json(['status'=>true,'message'=> trans('messages.unrecored_success')]);
@@ -176,34 +171,29 @@ class AccPurchaseGeneralController extends Controller
                $data->active = 1;
                $data->save();
 
+                // REFERENCE
+               $data_reference = AccGeneral::find_reference_by($data->id);
+               if($data_reference){
+                 $data_reference->update(['active'=>1]);
+               }
+
                //DETAIL
                $detail->each(function ($d){
                     $d->update(['active'=>1]);
-                   // Lưu số lại số tồn bên nợ
-                    if(substr($d->debit()->first()->code,0,3) == ("111" || "113")){
-                        $this->increaseCurrencyEdit($d->debit,$d->currency,$d->amount);
-                      //$ba = AccCurrencyCheck::get_type_first($d->debit,$d->currency,null);
-                      //if($ba){
-                      //  $ba->amount = $ba->amount + $d->amount;
-                      //  $ba->save();
-                      //}
-                     }
-                    //else if(substr($d->debit()->first()->code,0,3) == "112"){
-                    //   $ba = AccCurrencyCheck::get_type_first($d->debit,$d->currency,$d->bank_account);
-                    //  if($ba){
-                    //    $ba->amount = $ba->amount + $d->amount;
-                    //    $ba->save();
-                    //  }
-                    //}
                     // Lưu số lại số tồn bên có
                     if(substr($d->credit()->first()->code,0,3) == "112"){
                       $this->reduceCurrencyEdit($d->credit,$d->currency,$d->amount,$d->bank_account_credit);
-                      //$ca = AccCurrencyCheck::get_type_first($d->credit,$d->currency,$d->bank_account);
-                      //if($ca){
-                      // $ca->amount = $ca->amount - $d->amount;
-                      //  $ca->save();
-                      //}
+                    }else if(substr($d->credit()->first()->code,0,3) == ("111" || "113")){
+                      $this->reduceCurrencyEdit($d->credit,$d->currency,$d->amount);  
                     }
+
+                     // inventory
+                    $inventory = AccInventory::get_detail_first($d->id);
+                    if($inventory){
+                     // Trả lại số tồn kho
+                      $this->increaseStock($d->debit,$inventory->stock_receipt,$inventory->item_id,$inventory->quantity); 
+                      $inventory->update(['active'=>1]);
+                    }   
                 });
                 DB::connection(env('CONNECTION_DB_ACC'))->commit();
                return response()->json(['status'=>true,'message'=> trans('messages.unrecored_success')]);
@@ -362,11 +352,10 @@ class AccPurchaseGeneralController extends Controller
          $permission = $request->session()->get('per');
          $arr = json_decode($request->data);
          if($arr){
-           $data = AccGeneral::get_id_with_detail($arr,['detail','tax','attach','vat_detail_payment']);           
+           $data = AccGeneral::get_id_with_detail($arr,['detail','tax','attach','tax_info']);           
            $period = AccPeriod::get_date(Carbon::parse($data->accounting_date)->format('Y-m'),1);
            if(!$period){
-             if($permission['d'] == true){             
-
+             if($permission['d'] == true){            
                // Lưu lịch sử
                $h = new AccHistoryAction();
                $h ->create([
@@ -380,34 +369,41 @@ class AccPurchaseGeneralController extends Controller
                $detail = $data->detail;
                
                foreach($detail as $d){
-                //Clear số tiền bên nợ
-               $this->reduceCurrencyEdit($d->debit,$d->currency,$d->amount);
 
-                //Clear số tiền bên có
-               $this->increaseCurrencyEdit($d->credit,$d->currency,$d->amount,$d->bank_account_credit);
-         
-               }             
+                 // Lưu số lại số tồn bên có
+                    if(substr($d->credit()->first()->code,0,3) == "112"){
+                      $this->reduceCurrencyEdit($d->credit,$d->currency,$d->amount,$d->bank_account_credit);
+                    }else if(substr($d->credit()->first()->code,0,3) == ("111" || "113")){
+                      $this->reduceCurrencyEdit($d->credit,$d->currency,$d->amount);  
+                    }
+
+                 // inventory
+                 $inventory = AccInventory::get_detail_first($d->id);
+                 if($inventory){                  
+                    // Trừ số tồn kho
+                   $this->reduceStock($d->debit,$inventory->stock_receipt,$inventory->item_id,$inventory->quantity);                       
+                   $inventory->delete();
+                 }          
+               }            
+               // Xóa detail reference thanh toán
+              $data_reference = AccGeneral::find_reference_by($data->id);
+              if($data_reference){
+                $data_reference->delete();  
+              }
+
+               // Xóa tax info
+               $data->tax_info()->delete();
 
                // Xóa các dòng chi tiết
-               $data->detail()->delete();              
-
-               // Update lại trạng thái thanh toán
-              $tax_payment = $data->vat_detail_payment;
-              $this->updateStatusPayment($tax_payment);
-
-                // Update lại trạng thái so sánh ngân hàng
-               $this->updateActiveCompare($data->compare_id); 
-              
-                // Xóa các dòng thuế
+               $data->detail()->delete();    
+               
+               // Xóa các dòng thuế
                $data->tax()->delete();
 
-                // Xóa các dòng thanh toán
-                $data->vat_detail_payment()->delete();                        
-             
-                $attach = $data->attach;
-                 if($attach->count()>0){
-                  $this->deleteFile($attach);  
-                }      
+               $attach = $data->attach;
+               if($attach->count()>0){
+               $this->deleteFile($attach);  
+               }                
 
                $data->delete(); 
                DB::connection(env('CONNECTION_DB_ACC'))->commit();
