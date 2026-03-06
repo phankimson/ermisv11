@@ -230,9 +230,9 @@ class AccSuppliesGoodsController extends Controller
        $data->active = $arr->active;
        $data->save();
 
-       // KiÃƒÂ¡Ã‚ÂºÃ‚Â¿m loÃƒÂ¡Ã‚ÂºÃ‚Â¡i supplies goods Ãƒâ€žÃ¢â‚¬ËœÃƒÂ¡Ã‚Â»Ã†â€™ lÃƒâ€ Ã‚Â°u mÃƒÆ’Ã‚Â£ code
+       // Phan loai supplies goods va luu ma code
         $type_sg = AccSuppliesGoodsType::find($arr->type);
-       // LÃƒâ€ Ã‚Â°u mÃƒÆ’Ã‚Â£ code tÃƒÂ¡Ã‚Â»Ã‚Â± tÃƒâ€žÃ†â€™ng
+       // Luu ma code tu dong
        $ir = AccNumberCode::get_code($this->key.'_'.$type_sg->filter);
        $ir->number = $ir->number + 1;
        $ir->save();
@@ -254,7 +254,7 @@ class AccSuppliesGoodsController extends Controller
        ///////////////////
 
 
-       // LÃƒâ€ Ã‚Â°u ÃƒÂ¡Ã‚ÂºÃ‚Â£nh thÃƒÆ’Ã‚Âªm
+       // Lưu ảnh thêm
        if($request->hasFile('files')) {
          $files = $request->file('files');
          $filename = $files->getClientOriginalName();
@@ -265,18 +265,18 @@ class AccSuppliesGoodsController extends Controller
          File::makeDirectory($path, 0777, true, true);
          }
          $upload_success = $files->move($path, $filename);
-         // LÃƒâ€ Ã‚Â°u lÃƒÂ¡Ã‚ÂºÃ‚Â¡i hÃƒÆ’Ã‚Â¬nh ÃƒÂ¡Ã‚ÂºÃ‚Â£nh
+         // Lưu lại hình ảnh
          $data = AccSuppliesGoods::find($arr->id);
          if($data){
          $data->image = $pathname;
          $data->save();
          }        
-         //LÃƒâ€ Ã‚Â°u ÃƒÂ¡Ã‚ÂºÃ‚Â£nh lÃƒÂ¡Ã‚ÂºÃ‚Â¡i array
+         //Lưu ảnh lại array
          $arr->image = $pathname;
        }
        //
 
-       // LÃƒâ€ Ã‚Â°u lÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ch sÃƒÂ¡Ã‚Â»Ã‚Â­
+       // Lưu lịch sử
        $h = new AccHistoryAction();
        $h ->create([
          'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -285,21 +285,21 @@ class AccSuppliesGoodsController extends Controller
          'url'  => $this->url,
          'dataz' => \json_encode($data)]);
 
-       // LÃƒâ€ Ã‚Â°u lÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ch sÃƒÂ¡Ã‚Â»Ã‚Â­ giÃƒÆ’Ã‚Â¡ mua
+       // Lưu lịch sử giá mua
        $p = new AccHistoryPrice();
        $p ->create([
-         'price_type' => 1, // Mua : 1 , BÃƒÆ’Ã‚Â¡n : 2
+         'price_type' => 1, // Mua : 1 , Ban : 2
          'supplies_goods_id' => $data->id,
          'value' => $data->price_purchase]);
 
-       // LÃƒâ€ Ã‚Â°u lÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ch sÃƒÂ¡Ã‚Â»Ã‚Â­ giÃƒÆ’Ã‚Â¡ bÃƒÆ’Ã‚Â¡n
+       // Lưu lịch sử giá bán
        $p = new AccHistoryPrice();
        $p ->create([
-         'price_type' => 2, // Mua : 1 , BÃƒÆ’Ã‚Â¡n : 2
+         'price_type' => 2, // Mua : 1 , Ban : 2
          'supplies_goods_id' => $data->id,
          'value' => $data->price]);
 
-       // LÃƒÂ¡Ã‚ÂºÃ‚Â¥y ID vÃƒÆ’Ã‚Â  vÃƒÆ’Ã‚Â  phÃƒÆ’Ã‚Â¢n loÃƒÂ¡Ã‚ÂºÃ‚Â¡i ThÃƒÆ’Ã‚Âªm
+       // Lấy ID và phân loại Thêm
        $arr->id = $data->id;
        $arr->t = $type;
        DB::connection(env('CONNECTION_DB_ACC'))->commit();
@@ -311,7 +311,7 @@ class AccSuppliesGoodsController extends Controller
        if(!$data){
           return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
         }
-       // LÃƒâ€ Ã‚Â°u lÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ch sÃƒÂ¡Ã‚Â»Ã‚Â­
+       // Lưu lịch sử
        $h = new AccHistoryAction();
        $h ->create([
          'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -321,25 +321,25 @@ class AccSuppliesGoodsController extends Controller
          'dataz' => \json_encode($data)]);
       //
 
-      //Check lÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ch sÃƒÂ¡Ã‚Â»Ã‚Â­ giÃƒÆ’Ã‚Â¡ mua
+      //Check lịch sử giá mua
       $check_price_purchase = AccHistoryPrice::get_product_last($data->id,1);
       if($check_price_purchase == null || $check_price_purchase->value != $arr->price_purchase){
-        // LÃƒâ€ Ã‚Â°u lÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ch sÃƒÂ¡Ã‚Â»Ã‚Â­ giÃƒÆ’Ã‚Â¡ mua
+        // Lưu lịch sử giá mua
         $p = new AccHistoryPrice();
         $p ->create([
-          'price_type' => 1, // Mua : 1 , BÃƒÆ’Ã‚Â¡n : 2
+          'price_type' => 1, // Mua : 1 , Ban : 2
           'supplies_goods_id' => $data->id,
           'value' => $arr->price_purchase]);
       }
 
 
-      //Check lÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ch sÃƒÂ¡Ã‚Â»Ã‚Â­ giÃƒÆ’Ã‚Â¡ bÃƒÆ’Ã‚Â¡n
+      //Check lịch sử giá bán
       $check_price= AccHistoryPrice::get_product_last($data->id,2);
       if($check_price == null || $check_price->value != $arr->price){
-        // LÃƒâ€ Ã‚Â°u lÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ch sÃƒÂ¡Ã‚Â»Ã‚Â­ giÃƒÆ’Ã‚Â¡ bÃƒÆ’Ã‚Â¡n
+        // Luu lịch su gia ban
         $p = new AccHistoryPrice();
         $p ->create([
-          'price_type' => 2, // Mua : 1 , BÃƒÆ’Ã‚Â¡n : 2
+          'price_type' => 2, // Mua : 1 , Ban : 2
           'supplies_goods_id' => $data->id,
           'value' => $arr->price]);
       }
@@ -401,21 +401,21 @@ class AccSuppliesGoodsController extends Controller
            $dom->save();
         }
       }
-      // XÃƒÆ’Ã‚Â³a cÃƒÆ’Ã‚Â¡c dÃƒÆ’Ã‚Â²ng
+      // Xóa các dòng
       if($dom_all->count()>0){
         $id_destroy = $dom_all->pluck('id');
         AccSuppliesGoodsDiscount::destroy($id_destroy);
       }
       ///////////////////
 
-       // LÃƒÂ¡Ã‚ÂºÃ‚Â¥y lÃƒÂ¡Ã‚ÂºÃ‚Â¡i giÃƒÆ’Ã‚Â¡ trÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ hot
+       // Lấy lại giá trị hot
        $hot_add = AccSuppliesGoodsDiscount::get_discount($data->id);
        $arr->discount = $hot_add;
 
 
-      // LÃƒâ€ Ã‚Â°u ÃƒÂ¡Ã‚ÂºÃ‚Â£nh sÃƒÂ¡Ã‚Â»Ã‚Â­a
+      // Lưu ảnh sửa
       if($request->hasFile('files')) {
-        //XÃƒÆ’Ã‚Â³a ÃƒÂ¡Ã‚ÂºÃ‚Â£nh cÃƒâ€¦Ã‚Â©
+        //Xóa ảnh cũ
         if(File::exists(public_path($data->image)) && $data->image != 'addon/img/placehold/100.png'){
            File::delete(public_path($data->image));
         };
@@ -429,18 +429,18 @@ class AccSuppliesGoodsController extends Controller
         File::makeDirectory($path, 0777, true, true);
         }
         $upload_success = $files->move($path, $filename);
-        // LÃƒâ€ Ã‚Â°u lÃƒÂ¡Ã‚ÂºÃ‚Â¡i hÃƒÆ’Ã‚Â¬nh ÃƒÂ¡Ã‚ÂºÃ‚Â£nh
+        // Lưu lại hình ảnh
         $data = AccSuppliesGoods::find($arr->id);
         if($data){
         $data->image = $pathname;
         $data->save();
         }       
-        //LÃƒâ€ Ã‚Â°u ÃƒÂ¡Ã‚ÂºÃ‚Â£nh lÃƒÂ¡Ã‚ÂºÃ‚Â¡i array
+        //Lưu ảnh lại array
         $arr->image = $pathname;
       }
       //
 
-       // PhÃƒÆ’Ã‚Â¢n loÃƒÂ¡Ã‚ÂºÃ‚Â¡i SÃƒÂ¡Ã‚Â»Ã‚Â­a
+       // Phân loại Sửa
        $arr->t = $type;
        DB::connection(env('CONNECTION_DB_ACC'))->commit();
        broadcast(new \App\Events\DataSend($arr));
@@ -470,12 +470,12 @@ class AccSuppliesGoodsController extends Controller
         if($arr){
           if($permission['d'] == true){
             $data = AccSuppliesGoods::get_id_with_discount($arr->id);
-            // XÃƒÆ’Ã‚Â³a lÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ch sÃƒÂ¡Ã‚Â»Ã‚Â­ giÃƒÆ’Ã‚Â¡
+            // Xóa lịch sử giá
             AccHistoryPrice::where('supplies_goods_id',$arr->id)->delete();
-            // XÃƒÆ’Ã‚Â³a discount
+            // Xoa discount
             AccSuppliesGoodsDiscount::where('supplies_goods_id',$arr->id)->delete();
-            // LÃƒâ€ Ã‚Â°u lÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ch sÃƒÂ¡Ã‚Â»Ã‚Â­
-            //XÃƒÆ’Ã‚Â³a ÃƒÂ¡Ã‚ÂºÃ‚Â£nh cÃƒâ€¦Ã‚Â©
+            // Luu lich su
+            //Xoa anh cu
             if(File::exists(public_path($data->image)) && $data->image != 'addon/img/placehold/100.png'){
                File::delete(public_path($data->image));
             };
@@ -523,14 +523,14 @@ class AccSuppliesGoodsController extends Controller
        $rs = json_decode($request->data);
 
        $file = $request->file;
-       // Import dÃƒÂ¡Ã‚Â»Ã‚Â¯ liÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¡u
+       // Import dữ liệu
        $import = new AccSuppliesGoodsImport;
        Excel::import($import, $file);
-       // LÃƒÂ¡Ã‚ÂºÃ‚Â¥y lÃƒÂ¡Ã‚ÂºÃ‚Â¡i dÃƒÂ¡Ã‚Â»Ã‚Â¯ liÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¡u
+       // Lấy lại dữ liệu
     
        $merged = collect($rs)->push($import->getData());
        //dump($merged);
-     // LÃƒâ€ Ã‚Â°u lÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ch sÃƒÂ¡Ã‚Â»Ã‚Â­
+     // Lưu lịch sử
      $h = new AccHistoryAction();
      $h ->create([
        'type' => $type, // Add : 2 , Edit : 3 , Delete : 4, Import : 5

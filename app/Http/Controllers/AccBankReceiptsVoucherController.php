@@ -47,9 +47,9 @@ class AccBankReceiptsVoucherController extends Controller
   public function __construct(Request $request)
  {
      $this->url =  $request->segment(3);
-     $this->invoice_type = 2; // 1 HÃ³a Ä‘Æ¡n Ä‘áº§u vÃ o , // 2 HÃ³a Ä‘Æ¡n Ä‘áº§u ra
-     $this->group = 3; // 1 NhÃ³m thu tiá»n NH
-     $this->type_object = 2; // 2 KhÃ¡ch hÃ ng (VD : 2,3 náº¿u nhiá»u Ä‘á»‘i tÆ°á»£ng)
+     $this->invoice_type = 2; // 1 Hoa don dau vao , // 2 Hoa don dau ra
+     $this->group = 3; // 1 Nhom thu tien NH
+     $this->type_object = 2; // 2 Khach hang (VD : 2,3 neu nhieu doi tuong)
      $this->key = "bank-receipts-voucher";
      $this->menu = Menu::where('code', '=', $this->key)->first();
      $this->print = 'PT%';
@@ -121,7 +121,7 @@ class AccBankReceiptsVoucherController extends Controller
             $action = 'add';
             $general = new AccGeneral();
             $general->user = $user->id;
-            // LÆ°u sá»‘ nháº£y
+            // Luu so nhay
              $v = $this->saveNumberVoucher($this->menu,$arr);
             }else{
               $check_permission = false;
@@ -144,7 +144,7 @@ class AccBankReceiptsVoucherController extends Controller
           $general->group = $this->group;
           $general->save();
 
-           // Kiá»ƒm tra vÃ  lÆ°u trang thÃ¡i vÃ  id detail
+           // Kiem tra va luu trang thai va id detail
            if($arr->compare != ""){
               $compare = AccBankCompare::find($arr->compare);
               if($compare){
@@ -152,10 +152,10 @@ class AccBankReceiptsVoucherController extends Controller
                 $compare->save();
               }
             }
-          // Tham chiáº¿u / Reference
+          // Tham chieu / Reference
           $this->saveReference($arr->reference_by,$general->id);
 
-              // Láº¥y giÃ¡ trá»‹ kiá»ƒm tra tiá»n máº·t cÃ³ Ã¢m khÃ´ng
+              // Lay gia tri kiem tra tien mat co am khong
           $ca = AccSystems::get_systems($this->check_cash);
           $acc = "";
 
@@ -197,7 +197,7 @@ class AccBankReceiptsVoucherController extends Controller
        
              array_push($removeId,$detail->id);
              $arr->detail[$k]->id = $detail->id;      
-             // LÆ°u sá»‘ tá»“n tiá»n bÃªn Ná»£
+             // Luu so ton tien ben No
              if(substr($d->debit->text,0,3) === '112'){
                $balance = $this->increaseCurrency($d->debit->value,$arr->currency,$d->amount,$d->rate,$arr->bank_account);         
                //$balance = AccCurrencyCheck::get_type_first($d->debit->value,$arr->currency,$arr->bank_account);     
@@ -215,7 +215,7 @@ class AccBankReceiptsVoucherController extends Controller
              }
                // End
            
-               // LÆ°u sá»‘ tá»“n tiá»n bÃªn CÃ³
+               // Luu so ton tien ben Co
                if(substr($d->credit->text,0,3) === ('111' ||  '113')){  
                  $balance = $this->reduceCurrency($d->credit->value,$arr->currency,$d->amount,$d->rate);               
                 //  $balance = AccCurrencyCheck::get_type_first($d->credit->value,$arr->currency,null);
@@ -256,14 +256,14 @@ class AccBankReceiptsVoucherController extends Controller
                // End
            }
 
-           // XÃ³a dÃ²ng chi tiáº¿t
+           // Xoa dong chi tiet
            AccDetail::get_detail_whereNotIn_delete($general->id,$removeId);
            $check_invoice = false;
            $invoice = '';
-           // LÆ°u VAT
+           // Luu VAT
            foreach($arr->tax as $l => $x){
              $tax = collect([]);
-                // Kiá»ƒm tra cÃ³ trÃ¹ng MST, sá»‘ hÃ³a Ä‘Æ¡n 
+                // Kiem tra co trung MST, so hoa don, ky hieu hoa don, mau so hoa don khong (trung 1 trong 4 thong tin thi cung duoc xet la trung) 
                 $arr_check = array(
                   ['invoice', '=',$x->invoice],
                   ['invoice_symbol', '=',$x->invoice_symbol],
@@ -278,7 +278,7 @@ class AccBankReceiptsVoucherController extends Controller
                     break;
                 }
                 // End
-                // Update máº«u, kÃ½ tá»± hÃ³a Ä‘Æ¡n
+                // Update mau, ky tu hoa don cho doi tuong
                 $obj = AccObject::find($x->subject_id);
                 if($obj){
                   $obj->invoice_form = $x->invoice_form;
@@ -308,8 +308,8 @@ class AccBankReceiptsVoucherController extends Controller
              $tax->tax_code = $x->tax_code;
              $tax->address = $x->address;
              $tax->description = $x->description;
-             $tax->vat_account = $x->vat_account->value;// Äá»•i tá»« id value dáº¡ng read
-             $tax->vat_type = $x->vat_type->value;// Äá»•i tá»« id value dáº¡ng read
+             $tax->vat_account = $x->vat_account->value;// Doi tu id value dang read
+             $tax->vat_type = $x->vat_type->value;// Doi tu id value dang read
              $tax->amount = $x->amount;
              $tax->tax = $x->tax;
              $tax->total_amount = $total_amount;
@@ -321,13 +321,13 @@ class AccBankReceiptsVoucherController extends Controller
              array_push($removeId_v,$tax->id);
              $arr->tax[$l]->id = $tax->id;
            }
-           // XÃ³a dÃ²ng chi tiáº¿t Vat
+           // Xoa dong chi tiet Vat
            AccVatDetail::get_detail_whereNotIn_delete($general->id,$removeId_v);
 
-            // LÆ°u file
+            // Luu file
            $arr->attach = $this->saveFile($request,$general->id,$this->path);   
 
-           // LÆ°u lá»‹ch sá»­
+           // Luu lich su
            $h = new AccHistoryAction();
            $h ->create([
            'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -398,7 +398,7 @@ class AccBankReceiptsVoucherController extends Controller
         //$rs = json_decode($request->data);
   
         $file = $request->file;
-        // Äá»•i dá»¯ liá»‡u Excel sang collect
+        // Chuyen du lieu Excel sang collect
         config(['excel.imports.read_only' => false]);
         $data = new AccBankReceiptGeneralImport($this->menu);
         Excel::import($data , $file);

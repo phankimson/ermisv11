@@ -149,12 +149,12 @@ class AccAccountTypeController extends Controller
        $data->active = $arr->active;
        $data->save();
 
-       // Lưu mã code tự tăng
+       // Luu ma code tu dong tang
        $ir = AccNumberCode::get_code($this->key);
        $ir->number = $ir->number + 1;
        $ir->save();
 
-       // Lưu lịch sử
+       // Luu lich su
        $h = new AccHistoryAction();
        $h ->create([
          'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -163,7 +163,7 @@ class AccAccountTypeController extends Controller
          'url'  => $this->url,
          'dataz' => \json_encode($data)]);
 
-       // Lấy ID và phân loại Thêm
+       // Lay ID de phan loai Them
        $arr->id = $data->id;
        $arr->t = $type;
        DB::connection(env('CONNECTION_DB_ACC'))->commit();
@@ -175,7 +175,7 @@ class AccAccountTypeController extends Controller
        if(!$data){
         return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
       }
-       // Lưu lịch sử
+       // Luu lich su
        $h = new AccHistoryAction();
        $h ->create([
          'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -190,7 +190,7 @@ class AccAccountTypeController extends Controller
       $data->name_en = $arr->name_en;
       $data->active = $arr->active;
       $data->save();
-       // Phân loại Sửa
+       // Phan Loai Sua
        $arr->t = $type;
        DB::connection(env('CONNECTION_DB_ACC'))->commit();
        broadcast(new \App\Events\DataSend($arr));
@@ -223,7 +223,7 @@ class AccAccountTypeController extends Controller
             if(!$data){
               return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
             }
-            // Lưu lịch sử
+            // Luu Lich su
             $h = new AccHistoryAction();
             $h ->create([
             'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -271,11 +271,11 @@ class AccAccountTypeController extends Controller
        // Import dữ liệu
        $import = new AccAccountTypeImport;
        Excel::import($import, $file);
-       // Lấy lại dữ liệu
+       // Lay lai du lieu
       
        $merged = collect($rs)->push($import->getData());
        //dump($merged);
-     // Lưu lịch sử
+     // Luu Lich su
      $h = new AccHistoryAction();
      $h ->create([
        'type' => $type, // Add : 2 , Edit : 3 , Delete : 4, Import : 5

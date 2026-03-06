@@ -124,12 +124,12 @@ class AccExciseController extends Controller
          $data->active = $arr->active;
          $data->save();
 
-         // LÆ°u mÃ£ code tá»± tÄƒng
+         // Luu ma code tu dong tang
          $ir = AccNumberCode::get_code($this->key);
          $ir->number = $ir->number + 1;
          $ir->save();
 
-         // LÆ°u lá»‹ch sá»­
+         // Luu lich su
          $h = new AccHistoryAction();
          $h ->create([
            'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -138,7 +138,7 @@ class AccExciseController extends Controller
              'url'  => $this->url,
            'dataz' => \json_encode($data)]);
 
-         // Láº¥y ID vÃ  vÃ  phÃ¢n loáº¡i ThÃªm
+         // Lay ID va phan loai Them
          $arr->id = $data->id;
          $arr->parent_id = $data->parent_id;
          $arr->t = $type;
@@ -156,7 +156,7 @@ class AccExciseController extends Controller
          if(!$data){
           return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
         }
-         // LÆ°u lá»‹ch sá»­
+         // Luu lich su
          $h = new AccHistoryAction();
          $h ->create([
            'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -174,7 +174,7 @@ class AccExciseController extends Controller
         $data->excise_tax = $arr->excise_tax;
         $data->active = $arr->active;
         $data->save();
-         // PhÃ¢n loáº¡i Sá»­a
+         // Phan loai Sua
          $arr->parent_id = $data->parent_id;
          $arr->t = $type;
          DB::connection(env('CONNECTION_DB_ACC'))->commit();
@@ -214,7 +214,7 @@ class AccExciseController extends Controller
               $item->parent_id = null;
               $item->save();
             });
-            // LÆ°u lá»‹ch sá»­
+            // Luu lich su
             $h = new AccHistoryAction();
             $h ->create([
             'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -259,20 +259,20 @@ class AccExciseController extends Controller
        $rs = json_decode($request->data);
 
        $file = $request->file;
-       // Import dá»¯ liá»‡u
+       // Import du lieu
        $import = new AccExciseImport;
        Excel::import($import, $file);
-       // Láº¥y láº¡i dá»¯ liá»‡u
+       // Lay lai du lieu
        
        $merged = collect($rs)->push($import->getData());
        //dump($merged);
-     // LÆ°u lá»‹ch sá»­
+     // Luu lich su
      $h = new AccHistoryAction();
      $h ->create([
        'type' => $type, // Add : 2 , Edit : 3 , Delete : 4, Import : 5
        'user' => Auth::id(),
        'menu' => $this->menu->id,
-         'url'  => $this->url,
+       'url'  => $this->url,
        'dataz' => \json_encode($merged)]);
      //
      //Storage::delete($savePath.$filename);

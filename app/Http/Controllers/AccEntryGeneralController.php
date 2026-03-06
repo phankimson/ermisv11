@@ -42,7 +42,7 @@ class AccEntryGeneralController extends Controller
   public function __construct(Request $request)
  {
      $this->url =  $request->segment(3);
-     $this->group = 5; // NhÃ³m bÃºt toÃ¡n tá»•ng há»£p
+     $this->group = 5; // Nhom tong hop
      $this->key = "entry-general";
      $this->key_voucher = "entry-general-voucher";
      $this->menu = Menu::where('code', '=', $this->key)->first();
@@ -80,7 +80,7 @@ class AccEntryGeneralController extends Controller
              if(!$period){
                $detail = AccDetail::get_detail_active($data->id,1);
 
-               // LÆ°u lá»‹ch sá»­
+               // Luu lich su
                $h = new AccHistoryAction();
                $h ->create([
                'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -128,7 +128,7 @@ class AccEntryGeneralController extends Controller
              $period = AccPeriod::get_date(Carbon::parse($data->accounting_date)->format('Y-m'),1);
              if(!$period){
                $detail = AccDetail::get_detail_active($data->id,0);
-               // LÆ°u lá»‹ch sá»­
+               // Luu lich su
                $h = new AccHistoryAction();
                $h ->create([
                'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -144,7 +144,7 @@ class AccEntryGeneralController extends Controller
                     $d->update(['active'=>1]);                 
                 });
                 DB::connection(env('CONNECTION_DB_ACC'))->commit();
-               return response()->json(['status'=>true,'message'=> trans('messages.unrecored_success')]);
+               return response()->json(['status'=>true,'message'=> trans('messages.recored_success')]);
              }else{
                return response()->json(['status'=>false,'message'=> trans('messages.locked_period')]);
              }
@@ -183,7 +183,7 @@ class AccEntryGeneralController extends Controller
     $type = 10;
     try{
       $req = json_decode($request->data);
-      // TÃ¬m voucher
+      // Tim voucher
       $v = AccNumberVoucher::get_menu($this->menu->id); 
       $date_obj = Convert::dateformatRange($v->format,$req);
       $data = collect(BankGeneralResource::collection(AccGeneral::get_data_load_between($req->type,$date_obj['start_date'],$date_obj['end_date'])));
@@ -201,7 +201,7 @@ class AccEntryGeneralController extends Controller
     $type = 10;
     try{
       $req = json_decode($request->data);
-      // TÃ¬m voucher
+      // Tim voucher
       $v = AccNumberVoucher::get_menu($req->type); 
       $val = Convert::dateformatArr($v->format,$req->year.'-'.$req->month.'-'.$req->day);
       $voucher = AccCountVoucher::get_count_voucher($v->id,$v->format,$val['day_format'],$val['month_format'],$val['year_format']);  
@@ -223,7 +223,7 @@ class AccEntryGeneralController extends Controller
     try{
       DB::connection(env('CONNECTION_DB_ACC'))->beginTransaction();
       $req = json_decode($request->data);
-      // TÃ¬m voucher & lÆ°u voucher
+      // Tim voucher & luu voucher
       $voucher = AccCountVoucher::find($req->voucherId);  
       if($voucher){ 
       $voucher->number = $req->number;
@@ -258,7 +258,7 @@ class AccEntryGeneralController extends Controller
            if(!$period){
              if($permission['d'] == true){             
 
-               // LÆ°u lá»‹ch sá»­
+               // Luu lich su
                $h = new AccHistoryAction();
                $h ->create([
                'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -268,13 +268,13 @@ class AccEntryGeneralController extends Controller
                'dataz' => \json_encode($data)]);
                //           
                                          
-               // XÃ³a cÃ¡c dÃ²ng chi tiáº¿t
+               // Xoa cac dong chi tiet
                $data->detail()->delete();             
               
-                // XÃ³a cÃ¡c dÃ²ng thuáº¿
+                // Xoa cac dong thue
                $data->tax()->delete();                        
 
-               //XÃ³a Ä‘Ã­nh kÃ¨m
+               // Xoa dinh kem
                 $attach = $data->attach;
                  if($attach->count()>0){
                   $this->deleteFile($attach);  
@@ -319,13 +319,13 @@ class AccEntryGeneralController extends Controller
       $rs = json_decode($request->data);
       $menu = Menu::where('code', '=', $this->key_voucher)->first();
       $file = $request->file;
-      // Import dá»¯ liá»‡u
+      // Import du lieu
       $import = new AccEntryImport($menu->id,$this->group);
       Excel::import($import, $file);
-      // Láº¥y láº¡i dá»¯ liá»‡u
+      // Lay lai du lieu
       //$array = AccGeneral::with('detail','tax')->get();
 
-      // Import dá»¯ liá»‡u báº±ng collection
+      // Import du lieu bang collection
       //$results = Excel::toCollection(new HistoryActionImport, $file);
       //dump($results);
       //foreach($results[0] as $item){
@@ -341,7 +341,7 @@ class AccEntryGeneralController extends Controller
       
       $merged = collect($rs)->push($data);
       //dump($merged);
-    // LÆ°u lá»‹ch sá»­
+    // Luu lich su
     $h = new AccHistoryAction();
     $h ->create([
       'type' => $type, // Add : 2 , Edit : 3 , Delete : 4, Import : 5

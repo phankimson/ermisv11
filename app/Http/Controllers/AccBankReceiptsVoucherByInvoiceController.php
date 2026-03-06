@@ -41,9 +41,9 @@ class AccBankReceiptsVoucherByInvoiceController extends Controller
   public function __construct(Request $request)
  {
      $this->url =  $request->segment(3);
-     $this->group = 3; // 3 NhÃ³m thu ngÃ¢n hÃ ng
-     $this->type_object = 2; // 2 KhÃ¡ch hÃ ng (VD : 2,3 náº¿u nhiá»u Ä‘á»‘i tÆ°á»£ng)
-     $this->invoice_type = 2; // 1 HÃ³a Ä‘Æ¡n Ä‘áº§u vÃ o , // 2 HÃ³a Ä‘Æ¡n Ä‘áº§u ra
+     $this->group = 3; // 3 Nhom thu khach hang
+     $this->type_object = 2; // 2 Khach hang (VD : 2,3 neu nhieu doi tuong)
+     $this->invoice_type = 2; // 1 Hoa don dau vao , // 2 Hoa don dau ra
      $this->key = "bank-receipts-voucher";
      $this->key_invoice = "bank-receipts-voucher-by-invoice";     
      $this->menu = Menu::where('code', '=', $this->key_invoice)->first();
@@ -167,9 +167,9 @@ class AccBankReceiptsVoucherByInvoiceController extends Controller
              $detail->status = 1;
              $detail->save();
 
-             // TÃ¬m VAT Ä‘á»ƒ cáº­p nháº­t tráº¡ng thÃ¡i Ä‘Ã£ thanh toÃ¡n (cá»™t payment)
+             // Tim VAT de cap nhat trang thai da thanh toan (cot payment)
               $vat = AccVatDetail::find($d->vat_detail_id);
-             // Ktra xem payment = 1 khÃ´ng. Náº¿u = 1 (Ä‘Ã£ thanh toÃ¡n) thÃ¬ rollback. 
+             // Ktra xem payment = 1 khong. Neu = 1 (da thanh toan) thi rollback. 
              
              if(($vat->payment == 1 && !$d->id)){              
                $check_payment = true;    
@@ -182,20 +182,20 @@ class AccBankReceiptsVoucherByInvoiceController extends Controller
                 $vat->save();
               }
 
-              // LÆ°u VAT payment
+              // Luu VAT payment
                $pm = collect([]);
               if($d->id){
                 $pm = AccVatDetailPayment::find($d->id);
-                // Ktra xem chá»‰nh sá»­a tt Ä‘á»§ chÆ°a             
+                // Ktra xem chinh sua tt du chua             
                 $vat_payment_id = AccVatDetailPayment::sum_vat_detail_not_id($vat->id,'payment',$pm->id);
                 if($vat_payment_id+(float)$d->payment <= (float)$vat->total_amount){
-                  // Update láº¡i tráº¡ng thÃ¡i thanh toÃ¡n
+                  // Update lai trang thai thanh toan
                   $tax_payment = AccVatDetail::find($pm->vat_detail_id); 
                   if($tax_payment){                   
                   $tax_payment->payment = 0;
                   $tax_payment->save(); 
                   }
-                   // Update láº¡i sá»‘ tiá»n Ä‘Ã£ thanh toÃ¡n cá»§a tá»«ng phiáº¿u
+                   // Update lai so tien da thanh toan cua tung phieu
                   $tax_payment_update = AccVatDetailPayment::vat_detail_payment_created_at_not_id($pm->vat_detail_id,$pm->created_at,$pm->id);
                   foreach($tax_payment_update as $t){
                     if($t->paid > $pm->paid){
@@ -222,10 +222,10 @@ class AccBankReceiptsVoucherByInvoiceController extends Controller
               $pm->rate = $d->rate;  
               $pm->payment_rate = $d->payment_rate;  
               $pm->save();
-              // LÆ°u id
+              // Luu id
               $arr->detail[$k]->id = $pm->id; 
 
-             // LÆ°u sá»‘ tá»“n tiá»n bÃªn Ná»£
+             // Luu so ton tien ben No
              if($setting_voucher->debit){
               $this->increaseCurrency($setting_voucher->debit,$arr->currency,$d->payment,$d->rate,$arr->bank_account);
                //$balance = AccCurrencyCheck::get_type_first($setting_voucher->debit,$arr->currency,null);
@@ -244,10 +244,10 @@ class AccBankReceiptsVoucherByInvoiceController extends Controller
                // End
                
            }          
-           // LÆ°u file
+           // Luu file
             $this->saveFile($request,$general->id,$this->path);   
 
-           // LÆ°u lá»‹ch sá»­
+           // Luu lich su
            $h = new AccHistoryAction();
            $h ->create([
            'type' => $type, // Add : 2 , Edit : 3 , Delete : 4

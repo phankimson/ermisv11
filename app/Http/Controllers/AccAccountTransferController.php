@@ -159,12 +159,12 @@ class AccAccountTransferController extends Controller
        $data->active = $arr->active;
        $data->save();
 
-       // Lưu mã code tự tăng
+       // Luu ma code tu dong tang
        $ir = AccNumberCode::get_code($this->key);
        $ir->number = $ir->number + 1;
        $ir->save();
 
-       // Lưu lịch sử
+       // Luu lich su
        $h = new AccHistoryAction();
        $h ->create([
          'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -173,7 +173,7 @@ class AccAccountTransferController extends Controller
          'url'  => $this->url,
          'dataz' => \json_encode($data)]);
 
-       // Lấy ID và phân loại Thêm
+       // Lay ID de phan loai them
        $arr->id = $data->id;
        $arr->t = $type;
        DB::connection(env('CONNECTION_DB_ACC'))->commit();
@@ -185,7 +185,7 @@ class AccAccountTransferController extends Controller
       if(!$data){
         return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
       }
-       // Lưu lịch sử
+       // Luu lich su
        $h = new AccHistoryAction();
        $h ->create([
          'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -210,7 +210,7 @@ class AccAccountTransferController extends Controller
       $data->position = $arr->position;
       $data->active = $arr->active;
       $data->save();
-       // Phân loại Sửa
+       // Phan loai Sua
        $arr->t = $type;
        DB::connection(env('CONNECTION_DB_ACC'))->commit();
        broadcast(new \App\Events\DataSend($arr));
@@ -243,7 +243,7 @@ class AccAccountTransferController extends Controller
             if(!$data){
               return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
             }
-            // Lưu lịch sử
+            // Luu Lich su
             $h = new AccHistoryAction();
             $h ->create([
             'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -288,14 +288,14 @@ class AccAccountTransferController extends Controller
        $rs = json_decode($request->data);
 
        $file = $request->file;
-       // Import dữ liệu
+       // Import du lieu
        $import = new AccAccountTransferImport;
        Excel::import($import, $file);
-       // Lấy lại dữ liệu
+       // Lay lai du lieu
       
        $merged = collect($rs)->push($import->getData());
        //dump($merged);
-     // Lưu lịch sử
+     // Luu Lich su
      $h = new AccHistoryAction();
      $h ->create([
        'type' => $type, // Add : 2 , Edit : 3 , Delete : 4, Import : 5

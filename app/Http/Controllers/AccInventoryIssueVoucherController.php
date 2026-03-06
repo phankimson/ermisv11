@@ -44,8 +44,8 @@ class AccInventoryIssueVoucherController extends Controller
   public function __construct(Request $request)
  {
      $this->url =  $request->segment(3);
-     $this->group = 6; // 6 NhÃ³m xuáº¥t kho
-     $this->type_object = 2; // 1 NhÃ  cung cáº¥p (VD : 2,3 náº¿u nhiá»u Ä‘á»‘i tÆ°á»£ng)
+     $this->group = 6; // 6 Nhom xuat kho
+     $this->type_object = 2; // 1 Nha cung cap (VD : 2,3 neu nhieu doi tuong)
      $this->key = "inventory-issue-voucher";
      $this->menu = Menu::where('code', '=', $this->key)->first();
      $this->print = 'XK%';
@@ -138,10 +138,10 @@ class AccInventoryIssueVoucherController extends Controller
           $general->group = $this->group;
           $general->save();
                   
-          // Tham chiáº¿u / Reference
+          // Tham chiếu / Reference
           $this->saveReference($arr->reference_by,$general->id);
 
-             // Láº¥y giÃ¡ trá»‹ kiá»ƒm tra kho cÃ³ Ã¢m khÃ´ng
+             // Lấy giá trị kiểm tra kho có âm không
           $ca = AccSystems::get_systems($this->check_stock);
           $acc = "";
           // CHI TIET / Detail
@@ -200,7 +200,7 @@ class AccInventoryIssueVoucherController extends Controller
              $inventory->save();
        
                                   
-               // LÆ°u sá»‘ tá»“n kho bÃªn CÃ³
+               // Lưu số tồn kho bên Có
                 $balance = $this->reduceStock($d->credit->value,$d->stock->value,$d->item_code->value,$d->quantity);   
                   if($ca->value == "1" && $balance->quantity<0){
                     $acc = $d->item_code->text;
@@ -209,14 +209,14 @@ class AccInventoryIssueVoucherController extends Controller
                // End
            }           
 
-           // XÃ³a dÃ²ng chi tiáº¿t
+           // Xóa dòng chi tiết
            AccDetail::get_detail_whereNotIn_delete($general->id,$removeId);
            AccInventory::get_detail_id_whereNotIn_delete($general->id,$removeId);
           
-           // LÆ°u file
+           // Lưu file
            $this->saveFile($request,$general->id,$this->path);    
 
-           // LÆ°u lá»‹ch sá»­
+           // Lưu lịch sử
            $h = new AccHistoryAction();
            $h ->create([
            'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -284,7 +284,7 @@ class AccInventoryIssueVoucherController extends Controller
         //$rs = json_decode($request->data);
   
         $file = $request->file;
-        // Äá»•i dá»¯ liá»‡u Excel sang collect
+        // Đổi dữ liệu Excel sang collect
         config(['excel.imports.read_only' => false]);
         $data = new AccInventoryIssueGeneralImport($this->menu);   
         Excel::import($data , $file);

@@ -47,9 +47,9 @@ class AccCashReceiptsVoucherController extends Controller
   public function __construct(Request $request)
  {
      $this->url =  $request->segment(3);
-     $this->invoice_type = 2; // 1 HÃ³a Ä‘Æ¡n Ä‘áº§u vÃ o , // 2 HÃ³a Ä‘Æ¡n Ä‘áº§u ra
-     $this->group = 1; // 1 NhÃ³m thu tiá»n máº·t
-     $this->type_object = 2; // 2 KhÃ¡ch hÃ ng (VD : 2,3 náº¿u nhiá»u Ä‘á»‘i tÆ°á»£ng)
+     $this->invoice_type = 2; // 1 Hoa don dau vao - 2 Hoa don dau ra
+     $this->group = 1; // 1 Nhom thu tien mat
+     $this->type_object = 2; // 2 Khach hang (VD : 2,3 neu nhieu doi tuong)
      $this->key = "cash-receipts-voucher";
      $this->menu = Menu::where('code', '=', $this->key)->first();
      $this->print = 'PT%';
@@ -121,7 +121,7 @@ class AccCashReceiptsVoucherController extends Controller
             $action = 'add';
             $general = new AccGeneral();
             $general->user = $user->id;
-            // LÆ°u sá»‘ nháº£y
+            // Luu so nhay
              $v = $this->saveNumberVoucher($this->menu,$arr);
           }else{
             $check_permission = false;
@@ -143,10 +143,10 @@ class AccCashReceiptsVoucherController extends Controller
           $general->group = $this->group;
           $general->save();
           
-          // Tham chiáº¿u / Reference
+          // Tham chieu / Reference
           $this->saveReference($arr->reference_by,$general->id);
 
-              // Láº¥y giÃ¡ trá»‹ kiá»ƒm tra tiá»n máº·t cÃ³ Ã¢m khÃ´ng
+              // Lay gia tri kiem tra tien mat co am khong
           $ca = AccSystems::get_systems($this->check_cash);
           $acc = "";
 
@@ -165,30 +165,30 @@ class AccCashReceiptsVoucherController extends Controller
              $detail->general_id = $general->id;
              $detail->description = $d->description;
              $detail->currency = $arr->currency;
-             $detail->debit = $d->debit->value;  // Äá»•i tá»« id value dáº¡ng read
-             $detail->credit = $d->credit->value;  // Äá»•i tá»« id value dáº¡ng read
+             $detail->debit = $d->debit->value;  // Doi tu id value dang read
+             $detail->credit = $d->credit->value;  // Doi tu id value dang read
              $detail->amount = $d->amount;
              $detail->rate = $d->rate;
              $detail->amount_rate = $d->amount * $d->rate;
-             $detail->accounted_fast = $d->accounted_fast->value;  // Äá»•i tá»« id value dáº¡ng read
-             $detail->department = $d->department->value; // Äá»•i tá»« id value dáº¡ng read
-             $detail->bank_account_credit = $d->bank_account->value;  // Äá»•i tá»« id value dáº¡ng read
-             $detail->case_code = $d->case_code->value;  // Äá»•i tá»« id value dáº¡ng read
-             $detail->cost_code = $d->cost_code->value;  // Äá»•i tá»« id value dáº¡ng read
-             $detail->statistical_code = $d->statistical_code->value;  // Äá»•i tá»« id value dáº¡ng read
-             $detail->work_code = $d->work_code->value;  // Äá»•i tá»« id value dáº¡ng read
+             $detail->accounted_fast = $d->accounted_fast->value;  // Doi tu id value dang read
+             $detail->department = $d->department->value; // Doi tu id value dang read
+             $detail->bank_account_credit = $d->bank_account->value;  // Doi tu id value dang read
+             $detail->case_code = $d->case_code->value;  // Doi tu id value dang read
+             $detail->cost_code = $d->cost_code->value;  // Doi tu id value dang read
+             $detail->statistical_code = $d->statistical_code->value;  // Doi tu id value dang read
+             $detail->work_code = $d->work_code->value;  // Doi tu id value dang read
              $detail->lot_number = $d->lot_number;
              $detail->contract = $d->contract;
              $detail->order = $d->order;
-             $detail->subject_id_credit = $d->subject_code->value;// Äá»•i tá»« id value dáº¡ng read
-             $detail->subject_name_credit = $d->subject_code->text;// Äá»•i tá»« name text dáº¡ng read
+             $detail->subject_id_credit = $d->subject_code->value;// Doi tu id value dang read
+             $detail->subject_name_credit = $d->subject_code->text;// Doi tu name text dang read
              $detail->active = 1;
              $detail->status = 1;
              $detail->save();
        
              array_push($removeId,$detail->id);
              $arr->detail[$k]->id = $detail->id;      
-             // LÆ°u sá»‘ tá»“n tiá»n bÃªn Ná»£
+             // Luu so ton tien ben No
              if(substr($d->debit->text,0,3) === '111'){     
                $balance = $this->increaseCurrency($d->debit->value,$arr->currency,$d->amount,$d->rate);    
               //  $balance = AccCurrencyCheck::get_type_first($d->debit->value,$arr->currency,null);     
@@ -206,7 +206,7 @@ class AccCashReceiptsVoucherController extends Controller
              }
                // End
            
-               // LÆ°u sá»‘ tá»“n tiá»n bÃªn CÃ³
+               // Luu so ton tien ben Co
                if(substr($d->credit->text,0,3) === ('111' ||  '113')){       
                  $balance = $this->reduceCurrency($d->credit->value,$arr->currency,$d->amount,$d->rate);            
                 //  $balance = AccCurrencyCheck::get_type_first($d->credit->value,$arr->currency,null);
@@ -249,14 +249,14 @@ class AccCashReceiptsVoucherController extends Controller
                // End
            }
 
-           // XÃ³a dÃ²ng chi tiáº¿t
+           // Xoa dong chi tiet
            AccDetail::get_detail_whereNotIn_delete($general->id,$removeId);
            $check_invoice = false;
            $invoice = '';
-           // LÆ°u VAT
+           // Luu VAT
            foreach($arr->tax as $l => $x){
              $tax = collect([]);
-                // Kiá»ƒm tra cÃ³ trÃ¹ng MST, sá»‘ hÃ³a Ä‘Æ¡n 
+                // Kiem tra co trung MST, so hoa don 
                 $arr_check = array(
                   ['invoice', '=',$x->invoice],
                   ['invoice_symbol', '=',$x->invoice_symbol],
@@ -271,7 +271,7 @@ class AccCashReceiptsVoucherController extends Controller
                     break;
                 }
                 // End
-                // Update máº«u, kÃ½ tá»± hÃ³a Ä‘Æ¡n
+                // Update mau, ky tu hoa don
                 $obj = AccObject::find($x->subject_id);
                 if($obj){
                   $obj->invoice_form = $x->invoice_form;
@@ -301,8 +301,8 @@ class AccCashReceiptsVoucherController extends Controller
              $tax->tax_code = $x->tax_code;
              $tax->address = $x->address;
              $tax->description = $x->description;
-             $tax->vat_account = $x->vat_account->value;// Äá»•i tá»« id value dáº¡ng read
-             $tax->vat_type = $x->vat_type->value;// Äá»•i tá»« id value dáº¡ng read
+             $tax->vat_account = $x->vat_account->value;// Doi tu id value dang read
+             $tax->vat_type = $x->vat_type->value;// Doi tu id value dang read
              $tax->amount = $x->amount;
              $tax->tax = $x->tax;
              $tax->total_amount = $total_amount;
@@ -314,14 +314,14 @@ class AccCashReceiptsVoucherController extends Controller
              array_push($removeId_v,$tax->id);
              $arr->tax[$l]->id = $tax->id;
            }
-           // XÃ³a dÃ²ng chi tiáº¿t Vat
+           // Xoa dong chi tiet Vat
            AccVatDetail::get_detail_whereNotIn_delete($general->id,$removeId_v);
 
 
-           // LÆ°u file
+           // Luu file
            $this->saveFile($request,$general->id,$this->path);   
 
-           // LÆ°u lá»‹ch sá»­
+           // Luu lich su
            $h = new AccHistoryAction();
            $h ->create([
            'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -392,7 +392,7 @@ class AccCashReceiptsVoucherController extends Controller
         //$rs = json_decode($request->data);
   
         $file = $request->file;
-        // Äá»•i dá»¯ liá»‡u Excel sang collect
+        // Doi du lieu Excel sang collect
         config(['excel.imports.read_only' => false]);
         $data = new AccCashReceiptGeneralImport($this->menu);
         Excel::import($data , $file);

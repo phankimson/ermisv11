@@ -10,7 +10,7 @@ class PosWarehouse extends Model
     use BootedTraits;
 
     protected $connection = 'mysql3';
-    protected $table = 'pos_ermis_warehouses';
+    protected $table = 'warehouses';
     public $incrementing = false;
     protected $guarded = [];
 

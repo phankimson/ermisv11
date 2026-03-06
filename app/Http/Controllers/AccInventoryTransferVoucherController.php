@@ -44,8 +44,8 @@ class AccInventoryTransferVoucherController extends Controller
   public function __construct(Request $request)
  {
      $this->url =  $request->segment(3);
-     $this->group = 8; // 8 NhÃ³m chuyá»ƒn kho
-     $this->type_object = 2; // 1 NhÃ  cung cáº¥p (VD : 2,3 náº¿u nhiá»u Ä‘á»‘i tÆ°á»£ng)
+     $this->group = 8; // 8 Nhom chuyen kho
+     $this->type_object = 2; // 1 Nha cung cap (VD : 2,3 neu nhieu doi tuong)
      $this->key = "inventory-transfer-voucher";
      $this->menu = Menu::where('code', '=', $this->key)->first();
      $this->print = 'CK%';
@@ -137,10 +137,10 @@ class AccInventoryTransferVoucherController extends Controller
           $general->group = $this->group;
           $general->save();
                   
-          // Tham chiáº¿u / Reference
+          // Tham chieu / Reference
           $this->saveReference($arr->reference_by,$general->id);
 
-             // Láº¥y giÃ¡ trá»‹ kiá»ƒm tra kho cÃ³ Ã¢m khÃ´ng
+             // Lay gia tri kiem tra kho co am khong
           $ca = AccSystems::get_systems($this->check_stock);
           $acc = "";
           // CHI TIET / Detail
@@ -190,11 +190,11 @@ class AccInventoryTransferVoucherController extends Controller
              $inventory->save();
        
                                   
-               // LÆ°u sá»‘ tá»“n kho bÃªn CÃ³
+               // Luu so ton kho ben Co
                 $balance = $this->reduceStock($d->credit->value,$arr->stock_issue,$d->item_code->value,$d->quantity); 
-                // LÆ°u sá»‘ tá»“n kho bÃªn Ná»£
+                // Luu so ton kho ben No
                 $this->increaseStock($d->debit->value,$arr->stock_receipt,$d->item_code->value,$d->quantity);
-                // Kiá»ƒm tra kho Ã¢m  
+                // Kiem tra kho am  
                   if($ca->value == "1" && $balance->quantity<0){
                     $acc = $d->item_code->text;
                     break;
@@ -202,14 +202,14 @@ class AccInventoryTransferVoucherController extends Controller
                // End
            }           
 
-           // XÃ³a dÃ²ng chi tiáº¿t
+           // Xoa dong chi tiet
            AccDetail::get_detail_whereNotIn_delete($general->id,$removeId);
            AccInventory::get_detail_id_whereNotIn_delete($general->id,$removeId);
           
-           // LÆ°u file
+           // Luu file
            $this->saveFile($request,$general->id,$this->path);    
 
-           // LÆ°u lá»‹ch sá»­
+           // Luu lich su
            $h = new AccHistoryAction();
            $h ->create([
            'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -277,7 +277,7 @@ class AccInventoryTransferVoucherController extends Controller
         //$rs = json_decode($request->data);
   
         $file = $request->file;
-        // Äá»•i dá»¯ liá»‡u Excel sang collect
+        // Doi du lieu Excel sang collect
         config(['excel.imports.read_only' => false]);
         $data = new AccInventoryTransferGeneralImport($this->menu);   
         Excel::import($data , $file);

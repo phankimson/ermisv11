@@ -44,9 +44,9 @@ class AccBankPaymentVoucherByInvoiceController extends Controller
   public function __construct(Request $request)
  {
      $this->url =  $request->segment(3);
-     $this->group = 4; // 4 NhÃ³m chi ngÃ¢n hÃ ng
-     $this->type_object = 1; // 2 NhÃ  cung cáº¥p (VD : 2,3 náº¿u nhiá»u Ä‘á»‘i tÆ°á»£ng)
-     $this->invoice_type = 1; // 1 HÃ³a Ä‘Æ¡n Ä‘áº§u vÃ o , // 2 HÃ³a Ä‘Æ¡n Ä‘áº§u ra
+     $this->group = 4; // 4 Nhom chi ngan hang
+     $this->type_object = 1; // 2 Nha cung cap (VD : 2,3 neu nhieu doi tuong)
+     $this->invoice_type = 1; // 1 Hoa don dau vao , // 2 Hoa don dau ra
      $this->key = "bank-payment-voucher";
      $this->key_invoice = "bank-payment-voucher-by-invoice";     
      $this->menu = Menu::where('code', '=', $this->key_invoice)->first();
@@ -121,7 +121,7 @@ class AccBankPaymentVoucherByInvoiceController extends Controller
             $action = "add";
             $general = new AccGeneral();
             $general->user = $user->id;
-            // LÆ°u sá»‘ nháº£y
+            // Luu so nhay
              $v = $this->saveNumberVoucher($this->menu,$arr);
           }else{
                 $check_permission = false;
@@ -143,7 +143,7 @@ class AccBankPaymentVoucherByInvoiceController extends Controller
           $general->active = 1;
           $general->save();          
 
-           // Láº¥y giÃ¡ trá»‹ kiá»ƒm tra tiá»n máº·t cÃ³ Ã¢m khÃ´ng
+           // Lay thong tin he thong de truong hop kiem tra so du tai khoan ngan hang
           $ca = AccSystems::get_systems($this->check_cash);
           $acc = "";
           $setting_voucher = AccSettingVoucher::get_menu($this->menu->id);
@@ -162,8 +162,8 @@ class AccBankPaymentVoucherByInvoiceController extends Controller
              $detail->general_id = $general->id;
              $detail->description = $general->description;
              $detail->currency = $arr->currency;
-             $detail->debit = $setting_voucher->debit;  // Láº¥y tá»« seting default
-             $detail->credit = $setting_voucher->credit; // Láº¥y tá»« seting default
+             $detail->debit = $setting_voucher->debit;  // Lay tu setting default
+             $detail->credit = $setting_voucher->credit; //  Lay tu setting default
              $detail->amount = $d->payment;
              $detail->rate = $arr->rate;
              $detail->amount_rate = $d->payment_rate;
@@ -174,9 +174,9 @@ class AccBankPaymentVoucherByInvoiceController extends Controller
              $detail->status = 1;
              $detail->save();
 
-             // TÃ¬m VAT Ä‘á»ƒ cáº­p nháº­t tráº¡ng thÃ¡i Ä‘Ã£ thanh toÃ¡n (cá»™t payment)
+             // Tim VAT de cap nhat trang thai da thanh toan (cot payment)
               $vat = AccVatDetail::find($d->vat_detail_id);
-             // Ktra xem payment = 1 khÃ´ng. Náº¿u = 1 (Ä‘Ã£ thanh toÃ¡n) thÃ¬ rollback. 
+             // Ktra xem payment = 1 khong. Neu = 1 (da thanh toan) thi rollback. 
              
              if(($vat->payment == 1 && !$d->id)){              
                $check_payment = true;    
@@ -189,20 +189,20 @@ class AccBankPaymentVoucherByInvoiceController extends Controller
                 $vat->save();
               }
 
-              // LÆ°u VAT payment
+              // Luu VAT payment
                $pm = collect([]);
               if($d->id){
                 $pm = AccVatDetailPayment::find($d->id);
-                // Ktra xem chá»‰nh sá»­a tt Ä‘á»§ chÆ°a             
+                // Ktra xem chinh sua tt du chua             
                 $vat_payment_id = AccVatDetailPayment::sum_vat_detail_not_id($vat->id,'payment',$pm->id);
                if($vat_payment_id+(float)$d->payment <= (float)$vat->total_amount){
-                  // Update láº¡i tráº¡ng thÃ¡i thanh toÃ¡n
+                  // Update lai trang thai thanh toan
                   $tax_payment = AccVatDetail::find($pm->vat_detail_id);   
                   if($tax_payment){
                       $tax_payment->payment = 0;
                       $tax_payment->save(); 
                   }                       
-                   // Update láº¡i sá»‘ tiá»n Ä‘Ã£ thanh toÃ¡n cá»§a tá»«ng phiáº¿u
+                   // Update lai so tien da thanh toan cua tung phieu
                   $tax_payment_update = AccVatDetailPayment::vat_detail_payment_created_at_not_id($pm->vat_detail_id,$pm->created_at,$pm->id);
                   foreach($tax_payment_update as $t){
                     if($t->paid > $pm->paid){
@@ -229,10 +229,10 @@ class AccBankPaymentVoucherByInvoiceController extends Controller
               $pm->rate = $d->rate;  
               $pm->payment_rate = $d->payment_rate;  
               $pm->save();
-              // LÆ°u id
+              // Luu id
               $arr->detail[$k]->id = $pm->id; 
 
-             // LÆ°u sá»‘ tá»“n tiá»n bÃªn CÃ³
+             // Luu so ton tien ben Co
              if($setting_voucher->credit){
               $balance = $this->reduceCurrency($setting_voucher->credit,$arr->currency,$d->payment,$d->rate,$arr->bank_account);
                //$balance = AccCurrencyCheck::get_type_first($setting_voucher->credit,$arr->currency,null);
@@ -256,10 +256,10 @@ class AccBankPaymentVoucherByInvoiceController extends Controller
                // End
                
            }          
-           // LÆ°u file
+           // Luu file
            $this->saveFile($request,$general->id,$this->path);   
 
-           // LÆ°u lá»‹ch sá»­
+           // Luu lich su
            $h = new AccHistoryAction();
            $h ->create([
            'type' => $type, // Add : 2 , Edit : 3 , Delete : 4

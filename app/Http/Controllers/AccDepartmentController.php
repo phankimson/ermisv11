@@ -155,13 +155,13 @@ class AccDepartmentController extends Controller
        $data->active = $arr->active;
        $data->save();
 
-       // LÆ°u mÃ£ code tá»± tÄƒng
+       // Luu ma code tu tang
        $ir = AccNumberCode::get_code($this->key);
        $ir->number = $ir->number + 1;
        $ir->save();
 
 
-       // LÆ°u lá»‹ch sá»­
+       // Luu lich su
        $h = new AccHistoryAction();
        $h ->create([
          'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -170,7 +170,7 @@ class AccDepartmentController extends Controller
           'url'  => $this->url,
          'dataz' => \json_encode($data)]);
 
-       // Láº¥y ID vÃ  vÃ  phÃ¢n loáº¡i ThÃªm
+       // Lay ID de phan loai su kien update
        $arr->id = $data->id;
        $arr->t = $type;
        DB::connection(env('CONNECTION_DB_ACC'))->commit();
@@ -182,7 +182,7 @@ class AccDepartmentController extends Controller
         if(!$data){
           return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
         }
-       // LÆ°u lá»‹ch sá»­
+       // Luu lich su
        $h = new AccHistoryAction();
        $h ->create([
          'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -197,7 +197,7 @@ class AccDepartmentController extends Controller
       $data->name_en = $arr->name_en;
       $data->active = $arr->active;
       $data->save();
-       // PhÃ¢n loáº¡i Sá»­a
+       // Phan loai Sua
        $arr->t = $type;
        DB::connection(env('CONNECTION_DB_ACC'))->commit();
        broadcast(new \App\Events\DataSend($arr));
@@ -230,7 +230,7 @@ class AccDepartmentController extends Controller
              if(!$data){
               return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
             }
-            // LÆ°u lá»‹ch sá»­
+            // Luu lich su
             $h = new AccHistoryAction();
             $h ->create([
             'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -275,14 +275,14 @@ class AccDepartmentController extends Controller
        $rs = json_decode($request->data);
 
        $file = $request->file;
-       // Import dá»¯ liá»‡u
+       // Import du lieu
        $import = new AccDepartmentImport;
        Excel::import($import, $file);
-       // Láº¥y láº¡i dá»¯ liá»‡u
+       // Lay du lieu sau khi import
       
        $merged = collect($rs)->push($import->getData());
        //dump($merged);
-     // LÆ°u lá»‹ch sá»­
+     // Luu lich su
      $h = new AccHistoryAction();
      $h ->create([
        'type' => $type, // Add : 2 , Edit : 3 , Delete : 4, Import : 5

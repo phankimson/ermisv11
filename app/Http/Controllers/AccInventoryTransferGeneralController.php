@@ -99,9 +99,9 @@ class AccInventoryTransferGeneralController extends Controller
                     // inventory
                     $inventory = AccInventory::get_detail_first($d->id);
                     if($inventory){
-                      // Tráº£ láº¡i sá»‘ tá»“n kho
+                      // Tra lai so ton kho xuat
                       $this->increaseStock($d->credit,$inventory->stock_issue,$inventory->item_id,$inventory->quantity); 
-                      // Xuáº¥t láº¡i sá»‘ tá»“n kho
+                      // Xua lai so ton kho nhan
                       $this->reduceStock($d->debit,$inventory->stock_receive,$inventory->item_id,$inventory->quantity);
 
                       $inventory->update(['active'=>0]);
@@ -158,9 +158,9 @@ class AccInventoryTransferGeneralController extends Controller
                     // inventory
                     $inventory = AccInventory::get_detail_first($d->id);
                     if($inventory){
-                      // Trá»« sá»‘ tá»“n kho
+                      // Tra lai so ton kho xuat
                       $this->reduceStock($d->credit,$inventory->stock_issue,$inventory->item_id,$inventory->quantity); 
-                      // Nháº­p sá»‘ tá»“n kho
+                      // Nhap so ton kho nhan
                       $this->increaseStock($d->debit,$inventory->stock_receive,$inventory->item_id,$inventory->quantity);
 
                       $inventory->update(['active'=>1]);
@@ -225,7 +225,7 @@ class AccInventoryTransferGeneralController extends Controller
     $type = 10;
     try{
       $req = json_decode($request->data);
-      // TÃ¬m voucher
+      // Tim voucher
       $v = AccNumberVoucher::get_menu($req->type); 
       $val = Convert::dateformatArr($v->format,$req->year.'-'.$req->month.'-'.$req->day);
       $voucher = AccCountVoucher::get_count_voucher($v->id,$v->format,$val['day_format'],$val['month_format'],$val['year_format']);  
@@ -247,7 +247,7 @@ class AccInventoryTransferGeneralController extends Controller
     try{
       DB::connection(env('CONNECTION_DB_ACC'))->beginTransaction();
       $req = json_decode($request->data);
-      // TÃ¬m voucher & lÆ°u voucher
+      // Tim voucher & luu voucher
       $voucher = AccCountVoucher::find($req->voucherId);
       if($voucher){
           $voucher->number = $req->number;
@@ -299,16 +299,16 @@ class AccInventoryTransferGeneralController extends Controller
                  // inventory
                  $inventory = AccInventory::get_detail_first($d->id);
                  if($inventory){
-                   // Tráº£ láº¡i sá»‘ tá»“n kho
+                   // Tra lai so ton kho xuat
                    $this->increaseStock($d->credit,$inventory->stock_issue,$inventory->item_id,$inventory->quantity); 
-                   // Xuáº¥t láº¡i sá»‘ tá»“n kho
+                   // Tra lai so ton kho nhan
                    $this->reduceStock($d->debit,$inventory->stock_receive,$inventory->item_id,$inventory->quantity);
 
                    $inventory->delete();
                  }          
                }             
 
-               // XÃ³a cÃ¡c dÃ²ng chi tiáº¿t
+               // Xoa cac dong chi tiet
                $data->detail()->delete();                                  
 
                $attach = $data->attach;
@@ -355,13 +355,13 @@ class AccInventoryTransferGeneralController extends Controller
       $rs = json_decode($request->data);
       $menu = Menu::where('code', '=', $this->key_voucher)->first();
       $file = $request->file;
-      // Import dá»¯ liá»‡u
+      // Import du lieu
       $import = new AccInventoryTransferImport($menu->id,$this->group);
       Excel::import($import, $file);
-      // Láº¥y láº¡i dá»¯ liá»‡u
+      // Lay lai du lieu
       //$array = AccGeneral::with('detail','tax')->get();
 
-      // Import dá»¯ liá»‡u báº±ng collection
+      // Import du lieu bang collection
       //$results = Excel::toCollection(new HistoryActionImport, $file);
       //dump($results);
       //foreach($results[0] as $item){
@@ -374,21 +374,21 @@ class AccInventoryTransferGeneralController extends Controller
       //  $arr->push($data);
       //}
        $data = $import->getData();
-      // Láº¥y giÃ¡ trá»‹ kiá»ƒm tra kho cÃ³ Ã¢m khÃ´ng
+      // Lay gia tri kiem tra kho co am khong
         $ca = AccSystems::get_systems($this->check_stock);
         $acc = "";
       foreach($data['crit'] as $item){
-              // LÆ°u sá»‘ tá»“n kho bÃªn CÃ³
+              // Luu so ton kho ben Co
                 $balance = $this->reduceStock($item['acc_credit'],$item['stock_issue'],$item['item_id'],$item['quantity']); 
-              // LÆ°u sá»‘ tá»“n kho bÃªn Ná»£
+              // Luu so ton kho ben No
                 $this->increaseStock($item['acc_debit'],$item['stock_receipt'],$item['item_id'],$item['quantity']);
-              // Kiá»ƒm tra kho Ã¢m
+              // Kiem tra kho am
                   if($ca->value == "1" && $balance->quantity<0){
                     $acc = $item['item_code'];
                     break;
                   }              
                // End
-  // LÆ°u Inventory
+  // Luu Inventory
          $inventory = new AccInventory(); 
          $inventory->general_id = $item['general_id'];
          $inventory->detail_id = $item['detail_id'];
@@ -407,7 +407,7 @@ class AccInventoryTransferGeneralController extends Controller
       }
       $merged = collect($rs)->push($data);
       //dump($merged);
-    // LÆ°u lá»‹ch sá»­
+    // Luu lich su
     $h = new AccHistoryAction();
     $h ->create([
       'type' => $type, // Add : 2 , Edit : 3 , Delete : 4, Import : 5

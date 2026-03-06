@@ -64,7 +64,7 @@ class AccGeneralController extends Controller
       $user = User::find($general->user);
       //$locale = $this->app->getLocale();
       $locale = app()->getLocale();
-      $letter = NumberConvert::ReadDecimal($general->total_amount,$locale,"Ä‘á»“ng","Ä‘Ã´la","xu","cent");
+      $letter = NumberConvert::ReadDecimal($general->total_amount,$locale,"Đồng","Đô la","xu","cent");
       $voucher_date =  strtotime($general->voucher_date);
       $voucher_day = date('d', $voucher_date);     
       $voucher_month = date('m', $voucher_date);

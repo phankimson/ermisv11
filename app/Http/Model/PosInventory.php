@@ -10,7 +10,7 @@ class PosInventory extends Model
     use BootedTraits;
 
     protected $connection = 'mysql3';
-    protected $table = 'pos_ermis_inventories';
+    protected $table = 'inventories';
     public $incrementing = false;
     protected $guarded = [];
 

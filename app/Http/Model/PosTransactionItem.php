@@ -10,7 +10,7 @@ class PosTransactionItem extends Model
     use BootedTraits;
 
     protected $connection = 'mysql3';
-    protected $table = 'pos_ermis_transaction_items';
+    protected $table = 'transaction_items';
     public $incrementing = false;
     protected $guarded = [];
 

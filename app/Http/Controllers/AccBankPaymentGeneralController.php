@@ -82,7 +82,7 @@ class AccBankPaymentGeneralController extends Controller
              if(!$period){
                $detail = AccDetail::get_detail_active($data->id,1);
 
-               // LÆ°u lá»‹ch sá»­
+              // Luu lich su
                $h = new AccHistoryAction();
                $h ->create([
                'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -96,7 +96,7 @@ class AccBankPaymentGeneralController extends Controller
                //DETAIL
                $detail->each(function ($d){
                     $d->update(['active'=>0]);                    
-                    // LÆ°u sá»‘ láº¡i sá»‘ tá»“n bÃªn ná»£
+                    // Luu so ton ben no
                     if(substr($d->debit()->first()->code,0,3) == ("111" || "113")){
                       $this->reduceCurrencyEdit($d->debit,$d->currency,$d->amount);
                       //  $ba = AccCurrencyCheck::get_type_first($d->debit,$d->currency,null);
@@ -112,7 +112,7 @@ class AccBankPaymentGeneralController extends Controller
                     //    $ba->save();
                     //  }
                     //}
-                    // LÆ°u sá»‘ láº¡i sá»‘ tá»“n bÃªn cÃ³
+                    // Luu so ton ben co
                     if(substr($d->credit()->first()->code,0,3) == "112"){
                       $this->increaseCurrencyEdit($d->credit,$d->currency,$d->amount,$d->bank_account_credit);
                       //  $ca = AccCurrencyCheck::get_type_first($d->credit,$d->currency,$d->bank_account);
@@ -155,7 +155,7 @@ class AccBankPaymentGeneralController extends Controller
              $period = AccPeriod::get_date(Carbon::parse($data->accounting_date)->format('Y-m'),1);
              if(!$period){
                $detail = AccDetail::get_detail_active($data->id,0);
-               // LÆ°u lá»‹ch sá»­
+               // Luu lich su
                $h = new AccHistoryAction();
                $h ->create([
                'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -169,7 +169,7 @@ class AccBankPaymentGeneralController extends Controller
                //DETAIL
                $detail->each(function ($d){
                     $d->update(['active'=>1]);
-                   // LÆ°u sá»‘ láº¡i sá»‘ tá»“n bÃªn ná»£
+                   // Luu so ton ben no
                     if(substr($d->debit()->first()->code,0,3) == ("111" || "113")){
                         $this->increaseCurrencyEdit($d->debit,$d->currency,$d->amount);
                       //$ba = AccCurrencyCheck::get_type_first($d->debit,$d->currency,null);
@@ -185,7 +185,7 @@ class AccBankPaymentGeneralController extends Controller
                     //    $ba->save();
                     //  }
                     //}
-                    // LÆ°u sá»‘ láº¡i sá»‘ tá»“n bÃªn cÃ³
+                    // Luu so ton ben co
                     if(substr($d->credit()->first()->code,0,3) == "112"){
                       $this->reduceCurrencyEdit($d->credit,$d->currency,$d->amount,$d->bank_account_credit);
                       //$ca = AccCurrencyCheck::get_type_first($d->credit,$d->currency,$d->bank_account);
@@ -253,7 +253,7 @@ class AccBankPaymentGeneralController extends Controller
     $type = 10;
     try{
       $req = json_decode($request->data);
-      // TÃ¬m voucher
+      // Tim voucher
       $v = AccNumberVoucher::get_menu($req->type); 
       $val = Convert::dateformatArr($v->format,$req->year.'-'.$req->month.'-'.$req->day);
       $voucher = AccCountVoucher::get_count_voucher($v->id,$v->format,$val['day_format'],$val['month_format'],$val['year_format']);  
@@ -275,7 +275,7 @@ class AccBankPaymentGeneralController extends Controller
     try{
       DB::connection(env('CONNECTION_DB_ACC'))->beginTransaction();
       $req = json_decode($request->data);
-      // TÃ¬m voucher & lÆ°u voucher
+      // Tim voucher & luu voucher
       $voucher = AccCountVoucher::find($req->voucherId);
       if($voucher){
           $voucher->number = $req->number;
@@ -312,7 +312,7 @@ class AccBankPaymentGeneralController extends Controller
            if(!$period){
              if($permission['d'] == true){             
 
-               // LÆ°u lá»‹ch sá»­
+               // Luu lich su
                $h = new AccHistoryAction();
                $h ->create([
                'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -325,28 +325,28 @@ class AccBankPaymentGeneralController extends Controller
                $detail = $data->detail;
                
                foreach($detail as $d){
-                //Clear sá»‘ tiá»n bÃªn ná»£
+                //Clear so tien ben no
                $this->reduceCurrencyEdit($d->debit,$d->currency,$d->amount);
 
-                //Clear sá»‘ tiá»n bÃªn cÃ³
+                //Clear so tien ben co
                $this->increaseCurrencyEdit($d->credit,$d->currency,$d->amount,$d->bank_account_credit);
          
                }             
 
-               // XÃ³a cÃ¡c dÃ²ng chi tiáº¿t
+               // Xoa cac dong chi tiet
                $data->detail()->delete();              
 
-               // Update láº¡i tráº¡ng thÃ¡i thanh toÃ¡n
+               // Update lai trang thai thanh toan
               $tax_payment = $data->vat_detail_payment;
               $this->updateStatusPayment($tax_payment);
 
-                // Update láº¡i tráº¡ng thÃ¡i so sÃ¡nh ngÃ¢n hÃ ng
+                // Update lai trang thai so sanh ngan hang
                $this->updateActiveCompare($data->compare_id); 
               
-                // XÃ³a cÃ¡c dÃ²ng thuáº¿
+                // Xoa cac dong thue
                $data->tax()->delete();
 
-                // XÃ³a cÃ¡c dÃ²ng thanh toÃ¡n
+                // Xoa cac dong thanh toan
                 $data->vat_detail_payment()->delete();                        
              
                 $attach = $data->attach;
@@ -393,10 +393,10 @@ class AccBankPaymentGeneralController extends Controller
       $rs = json_decode($request->data);
       $menu = Menu::where('code', '=', $this->key_voucher)->first();
       $file = $request->file;
-      // Import dá»¯ liá»‡u
+      // Import du lieu
       $import = new AccBankPaymentImport($menu->id,$this->group);
       Excel::import($import, $file);
-      // Láº¥y láº¡i dá»¯ liá»‡u
+      // Lay du lieu sau khi import
       //$array = AccGeneral::with('detail','tax')->get();
 
       // Import dá»¯ liá»‡u báº±ng collection
@@ -413,7 +413,7 @@ class AccBankPaymentGeneralController extends Controller
       //}
        $data = $import->getData();
       foreach($data['crit'] as $item){
-        // LÆ°u sá»‘ tá»“n bÃªn ná»£
+        // Luu so ton ben no
       if(substr($item['debit'],0,3)  === ('111' ||  '113')){ 
          $this->increaseCurrency($item['debit_id'],$item['currency'],$item['amount'],$item['rate']);      
         //$balance = AccCurrencyCheck::get_type_first($item['debit_id'],$item['currency'],null);
@@ -429,7 +429,7 @@ class AccBankPaymentGeneralController extends Controller
         //      $balance->save();
         //    }
       }
-      // LÆ°u sá»‘ tá»“n bÃªn cÃ³
+      // Luu so ton ben co
       if(substr($item['credit'],0,3) === '112'){              
               $this->reduceCurrency($item['credit_id'],$item['currency'],$item['amount'],$item['rate'],$item['bank_account']);   
               //$balance = AccCurrencyCheck::get_type_first($item['credit_id'],$item['currency'],$item['bank_account']);
@@ -448,7 +448,7 @@ class AccBankPaymentGeneralController extends Controller
       }
       $merged = collect($rs)->push($data);
       //dump($merged);
-    // LÆ°u lá»‹ch sá»­
+    // Luu lich su
     $h = new AccHistoryAction();
     $h ->create([
       'type' => $type, // Add : 2 , Edit : 3 , Delete : 4, Import : 5

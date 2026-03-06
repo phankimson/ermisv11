@@ -79,7 +79,7 @@ class AccBankCompareController extends Controller
             }
              $period = AccPeriod::get_date(Carbon::parse($data->accounting_date)->format('Y-m'),1);
              if(!$period){
-               // LÆ°u lá»‹ch sá»­
+               // Luu Lich su
                $h = new AccHistoryAction();
                $h ->create([
                'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -142,7 +142,7 @@ class AccBankCompareController extends Controller
               }     
              $period = AccPeriod::get_date(Carbon::parse($data->accounting_date)->format('Y-m'),1);
              if(!$period){
-               // LÆ°u lá»‹ch sá»­
+              // Luu Lich su
                $h = new AccHistoryAction();
                $h ->create([
                'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -203,7 +203,7 @@ class AccBankCompareController extends Controller
       ]);
         $rs = json_decode($request->data);
         $file = $request->file;
-        // Äá»•i dá»¯ liá»‡u Excel sang collect
+        // Doi du lieu Excel sang collect
         config(['excel.imports.read_only' => false]);
         $bank_account = AccBankAccount::find($rs->crit);
         if(!$bank_account){
@@ -255,7 +255,7 @@ class AccBankCompareController extends Controller
         //$voucher = AccNumberVoucher::get_menu($menu_change->first()->id); 
         $currency_default = AccSystems::get_systems($this->currency_default);
         $rate = AccCurrency::get_code($currency_default->value);
-        // Láº¥y Ä‘á»‹nh khoáº£n máº·c Ä‘inh
+        // Lay dinh khoan mac dinh tu setting voucher
         $setting_voucher = AccSettingVoucher::get_menu($menu_change->first()->id);
         $data = new BankCompareCreateGeneralVoucherResource($bank_compare,['rate' =>$rate,'setting_voucher'=>$setting_voucher]);
       }else{

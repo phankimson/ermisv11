@@ -10,7 +10,7 @@ class PosProduct extends Model
     use BootedTraits;
 
     protected $connection = 'mysql3';
-    protected $table = 'pos_ermis_products';
+    protected $table = 'products';
     public $incrementing = false;
     protected $guarded = [];
 

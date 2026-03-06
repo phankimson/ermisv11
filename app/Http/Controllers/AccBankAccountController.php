@@ -136,7 +136,7 @@ class AccBankAccountController extends Controller
        $data->active = $arr->active;
        $data->save();
 
-       // Lưu lịch sử
+       // Luu Lich su
        $h = new AccHistoryAction();
        $h ->create([
          'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -145,7 +145,7 @@ class AccBankAccountController extends Controller
          'url'  => $this->url,
          'dataz' => \json_encode($data)]);
 
-       // Lấy ID và phân loại Thêm
+       // Lay Id de phan loai
        $arr->id = $data->id;
        $arr->t = $type;
        DB::connection(env('CONNECTION_DB_ACC'))->commit();
@@ -157,7 +157,7 @@ class AccBankAccountController extends Controller
       if(!$data){
           return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
         }
-       // Lưu lịch sử
+       // Luu Lich su
        $h = new AccHistoryAction();
        $h ->create([
          'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -175,7 +175,7 @@ class AccBankAccountController extends Controller
       $data->description = $arr->description;
       $data->active = $arr->active;
       $data->save();
-       // Phân loại Sửa
+       // Phan loai sua
        $arr->t = $type;
        DB::connection(env('CONNECTION_DB_ACC'))->commit();
        broadcast(new \App\Events\DataSend($arr));
@@ -208,7 +208,7 @@ class AccBankAccountController extends Controller
              if(!$data){
               return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
             }
-            // Lưu lịch sử
+            // Luu Lich su
             $h = new AccHistoryAction();
             $h ->create([
             'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -253,14 +253,14 @@ class AccBankAccountController extends Controller
        $rs = json_decode($request->data);
 
        $file = $request->file;
-       // Import dữ liệu
+       // Import du lieu
        $import = new AccBankAccountImport;
        Excel::import($import, $file);
-       // Lấy lại dữ liệu
+       // Lay lai du lieu
       
        $merged = collect($rs)->push($import->getData());
        //dump($merged);
-     // Lưu lịch sử
+     // Luu Lich su
      $h = new AccHistoryAction();
      $h ->create([
        'type' => $type, // Add : 2 , Edit : 3 , Delete : 4, Import : 5

@@ -131,15 +131,15 @@ class AccPeriodController extends Controller
      $startDate = $formatDate->startOfMonth()->format('Y-m-d');
      $endDate = $formatDate->endOfMonth()->format('Y-m-d');
      $general = AccGeneral::get_range_date($startDate,$endDate);
-       // LÃƒÂ¡Ã‚ÂºÃ‚Â¥y kÃƒÂ¡Ã‚Â»Ã‚Â³ thÃƒÆ’Ã‚Â¡ng trÃƒâ€ Ã‚Â°ÃƒÂ¡Ã‚Â»Ã¢â‚¬Âºc
+       // Lay ky thang truoc
        $period_last = AccPeriod::latest('created_at')->first();
        //$period_last = AccPeriod::get_date($formatLastMonth,1);
-       // LÃƒÂ¡Ã‚ÂºÃ‚Â¥y tÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¢ng sÃƒÂ¡Ã‚Â»Ã¢â‚¬Ëœ kÃƒÂ¡Ã‚Â»Ã‚Â³
+       // Lay tong so ky
        $period_count = AccPeriod::count();
      if($check && $check->id != $arr->id){
        return response()->json(['status'=>false,'message'=> trans('messages.duplicate_date')]);
-     //}else if(!$period_last && $period_count>0){
-     //   return response()->json(['status'=>false,'message'=> trans('messages.must_lock_the_previous_period').' @ '. $formatLastMonth]);  
+     }else if(!$period_last && $period_count>0){
+        return response()->json(['status'=>false,'message'=> trans('messages.must_lock_the_previous_period').' @ '. $formatLastMonth]);  
      }else if($general->where('active',0)->count()>0){
        $voucher = '';
        foreach($general->where('active',0) as $g){
@@ -162,7 +162,7 @@ class AccPeriodController extends Controller
          $data->save();
        };               
        $save_detail = true;
-       // LÃƒâ€ Ã‚Â°u lÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ch sÃƒÂ¡Ã‚Â»Ã‚Â­
+       // Luu lich su
        $h = new AccHistoryAction();
        $h ->create([
          'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -171,7 +171,7 @@ class AccPeriodController extends Controller
          'url'  => $this->url,
          'dataz' => \json_encode($data)]);
 
-       // LÃƒÂ¡Ã‚ÂºÃ‚Â¥y ID vÃƒÆ’Ã‚Â  vÃƒÆ’Ã‚Â  phÃƒÆ’Ã‚Â¢n loÃƒÂ¡Ã‚ÂºÃ‚Â¡i ThÃƒÆ’Ã‚Âªm
+       // Lay ID va phan loai Them
        $merge = collect((array)$arr);
        $merge = json_decode($merge->merge($data->toArray())->toJson());
        $merge->t = $type;
@@ -203,37 +203,37 @@ public function saveDetail(Request $request){
   $dataId = $data['dataId'];
   $general = AccGeneral::get_whereIn($general_id);
   if($general->count()>0){       
-    // LÃƒâ€ Ã‚Â°u bÃƒÂ¡Ã‚ÂºÃ‚Â£ng chi tiÃƒÂ¡Ã‚ÂºÃ‚Â¿t stk chÃƒÂ¡Ã‚Â»Ã¢â‚¬Ëœt kÃƒÂ¡Ã‚Â»Ã‚Â³ theo thÃƒÆ’Ã‚Â¡ng
-      // LÃƒÂ¡Ã‚ÂºÃ‚Â¥y giÃƒÆ’Ã‚Â¡ trÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ phÃƒÆ’Ã‚Â¡t sinh trong kÃƒÂ¡Ã‚Â»Ã‚Â³
+    // Luu bang chi tiet stk chat ky theo thang
+      // Lay gia tri phat sinh trong ky
    $detail = $general->load('detail')->pluck('detail')->collapse()->values(); 
-   // TÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¢ng phÃƒÆ’Ã‚Â¡t sinh NÃƒÂ¡Ã‚Â»Ã‚Â£  theo tk
+   // Tang phat sinh No  theo tk
    $debit_sum = $detail->groupBy('debit')->map(function ($row) {
               return $row->sum('amount_rate');
    });
-    // TÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¢ng phÃƒÆ’Ã‚Â¡t sinh CÃƒÆ’Ã‚Â³ theo tk
+    // Tang phat sinh Co  theo tk
    $credit_sum = $detail->groupBy('credit')->map(function ($row) {
      return $row->sum('amount_rate');
      });
    $merged_account = $debit_sum->merge($credit_sum);    
    foreach ($merged_account as $key=>$item ){
-    $do = 0; // NÃƒÂ¡Ã‚Â»Ã‚Â£ Ãƒâ€žÃ¢â‚¬ËœÃƒÂ¡Ã‚ÂºÃ‚Â§u kÃƒÂ¡Ã‚Â»Ã‚Â³  
-    $co = 0; // CÃƒÆ’Ã‚Â³ Ãƒâ€žÃ¢â‚¬ËœÃƒÂ¡Ã‚ÂºÃ‚Â§u kÃƒÂ¡Ã‚Â»Ã‚Â³    
-    $de = 0; // NÃƒÂ¡Ã‚Â»Ã‚Â£ cuÃƒÂ¡Ã‚Â»Ã¢â‚¬Ëœi kÃƒÂ¡Ã‚Â»Ã‚Â³
-    $ce = 0; // CÃƒÆ’Ã‚Â³ cuÃƒÂ¡Ã‚Â»Ã¢â‚¬Ëœi kÃƒÂ¡Ã‚Â»Ã‚Â³
-    $debit_sum_fi = $debit_sum[$key] ?? 0;// TÃƒÆ’Ã‚Â¬m sÃƒÂ¡Ã‚Â»Ã¢â‚¬Ëœ tiÃƒÂ¡Ã‚Â»Ã‚Ân tÃƒÆ’Ã‚Â i khoÃƒÂ¡Ã‚ÂºÃ‚Â£n nÃƒÂ¡Ã‚Â»Ã‚Â£
-    $credit_sum_fi = $credit_sum[$key] ?? 0;// TÃƒÆ’Ã‚Â¬m sÃƒÂ¡Ã‚Â»Ã¢â‚¬Ëœ tiÃƒÂ¡Ã‚Â»Ã‚Ân tÃƒÆ’Ã‚Â i khoÃƒÂ¡Ã‚ÂºÃ‚Â£n cÃƒÆ’Ã‚Â³
+    $do = 0; // No dau ky  
+    $co = 0; // Co dau ky    
+    $de = 0; // No cuoi ky
+    $ce = 0; // Co cuoi ky
+    $debit_sum_fi = $debit_sum[$key] ?? 0;// Tim so tien tai khoan no
+    $credit_sum_fi = $credit_sum[$key] ?? 0;// Tim so tien tai khoan co
     if($period_last){    
-      // LÃƒÂ¡Ã‚ÂºÃ‚Â¥y bÃƒÂ¡Ã‚ÂºÃ‚Â£ng chi tiÃƒÂ¡Ã‚ÂºÃ‚Â¿t Ãƒâ€žÃ¢â‚¬ËœÃƒÆ’Ã‚Â£ lÃƒâ€ Ã‚Â°u cÃƒÂ¡Ã‚Â»Ã‚Â§a kÃƒÂ¡Ã‚Â»Ã‚Â³ trÃƒâ€ Ã‚Â°ÃƒÂ¡Ã‚Â»Ã¢â‚¬Âºc (sÃƒÂ¡Ã‚Â»Ã¢â‚¬Ëœ Ãƒâ€žÃ¢â‚¬ËœÃƒÂ¡Ã‚ÂºÃ‚Â§u kÃƒÂ¡Ã‚Â»Ã‚Â³)      
+      // Lay bang chi tiet cua ky truoc (so du dau ky)      
       $account_systems_balance = AccAccountBalance::get_account($period_last,$key);        
     }else{
-      // LÃƒÂ¡Ã‚ÂºÃ‚Â¥y sÃƒÂ¡Ã‚Â»Ã¢â‚¬Ëœ dÃƒâ€ Ã‚Â° Ãƒâ€žÃ¢â‚¬ËœÃƒÂ¡Ã‚ÂºÃ‚Â§u kÃƒÂ¡Ã‚Â»Ã‚Â³
+      // Lay so du dau ky
       $account_systems_balance = AccAccountBalance::get_account(0,$key);         
     };
-    if($account_systems_balance){ // NÃƒÂ¡Ã‚ÂºÃ‚Â¿u cÃƒÆ’Ã‚Â³ phÃƒÆ’Ã‚Â¡t sinh lÃƒÂ¡Ã‚ÂºÃ‚Â¥y nÃƒÂ¡Ã‚Â»Ã‚Â£ cÃƒÆ’Ã‚Â³
+    if($account_systems_balance){ // Neu co phat sinh lay no co
      $do = $account_systems_balance->debit_close;
      $co = $account_systems_balance->credit_close;
     }; 
-   // TÃƒÆ’Ã‚Â­nh sÃƒÂ¡Ã‚Â»Ã¢â‚¬Ëœ nÃƒÂ¡Ã‚Â»Ã‚Â£ cÃƒÆ’Ã‚Â³ cuÃƒÂ¡Ã‚Â»Ã¢â‚¬Ëœi kÃƒÂ¡Ã‚Â»Ã‚Â³      
+   // Tinh so du cuoi ky      
     $de = max($do - $co + $debit_sum_fi - $credit_sum_fi,0) ;
     $ce = max($co - $do - $debit_sum_fi + $credit_sum_fi,0 );
           $arr = [
@@ -249,35 +249,35 @@ public function saveDetail(Request $request){
        AccAccountBalance::create($arr);
    };
 
-    // LÃƒâ€ Ã‚Â°u chi tiÃƒÂ¡Ã‚ÂºÃ‚Â¿t NCC,KH chÃƒÂ¡Ã‚Â»Ã¢â‚¬Ëœt kÃƒÂ¡Ã‚Â»Ã‚Â³ theo thÃƒÆ’Ã‚Â¡ng
-   // TÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¢ng phÃƒÆ’Ã‚Â¡t sinh nÃƒÂ¡Ã‚Â»Ã‚Â£
+    // Luu chi tiet NCC,KH chat ky theo thang
+   // Tang phat sinh No
     $subject_debit_sum =  $detail->whereNotIn('subject_id_debit', ['',0])->groupBy('subject_id_debit')->map(function ($row) {
                return $row->sum('amount_rate');
       });
-     // TÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¢ng phÃƒÆ’Ã‚Â¡t sinh cÃƒÆ’Ã‚Â³
+     // Tang phat sinh Co
     $subject_credit_sum = $detail->whereNotIn('subject_id_credit', ['',0])->groupBy('subject_id_credit')->map(function ($row) {
                return $row->sum('amount_rate');
       }); 
     $subject_merged_account = $subject_debit_sum->merge($subject_credit_sum);
     foreach ($subject_merged_account as $key=>$item ){
-     $do = 0; // NÃƒÂ¡Ã‚Â»Ã‚Â£ Ãƒâ€žÃ¢â‚¬ËœÃƒÂ¡Ã‚ÂºÃ‚Â§u kÃƒÂ¡Ã‚Â»Ã‚Â³  
-     $co = 0; // CÃƒÆ’Ã‚Â³ Ãƒâ€žÃ¢â‚¬ËœÃƒÂ¡Ã‚ÂºÃ‚Â§u kÃƒÂ¡Ã‚Â»Ã‚Â³    
-     $de = 0; // NÃƒÂ¡Ã‚Â»Ã‚Â£ cuÃƒÂ¡Ã‚Â»Ã¢â‚¬Ëœi kÃƒÂ¡Ã‚Â»Ã‚Â³
-     $ce = 0; // CÃƒÆ’Ã‚Â³ cuÃƒÂ¡Ã‚Â»Ã¢â‚¬Ëœi kÃƒÂ¡Ã‚Â»Ã‚Â³
-     $debit_sum_fi = $subject_debit_sum[$key]?? 0;// TÃƒÆ’Ã‚Â¬m sÃƒÂ¡Ã‚Â»Ã¢â‚¬Ëœ tiÃƒÂ¡Ã‚Â»Ã‚Ân tÃƒÆ’Ã‚Â i khoÃƒÂ¡Ã‚ÂºÃ‚Â£n nÃƒÂ¡Ã‚Â»Ã‚Â£
-     $credit_sum_fi = $subject_credit_sum[$key]?? 0;// TÃƒÆ’Ã‚Â¬m sÃƒÂ¡Ã‚Â»Ã¢â‚¬Ëœ tiÃƒÂ¡Ã‚Â»Ã‚Ân tÃƒÆ’Ã‚Â i khoÃƒÂ¡Ã‚ÂºÃ‚Â£n cÃƒÆ’Ã‚Â³
+     $do = 0; // No dau ky  
+     $co = 0; // Co dau ky    
+     $de = 0; // No cuoi ky
+     $ce = 0; // Co cuoi ky
+     $debit_sum_fi = $subject_debit_sum[$key]?? 0;// Tim so tien tai khoan no
+     $credit_sum_fi = $subject_credit_sum[$key]?? 0;// Tim so tien tai khoan co
      if($period_last){
-       // LÃƒÂ¡Ã‚ÂºÃ‚Â¥y bÃƒÂ¡Ã‚ÂºÃ‚Â£ng chi tiÃƒÂ¡Ã‚ÂºÃ‚Â¿t Ãƒâ€žÃ¢â‚¬ËœÃƒÆ’Ã‚Â£ lÃƒâ€ Ã‚Â°u cÃƒÂ¡Ã‚Â»Ã‚Â§a kÃƒÂ¡Ã‚Â»Ã‚Â³ trÃƒâ€ Ã‚Â°ÃƒÂ¡Ã‚Â»Ã¢â‚¬Âºc (sÃƒÂ¡Ã‚Â»Ã¢â‚¬Ëœ Ãƒâ€žÃ¢â‚¬ËœÃƒÂ¡Ã‚ÂºÃ‚Â§u kÃƒÂ¡Ã‚Â»Ã‚Â³)
+       // Lay bang chi tiet cua ky truoc (so du dau ky)
        $object_balance = AccObjectBalance::get_object($period_last,$key);        
      }else{
-       // LÃƒÂ¡Ã‚ÂºÃ‚Â¥y sÃƒÂ¡Ã‚Â»Ã¢â‚¬Ëœ dÃƒâ€ Ã‚Â° Ãƒâ€žÃ¢â‚¬ËœÃƒÂ¡Ã‚ÂºÃ‚Â§u kÃƒÂ¡Ã‚Â»Ã‚Â³
+       // Lay so du dau ky
        $object_balance = AccObjectBalance::get_object(0,$key);         
      };
-     if($object_balance){ // NÃƒÂ¡Ã‚ÂºÃ‚Â¿u cÃƒÆ’Ã‚Â³ phÃƒÆ’Ã‚Â¡t sinh lÃƒÂ¡Ã‚ÂºÃ‚Â¥y nÃƒÂ¡Ã‚Â»Ã‚Â£ cÃƒÆ’Ã‚Â³
+     if($object_balance){ // Neu co phat sinh lay no co
        $do = $object_balance->debit_close;
        $co = $object_balance->credit_close;
        }
-     // TÃƒÆ’Ã‚Â­nh sÃƒÂ¡Ã‚Â»Ã¢â‚¬Ëœ nÃƒÂ¡Ã‚Â»Ã‚Â£ cÃƒÆ’Ã‚Â³ cuÃƒÂ¡Ã‚Â»Ã¢â‚¬Ëœi kÃƒÂ¡Ã‚Â»Ã‚Â³
+     // Tinh so du cuoi ky
      $de = max($do - $co + $debit_sum_fi - $credit_sum_fi,0) ;
      $ce = max($co - $do - $debit_sum_fi + $credit_sum_fi,0 );
            $arr = [
@@ -294,35 +294,35 @@ public function saveDetail(Request $request){
     }; 
 
 
-    // LÃƒâ€ Ã‚Â°u chi tiÃƒÂ¡Ã‚ÂºÃ‚Â¿t NgÃƒÆ’Ã‚Â¢n hÃƒÆ’Ã‚Â ng chÃƒÂ¡Ã‚Â»Ã¢â‚¬Ëœt kÃƒÂ¡Ã‚Â»Ã‚Â³ theo thÃƒÆ’Ã‚Â¡ng
-   // TÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¢ng phÃƒÆ’Ã‚Â¡t sinh nÃƒÂ¡Ã‚Â»Ã‚Â£
+    // Luu chi tiet Ngân hàng chat ky theo thang
+   // Tang phat sinh No
     $bank_account_debit_sum =  $detail->whereNotIn('bank_account_debit', ['',0])->groupBy('bank_account_debit')->map(function ($row) {
                return $row->sum('amount_rate');
     });
-     // TÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¢ng phÃƒÆ’Ã‚Â¡t sinh cÃƒÆ’Ã‚Â³
+     // Tang phat sinh Co
     $bank_account_credit_sum = $detail->whereNotIn('bank_account_credit', ['',0])->groupBy('bank_account_credit')->map(function ($row) {
                return $row->sum('amount_rate');
       }); 
     $bank_account_merged_account = $bank_account_debit_sum->merge($bank_account_credit_sum);
     foreach ($bank_account_merged_account as $key=>$item ){
-     $do = 0; // NÃƒÂ¡Ã‚Â»Ã‚Â£ Ãƒâ€žÃ¢â‚¬ËœÃƒÂ¡Ã‚ÂºÃ‚Â§u kÃƒÂ¡Ã‚Â»Ã‚Â³  
-     $co = 0; // CÃƒÆ’Ã‚Â³ Ãƒâ€žÃ¢â‚¬ËœÃƒÂ¡Ã‚ÂºÃ‚Â§u kÃƒÂ¡Ã‚Â»Ã‚Â³    
-     $de = 0; // NÃƒÂ¡Ã‚Â»Ã‚Â£ cuÃƒÂ¡Ã‚Â»Ã¢â‚¬Ëœi kÃƒÂ¡Ã‚Â»Ã‚Â³
-     $ce = 0; // CÃƒÆ’Ã‚Â³ cuÃƒÂ¡Ã‚Â»Ã¢â‚¬Ëœi kÃƒÂ¡Ã‚Â»Ã‚Â³
-     $debit_sum_fi = $bank_account_debit_sum[$key]?? 0;// TÃƒÆ’Ã‚Â¬m sÃƒÂ¡Ã‚Â»Ã¢â‚¬Ëœ tiÃƒÂ¡Ã‚Â»Ã‚Ân tÃƒÆ’Ã‚Â i khoÃƒÂ¡Ã‚ÂºÃ‚Â£n nÃƒÂ¡Ã‚Â»Ã‚Â£
-     $credit_sum_fi = $bank_account_credit_sum[$key]?? 0;// TÃƒÆ’Ã‚Â¬m sÃƒÂ¡Ã‚Â»Ã¢â‚¬Ëœ tiÃƒÂ¡Ã‚Â»Ã‚Ân tÃƒÆ’Ã‚Â i khoÃƒÂ¡Ã‚ÂºÃ‚Â£n cÃƒÆ’Ã‚Â³
+     $do = 0; // No dau ky  
+     $co = 0; // Co dau ky    
+     $de = 0; // No cuoi ky
+     $ce = 0; // Co cuoi ky
+     $debit_sum_fi = $bank_account_debit_sum[$key]?? 0;// Tim so tien tai khoan no
+     $credit_sum_fi = $bank_account_credit_sum[$key]?? 0;// Tim so tien tai khoan co
      if($period_last){
-       // LÃƒÂ¡Ã‚ÂºÃ‚Â¥y bÃƒÂ¡Ã‚ÂºÃ‚Â£ng chi tiÃƒÂ¡Ã‚ÂºÃ‚Â¿t Ãƒâ€žÃ¢â‚¬ËœÃƒÆ’Ã‚Â£ lÃƒâ€ Ã‚Â°u cÃƒÂ¡Ã‚Â»Ã‚Â§a kÃƒÂ¡Ã‚Â»Ã‚Â³ trÃƒâ€ Ã‚Â°ÃƒÂ¡Ã‚Â»Ã¢â‚¬Âºc (sÃƒÂ¡Ã‚Â»Ã¢â‚¬Ëœ Ãƒâ€žÃ¢â‚¬ËœÃƒÂ¡Ã‚ÂºÃ‚Â§u kÃƒÂ¡Ã‚Â»Ã‚Â³)
+       // Lay bang chi tiet cua ky truoc (so du dau ky)
        $bank_account_balance = AccBankAccountBalance::get_bank_account($period_last,$key);        
      }else{
-       // LÃƒÂ¡Ã‚ÂºÃ‚Â¥y sÃƒÂ¡Ã‚Â»Ã¢â‚¬Ëœ dÃƒâ€ Ã‚Â° Ãƒâ€žÃ¢â‚¬ËœÃƒÂ¡Ã‚ÂºÃ‚Â§u kÃƒÂ¡Ã‚Â»Ã‚Â³
+       // Lay so du dau ky
        $bank_account_balance = AccBankAccountBalance::get_bank_account(0,$key);         
      };
-     if($bank_account_balance){ // NÃƒÂ¡Ã‚ÂºÃ‚Â¿u cÃƒÆ’Ã‚Â³ phÃƒÆ’Ã‚Â¡t sinh lÃƒÂ¡Ã‚ÂºÃ‚Â¥y nÃƒÂ¡Ã‚Â»Ã‚Â£ cÃƒÆ’Ã‚Â³
+     if($bank_account_balance){ // Neu co phat sinh lay no co
        $do = $bank_account_balance->debit_close;
        $co = $bank_account_balance->credit_close;
        }
-     // TÃƒÆ’Ã‚Â­nh sÃƒÂ¡Ã‚Â»Ã¢â‚¬Ëœ nÃƒÂ¡Ã‚Â»Ã‚Â£ cÃƒÆ’Ã‚Â³ cuÃƒÂ¡Ã‚Â»Ã¢â‚¬Ëœi kÃƒÂ¡Ã‚Â»Ã‚Â³
+     // Tinh so du cuoi ky
      $de = max($do - $co + $debit_sum_fi - $credit_sum_fi,0) ;
      $ce = max($co - $do - $debit_sum_fi + $credit_sum_fi,0 );
            $arr = [
@@ -339,48 +339,48 @@ public function saveDetail(Request $request){
     }; 
 
    
-   // LÃƒâ€ Ã‚Â°u tÃƒÂ¡Ã‚Â»Ã¢â‚¬Å“n kho chÃƒÂ¡Ã‚Â»Ã¢â‚¬Ëœt kÃƒÂ¡Ã‚Â»Ã‚Â³ theo thÃƒÆ’Ã‚Â¡ng
+   // Luu ton kho chat ky theo thang
    $stock = AccStock::all();
    foreach($stock as $s){     
     $inventory_re = $general->where('stock_receipt',$s)->load('inventory')->pluck('inventory')->collapse()->values();  
-     // TÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¢ng tiÃƒÂ¡Ã‚Â»Ã‚Ân phÃƒÆ’Ã‚Â¡t sinh nhÃƒÂ¡Ã‚ÂºÃ‚Â­p
+     // Tang phat sinh Nhap
     $amount_sum_receipt = $inventory_re->groupBy('item_id')->map(function ($row) {
                      return $row->sum('amount');
              }); 
-      // TÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¢ng sÃƒÂ¡Ã‚Â»Ã¢â‚¬Ëœ lÃƒâ€ Ã‚Â°ÃƒÂ¡Ã‚Â»Ã‚Â£ng phÃƒÆ’Ã‚Â¡t sinh nhÃƒÂ¡Ã‚ÂºÃ‚Â­p
+      // Tang so luong phat sinh Nhap
     $quantity_sum_receipt =  $inventory_re->groupBy('item_id')->map(function ($row) {
                      return $row->sum('quantity');
              }); 
              
     $inventory_is = $general->where('stock_issue',$s)->load('inventory')->pluck('inventory')->collapse()->values();    
-     // TÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¢ng tiÃƒÂ¡Ã‚Â»Ã‚Ân phÃƒÆ’Ã‚Â¡t sinh xuÃƒÂ¡Ã‚ÂºÃ‚Â¥t      
+     // Tang phat sinh Xuat      
     $amount_sum_issue = $inventory_is->groupBy('item_id')->map(function ($row) {
                  return $row->sum('amount');
          }); 
-     // TÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¢ng sÃƒÂ¡Ã‚Â»Ã¢â‚¬Ëœ lÃƒâ€ Ã‚Â°ÃƒÂ¡Ã‚Â»Ã‚Â£ng phÃƒÆ’Ã‚Â¡t sinh xuÃƒÂ¡Ã‚ÂºÃ‚Â¥t    
+     // Tang so luong phat sinh Xuat    
     $quantity_sum_issue = $inventory_is->groupBy('item_id')->map(function ($row) {
                  return $row->sum('quantity');
        });  
     $inventory_merged = $amount_sum_receipt->merge($amount_sum_issue);
     foreach ($inventory_merged as $key=>$item ){
-       $ao = 0; // SÃƒÂ¡Ã‚Â»Ã¢â‚¬Ëœ tiÃƒÂ¡Ã‚Â»Ã‚Ân Ãƒâ€žÃ¢â‚¬ËœÃƒÂ¡Ã‚ÂºÃ‚Â§u kÃƒÂ¡Ã‚Â»Ã‚Â³  
-       $qo = 0; // SÃƒÂ¡Ã‚Â»Ã¢â‚¬Ëœ lÃƒâ€ Ã‚Â°ÃƒÂ¡Ã‚Â»Ã‚Â£ng Ãƒâ€žÃ¢â‚¬ËœÃƒÂ¡Ã‚ÂºÃ‚Â§u kÃƒÂ¡Ã‚Â»Ã‚Â³  
-       $ae = 0; // SÃƒÂ¡Ã‚Â»Ã¢â‚¬Ëœ tiÃƒÂ¡Ã‚Â»Ã‚Ân cuÃƒÂ¡Ã‚Â»Ã¢â‚¬Ëœi kÃƒÂ¡Ã‚Â»Ã‚Â³  
-       $qe = 0; // SÃƒÂ¡Ã‚Â»Ã¢â‚¬Ëœ lÃƒâ€ Ã‚Â°ÃƒÂ¡Ã‚Â»Ã‚Â£ng cuÃƒÂ¡Ã‚Â»Ã¢â‚¬Ëœi kÃƒÂ¡Ã‚Â»Ã‚Â³ 
-       $amount_sum_re = $amount_sum_receipt[$key]?? 0;// TÃƒÆ’Ã‚Â¬m sÃƒÂ¡Ã‚Â»Ã¢â‚¬Ëœ tiÃƒÂ¡Ã‚Â»Ã‚Ân nhÃƒÂ¡Ã‚ÂºÃ‚Â­p
-       $quantity_sum_re = $quantity_sum_receipt[$key]?? 0;// TÃƒÆ’Ã‚Â¬m sÃƒÂ¡Ã‚Â»Ã¢â‚¬Ëœ lÃƒâ€ Ã‚Â°ÃƒÂ¡Ã‚Â»Ã‚Â£ng nhÃƒÂ¡Ã‚ÂºÃ‚Â­p
-       $amount_sum_is = $amount_sum_issue[$key]?? 0;// TÃƒÆ’Ã‚Â¬m sÃƒÂ¡Ã‚Â»Ã¢â‚¬Ëœ tiÃƒÂ¡Ã‚Â»Ã‚Ân xuÃƒÂ¡Ã‚ÂºÃ‚Â¥t
-       $quantity_sum_is = $quantity_sum_issue[$key]?? 0;// TÃƒÆ’Ã‚Â¬m sÃƒÂ¡Ã‚Â»Ã¢â‚¬Ëœ lÃƒâ€ Ã‚Â°ÃƒÂ¡Ã‚Â»Ã‚Â£ng xuÃƒÂ¡Ã‚ÂºÃ‚Â¥t
+       $ao = 0; // So du dau ky tien
+       $qo = 0; // So du dau ky luong
+       $ae = 0; // So du cuoi ky tien
+       $qe = 0; // So du cuoi ky luong
+       $amount_sum_re = $amount_sum_receipt[$key]?? 0;// Tim so tien nhap
+       $quantity_sum_re = $quantity_sum_receipt[$key]?? 0;// Tim so luong nhap
+       $amount_sum_is = $amount_sum_issue[$key]?? 0;// Tim so tien xuat
+       $quantity_sum_is = $quantity_sum_issue[$key]?? 0;// Tim so luong xuat
      if($period_last){          
        $stock_item_balance = AccStockBalance::get_item($period_last,$s,$key);         
      }else{
        $stock_item_balance = AccStockBalance::get_item(0,$s,$key);
      };
-     if($stock_item_balance){ // NÃƒÂ¡Ã‚ÂºÃ‚Â¿u cÃƒÆ’Ã‚Â³ phÃƒÆ’Ã‚Â¡t sinh lÃƒÂ¡Ã‚ÂºÃ‚Â¥y sÃƒÂ¡Ã‚Â»Ã¢â‚¬Ëœ lÃƒâ€ Ã‚Â°ÃƒÂ¡Ã‚Â»Ã‚Â£ng, giÃƒÆ’Ã‚Â¡ trÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹
+     if($stock_item_balance){ // Neu co phat sinh lay so du dau ky
        $ao = $stock_item_balance->amount_close;
        $qo = $stock_item_balance->quantity_close;
      }      
-     // TÃƒÆ’Ã‚Â­nh sÃƒÂ¡Ã‚Â»Ã¢â‚¬Ëœ tÃƒÂ¡Ã‚Â»Ã¢â‚¬Å“n cuÃƒÂ¡Ã‚Â»Ã¢â‚¬Ëœi kÃƒÂ¡Ã‚Â»Ã‚Â³
+     // Tinh so du cuoi ky
      $ae =  $ao + $amount_sum_re -$amount_sum_is ;
      $qe = $qo + $quantity_sum_re - $quantity_sum_is;
            $arr = [
@@ -423,7 +423,7 @@ public function saveDetail(Request $request){
            if(!$data){
             return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
           }
-           // LÃƒâ€ Ã‚Â°u lÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ch sÃƒÂ¡Ã‚Â»Ã‚Â­
+           // Luu lich su
            $h = new AccHistoryAction();
            $h ->create([
            'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -431,13 +431,13 @@ public function saveDetail(Request $request){
            'menu' => $this->menu->id,
            'url'  => $this->url,
            'dataz' => \json_encode($data)]);                       
-           // XÃƒÆ’Ã‚Â³a chi tiÃƒÂ¡Ã‚ÂºÃ‚Â¿t stk
+           // Xoa chi tiet stk
            $data->account_balance()->delete();
-           // XÃƒÆ’Ã‚Â³a chi tiÃƒÂ¡Ã‚ÂºÃ‚Â¿t NCC,KH
+           // Xoa chi tiet NCC,KH
            $data->object_balance()->delete();  
-           // XÃƒÆ’Ã‚Â³a chi tiÃƒÂ¡Ã‚ÂºÃ‚Â¿t tÃƒÂ¡Ã‚Â»Ã¢â‚¬Å“n kho
+           // Xoa chi tiet ton kho
            $data->stock_balance()->delete(); 
-           // XÃƒÆ’Ã‚Â³a kÃƒÂ¡Ã‚Â»Ã‚Â³
+           // Xoa ky
            $data->delete();
            DB::connection(env('CONNECTION_DB_ACC'))->commit();
            broadcast(new \App\Events\DataSend($arr));

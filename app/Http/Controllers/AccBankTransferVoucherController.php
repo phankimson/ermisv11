@@ -41,7 +41,7 @@ class AccBankTransferVoucherController extends Controller
   public function __construct(Request $request)
  {
      $this->url =  $request->segment(3);
-     $this->group = 11; // NhÃ³m chuyá»ƒn ngÃ¢n hÃ ng ná»™i bá»™
+     $this->group = 11; // Nhom chuyen ngan hang noi bo
      $this->key = "bank-transfer-voucher";
      $this->menu = Menu::where('code', '=', $this->key)->first();
      $this->print = 'BT%';
@@ -110,7 +110,7 @@ class AccBankTransferVoucherController extends Controller
             $action = 'add';
             $general = new AccGeneral();
             $general->user = $user->id;
-            // LÆ°u sá»‘ nháº£y
+            // Luu so nhay
                $v = $this->saveNumberVoucher($this->menu,$arr);
           }else{
             $check_permission = false;
@@ -130,10 +130,10 @@ class AccBankTransferVoucherController extends Controller
           $general->group = $this->group;
           $general->save();
           
-          // Tham chiáº¿u / Reference
+          // Tham chieu / Reference
           $this->saveReference($arr->reference_by,$general->id);
 
-              // Láº¥y giÃ¡ trá»‹ kiá»ƒm tra tiá»n máº·t cÃ³ Ã¢m khÃ´ng
+              // Lay gia tri kiem tra tien mat co am khong
           $ca = AccSystems::get_systems($this->check_cash);
           $acc = "";
 
@@ -152,21 +152,21 @@ class AccBankTransferVoucherController extends Controller
              $detail->general_id = $general->id;
              $detail->description = $d->description;
              $detail->currency = $arr->currency;
-             $detail->debit = $d->debit->value;  // Äá»•i tá»« id value dáº¡ng read
-             $detail->credit = $d->credit->value;  // Äá»•i tá»« id value dáº¡ng read
+             $detail->debit = $d->debit->value;  // Doi tu id value dang read
+             $detail->credit = $d->credit->value;  // Doi tu id value dang read
              $detail->amount = $d->amount;
              $detail->rate = $d->rate;
              $detail->amount_rate = $d->amount * $d->rate;
-             $detail->accounted_fast = $d->accounted_fast->value;  // Äá»•i tá»« id value dáº¡ng read
-             $detail->bank_account_debit = $arr->bank_account_debit;  // Äá»•i tá»« id value dáº¡ng read   
-             $detail->bank_account_credit = $arr->bank_account_credit;  // Äá»•i tá»« id value dáº¡ng read             
+             $detail->accounted_fast = $d->accounted_fast->value;  // Doi tu id value dang read
+             $detail->bank_account_debit = $arr->bank_account_debit;  // Doi tu id value dang read   
+             $detail->bank_account_credit = $arr->bank_account_credit;  // Doi tu id value dang read             
              $detail->active = 1;
              $detail->status = 1;
              $detail->save();
        
              array_push($removeId,$detail->id);
              $arr->detail[$k]->id = $detail->id;      
-             // LÆ°u sá»‘ tá»“n tiá»n bÃªn Ná»£
+             // Luu so ton tien ben No
              if(substr($d->debit->text,0,3) === '112'){ 
                $balance = $this->increaseCurrency($d->debit->value,$arr->currency,$d->amount,$d->rate,$arr->bank_account_debit);    
               //  $balance = AccCurrencyCheck::get_type_first($d->debit->value,$arr->currency,$d->bank_account_debit->value);     
@@ -184,7 +184,7 @@ class AccBankTransferVoucherController extends Controller
              }
                // End
            
-               // LÆ°u sá»‘ tá»“n tiá»n bÃªn CÃ³
+               // Luu so ton tien ben Co
               if(substr($d->credit->text,0,3) == '112'){
                 $balance = $this->reduceCurrency($d->credit->value,$arr->currency,$d->amount,$d->rate,$arr->bank_account_credit);
                 //  $balance = AccCurrencyCheck::get_type_first($d->credit->value,$arr->currency,$d->bank_account_credit->value);     
@@ -207,13 +207,13 @@ class AccBankTransferVoucherController extends Controller
                // End
            }
 
-           // XÃ³a dÃ²ng chi tiáº¿t
+           // Xoa dong chi tiet
            AccDetail::get_detail_whereNotIn_delete($general->id,$removeId);
            
-           // LÆ°u file
+           // Luu file
            $this->saveFile($request,$general->id,$this->path);   
 
-           // LÆ°u lá»‹ch sá»­
+           // Luu lich su
            $h = new AccHistoryAction();
            $h ->create([
            'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -281,7 +281,7 @@ class AccBankTransferVoucherController extends Controller
         //$rs = json_decode($request->data);
   
         $file = $request->file;
-        // Äá»•i dá»¯ liá»‡u Excel sang collect
+        //Chuyen du lieu Excel sang collect
         config(['excel.imports.read_only' => false]);
         $data = new AccBankTransferGeneralImport($this->menu);
         Excel::import($data , $file);

@@ -46,9 +46,9 @@ class AccCashPaymentVoucherController extends Controller
   public function __construct(Request $request)
  {
      $this->url =  $request->segment(3);
-     $this->invoice_type = 1; // 1 HÃ³a Ä‘Æ¡n Ä‘áº§u vÃ o , // 2 HÃ³a Ä‘Æ¡n Ä‘áº§u ra
-     $this->group = 2; // 2 NhÃ³m chi tiá»n máº·t
-     $this->type_object = 1; // 1 NhÃ  cung cáº¥p (VD : 2,3 náº¿u nhiá»u Ä‘á»‘i tÆ°á»£ng)
+     $this->invoice_type = 1; // 1 Hoa don dau vao , // 2 Hoa don dau ra
+     $this->group = 2; // 2 Nhom chi tien mat
+     $this->type_object = 1; // 1 Nha cung cap (VD : 2,3 neu nhieu doi tuong)
      $this->key = "cash-payment-voucher";
      $this->menu = Menu::where('code', '=', $this->key)->first();
      $this->print = 'PC%';
@@ -105,7 +105,7 @@ class AccCashPaymentVoucherController extends Controller
           $removeId = [];
           $removeId_v = [];
           $permission = $request->session()->get('per');
-          $check_pemission = true;
+          $check_permission = true;
           $user = Auth::user();
           if($permission['e'] == true && $arr->id ){
             $general = AccGeneral::find($arr->id);
@@ -120,10 +120,10 @@ class AccCashPaymentVoucherController extends Controller
             $action = 'add';
             $general = new AccGeneral();
             $general->user = $user->id;
-            // LÆ°u sá»‘ nháº£y
+            // Luu so nhay
              $v = $this->saveNumberVoucher($this->menu,$arr);
           }else{
-            $check_pemission = false;
+            $check_permission = false;
           }       
           $general->type = $this->menu->id;
           $general->voucher = $v;
@@ -142,10 +142,10 @@ class AccCashPaymentVoucherController extends Controller
           $general->group = $this->group;
           $general->save();
           
-          // Tham chiáº¿u / Reference
+          // Tham chieu / Reference
           $this->saveReference($arr->reference_by,$general->id);
           
-             // Láº¥y giÃ¡ trá»‹ kiá»ƒm tra tiá»n máº·t cÃ³ Ã¢m khÃ´ng
+             // Lay gia tri kiem tra tien mat co am khong
           $ca = AccSystems::get_systems($this->check_cash);
           $acc = "";
           // CHI TIET / Detail
@@ -187,7 +187,7 @@ class AccCashPaymentVoucherController extends Controller
              array_push($removeId,$detail->id);
              $arr->detail[$k]->id = $detail->id;       
           
-             // LÆ°u sá»‘ tá»“n tiá»n bÃªn Ná»£
+             // Luu so ton tien ben No
              if(substr($d->debit->text,0,3) === ('111' || '113' )){     
               $balance = $this->increaseCurrency($d->debit->value,$arr->currency,$d->amount,$d->rate);    
               //  $balance = AccCurrencyCheck::get_type_first($d->debit->value,$arr->currency,null);            
@@ -242,14 +242,14 @@ class AccCashPaymentVoucherController extends Controller
                // End
            }
 
-           // XÃ³a dÃ²ng chi tiáº¿t
+           // Xoa dong chi tiet
            AccDetail::get_detail_whereNotIn_delete($general->id,$removeId);
            $check_invoice = false;
            $invoice = '';
-           // LÆ°u VAT
+           // Luu VAT
            foreach($arr->tax as $l => $x){
              $tax = collect([]);
-                // Kiá»ƒm tra cÃ³ trÃ¹ng MST, sá»‘ hÃ³a Ä‘Æ¡n 
+                // Kiem tra co trung MST, so hoa don, ky hieu hoa don, mau hoa don khong 
                 $arr_check = array(
                   ['invoice', '=',$x->invoice],
                   ['invoice_symbol', '=',$x->invoice_symbol],
@@ -264,7 +264,7 @@ class AccCashPaymentVoucherController extends Controller
                     break;
                 }
                 // End
-                // Update máº«u, kÃ½ tá»± hÃ³a Ä‘Æ¡n
+                // Update mau, ky tu hoa don
                 $obj = AccObject::find($x->subject_id);
                 if($obj){
                   $obj->invoice_form = $x->invoice_form;
@@ -307,14 +307,14 @@ class AccCashPaymentVoucherController extends Controller
              array_push($removeId_v,$tax->id);
              $arr->tax[$l]->id = $tax->id;
            }
-           // XÃ³a dÃ²ng chi tiáº¿t Vat
+           // Xoa dong chi tiet Vat
            AccVatDetail::get_detail_whereNotIn_delete($general->id,$removeId_v);
 
 
-           // LÆ°u file
+           // Luu file
            $this->saveFile($request,$general->id,$this->path); 
 
-           // LÆ°u lá»‹ch sá»­
+           // Luu lich su
            $h = new AccHistoryAction();
            $h ->create([
            'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -328,7 +328,7 @@ class AccCashPaymentVoucherController extends Controller
            }else if($acc != ""){
             DB::connection(env('CONNECTION_DB_ACC'))->rollBack();
             return response()->json(['status'=>false,'message'=> trans('messages.account_negative',['account'=>$acc])]);
-           }else if($check_pemission == false){
+           }else if($check_permission == false){
             DB::connection(env('CONNECTION_DB_ACC'))->rollBack();
              return response()->json(['status'=>false,'message'=> trans('messages.you_are_not_permission')]);
            }else{
@@ -385,7 +385,7 @@ class AccCashPaymentVoucherController extends Controller
         //$rs = json_decode($request->data);
   
         $file = $request->file;
-        // Äá»•i dá»¯ liá»‡u Excel sang collect
+        // Chuyen du lieu Excel sang collect
         config(['excel.imports.read_only' => false]);
         $data = new AccCashPaymentGeneralImport($this->menu);   
         Excel::import($data , $file);

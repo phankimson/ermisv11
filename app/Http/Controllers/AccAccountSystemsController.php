@@ -128,7 +128,7 @@ class AccAccountSystemsController extends Controller
          $data->active = $arr->active;
          $data->save();
 
-         // LÆ°u lá»‹ch sá»­
+         // Luu lich su
          $h = new AccHistoryAction();
          $h ->create([
            'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -137,7 +137,7 @@ class AccAccountSystemsController extends Controller
            'url'  => $this->url,
            'dataz' => \json_encode($data)]);
 
-         // Láº¥y ID vÃ  vÃ  phÃ¢n loáº¡i ThÃªm
+         // Lay ID de phan loai sua
          $arr->id = $data->id;
          $arr->parent_id = $data->parent_id;
          $arr->t = $type;
@@ -155,7 +155,7 @@ class AccAccountSystemsController extends Controller
         if(!$data){
         return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
         }
-         // LÆ°u lá»‹ch sá»­
+         // Luu lich su
          $h = new AccHistoryAction();
          $h ->create([
            'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -187,7 +187,7 @@ class AccAccountSystemsController extends Controller
         $data->document_id = $arr->document_id;
         $data->active = $arr->active;
         $data->save();
-         // PhÃ¢n loáº¡i Sá»­a
+         // Phan loai sua
          $arr->parent_id = $data->parent_id;
          $arr->t = $type;
          DB::connection(env('CONNECTION_DB_ACC'))->commit();
@@ -227,7 +227,7 @@ class AccAccountSystemsController extends Controller
               $item->parent_id = null;
               $item->save();
             });
-            // LÆ°u lá»‹ch sá»­
+            // Luu lich su
             $h = new AccHistoryAction();
             $h ->create([
             'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -272,14 +272,14 @@ class AccAccountSystemsController extends Controller
        $rs = json_decode($request->data);
 
        $file = $request->file;
-       // Import dá»¯ liá»‡u
+       // Import dau vao
        $import = new AccAccountSystemsImport;
        Excel::import($import, $file);
-       // Láº¥y láº¡i dá»¯ liá»‡u
+       // Lay lai du lieu
        
        $merged = collect($rs)->push($import->getData());
        //dump($merged);
-     // LÆ°u lá»‹ch sá»­
+     // Luu lich su
      $h = new AccHistoryAction();
      $h ->create([
        'type' => $type, // Add : 2 , Edit : 3 , Delete : 4, Import : 5

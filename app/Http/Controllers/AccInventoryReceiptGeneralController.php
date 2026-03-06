@@ -43,7 +43,7 @@ class AccInventoryReceiptGeneralController extends Controller
   public function __construct(Request $request)
  {
      $this->url =  $request->segment(3);
-     $this->group = 7; // 7 NhÃ³m nháº­p kho
+     $this->group = 7; // 7 Nhom nhap kho
      $this->key = "inventory-receipt-general";
      $this->key_voucher = "inventory-receipt-voucher";
      $this->menu = Menu::where('code', '=', $this->key)->first();
@@ -80,7 +80,7 @@ class AccInventoryReceiptGeneralController extends Controller
              $period = AccPeriod::get_date(Carbon::parse($data->accounting_date)->format('Y-m'),1);
              if(!$period){
                $detail = AccDetail::get_detail_active($data->id,1);               
-               // LÆ°u lá»‹ch sá»­
+               // Luu lich su
                $h = new AccHistoryAction();
                $h ->create([
                'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -97,7 +97,7 @@ class AccInventoryReceiptGeneralController extends Controller
                     // inventory
                     $inventory = AccInventory::get_detail_first($d->id);
                     if($inventory){
-                       // Trá»« sá»‘ tá»“n kho
+                       // Tru so ton kho
                       $this->reduceStock($d->debit,$inventory->stock_receipt,$inventory->item_id,$inventory->quantity); 
                       $inventory->update(['active'=>0]);                      
                     }                              
@@ -136,7 +136,7 @@ class AccInventoryReceiptGeneralController extends Controller
              $period = AccPeriod::get_date(Carbon::parse($data->accounting_date)->format('Y-m'),1);
              if(!$period){
                $detail = AccDetail::get_detail_active($data->id,0);
-               // LÆ°u lá»‹ch sá»­
+               // Luu lich su
                $h = new AccHistoryAction();
                $h ->create([
                'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -153,7 +153,7 @@ class AccInventoryReceiptGeneralController extends Controller
                     // inventory
                     $inventory = AccInventory::get_detail_first($d->id);
                     if($inventory){
-                     // Tráº£ láº¡i sá»‘ tá»“n kho
+                     // Tra lai so ton kho
                       $this->increaseStock($d->debit,$inventory->stock_receipt,$inventory->item_id,$inventory->quantity); 
                       $inventory->update(['active'=>1]);
                     }                  
@@ -199,7 +199,7 @@ class AccInventoryReceiptGeneralController extends Controller
     $type = 10;
     try{
       $req = json_decode($request->data);
-      // TÃ¬m voucher
+      // Tim voucher
       $v = AccNumberVoucher::get_menu($this->menu->id); 
       $date_obj = Convert::dateformatRange($v->format,$req);
       $data = collect(InventoryGeneralResource::collection(AccGeneral::get_data_load_between($req->type,$date_obj['start_date'],$date_obj['end_date'])));
@@ -217,7 +217,7 @@ class AccInventoryReceiptGeneralController extends Controller
     $type = 10;
     try{
       $req = json_decode($request->data);
-      // TÃ¬m voucher
+      // Tim voucher
       $v = AccNumberVoucher::get_menu($req->type); 
       $val = Convert::dateformatArr($v->format,$req->year.'-'.$req->month.'-'.$req->day);
       $voucher = AccCountVoucher::get_count_voucher($v->id,$v->format,$val['day_format'],$val['month_format'],$val['year_format']);  
@@ -239,7 +239,7 @@ class AccInventoryReceiptGeneralController extends Controller
     try{
       DB::connection(env('CONNECTION_DB_ACC'))->beginTransaction();
       $req = json_decode($request->data);
-      // TÃ¬m voucher & lÆ°u voucher
+      // Tim voucher & luu voucher
       $voucher = AccCountVoucher::find($req->voucherId);
       if($voucher){
           $voucher->number = $req->number;
@@ -275,7 +275,7 @@ class AccInventoryReceiptGeneralController extends Controller
            $period = AccPeriod::get_date(Carbon::parse($data->accounting_date)->format('Y-m'),1);
            if(!$period){
              if($permission['d'] == true){            
-               // LÆ°u lá»‹ch sá»­
+               // Luu lich su
                $h = new AccHistoryAction();
                $h ->create([
                'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -291,13 +291,13 @@ class AccInventoryReceiptGeneralController extends Controller
                  // inventory
                  $inventory = AccInventory::get_detail_first($d->id);
                  if($inventory){                  
-                    // Trá»« sá»‘ tá»“n kho
+                    // Tru so ton kho
                    $this->reduceStock($d->debit,$inventory->stock_receipt,$inventory->item_id,$inventory->quantity);                       
                    $inventory->delete();
                  }          
                }             
 
-               // XÃ³a cÃ¡c dÃ²ng chi tiáº¿t
+               // Xoa cac dong chi tiet
                $data->detail()->delete();                                  
 
                $attach = $data->attach;
@@ -344,13 +344,13 @@ class AccInventoryReceiptGeneralController extends Controller
       $rs = json_decode($request->data);
       $menu = Menu::where('code', '=', $this->key_voucher)->first();
       $file = $request->file;
-      // Import dá»¯ liá»‡u
+      // Import du lieu
       $import = new AccInventoryReceiptImport($menu->id,$this->group);
       Excel::import($import, $file);
-      // Láº¥y láº¡i dá»¯ liá»‡u
+      // Lay lai du lieu
       //$array = AccGeneral::with('detail','tax')->get();
 
-      // Import dá»¯ liá»‡u báº±ng collection
+      // Import du lieu bang collection
       //$results = Excel::toCollection(new HistoryActionImport, $file);
       //dump($results);
       //foreach($results[0] as $item){
@@ -364,9 +364,9 @@ class AccInventoryReceiptGeneralController extends Controller
       //}
        $data = $import->getData();
       foreach($data['crit'] as $item){
-        // LÆ°u sá»‘ tá»“n bÃªn ná»£
+        // Luu so ton ben no
          $this->increaseStock($item['acc'],$item['stock'],$item['item_id'],$item['quantity']);
-         // LÆ°u Inventory
+         // Luu Inventory
          $inventory = new AccInventory(); 
          $inventory->general_id = $item['general_id'];
          $inventory->detail_id = $item['detail_id'];
@@ -384,7 +384,7 @@ class AccInventoryReceiptGeneralController extends Controller
       }
       $merged = collect($rs)->push($data);
       //dump($merged);
-    // LÆ°u lá»‹ch sá»­
+    // Luu lich su
     $h = new AccHistoryAction();
     $h ->create([
       'type' => $type, // Add : 2 , Edit : 3 , Delete : 4, Import : 5
