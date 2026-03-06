@@ -62,9 +62,12 @@ class AccSettingAccountGroupController extends Controller
           $orderby = explode(' ', $orderby)[0];
         };
         if($filter){
-          $filter_sql = Convert::filterRow($filter);
-          $arr = AccSettingAccountGroup::get_raw_skip_filter_page($skip,$perPage,$orderby,$asc,$filter_sql);
-          $total = AccSettingAccountGroup::whereRaw($filter_sql)->count();
+          $filter_conditions = Convert::parseFilterConditions($filter);
+          if($filter_conditions === null){
+            return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
+          }
+          $arr = AccSettingAccountGroup::get_raw_skip_filter_page($skip,$perPage,$orderby,$asc,$filter_conditions);
+          $total = Convert::applyFilterConditions(AccSettingAccountGroup::query(), $filter_conditions)->count();
         }else{
           $arr = AccSettingAccountGroup::get_raw_skip_page($skip,$perPage,$orderby,$asc); 
         }  
@@ -134,7 +137,7 @@ class AccSettingAccountGroupController extends Controller
        $data->active = $arr->active;
        $data->save();
 
-      // LÆ°u Setting Account System Filter
+      // LÃƒâ€ Ã‚Â°u Setting Account System Filter
       foreach($arr->account_filter as $t){
         $ot = new AccAccountSystemsFilter();
         $ot->account_systems_filter()->associate($data);
@@ -142,7 +145,7 @@ class AccSettingAccountGroupController extends Controller
         $ot->save();
         }
 
-       // LÆ°u lá»‹ch sá»­
+       // LÃƒâ€ Ã‚Â°u lÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ch sÃƒÂ¡Ã‚Â»Ã‚Â­
        $h = new AccHistoryAction();
        $h ->create([
          'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -151,7 +154,7 @@ class AccSettingAccountGroupController extends Controller
          'url'  => $this->url,
          'dataz' => \json_encode($data)]);
 
-       // Láº¥y ID vÃ  vÃ  phÃ¢n loáº¡i ThÃªm
+       // LÃƒÂ¡Ã‚ÂºÃ‚Â¥y ID vÃƒÆ’Ã‚Â  vÃƒÆ’Ã‚Â  phÃƒÆ’Ã‚Â¢n loÃƒÂ¡Ã‚ÂºÃ‚Â¡i ThÃƒÆ’Ã‚Âªm
        $arr->id = $data->id;
        $arr->t = $type;
        DB::connection(env('CONNECTION_DB_ACC'))->commit();
@@ -163,7 +166,7 @@ class AccSettingAccountGroupController extends Controller
        if(!$data){
           return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
         }
-       // LÆ°u lá»‹ch sá»­
+       // LÃƒâ€ Ã‚Â°u lÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ch sÃƒÂ¡Ã‚Â»Ã‚Â­
        $h = new AccHistoryAction();
        $h ->create([
          'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -182,7 +185,7 @@ class AccSettingAccountGroupController extends Controller
 
 
 
-       // LÆ°u Setting Account Group Filter 
+       // LÃƒâ€ Ã‚Â°u Setting Account Group Filter 
       $ob_all = AccSettingAccountGroup::find($data->id)->account_filter;
       foreach($arr->account_filter as $t){
           $obc = $ob_all->first(function ($value) use ($t) {
@@ -206,7 +209,7 @@ class AccSettingAccountGroupController extends Controller
      }
 
 
-       // PhÃ¢n loáº¡i Sá»­a
+       // PhÃƒÆ’Ã‚Â¢n loÃƒÂ¡Ã‚ÂºÃ‚Â¡i SÃƒÂ¡Ã‚Â»Ã‚Â­a
        $arr->t = $type;
        DB::connection(env('CONNECTION_DB_ACC'))->commit();
        broadcast(new \App\Events\DataSend($arr));
@@ -239,7 +242,7 @@ class AccSettingAccountGroupController extends Controller
             if(!$data){
               return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
             }
-            // LÆ°u lá»‹ch sá»­
+            // LÃƒâ€ Ã‚Â°u lÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ch sÃƒÂ¡Ã‚Â»Ã‚Â­
             $h = new AccHistoryAction();
             $h ->create([
             'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -291,13 +294,13 @@ class AccSettingAccountGroupController extends Controller
        $rs = json_decode($request->data);
 
        $file = $request->file;
-       // Import dá»¯ liá»‡u
+       // Import dÃƒÂ¡Ã‚Â»Ã‚Â¯ liÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¡u
        $import = new AccSettingAccountGroupImport;
        Excel::import($import, $file);
-       // Láº¥y láº¡i dá»¯ liá»‡u
+       // LÃƒÂ¡Ã‚ÂºÃ‚Â¥y lÃƒÂ¡Ã‚ÂºÃ‚Â¡i dÃƒÂ¡Ã‚Â»Ã‚Â¯ liÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¡u
        $merged = collect($rs)->push($import->getData());
        //dump($merged);
-     // LÆ°u lá»‹ch sá»­
+     // LÃƒâ€ Ã‚Â°u lÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ch sÃƒÂ¡Ã‚Â»Ã‚Â­
      $h = new AccHistoryAction();
      $h ->create([
        'type' => $type, // Add : 2 , Edit : 3 , Delete : 4, Import : 5

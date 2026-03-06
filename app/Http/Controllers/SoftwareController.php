@@ -62,9 +62,12 @@ class SoftwareController extends Controller
           $orderby = explode(' ', $orderby)[0];
         };
         if($filter){
-          $filter_sql = Convert::filterRow($filter);
-          $arr = Software::get_raw_skip_filter_page($skip,$perPage,$orderby,$asc,$filter_sql);
-          $total = Software::whereRaw($filter_sql)->count();
+          $filter_conditions = Convert::parseFilterConditions($filter);
+          if($filter_conditions === null){
+            return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
+          }
+          $arr = Software::get_raw_skip_filter_page($skip,$perPage,$orderby,$asc,$filter_conditions);
+          $total = Convert::applyFilterConditions(Software::query(), $filter_conditions)->count();
         }else{
           $arr = Software::get_raw_skip_page($skip,$perPage,$orderby,$asc);   
         }   
@@ -104,7 +107,7 @@ class SoftwareController extends Controller
        $data->active = $arr->active;
        $data->save();
 
-       // LÆ°u lá»‹ch sá»­
+       // LÃƒâ€ Ã‚Â°u lÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ch sÃƒÂ¡Ã‚Â»Ã‚Â­
        $h = new HistoryAction();
        $h ->create([
          'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -113,13 +116,13 @@ class SoftwareController extends Controller
          'url' => $this->url,
          'dataz' => \json_encode($data)]);
 
-       // Láº¥y ID vÃ  vÃ  phÃ¢n loáº¡i ThÃªm
+       // LÃƒÂ¡Ã‚ÂºÃ‚Â¥y ID vÃƒÆ’Ã‚Â  vÃƒÆ’Ã‚Â  phÃƒÆ’Ã‚Â¢n loÃƒÂ¡Ã‚ÂºÃ‚Â¡i ThÃƒÆ’Ã‚Âªm
        $arr->id = $data->id;
        $arr->t = $type;
-       //LÆ°u láº¡i pass
+       //LÃƒâ€ Ã‚Â°u lÃƒÂ¡Ã‚ÂºÃ‚Â¡i pass
        $arr->password = $data->password;
 
-       // LÆ°u áº£nh thÃªm
+       // LÃƒâ€ Ã‚Â°u ÃƒÂ¡Ã‚ÂºÃ‚Â£nh thÃƒÆ’Ã‚Âªm
        if($request->hasFile('files')) {
          $files = $request->file('files');
          $filename = $files->getClientOriginalName();
@@ -130,13 +133,13 @@ class SoftwareController extends Controller
          File::makeDirectory($path, 0777, true, true);
          }
          $upload_success = $files->move($path, $filename);
-         // LÆ°u láº¡i hÃ¬nh áº£nh
+         // LÃƒâ€ Ã‚Â°u lÃƒÂ¡Ã‚ÂºÃ‚Â¡i hÃƒÆ’Ã‚Â¬nh ÃƒÂ¡Ã‚ÂºÃ‚Â£nh
          $data = Software::find($arr->id);
          if($data){
           $data->image = $pathname;
           $data->save();
          }
-         //LÆ°u áº£nh láº¡i array
+         //LÃƒâ€ Ã‚Â°u ÃƒÂ¡Ã‚ÂºÃ‚Â£nh lÃƒÂ¡Ã‚ÂºÃ‚Â¡i array
          $arr->image = $pathname;
        }
        //
@@ -149,7 +152,7 @@ class SoftwareController extends Controller
        if(!$data){
         return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
       }
-       // LÆ°u lá»‹ch sá»­
+       // LÃƒâ€ Ã‚Â°u lÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ch sÃƒÂ¡Ã‚Â»Ã‚Â­
        $h = new HistoryAction();
        $h ->create([
          'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -171,14 +174,14 @@ class SoftwareController extends Controller
        $data->note = $arr->note;
        $data->active = $arr->active;
        $data->save();
-       //LÆ°u láº¡i pass
+       //LÃƒâ€ Ã‚Â°u lÃƒÂ¡Ã‚ÂºÃ‚Â¡i pass
        $arr->password_temp = $data->password_temp;
-       // PhÃ¢n loáº¡i Sá»­a
+       // PhÃƒÆ’Ã‚Â¢n loÃƒÂ¡Ã‚ÂºÃ‚Â¡i SÃƒÂ¡Ã‚Â»Ã‚Â­a
        $arr->t = $type;
 
-       // LÆ°u áº£nh sá»­a
+       // LÃƒâ€ Ã‚Â°u ÃƒÂ¡Ã‚ÂºÃ‚Â£nh sÃƒÂ¡Ã‚Â»Ã‚Â­a
        if($request->hasFile('files')) {
-         //XÃ³a áº£nh cÅ©
+         //XÃƒÆ’Ã‚Â³a ÃƒÂ¡Ã‚ÂºÃ‚Â£nh cÃƒâ€¦Ã‚Â©
          if($data->image && File::exists(public_path($data->image))){
             File::delete(public_path($data->image));
          };
@@ -192,13 +195,13 @@ class SoftwareController extends Controller
          File::makeDirectory($path, 0777, true, true);
          }
          $upload_success = $files->move($path, $filename);
-         // LÆ°u láº¡i hÃ¬nh áº£nh
+         // LÃƒâ€ Ã‚Â°u lÃƒÂ¡Ã‚ÂºÃ‚Â¡i hÃƒÆ’Ã‚Â¬nh ÃƒÂ¡Ã‚ÂºÃ‚Â£nh
          $data = Software::find($arr->id);
          if($data){
           $data->image = $pathname;
           $data->save();
          }         
-         //LÆ°u áº£nh láº¡i array
+         //LÃƒâ€ Ã‚Â°u ÃƒÂ¡Ã‚ÂºÃ‚Â£nh lÃƒÂ¡Ã‚ÂºÃ‚Â¡i array
          $arr->image = $pathname;
        }
        DB::commit(); 
@@ -232,7 +235,7 @@ class SoftwareController extends Controller
             if(!$data){
               return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
             }
-            // LÆ°u lá»‹ch sá»­
+            // LÃƒâ€ Ã‚Â°u lÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ch sÃƒÂ¡Ã‚Â»Ã‚Â­
             $h = new HistoryAction();
             $h ->create([
             'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -242,7 +245,7 @@ class SoftwareController extends Controller
             'dataz' => \json_encode($data)]);
             //
 
-            //XÃ³a áº£nh cÅ©
+            //XÃƒÆ’Ã‚Â³a ÃƒÂ¡Ã‚ÂºÃ‚Â£nh cÃƒâ€¦Ã‚Â©
             if($data->image && File::exists(public_path($data->image))){
                File::delete(public_path($data->image));
             };
@@ -283,14 +286,14 @@ class SoftwareController extends Controller
        $rs = json_decode($request->data);
 
        $file = $request->file;
-       // Import dá»¯ liá»‡u
+       // Import dÃƒÂ¡Ã‚Â»Ã‚Â¯ liÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¡u
        $import = new SoftwareImport;
        Excel::import($import, $file);
-       // Láº¥y láº¡i dá»¯ liá»‡u
+       // LÃƒÂ¡Ã‚ÂºÃ‚Â¥y lÃƒÂ¡Ã‚ÂºÃ‚Â¡i dÃƒÂ¡Ã‚Â»Ã‚Â¯ liÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¡u
 
        $merged = collect($rs)->push($import->getData());
        //dump($merged);
-     // LÆ°u lá»‹ch sá»­
+     // LÃƒâ€ Ã‚Â°u lÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ch sÃƒÂ¡Ã‚Â»Ã‚Â­
      $h = new HistoryAction();
      $h ->create([
        'type' => $type, // Add : 2 , Edit : 3 , Delete : 4, Import : 5

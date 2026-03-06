@@ -69,9 +69,12 @@ class AccSettingVoucherController extends Controller
           $orderby = explode(' ', $orderby)[0];
         };
         if($filter){
-          $filter_sql = Convert::filterRow($filter);
-          $arr = AccSettingVoucher::get_raw_skip_filter_page($skip,$perPage,$orderby,$asc,$filter_sql);
-          $total = AccSettingVoucher::whereRaw($filter_sql)->count();
+          $filter_conditions = Convert::parseFilterConditions($filter);
+          if($filter_conditions === null){
+            return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
+          }
+          $arr = AccSettingVoucher::get_raw_skip_filter_page($skip,$perPage,$orderby,$asc,$filter_conditions);
+          $total = Convert::applyFilterConditions(AccSettingVoucher::query(), $filter_conditions)->count();
         }else{
           $arr = AccSettingVoucher::get_raw_skip_page($skip,$perPage,$orderby,$asc); 
         }     
@@ -147,7 +150,7 @@ class AccSettingVoucherController extends Controller
        $data->active = $arr->active;
        $data->save();
 
-        // LÆ°u Account Systems Filter Debit
+        // LÃƒâ€ Ã‚Â°u Account Systems Filter Debit
       foreach($arr->debit_filter as $t){
         $df = new AccAccountSystemsFilter();
         $df->account_systems_filter_id  = $data->id;
@@ -156,7 +159,7 @@ class AccSettingVoucherController extends Controller
         $df->save();
         }
 
-        // LÆ°u Account Systems Filter Credit
+        // LÃƒâ€ Ã‚Â°u Account Systems Filter Credit
       foreach($arr->credit_filter as $t){
         $cf = new AccAccountSystemsFilter();
         $cf->account_systems_filter_id  = $data->id;
@@ -166,7 +169,7 @@ class AccSettingVoucherController extends Controller
         }
 
 
-       // LÆ°u lá»‹ch sá»­
+       // LÃƒâ€ Ã‚Â°u lÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ch sÃƒÂ¡Ã‚Â»Ã‚Â­
        $h = new AccHistoryAction();
        $h ->create([
          'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -175,7 +178,7 @@ class AccSettingVoucherController extends Controller
          'url'  => $this->url,
          'dataz' => \json_encode($data)]);
 
-       // Láº¥y ID vÃ  vÃ  phÃ¢n loáº¡i ThÃªm
+       // LÃƒÂ¡Ã‚ÂºÃ‚Â¥y ID vÃƒÆ’Ã‚Â  vÃƒÆ’Ã‚Â  phÃƒÆ’Ã‚Â¢n loÃƒÂ¡Ã‚ÂºÃ‚Â¡i ThÃƒÆ’Ã‚Âªm
        $arr->id = $data->id;
        $arr->t = $type;
        DB::connection(env('CONNECTION_DB_ACC'))->commit();
@@ -187,7 +190,7 @@ class AccSettingVoucherController extends Controller
        if(!$data){
           return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
         }
-       // LÆ°u lá»‹ch sá»­
+       // LÃƒâ€ Ã‚Â°u lÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ch sÃƒÂ¡Ã‚Â»Ã‚Â­
        $h = new AccHistoryAction();
        $h ->create([
          'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -208,7 +211,7 @@ class AccSettingVoucherController extends Controller
       $data->save();
       
 
-       //  LÆ°u Account Systems Filter Debit
+       //  LÃƒâ€ Ã‚Â°u Account Systems Filter Debit
         $df_all = AccAccountSystemsFilter::get_account_systems_filter($data->id,$df_text);
        foreach($arr->debit_filter as $t){
         $obc = AccAccountSystemsFilter::get_item($data->id,$df_text,$t);
@@ -231,7 +234,7 @@ class AccSettingVoucherController extends Controller
       }
 
 
-      //  LÆ°u Account Systems Filter Credit
+      //  LÃƒâ€ Ã‚Â°u Account Systems Filter Credit
       $cf_all = AccAccountSystemsFilter::get_account_systems_filter($data->id,$cf_text);
       foreach($arr->credit_filter as $t){
        $obc = AccAccountSystemsFilter::get_item($data->id,$cf_text,$t);       
@@ -255,7 +258,7 @@ class AccSettingVoucherController extends Controller
 
       
 
-       // PhÃ¢n loáº¡i Sá»­a
+       // PhÃƒÆ’Ã‚Â¢n loÃƒÂ¡Ã‚ÂºÃ‚Â¡i SÃƒÂ¡Ã‚Â»Ã‚Â­a
        $arr->t = $type;
        DB::connection(env('CONNECTION_DB_ACC'))->commit();
        broadcast(new \App\Events\DataSend($arr));
@@ -288,7 +291,7 @@ class AccSettingVoucherController extends Controller
             if(!$data){
               return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
             }
-            // LÆ°u lá»‹ch sá»­
+            // LÃƒâ€ Ã‚Â°u lÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ch sÃƒÂ¡Ã‚Â»Ã‚Â­
             $h = new AccHistoryAction();
             $h ->create([
             'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -348,13 +351,13 @@ class AccSettingVoucherController extends Controller
        $rs = json_decode($request->data);
 
        $file = $request->file;
-       // Import dá»¯ liá»‡u
+       // Import dÃƒÂ¡Ã‚Â»Ã‚Â¯ liÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¡u
        $import = new AccSettingVoucherImport;
        Excel::import($import, $file);
-       // Láº¥y láº¡i dá»¯ liá»‡u
+       // LÃƒÂ¡Ã‚ÂºÃ‚Â¥y lÃƒÂ¡Ã‚ÂºÃ‚Â¡i dÃƒÂ¡Ã‚Â»Ã‚Â¯ liÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¡u
        $merged = collect($rs)->push($import->getData());
        //dump($merged);
-     // LÆ°u lá»‹ch sá»­
+     // LÃƒâ€ Ã‚Â°u lÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ch sÃƒÂ¡Ã‚Â»Ã‚Â­
      $h = new AccHistoryAction();
      $h ->create([
        'type' => $type, // Add : 2 , Edit : 3 , Delete : 4, Import : 5

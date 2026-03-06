@@ -58,9 +58,12 @@ class DocumentController extends Controller
           $orderby = explode(' ', $orderby)[0];
         };
         if($filter){
-          $filter_sql = Convert::filterRow($filter);
-          $arr = Document::get_raw_skip_filter_page($skip,$perPage,$orderby,$asc,$filter_sql);
-          $total = Document::whereRaw($filter_sql)->count();
+          $filter_conditions = Convert::parseFilterConditions($filter);
+          if($filter_conditions === null){
+            return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
+          }
+          $arr = Document::get_raw_skip_filter_page($skip,$perPage,$orderby,$asc,$filter_conditions);
+          $total = Convert::applyFilterConditions(Document::query(), $filter_conditions)->count();
         }else{
           $arr = Document::get_raw_skip_page($skip,$perPage,$orderby,$asc);    
         } 
@@ -100,7 +103,7 @@ class DocumentController extends Controller
        $data->active = $arr->active;
        $data->save();
 
-       // LÆ°u lá»‹ch sá»­
+       // LÃƒâ€ Ã‚Â°u lÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ch sÃƒÂ¡Ã‚Â»Ã‚Â­
        $h = new HistoryAction();
        $h ->create([
          'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -109,7 +112,7 @@ class DocumentController extends Controller
          'url' => $this->url,
          'dataz' => \json_encode($data)]);
 
-       // Láº¥y ID vÃ  vÃ  phÃ¢n loáº¡i ThÃªm
+       // LÃƒÂ¡Ã‚ÂºÃ‚Â¥y ID vÃƒÆ’Ã‚Â  vÃƒÆ’Ã‚Â  phÃƒÆ’Ã‚Â¢n loÃƒÂ¡Ã‚ÂºÃ‚Â¡i ThÃƒÆ’Ã‚Âªm
        $arr->id = $data->id;
        $arr->t = $type;
        DB::commit();   
@@ -121,7 +124,7 @@ class DocumentController extends Controller
        if(!$data){
           return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
         }
-       // LÆ°u lá»‹ch sá»­
+       // LÃƒâ€ Ã‚Â°u lÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ch sÃƒÂ¡Ã‚Â»Ã‚Â­
        $h = new HistoryAction();
        $h ->create([
          'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -141,7 +144,7 @@ class DocumentController extends Controller
       $data->content = $arr->content;
       $data->active = $arr->active;
       $data->save();
-       // PhÃ¢n loáº¡i Sá»­a
+       // PhÃƒÆ’Ã‚Â¢n loÃƒÂ¡Ã‚ÂºÃ‚Â¡i SÃƒÂ¡Ã‚Â»Ã‚Â­a
        $arr->t = $type;
        DB::commit();   
        broadcast(new \App\Events\DataSend($arr));
@@ -174,7 +177,7 @@ class DocumentController extends Controller
             if(!$data){
               return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
             }
-            // LÆ°u lá»‹ch sá»­
+            // LÃƒâ€ Ã‚Â°u lÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ch sÃƒÂ¡Ã‚Â»Ã‚Â­
             $h = new HistoryAction();
             $h ->create([
             'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -219,14 +222,14 @@ class DocumentController extends Controller
        $rs = json_decode($request->data);
 
        $file = $request->file;
-       // Import dá»¯ liá»‡u
+       // Import dÃƒÂ¡Ã‚Â»Ã‚Â¯ liÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¡u
        $import = new DocumentImport;
        Excel::import($import, $file);
-       // Láº¥y láº¡i dá»¯ liá»‡u
+       // LÃƒÂ¡Ã‚ÂºÃ‚Â¥y lÃƒÂ¡Ã‚ÂºÃ‚Â¡i dÃƒÂ¡Ã‚Â»Ã‚Â¯ liÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¡u
       
        $merged = collect($rs)->push($import->getData());
        //dump($merged);
-     // LÆ°u lá»‹ch sá»­
+     // LÃƒâ€ Ã‚Â°u lÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ch sÃƒÂ¡Ã‚Â»Ã‚Â­
      $h = new HistoryAction();
      $h ->create([
        'type' => $type, // Add : 2 , Edit : 3 , Delete : 4, Import : 5

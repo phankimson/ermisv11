@@ -62,9 +62,12 @@ class AccAccountTransferController extends Controller
           $orderby = explode(' ', $orderby)[0];
         };
         if($filter){
-          $filter_sql = Convert::filterRow($filter);
-          $arr = AccAccountTransfer::get_raw_skip_filter_page($skip,$perPage,$orderby,$asc,$filter_sql);
-          $total = AccAccountTransfer::whereRaw($filter_sql)->count();
+          $filter_conditions = Convert::parseFilterConditions($filter);
+          if($filter_conditions === null){
+            return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
+          }
+          $arr = AccAccountTransfer::get_raw_skip_filter_page($skip,$perPage,$orderby,$asc,$filter_conditions);
+          $total = Convert::applyFilterConditions(AccAccountTransfer::query(), $filter_conditions)->count();
         }else{
           $arr = AccAccountTransfer::get_raw_skip_page($skip,$perPage,$orderby,$asc); 
         }   
@@ -156,12 +159,12 @@ class AccAccountTransferController extends Controller
        $data->active = $arr->active;
        $data->save();
 
-       // LÆ°u mÃ£ code tá»± tÄƒng
+       // Lưu mã code tự tăng
        $ir = AccNumberCode::get_code($this->key);
        $ir->number = $ir->number + 1;
        $ir->save();
 
-       // LÆ°u lá»‹ch sá»­
+       // Lưu lịch sử
        $h = new AccHistoryAction();
        $h ->create([
          'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -170,7 +173,7 @@ class AccAccountTransferController extends Controller
          'url'  => $this->url,
          'dataz' => \json_encode($data)]);
 
-       // Láº¥y ID vÃ  vÃ  phÃ¢n loáº¡i ThÃªm
+       // Lấy ID và phân loại Thêm
        $arr->id = $data->id;
        $arr->t = $type;
        DB::connection(env('CONNECTION_DB_ACC'))->commit();
@@ -182,7 +185,7 @@ class AccAccountTransferController extends Controller
       if(!$data){
         return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
       }
-       // LÆ°u lá»‹ch sá»­
+       // Lưu lịch sử
        $h = new AccHistoryAction();
        $h ->create([
          'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -207,7 +210,7 @@ class AccAccountTransferController extends Controller
       $data->position = $arr->position;
       $data->active = $arr->active;
       $data->save();
-       // PhÃ¢n loáº¡i Sá»­a
+       // Phân loại Sửa
        $arr->t = $type;
        DB::connection(env('CONNECTION_DB_ACC'))->commit();
        broadcast(new \App\Events\DataSend($arr));
@@ -240,7 +243,7 @@ class AccAccountTransferController extends Controller
             if(!$data){
               return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
             }
-            // LÆ°u lá»‹ch sá»­
+            // Lưu lịch sử
             $h = new AccHistoryAction();
             $h ->create([
             'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -285,14 +288,14 @@ class AccAccountTransferController extends Controller
        $rs = json_decode($request->data);
 
        $file = $request->file;
-       // Import dá»¯ liá»‡u
+       // Import dữ liệu
        $import = new AccAccountTransferImport;
        Excel::import($import, $file);
-       // Láº¥y láº¡i dá»¯ liá»‡u
+       // Lấy lại dữ liệu
       
        $merged = collect($rs)->push($import->getData());
        //dump($merged);
-     // LÆ°u lá»‹ch sá»­
+     // Lưu lịch sử
      $h = new AccHistoryAction();
      $h ->create([
        'type' => $type, // Add : 2 , Edit : 3 , Delete : 4, Import : 5

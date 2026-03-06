@@ -112,62 +112,210 @@ class Convert
     }
     return $obj;    
   }
-
   static public function filterRow($filter){
-    if(!$filter) return;
-    $mappings = array(
-      "eq"=>"=",
-      "neq"=>"!=",
-      "lt"=>'{0} < "{1}"',
-      "lte"=>'{0} <= "{1}"',
-      "gt"=>'{0} > "{1}"',
-      "gte"=>'{0} >= "{1}"',
-      "startswith"=>'({0} LIKE "{1}%")',
-      "endswith"=>'({0} LIKE "%{1}")',
-      "substringof"=>'({1} LIKE "%{0}%")',
-      "notsubstringof"=>'({1} NOT LIKE "%{0}%")',
-    );
-    	// Remove all of the ' characters from the string.
-		$filter = str_replace("'", '"',$filter);
-    // Tìm notsubstringof
-    $pattern = '/substringof\([^()]*\)\seq\sfalse/';
-    $text_match = "";
-    if (preg_match($pattern, $filter, $match)){
-        if(preg_match('/\([^()]*\)/', $match[0], $match1)){
-          $text_match = $match1[0];
-        }      
+    $conditions = self::parseFilterConditions($filter);
+    if($conditions === null || empty($conditions)){
+      return null;
     }
-    $filter = preg_replace('/substringof\([^()]*\)\seq\sfalse/', 'notsubstringof'.$text_match, $filter);
-		$arr = explode(' ', $filter);
-    $array_mapping = array();
-    foreach($mappings as $k=>$v){
-      if(str_contains($filter, $k)){
-        $array_mapping[$k] = $v;
-      }
-    }   
-    foreach($arr as $k=>$key){
-      if(array_key_exists($key,$mappings)){
-          $arr[$k] = $mappings[$key];
-      }else{
-        // Tách chuỗi
-          foreach($array_mapping as $l=>$a){
-            if(str_contains($key, $l)){
-              $key = str_replace('"', '',$key);
-              $arr_con = explode(',', $key);            
-              $arr_cont = explode($l.'(', $arr_con[0]);              
-              $arr_con[1] = str_replace(")", "", $arr_con[1]);
-              $val  =  $a;
-              $val = str_replace('{1}', $arr_con[1], $val);
-              $val = str_replace('{0}', $arr_cont[1], $val);
-              $arr[$k] = $val;
-            }
-          }     
-        }
-      }   
-          return join(" ",$arr);
-    }  
 
-    static public function Array_convert_supplies_goods($data,$price){
+    $sql = '';
+    foreach($conditions as $index => $condition){
+      $boolean = $index === 0 ? '' : (' ' . strtoupper($condition['boolean']) . ' ');
+      $column = '`' . str_replace('.', '`.`', $condition['column']) . '`';
+      $value = addslashes((string) $condition['value']);
+
+      switch ($condition['operator']) {
+        case 'eq':
+          $segment = $column . ' = "' . $value . '"';
+          break;
+        case 'neq':
+          $segment = $column . ' != "' . $value . '"';
+          break;
+        case 'lt':
+          $segment = $column . ' < "' . $value . '"';
+          break;
+        case 'lte':
+          $segment = $column . ' <= "' . $value . '"';
+          break;
+        case 'gt':
+          $segment = $column . ' > "' . $value . '"';
+          break;
+        case 'gte':
+          $segment = $column . ' >= "' . $value . '"';
+          break;
+        case 'startswith':
+          $segment = $column . ' LIKE "' . $value . '%"';
+          break;
+        case 'endswith':
+          $segment = $column . ' LIKE "%' . $value . '"';
+          break;
+        case 'substringof':
+          $segment = $column . ' LIKE "%' . $value . '%"';
+          break;
+        case 'notsubstringof':
+          $segment = $column . ' NOT LIKE "%' . $value . '%"';
+          break;
+        default:
+          return null;
+      }
+
+      $sql .= $boolean . '(' . $segment . ')';
+    }
+
+    return $sql;
+  }
+
+  static public function parseFilterConditions($filter, array $allowedColumns = []): ?array
+  {
+    if(!$filter || !is_string($filter)){
+      return null;
+    }
+
+    $filter = trim($filter);
+    if($filter === ''){
+      return null;
+    }
+
+    $parts = preg_split('/\s+(and|or)\s+/i', $filter, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
+    if(!$parts){
+      return null;
+    }
+
+    $conditions = [];
+    $pendingBoolean = 'and';
+
+    foreach($parts as $part){
+      $token = trim($part);
+      if($token === ''){
+        continue;
+      }
+
+      if(preg_match('/^(and|or)$/i', $token)){
+        $pendingBoolean = strtolower($token);
+        continue;
+      }
+
+      $parsed = self::parseFilterToken($token, $allowedColumns);
+      if($parsed === null){
+        return null;
+      }
+
+      $parsed['boolean'] = $pendingBoolean;
+      $conditions[] = $parsed;
+      $pendingBoolean = 'and';
+    }
+
+    return empty($conditions) ? null : $conditions;
+  }
+
+  static public function applyFilterConditions($query, ?array $conditions)
+  {
+    if(!$query || empty($conditions)){
+      return $query;
+    }
+
+    foreach($conditions as $index => $condition){
+      $boolean = $index === 0 ? 'and' : ($condition['boolean'] ?? 'and');
+      $method = $boolean === 'or' ? 'orWhere' : 'where';
+      $column = $condition['column'];
+      $value = (string) $condition['value'];
+
+      if(in_array($condition['operator'], ['startswith', 'endswith', 'substringof', 'notsubstringof'], true)){
+        $pattern = $value;
+        if($condition['operator'] === 'startswith'){
+          $pattern = $value . '%';
+          $query->{$method}($column, 'like', $pattern);
+        }elseif($condition['operator'] === 'endswith'){
+          $pattern = '%' . $value;
+          $query->{$method}($column, 'like', $pattern);
+        }elseif($condition['operator'] === 'substringof'){
+          $pattern = '%' . $value . '%';
+          $query->{$method}($column, 'like', $pattern);
+        }else{
+          $pattern = '%' . $value . '%';
+          $query->{$method}($column, 'not like', $pattern);
+        }
+        continue;
+      }
+
+      $operators = [
+        'eq' => '=',
+        'neq' => '!=',
+        'lt' => '<',
+        'lte' => '<=',
+        'gt' => '>',
+        'gte' => '>=',
+      ];
+
+      $query->{$method}($column, $operators[$condition['operator']], $value);
+    }
+
+    return $query;
+  }
+
+  private static function parseFilterToken(string $token, array $allowedColumns = []): ?array
+  {
+    $token = trim($token);
+
+    if(preg_match('/^substringof\(\s*([\'\"])(.*?)\1\s*,\s*([a-zA-Z0-9_\.]+)\s*\)\s*(?:eq\s+(true|false))?$/i', $token, $m)){
+      $column = self::normalizeFilterColumn($m[3], $allowedColumns);
+      if($column === null){
+        return null;
+      }
+
+      $operator = isset($m[4]) && strtolower($m[4]) === 'false' ? 'notsubstringof' : 'substringof';
+      return ['column' => $column, 'operator' => $operator, 'value' => $m[2]];
+    }
+
+    if(preg_match('/^(startswith|endswith)\(\s*([a-zA-Z0-9_\.]+)\s*,\s*([\'\"])(.*?)\3\s*\)$/i', $token, $m)){
+      $column = self::normalizeFilterColumn($m[2], $allowedColumns);
+      if($column === null){
+        return null;
+      }
+
+      return ['column' => $column, 'operator' => strtolower($m[1]), 'value' => $m[4]];
+    }
+
+    if(preg_match('/^([a-zA-Z0-9_\.]+)\s+(eq|neq|lt|lte|gt|gte)\s+(.+)$/i', $token, $m)){
+      $column = self::normalizeFilterColumn($m[1], $allowedColumns);
+      if($column === null){
+        return null;
+      }
+
+      return [
+        'column' => $column,
+        'operator' => strtolower($m[2]),
+        'value' => self::normalizeFilterValue($m[3]),
+      ];
+    }
+
+    return null;
+  }
+
+  private static function normalizeFilterColumn(string $column, array $allowedColumns = []): ?string
+  {
+    $column = trim($column);
+    if(!preg_match('/^[a-zA-Z0-9_\.]+$/', $column)){
+      return null;
+    }
+
+    if(!empty($allowedColumns) && !in_array($column, $allowedColumns, true)){
+      return null;
+    }
+
+    return $column;
+  }
+
+  private static function normalizeFilterValue(string $value): string
+  {
+    $value = trim($value);
+    if(preg_match('/^([\'\"])(.*)\\1$/', $value, $m)){
+      return $m[2];
+    }
+
+    return $value;
+  }
+  static public function Array_convert_supplies_goods($data,$price){
       $rs_convert = collect([]);
       $co = collect(['id' =>  '0',
                 'item_id' => '',

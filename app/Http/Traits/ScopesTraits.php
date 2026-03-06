@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Traits;
 use DB;
+use App\Classes\Convert;
 
 trait ScopesTraits
 {
@@ -35,9 +36,17 @@ trait ScopesTraits
       DB::statement(DB::raw('set @i=0')->getValue(DB::connection()->getQueryGrammar()));
 
       $sub = static::selectRaw('*, @i:=@i+1 as "row_number"')
-      //$sub = static::selectRaw('*, ROW_NUMBER() OVER (ORDER BY id asc) as "row_number"') 
-          ->whereRaw($value_where)
+      //$sub = static::selectRaw('*, ROW_NUMBER() OVER (ORDER BY id asc) as "row_number"')
           ->orderBy($column, $order);
+
+      if(is_array($value_where)){
+          Convert::applyFilterConditions($sub, $value_where);
+      }elseif(is_string($value_where) && trim($value_where) !== ''){
+          $parsedConditions = Convert::parseFilterConditions($value_where);
+          if(is_array($parsedConditions) && !empty($parsedConditions)){
+              Convert::applyFilterConditions($sub, $parsedConditions);
+          }
+      }
 
       $query->from(DB::raw("({$sub->toSql()}) as t"))
             ->mergeBindings($sub->getQuery()) ;
@@ -74,9 +83,17 @@ trait ScopesTraits
       DB::connection($db)->statement(DB::raw('set @i=0')->getValue(DB::connection()->getQueryGrammar()));
 
       $sub = static::selectRaw('*, @i:=@i+1 as "row_number"')
-      //$sub = static::selectRaw('*, ROW_NUMBER() OVER (ORDER BY id asc) as "row_number"') 
-          ->whereRaw($value_where)
+      //$sub = static::selectRaw('*, ROW_NUMBER() OVER (ORDER BY id asc) as "row_number"')
           ->orderBy($column, $order);
+
+      if(is_array($value_where)){
+          Convert::applyFilterConditions($sub, $value_where);
+      }elseif(is_string($value_where) && trim($value_where) !== ''){
+          $parsedConditions = Convert::parseFilterConditions($value_where);
+          if(is_array($parsedConditions) && !empty($parsedConditions)){
+              Convert::applyFilterConditions($sub, $parsedConditions);
+          }
+      }
 
       $query->from(DB::raw("({$sub->toSql()}) as t"))
             ->mergeBindings($sub->getQuery()) ;

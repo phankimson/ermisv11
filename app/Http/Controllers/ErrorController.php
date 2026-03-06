@@ -64,9 +64,12 @@ class ErrorController extends Controller
           $orderby = explode(' ', $orderby)[0];
         };
         if($filter){
-          $filter_sql = Convert::filterRow($filter);
-          $arr = Error::get_raw_skip_filter_page($skip,$perPage,$orderby,$asc,$filter_sql,$type);
-          $total = Error::whereRaw($filter_sql)->count();
+          $filter_conditions = Convert::parseFilterConditions($filter);
+          if($filter_conditions === null){
+            return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
+          }
+          $arr = Error::get_raw_skip_filter_page($skip,$perPage,$orderby,$asc,$filter_conditions,$type);
+          $total = Convert::applyFilterConditions(Error::query(), $filter_conditions)->count();
         }else{
           $arr = Error::get_raw_skip_page($skip,$perPage,$orderby,$asc,$type);   
         }  
@@ -111,7 +114,7 @@ class ErrorController extends Controller
         $data->check = $arr->check;
         $data->save();
 
-        // LÆ°u lá»‹ch sá»­
+        // LÃƒâ€ Ã‚Â°u lÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ch sÃƒÂ¡Ã‚Â»Ã‚Â­
         $h = new HistoryAction();
         $h ->create([
           'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -120,7 +123,7 @@ class ErrorController extends Controller
           'url' => $this->url,
           'dataz' => \json_encode($data)]);
         //
-        // Láº¥y ID vÃ  vÃ  phÃ¢n loáº¡i ThÃªm
+        // LÃƒÂ¡Ã‚ÂºÃ‚Â¥y ID vÃƒÆ’Ã‚Â  vÃƒÆ’Ã‚Â  phÃƒÆ’Ã‚Â¢n loÃƒÂ¡Ã‚ÂºÃ‚Â¡i ThÃƒÆ’Ã‚Âªm
         $arr->id = $data->id;
         $arr->t = $type;
         DB::commit();  
@@ -132,7 +135,7 @@ class ErrorController extends Controller
         if(!$data){
           return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
         }
-        // LÆ°u lá»‹ch sá»­
+        // LÃƒâ€ Ã‚Â°u lÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ch sÃƒÂ¡Ã‚Â»Ã‚Â­
         $h = new HistoryAction();
         $h ->create([
           'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -148,7 +151,7 @@ class ErrorController extends Controller
         $data->error = $arr->error;
         $data->check = $arr->check;
         $data->save();
-        // PhÃ¢n loáº¡i Sá»­a
+        // PhÃƒÆ’Ã‚Â¢n loÃƒÂ¡Ã‚ÂºÃ‚Â¡i SÃƒÂ¡Ã‚Â»Ã‚Â­a
         $arr->t = $type;
         DB::commit();  
         broadcast(new \App\Events\DataSend($arr));
@@ -178,7 +181,7 @@ class ErrorController extends Controller
              if(!$data){
                 return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
               }
-             // LÆ°u lá»‹ch sá»­
+             // LÃƒâ€ Ã‚Â°u lÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ch sÃƒÂ¡Ã‚Â»Ã‚Â­
              $h = new HistoryAction();
              $h ->create([
                'type' => 4, // Add : 2 , Edit : 3 , Delete : 4
@@ -222,14 +225,14 @@ class ErrorController extends Controller
         $rs = json_decode($request->data);
 
         $file = $request->file;
-        // Import dá»¯ liá»‡u
+        // Import dÃƒÂ¡Ã‚Â»Ã‚Â¯ liÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¡u
         $import = new ErrorImport;
         Excel::import($import, $file);
-        // Láº¥y láº¡i dá»¯ liá»‡u
+        // LÃƒÂ¡Ã‚ÂºÃ‚Â¥y lÃƒÂ¡Ã‚ÂºÃ‚Â¡i dÃƒÂ¡Ã‚Â»Ã‚Â¯ liÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¡u
       
         $merged = collect($rs)->push($import->getData());
         //dump($merged);
-      // LÆ°u lá»‹ch sá»­
+      // LÃƒâ€ Ã‚Â°u lÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ch sÃƒÂ¡Ã‚Â»Ã‚Â­
       $type = 5;
       $h = new HistoryAction();
       $h ->create([

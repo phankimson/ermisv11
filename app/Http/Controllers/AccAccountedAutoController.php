@@ -72,9 +72,12 @@ class AccAccountedAutoController extends Controller
           $orderby = explode(' ', $orderby)[0];
         };
         if($filter){
-          $filter_sql = Convert::filterRow($filter);
-          $arr = AccAccountedAuto::get_raw_skip_filter_page($skip,$perPage,$orderby,$asc,$filter_sql);
-          $total = AccAccountedAuto::whereRaw($filter_sql)->count();
+          $filter_conditions = Convert::parseFilterConditions($filter);
+          if($filter_conditions === null){
+            return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
+          }
+          $arr = AccAccountedAuto::get_raw_skip_filter_page($skip,$perPage,$orderby,$asc,$filter_conditions);
+          $total = Convert::applyFilterConditions(AccAccountedAuto::query(), $filter_conditions)->count();
         }else{
           $arr = AccAccountedAuto::get_raw_skip_page($skip,$perPage,$orderby,$asc); 
         } 
@@ -96,7 +99,7 @@ class AccAccountedAutoController extends Controller
       return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
     }
     }catch(Exception $e){
-      // Lưu lỗi
+      // LÃ†Â°u lÃ¡Â»â€”i
       return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__);
     }
   }
@@ -132,7 +135,7 @@ class AccAccountedAutoController extends Controller
       $data = AccAccountedAuto::with('accounted_auto_detail')->get();
       return response()->json(['status'=>true,'data'=> $data,'com_name'=> $com->name ]);
     }catch(Exception $e){
-      // Lưu lỗi
+      // LÃ†Â°u lÃ¡Â»â€”i
       return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__);
     }
  }
@@ -163,7 +166,7 @@ class AccAccountedAutoController extends Controller
        $data->save();
 
 
-       // LÆ°u mÃ£ code tá»± tÄƒng
+       // LÃƒâ€ Ã‚Â°u mÃƒÆ’Ã‚Â£ code tÃƒÂ¡Ã‚Â»Ã‚Â± tÃƒâ€žÃ†â€™ng
        $ir = AccNumberCode::get_code($this->key);
        $ir->number = $ir->number + 1;
        $ir->save();
@@ -191,7 +194,7 @@ class AccAccountedAutoController extends Controller
        }
        ///////////////////
 
-       // LÆ°u lá»‹ch sá»­
+       // LÃƒâ€ Ã‚Â°u lÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ch sÃƒÂ¡Ã‚Â»Ã‚Â­
        $h = new AccHistoryAction();
        $h ->create([
          'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -201,11 +204,11 @@ class AccAccountedAutoController extends Controller
          'dataz' => \json_encode($data)]);
 
 
-         // Láº¥y láº¡i giÃ¡ trá»‹ hot
+         // LÃƒÂ¡Ã‚ÂºÃ‚Â¥y lÃƒÂ¡Ã‚ÂºÃ‚Â¡i giÃƒÆ’Ã‚Â¡ trÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ hot
          $hot_add = AccAccountedAutoDetail::get_accounted_auto($data->id);
          $arr->accounted_auto_detail = $hot_add;
 
-       // Láº¥y ID vÃ  vÃ  phÃ¢n loáº¡i ThÃªm
+       // LÃƒÂ¡Ã‚ÂºÃ‚Â¥y ID vÃƒÆ’Ã‚Â  vÃƒÆ’Ã‚Â  phÃƒÆ’Ã‚Â¢n loÃƒÂ¡Ã‚ÂºÃ‚Â¡i ThÃƒÆ’Ã‚Âªm
        $arr->id = $data->id;
        $arr->t = $type;
        DB::connection(env('CONNECTION_DB_ACC'))->commit();
@@ -217,7 +220,7 @@ class AccAccountedAutoController extends Controller
        if(!$data){
          return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
        }
-       // LÆ°u lá»‹ch sá»­
+       // LÃƒâ€ Ã‚Â°u lÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ch sÃƒÂ¡Ã‚Â»Ã‚Â­
        $h = new AccHistoryAction();
        $h ->create([
          'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -270,18 +273,18 @@ class AccAccountedAutoController extends Controller
             $dom->save();
         }
       }
-      // XÃ³a cÃ¡c dÃ²ng
+      // XÃƒÆ’Ã‚Â³a cÃƒÆ’Ã‚Â¡c dÃƒÆ’Ã‚Â²ng
       if($dom_all->count()>0){
         $id_destroy = $dom_all->pluck('id');
         AccAccountedAutoDetail::destroy($id_destroy);
       }
       ///////////////////
 
-       // Láº¥y láº¡i giÃ¡ trá»‹ hot
+       // LÃƒÂ¡Ã‚ÂºÃ‚Â¥y lÃƒÂ¡Ã‚ÂºÃ‚Â¡i giÃƒÆ’Ã‚Â¡ trÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ hot
        $hot_add = AccAccountedAutoDetail::get_accounted_auto($data->id);
        $arr->accounted_auto_detail = $hot_add;
 
-       // PhÃ¢n loáº¡i Sá»­a
+       // PhÃƒÆ’Ã‚Â¢n loÃƒÂ¡Ã‚ÂºÃ‚Â¡i SÃƒÂ¡Ã‚Â»Ã‚Â­a
        $arr->t = $type;
        DB::connection(env('CONNECTION_DB_ACC'))->commit();
        broadcast(new \App\Events\DataSend($arr));
@@ -298,7 +301,7 @@ class AccAccountedAutoController extends Controller
      }
     }catch(Exception $e){
       DB::connection(env('CONNECTION_DB_ACC'))->rollBack();
-      // Lưu lỗi
+      // LÃ†Â°u lÃ¡Â»â€”i
       return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__);
     }
  }
@@ -312,9 +315,9 @@ class AccAccountedAutoController extends Controller
         if($arr){
           if($permission['d'] == true){
             $data = AccAccountedAuto::get_id_with_detail($arr->id);
-            // LÆ°u lá»‹ch sá»­
+            // LÃƒâ€ Ã‚Â°u lÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ch sÃƒÂ¡Ã‚Â»Ã‚Â­
             $dom_all = AccAccountedAutoDetail::get_accounted_auto($data->id);
-            // XÃ³a cÃ¡c dÃ²ng
+            // XÃƒÆ’Ã‚Â³a cÃƒÆ’Ã‚Â¡c dÃƒÆ’Ã‚Â²ng
             if($dom_all->count()>0){
               $id_destroy = $dom_all->pluck('id');
               AccAccountedAutoDetail::destroy($id_destroy);
@@ -341,7 +344,7 @@ class AccAccountedAutoController extends Controller
        }
       }catch(Exception $e){
         DB::connection(env('CONNECTION_DB_ACC'))->rollBack();
-        // Lưu lỗi
+        // LÃ†Â°u lÃ¡Â»â€”i
         return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__, 'messages.delete_fail');
       }
  }
@@ -366,14 +369,14 @@ class AccAccountedAutoController extends Controller
        $rs = json_decode($request->data);
 
        $file = $request->file;
-       // Import dá»¯ liá»‡u
+       // Import dÃƒÂ¡Ã‚Â»Ã‚Â¯ liÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¡u
        $import = new AccAccountedAutoImport;
        Excel::import($import, $file);
-       // Láº¥y láº¡i dá»¯ liá»‡u
+       // LÃƒÂ¡Ã‚ÂºÃ‚Â¥y lÃƒÂ¡Ã‚ÂºÃ‚Â¡i dÃƒÂ¡Ã‚Â»Ã‚Â¯ liÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¡u
      
        $merged = collect($rs)->push($import->getData());
        //dump($merged);
-     // LÆ°u lá»‹ch sá»­
+     // LÃƒâ€ Ã‚Â°u lÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ch sÃƒÂ¡Ã‚Â»Ã‚Â­
      $h = new AccHistoryAction();
      $h ->create([
        'type' => $type, // Add : 2 , Edit : 3 , Delete : 4, Import : 5
@@ -394,7 +397,7 @@ class AccAccountedAutoController extends Controller
      }
    }catch(Exception $e){
     DB::connection(env('CONNECTION_DB_ACC'))->rollBack();
-     // Lưu lỗi
+     // LÃ†Â°u lÃ¡Â»â€”i
     return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__, 'messages.failed_import');
    }
  }
@@ -414,7 +417,7 @@ class AccAccountedAutoController extends Controller
       );
       return response()->json($response);
    }catch(Exception $e){
-     // Lưu lỗi
+     // LÃ†Â°u lÃ¡Â»â€”i
      return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__, 'messages.failed_export');
    }
  }

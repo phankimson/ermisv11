@@ -63,9 +63,12 @@ class HistoryActionController extends Controller
           $orderby = explode(' ', $orderby)[0];
         };
         if($filter){
-          $filter_sql = Convert::filterRow($filter);
-          $arr = HistoryAction::get_raw_skip_filter_page($skip,$perPage,$orderby,$asc,$filter_sql,$type);
-          $total = HistoryAction::whereRaw($filter_sql)->count();
+          $filter_conditions = Convert::parseFilterConditions($filter);
+          if($filter_conditions === null){
+            return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
+          }
+          $arr = HistoryAction::get_raw_skip_filter_page($skip,$perPage,$orderby,$asc,$filter_conditions,$type);
+          $total = Convert::applyFilterConditions(HistoryAction::query(), $filter_conditions)->count();
         }else{
           $arr = HistoryAction::get_raw_skip_page($skip,$perPage,$orderby,$asc,$type);   
         }  
@@ -110,7 +113,7 @@ class HistoryActionController extends Controller
         $data->created_at = $arr->created_at;
         $data->save();
 
-        // LÆ°u lá»‹ch sá»­
+        // LÃƒâ€ Ã‚Â°u lÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ch sÃƒÂ¡Ã‚Â»Ã‚Â­
         //$h = new HistoryAction();
         //$h ->create([
         //  'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -118,7 +121,7 @@ class HistoryActionController extends Controller
         //  'menu' => $this->menu->id,
         //  'dataz' => \json_encode($data)]);
         //
-        // Láº¥y ID vÃ  vÃ  phÃ¢n loáº¡i ThÃªm
+        // LÃƒÂ¡Ã‚ÂºÃ‚Â¥y ID vÃƒÆ’Ã‚Â  vÃƒÆ’Ã‚Â  phÃƒÆ’Ã‚Â¢n loÃƒÂ¡Ã‚ÂºÃ‚Â¡i ThÃƒÆ’Ã‚Âªm
         $arr->id = $data->id;
         $arr->t = $type;
         DB::commit();  
@@ -130,7 +133,7 @@ class HistoryActionController extends Controller
         if(!$data){
           return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
         }
-        // LÆ°u lá»‹ch sá»­
+        // LÃƒâ€ Ã‚Â°u lÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ch sÃƒÂ¡Ã‚Â»Ã‚Â­
         //$h = new HistoryAction();
         //$h ->create([
         //  'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -145,7 +148,7 @@ class HistoryActionController extends Controller
         $data->dataz = $arr->dataz;
         $data->created_at = $arr->created_at;
         $data->save();
-        // PhÃ¢n loáº¡i Sá»­a
+        // PhÃƒÆ’Ã‚Â¢n loÃƒÂ¡Ã‚ÂºÃ‚Â¡i SÃƒÂ¡Ã‚Â»Ã‚Â­a
         $arr->t = $type;
         DB::commit();  
         broadcast(new \App\Events\DataSend($arr));
@@ -175,7 +178,7 @@ class HistoryActionController extends Controller
              if(!$data){
                 return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
               }
-             // LÆ°u lá»‹ch sá»­
+             // LÃƒâ€ Ã‚Â°u lÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ch sÃƒÂ¡Ã‚Â»Ã‚Â­
              //$h = new HistoryAction();
              //$h ->create([
                //'type' => 4, // Add : 2 , Edit : 3 , Delete : 4
@@ -218,14 +221,14 @@ class HistoryActionController extends Controller
         $rs = json_decode($request->data);
 
         $file = $request->file;
-        // Import dá»¯ liá»‡u
+        // Import dÃƒÂ¡Ã‚Â»Ã‚Â¯ liÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¡u
         $import = new HistoryActionImport;
         Excel::import($import, $file);
-        // Láº¥y láº¡i dá»¯ liá»‡u
+        // LÃƒÂ¡Ã‚ÂºÃ‚Â¥y lÃƒÂ¡Ã‚ÂºÃ‚Â¡i dÃƒÂ¡Ã‚Â»Ã‚Â¯ liÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¡u
         
         $merged = collect($rs)->push($import->getData());
         //dump($merged);
-      // LÆ°u lá»‹ch sá»­
+      // LÃƒâ€ Ã‚Â°u lÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ch sÃƒÂ¡Ã‚Â»Ã‚Â­
       //  $type = 5;
       //$h = new HistoryAction();
       //$h ->create([

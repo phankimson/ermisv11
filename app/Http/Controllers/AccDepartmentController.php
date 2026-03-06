@@ -54,18 +54,29 @@ class AccDepartmentController extends Controller
     $orderby =   $request->input('$orderby','created_at desc');
     $filter =   $request->input('$filter');
     $asc  = 'desc';
-        if (!str_contains($orderby, 'desc')) { 
+        $allowedSortColumns = ['id', 'code', 'name', 'name_en', 'active', 'created_at', 'updated_at'];
+        $orderbyParts = preg_split('/\s+/', trim((string) $orderby));
+        $orderbyField = $orderbyParts[0] ?? 'created_at';
+        $orderbyDirection = strtolower($orderbyParts[1] ?? 'desc');
+        if (!in_array($orderbyField, $allowedSortColumns, true)) {
+          $orderbyField = 'created_at';
+        }
+        if ($orderbyDirection !== 'desc') {
           $asc = 'asc';
-        }else{
-          $orderby = explode(' ', $orderby)[0];
-        };
+        }
+
+        $query = AccDepartment::WithRowNumberDb(env('CONNECTION_DB_ACC'), $orderbyField, $asc);
         if($filter){
-          $filter_sql = Convert::filterRow($filter);
-          $arr = AccDepartment::get_raw_skip_filter_page($skip,$perPage,$orderby,$asc,$filter_sql);
-          $total = AccDepartment::whereRaw($filter_sql)->count();
-        }else{
-          $arr = AccDepartment::get_raw_skip_page($skip,$perPage,$orderby,$asc); 
-        } 
+          $allowedFilterColumns = ['id', 'code', 'name', 'name_en', 'active', 'created_at', 'updated_at'];
+          $conditions = Convert::parseFilterConditions($filter, $allowedFilterColumns);
+          if($conditions === null){
+            return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
+          }
+          Convert::applyFilterConditions($query, $conditions);
+        }
+
+        $total = (clone $query)->count();
+        $arr = (clone $query)->orderBy('row_number','desc')->skip($skip)->take($perPage)->get();
     $data = collect(['data' => $arr,'total' => $total]);              
     if($data){
       return response()->json($data);
