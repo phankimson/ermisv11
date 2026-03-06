@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace App\Http\Controllers;
 
@@ -45,8 +45,8 @@ class AccInventoryTransferVoucherController extends Controller
   public function __construct(Request $request)
  {
      $this->url =  $request->segment(3);
-     $this->group = 8; // 8 Nhóm chuyển kho
-     $this->type_object = 2; // 1 Nhà cung cấp (VD : 2,3 nếu nhiều đối tượng)
+     $this->group = 8; // 8 NhÃ³m chuyá»ƒn kho
+     $this->type_object = 2; // 1 NhÃ  cung cáº¥p (VD : 2,3 náº¿u nhiá»u Ä‘á»‘i tÆ°á»£ng)
      $this->key = "inventory-transfer-voucher";
      $this->menu = Menu::where('code', '=', $this->key)->first();
      $this->print = 'CK%';
@@ -138,10 +138,10 @@ class AccInventoryTransferVoucherController extends Controller
           $general->group = $this->group;
           $general->save();
                   
-          // Tham chiếu / Reference
+          // Tham chiáº¿u / Reference
           $this->saveReference($arr->reference_by,$general->id);
 
-             // Lấy giá trị kiểm tra kho có âm không
+             // Láº¥y giÃ¡ trá»‹ kiá»ƒm tra kho cÃ³ Ã¢m khÃ´ng
           $ca = AccSystems::get_systems($this->check_stock);
           $acc = "";
           // CHI TIET / Detail
@@ -162,8 +162,8 @@ class AccInventoryTransferVoucherController extends Controller
              $detail->general_id = $general->id;
              $detail->description = $d->item_code->text;
              $detail->currency = $arr->currency;
-             $detail->debit = $d->debit->value;  // Đổi từ id value dạng read
-             $detail->credit = $d->credit->value;  // Đổi từ id value dạng read
+             $detail->debit = $d->debit->value;  // Äá»•i tá»« id value dáº¡ng read
+             $detail->credit = $d->credit->value;  // Äá»•i tá»« id value dáº¡ng read
              $detail->amount = $d->amount;
              $detail->rate = $d->rate;
              $detail->amount_rate = $d->amount * $d->rate;
@@ -173,7 +173,7 @@ class AccInventoryTransferVoucherController extends Controller
        
              array_push($removeId,$detail->id);
              $arr->detail[$k]->id = $detail->id;   
-             // Lưu kho
+             // LÆ°u kho
              $item = explode("-", $d->item_code->text);
              $inventory->general_id = $general->id;
              $inventory->detail_id = $detail->id;
@@ -191,11 +191,11 @@ class AccInventoryTransferVoucherController extends Controller
              $inventory->save();
        
                                   
-               // Lưu số tồn kho bên Có
+               // LÆ°u sá»‘ tá»“n kho bÃªn CÃ³
                 $balance = $this->reduceStock($d->credit->value,$arr->stock_issue,$d->item_code->value,$d->quantity); 
-                // Lưu số tồn kho bên Nợ
+                // LÆ°u sá»‘ tá»“n kho bÃªn Ná»£
                 $this->increaseStock($d->debit->value,$arr->stock_receipt,$d->item_code->value,$d->quantity);
-                // Kiểm tra kho âm  
+                // Kiá»ƒm tra kho Ã¢m  
                   if($ca->value == "1" && $balance->quantity<0){
                     $acc = $d->item_code->text;
                     break;
@@ -203,14 +203,14 @@ class AccInventoryTransferVoucherController extends Controller
                // End
            }           
 
-           // Xóa dòng chi tiết
+           // XÃ³a dÃ²ng chi tiáº¿t
            AccDetail::get_detail_whereNotIn_delete($general->id,$removeId);
            AccInventory::get_detail_id_whereNotIn_delete($general->id,$removeId);
           
-           // Lưu file
+           // LÆ°u file
            $this->saveFile($request,$general->id,$this->path);    
 
-           // Lưu lịch sử
+           // LÆ°u lá»‹ch sá»­
            $h = new AccHistoryAction();
            $h ->create([
            'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -237,16 +237,16 @@ class AccInventoryTransferVoucherController extends Controller
       }
     }catch(Exception $e){
       DB::connection(env('CONNECTION_DB_ACC'))->rollBack();
-       // Lưu lỗi
+       // LÆ°u lá»—i
        $err = new Error();
        $err ->create([
          'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
          'user_id' => Auth::id(),
          'menu_id' => $this->menu->id,
-         'error' => $e->getMessage().' - Line '.$e->getLine(),
+         'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
          'url'  => $this->url,
          'check' => 0 ]);
-       return response()->json(['status'=>false,'message'=> trans('messages.error').' '.$e->getMessage().' - Line '.$e->getLine()]);
+       return response()->json(['status'=>false,'message'=> trans('messages.error')]);
      }
   }
 
@@ -263,16 +263,16 @@ class AccInventoryTransferVoucherController extends Controller
         return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
       }
      }catch(Exception $e){
-        // Lưu lỗi
+        // LÆ°u lá»—i
         $err = new Error();
         $err ->create([
           'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
           'user_id' => Auth::id(),
           'menu_id' => $this->menu->id,
-          'error' => $e->getMessage().' - Line '.$e->getLine(),
+          'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
           'url'  => $this->url,
           'check' => 0 ]);
-        return response()->json(['status'=>false,'message'=> trans('messages.error').' '.$e->getMessage().' - Line '.$e->getLine()]);
+        return response()->json(['status'=>false,'message'=> trans('messages.error')]);
       }
   }
 
@@ -296,7 +296,7 @@ class AccInventoryTransferVoucherController extends Controller
         //$rs = json_decode($request->data);
   
         $file = $request->file;
-        // Đổi dữ liệu Excel sang collect
+        // Äá»•i dá»¯ liá»‡u Excel sang collect
         config(['excel.imports.read_only' => false]);
         $data = new AccInventoryTransferGeneralImport($this->menu);   
         Excel::import($data , $file);
@@ -312,18 +312,19 @@ class AccInventoryTransferVoucherController extends Controller
       }
     }catch(Exception $e){
       DB::connection(env('CONNECTION_DB_ACC'))->rollBack();
-      // Lưu lỗi
+      // LÆ°u lá»—i
       $err = new Error();
       $err ->create([
         'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
         'user_id' => Auth::id(),
         'menu_id' => $this->menu->id,
-        'error' => $e->getMessage().' - Line '.$e->getLine().' - Line '.$e->getLine(),
+        'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
         'url'  => $this->url,
         'check' => 0 ]);
-      return response()->json(['status'=>false,'message'=> trans('messages.failed_import').' '.$e->getMessage().' - Line '.$e->getLine()]);
+      return response()->json(['status'=>false,'message'=> trans('messages.failed_import')]);
     }
   }
 
 
 }
+

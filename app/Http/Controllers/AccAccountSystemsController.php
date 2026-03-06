@@ -92,10 +92,10 @@ class AccAccountSystemsController extends Controller
         'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
         'user_id' => Auth::id(),
         'menu_id' => $this->menu->id,
-        'error' => $e->getMessage().' - Line '.$e->getLine(),
+        'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
         'url'  => $this->url,
         'check' => 0 ]);
-      return response()->json(['status'=>false,'message'=> trans('messages.error').' '.$e->getMessage().' - Line '.$e->getLine()]);
+      return response()->json(['status'=>false,'message'=> trans('messages.error')]);
     }
  }
 
@@ -222,10 +222,10 @@ class AccAccountSystemsController extends Controller
         'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
         'user_id' => Auth::id(),
         'menu_id' => $this->menu->id,
-        'error' => $e->getMessage().' - Line '.$e->getLine(),
+        'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
         'url'  => $this->url,
         'check' => 0 ]);
-      return response()->json(['status'=>false,'message'=> trans('messages.error').' '.$e->getMessage().' - Line '.$e->getLine()]);
+      return response()->json(['status'=>false,'message'=> trans('messages.error')]);
     }
  }
 
@@ -273,10 +273,10 @@ class AccAccountSystemsController extends Controller
           'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
           'user_id' => Auth::id(),
           'menu_id' => $this->menu->id,
-          'error' => $e->getMessage().' - Line '.$e->getLine(),
+          'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
           'url'  => $this->url,
           'check' => 0 ]);
-        return response()->json(['status'=>false,'message'=> trans('messages.delete_fail').' '.$e->getMessage().' - Line '.$e->getLine()]);
+        return response()->json(['status'=>false,'message'=> trans('messages.delete_fail')]);
       }
  }
 
@@ -334,10 +334,10 @@ class AccAccountSystemsController extends Controller
        'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
        'user_id' => Auth::id(),
        'menu_id' => $this->menu->id,
-       'error' => $e->getMessage().' - Line '.$e->getLine(),
+       'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
        'url'  => $this->url,
        'check' => 0 ]);
-     return response()->json(['status'=>false,'message'=> trans('messages.failed_import').' '.$e->getMessage().' - Line '.$e->getLine()]);
+     return response()->json(['status'=>false,'message'=> trans('messages.failed_import')]);
    }
  }
 
@@ -362,10 +362,10 @@ class AccAccountSystemsController extends Controller
        'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
        'user_id' => Auth::id(),
        'menu_id' => $this->menu->id,
-       'error' => $e->getMessage().' - Line '.$e->getLine(),
+       'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
        'url'  => $this->url,
        'check' => 0 ]);
-     return response()->json(['status'=>false,'message'=> trans('messages.failed_export').' '.$e->getMessage().' - Line '.$e->getLine()]);
+     return response()->json(['status'=>false,'message'=> trans('messages.failed_export')]);
    }
  }
 
