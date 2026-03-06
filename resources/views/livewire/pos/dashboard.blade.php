@@ -1,34 +1,34 @@
 <div class="pos-shell" wire:poll.20s="reload">
     <section class="pos-card">
         <div class="pos-card-head">
-            <h1 class="pos-title">POS Ermis</h1>
+            <h1 class="pos-title">@lang('pos.brand')</h1>
             <div class="pos-head-actions">
-                <label for="reportDate">Ngay bao cao</label>
+                <label for="reportDate">@lang('pos.labels.report_date')</label>
                 <input id="reportDate" type="date" wire:model.live="reportDate" class="pos-input">
             </div>
         </div>
 
         <div class="pos-grid">
             <article class="pos-panel">
-                <h3>Thong ke theo ngay</h3>
+                <h3>@lang('pos.labels.daily_summary')</h3>
                 <table class="pos-table">
                     <thead>
                         <tr>
-                            <th>Loai</th>
-                            <th>So phieu</th>
-                            <th>Tong tien</th>
+                            <th>@lang('pos.labels.type')</th>
+                            <th>@lang('pos.labels.doc_count')</th>
+                            <th>@lang('pos.labels.total_amount')</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse ($summary as $row)
                             <tr>
-                                <td>{{ $row['type'] }}</td>
+                                <td>{{ trans('pos.types.' . $row['type']) }}</td>
                                 <td>{{ $row['total_docs'] }}</td>
                                 <td>{{ number_format((float) $row['total_amount'], 0, ',', '.') }}</td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="3">Khong co du lieu trong ngay.</td>
+                                <td colspan="3">@lang('pos.empty.daily')</td>
                             </tr>
                         @endforelse
                     </tbody>
@@ -36,13 +36,13 @@
             </article>
 
             <article class="pos-panel">
-                <h3>Ton kho gan nhat</h3>
+                <h3>@lang('pos.labels.inventory_latest')</h3>
                 <table class="pos-table">
                     <thead>
                         <tr>
-                            <th>Kho</th>
-                            <th>San pham</th>
-                            <th>So luong</th>
+                            <th>@lang('pos.labels.warehouse')</th>
+                            <th>@lang('pos.labels.product')</th>
+                            <th>@lang('pos.labels.quantity')</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -54,7 +54,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="3">Chua co ton kho.</td>
+                                <td colspan="3">@lang('pos.empty.inventory')</td>
                             </tr>
                         @endforelse
                     </tbody>
@@ -65,12 +65,12 @@
 
     <section class="pos-card">
         <div class="pos-tabs">
-            <button class="pos-tab active" data-pos-tab="sale">Ban hang</button>
-            <button class="pos-tab" data-pos-tab="return">Tra hang</button>
-            <button class="pos-tab" data-pos-tab="stock_in">Nhap kho</button>
-            <button class="pos-tab" data-pos-tab="stock_out">Xuat kho</button>
-            <button class="pos-tab" data-pos-tab="stock_transfer">Chuyen kho</button>
-            <button class="pos-tab" data-pos-tab="cash">Thu chi tai quay</button>
+            <button class="pos-tab active" data-pos-tab="sale">@lang('pos.tabs.sale')</button>
+            <button class="pos-tab" data-pos-tab="return">@lang('pos.tabs.return')</button>
+            <button class="pos-tab" data-pos-tab="stock_in">@lang('pos.tabs.stock_in')</button>
+            <button class="pos-tab" data-pos-tab="stock_out">@lang('pos.tabs.stock_out')</button>
+            <button class="pos-tab" data-pos-tab="stock_transfer">@lang('pos.tabs.stock_transfer')</button>
+            <button class="pos-tab" data-pos-tab="cash">@lang('pos.tabs.cash')</button>
         </div>
 
         <div class="pos-forms">
@@ -98,26 +98,26 @@
                 @csrf
                 <div class="pos-form-grid">
                     <div>
-                        <label>Ngay hach toan</label>
+                        <label>@lang('pos.labels.transaction_date')</label>
                         <input type="date" name="transaction_date" class="pos-input" value="{{ now()->toDateString() }}">
                     </div>
                     <div>
-                        <label>Loai</label>
+                        <label>@lang('pos.labels.cash_type')</label>
                         <select name="cash_type" class="pos-input">
-                            <option value="cash_receipt">Thu tien</option>
-                            <option value="cash_payment">Chi tien</option>
+                            <option value="cash_receipt">@lang('pos.labels.cash_receipt')</option>
+                            <option value="cash_payment">@lang('pos.labels.cash_payment')</option>
                         </select>
                     </div>
                     <div>
-                        <label>So tien</label>
+                        <label>@lang('pos.labels.amount')</label>
                         <input type="number" name="total_amount" class="pos-input" step="0.01" min="0" required>
                     </div>
                     <div class="pos-col-2">
-                        <label>Ghi chu</label>
+                        <label>@lang('pos.labels.note')</label>
                         <input type="text" name="note" class="pos-input">
                     </div>
                     <div class="pos-col-2">
-                        <button type="submit" class="pos-btn">Luu thu/chi</button>
+                        <button type="submit" class="pos-btn">@lang('pos.buttons.save_cash')</button>
                     </div>
                 </div>
             </form>
@@ -125,33 +125,32 @@
     </section>
 
     <section class="pos-card">
-        <h3>Chung tu gan nhat</h3>
+        <h3>@lang('pos.labels.document_latest')</h3>
         <table class="pos-table">
             <thead>
                 <tr>
-                    <th>So phieu</th>
-                    <th>Loai</th>
-                    <th>Kho</th>
-                    <th>Kho nhan</th>
-                    <th>Tong tien</th>
+                    <th>@lang('pos.labels.doc_no')</th>
+                    <th>@lang('pos.labels.type')</th>
+                    <th>@lang('pos.labels.warehouse')</th>
+                    <th>@lang('pos.labels.warehouse_to')</th>
+                    <th>@lang('pos.labels.total_amount')</th>
                 </tr>
             </thead>
             <tbody>
                 @forelse ($recent as $tx)
                     <tr>
                         <td>{{ $tx['code'] }}</td>
-                        <td>{{ $tx['type'] }}</td>
+                        <td>{{ trans('pos.types.' . $tx['type']) }}</td>
                         <td>{{ data_get($tx, 'warehouse.name', '-') }}</td>
                         <td>{{ data_get($tx, 'warehouse_to.name', '-') }}</td>
                         <td>{{ number_format((float) $tx['total_amount'], 0, ',', '.') }}</td>
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="5">Chua co chung tu.</td>
+                        <td colspan="5">@lang('pos.empty.documents')</td>
                     </tr>
                 @endforelse
             </tbody>
         </table>
     </section>
 </div>
-

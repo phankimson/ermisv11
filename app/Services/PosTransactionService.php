@@ -21,15 +21,15 @@ class PosTransactionService
             $transactionDate = $payload['transaction_date'] ?? now()->toDateString();
 
             if (in_array($type, ['sale', 'return', 'stock_in', 'stock_out'], true) && empty($warehouseId)) {
-                throw new InvalidArgumentException('Kho xử lý là bắt buộc.');
+                throw new InvalidArgumentException(trans('pos.errors.warehouse_required'));
             }
 
             if ($type === 'stock_transfer' && (empty($warehouseId) || empty($warehouseToId))) {
-                throw new InvalidArgumentException('Kho chuyển và kho nhận là bắt buộc.');
+                throw new InvalidArgumentException(trans('pos.errors.warehouse_transfer_required'));
             }
 
             if (in_array($type, ['sale', 'return', 'stock_in', 'stock_out', 'stock_transfer'], true) && $items->isEmpty()) {
-                throw new InvalidArgumentException('Danh sách hàng hóa không được trống.');
+                throw new InvalidArgumentException(trans('pos.errors.items_required'));
             }
 
             $totalAmount = $items->sum(function ($item) {
@@ -105,7 +105,7 @@ class PosTransactionService
 
         $available = (float) ($stock->quantity ?? 0);
         if ($available < $quantity) {
-            throw new InvalidArgumentException('Tồn kho không đủ để thực hiện giao dịch.');
+            throw new InvalidArgumentException(trans('pos.errors.stock_not_enough'));
         }
 
         $stock->quantity = $available - $quantity;
@@ -150,4 +150,3 @@ class PosTransactionService
         return sprintf('%s-%s-%s', $prefix, now()->format('YmdHis'), strtoupper(substr((string) str()->uuid(), 0, 6)));
     }
 }
-

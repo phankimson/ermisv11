@@ -1,4 +1,7 @@
 (function ($) {
+    var saveSuccessText = $('body').data('msg-save-success') || 'Saved successfully.';
+    var saveFailedText = $('body').data('msg-save-failed') || 'Cannot save data.';
+
     function parseItems($form) {
         var items = [];
         $form.find('[data-pos-items] .pos-item-row').each(function () {
@@ -78,10 +81,10 @@
             method: 'POST',
             data: payload
         }).done(function (response) {
-            alert(response.message || 'Da luu thanh cong.');
+            alert(response.message || saveSuccessText);
             $form.find('input[type="text"], input[type="number"]').val('');
         }).fail(function (xhr) {
-            var message = 'Khong the luu du lieu.';
+            var message = saveFailedText;
             if (xhr.responseJSON && xhr.responseJSON.message) {
                 message = xhr.responseJSON.message;
             }

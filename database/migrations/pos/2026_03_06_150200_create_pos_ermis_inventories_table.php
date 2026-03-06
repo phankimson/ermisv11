@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
-        Schema::connection(env('CONNECTION_DB_POS', 'mysql3'))->create('pos_ermis_inventories', function (Blueprint $table) {
+        Schema::connection(env('CONNECTION_DB_POS', 'mysql3'))->create('inventories', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->uuid('warehouse_id');
             $table->uuid('product_id');
@@ -15,15 +15,15 @@ return new class extends Migration {
             $table->tinyInteger('active')->default(1);
             $table->timestamps();
 
-            $table->unique(['warehouse_id', 'product_id'], 'pos_inventory_unique_warehouse_product');
-            $table->foreign('warehouse_id')->references('id')->on('pos_ermis_warehouses')->cascadeOnDelete();
-            $table->foreign('product_id')->references('id')->on('pos_ermis_products')->cascadeOnDelete();
+            $table->unique(['warehouse_id', 'product_id'], 'inventory_unique_warehouse_product');
+            $table->foreign('warehouse_id')->references('id')->on('warehouses')->cascadeOnDelete();
+            $table->foreign('product_id')->references('id')->on('products')->cascadeOnDelete();
         });
     }
 
     public function down(): void
     {
-        Schema::connection(env('CONNECTION_DB_POS', 'mysql3'))->dropIfExists('pos_ermis_inventories');
+        Schema::connection(env('CONNECTION_DB_POS', 'mysql3'))->dropIfExists('inventories');
     }
 };
 

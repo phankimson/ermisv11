@@ -32,7 +32,7 @@ class PosCashCounterController extends Controller
                 'note' => $request->input('note'),
             ], (string) Auth::id());
 
-            return response()->json(['status' => true, 'message' => 'Đã lưu thu/chi tại quầy.', 'data' => $transaction]);
+            return response()->json(['status' => true, 'message' => trans('pos.messages.saved_cash'), 'data' => $transaction]);
         } catch (Throwable $e) {
             return response()->json(['status' => false, 'message' => $e->getMessage()], 422);
         }

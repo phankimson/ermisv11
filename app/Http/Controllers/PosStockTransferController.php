@@ -29,7 +29,7 @@ class PosStockTransferController extends Controller
 
             $items = json_decode((string) $request->input('items'), true);
             if (!is_array($items) || count($items) === 0) {
-                throw ValidationException::withMessages(['items' => 'Danh sách hàng hóa không hợp lệ.']);
+                throw ValidationException::withMessages(['items' => trans('pos.messages.invalid_items')]);
             }
 
             $transaction = PosTransactionService::create('stock_transfer', [
@@ -40,7 +40,7 @@ class PosStockTransferController extends Controller
                 'note' => $request->input('note'),
             ], (string) Auth::id());
 
-            return response()->json(['status' => true, 'message' => 'Đã lưu phiếu chuyển kho.', 'data' => $transaction]);
+            return response()->json(['status' => true, 'message' => trans('pos.messages.saved_stock_transfer'), 'data' => $transaction]);
         } catch (Throwable $e) {
             return response()->json(['status' => false, 'message' => $e->getMessage()], 422);
         }

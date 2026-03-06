@@ -28,7 +28,7 @@ class PosStockOutController extends Controller
 
             $items = json_decode((string) $request->input('items'), true);
             if (!is_array($items) || count($items) === 0) {
-                throw ValidationException::withMessages(['items' => 'Danh sách hàng hóa không hợp lệ.']);
+                throw ValidationException::withMessages(['items' => trans('pos.messages.invalid_items')]);
             }
 
             $transaction = PosTransactionService::create('stock_out', [
@@ -38,7 +38,7 @@ class PosStockOutController extends Controller
                 'note' => $request->input('note'),
             ], (string) Auth::id());
 
-            return response()->json(['status' => true, 'message' => 'Đã lưu phiếu xuất kho.', 'data' => $transaction]);
+            return response()->json(['status' => true, 'message' => trans('pos.messages.saved_stock_out'), 'data' => $transaction]);
         } catch (Throwable $e) {
             return response()->json(['status' => false, 'message' => $e->getMessage()], 422);
         }

@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
-        Schema::connection(env('CONNECTION_DB_POS', 'mysql3'))->create('pos_ermis_transaction_items', function (Blueprint $table) {
+        Schema::connection(env('CONNECTION_DB_POS', 'mysql3'))->create('transaction_items', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->uuid('transaction_id');
             $table->uuid('product_id');
@@ -17,14 +17,14 @@ return new class extends Migration {
             $table->tinyInteger('active')->default(1);
             $table->timestamps();
 
-            $table->foreign('transaction_id')->references('id')->on('pos_ermis_transactions')->cascadeOnDelete();
-            $table->foreign('product_id')->references('id')->on('pos_ermis_products')->restrictOnDelete();
+            $table->foreign('transaction_id')->references('id')->on('transactions')->cascadeOnDelete();
+            $table->foreign('product_id')->references('id')->on('products')->restrictOnDelete();
         });
     }
 
     public function down(): void
     {
-        Schema::connection(env('CONNECTION_DB_POS', 'mysql3'))->dropIfExists('pos_ermis_transaction_items');
+        Schema::connection(env('CONNECTION_DB_POS', 'mysql3'))->dropIfExists('transaction_items');
     }
 };
 

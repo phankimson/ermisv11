@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
-        Schema::connection(env('CONNECTION_DB_POS', 'mysql3'))->create('pos_ermis_products', function (Blueprint $table) {
+        Schema::connection(env('CONNECTION_DB_POS', 'mysql3'))->create('products', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('sku', 50)->unique();
             $table->string('barcode', 100)->nullable()->unique();
@@ -22,7 +22,7 @@ return new class extends Migration {
 
     public function down(): void
     {
-        Schema::connection(env('CONNECTION_DB_POS', 'mysql3'))->dropIfExists('pos_ermis_products');
+        Schema::connection(env('CONNECTION_DB_POS', 'mysql3'))->dropIfExists('products');
     }
 };
 

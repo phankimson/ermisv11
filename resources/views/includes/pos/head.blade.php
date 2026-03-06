@@ -28,5 +28,8 @@
     @livewireStyles
     <link rel="stylesheet" href="{{ asset('addon/css/pos/style.css') }}">
 </head>
-<body class="pos-body">
-
+<body
+    class="pos-body"
+    data-msg-save-success="{{ trans('pos.messages.saved_success') }}"
+    data-msg-save-failed="{{ trans('pos.messages.saved_failed') }}"
+>
