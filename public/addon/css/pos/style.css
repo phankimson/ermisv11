@@ -1,0 +1,158 @@
+.pos-body {
+    background: linear-gradient(145deg, #f1f5f9 0%, #f8fafc 35%, #dff5ef 100%);
+    min-height: 100vh;
+    color: #0f172a;
+}
+
+.pos-shell {
+    max-width: 1380px;
+    margin: 0 auto;
+    display: grid;
+    gap: 1rem;
+}
+
+.pos-card {
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid #dbeafe;
+    border-radius: 1rem;
+    padding: 1rem;
+    box-shadow: 0 8px 24px rgba(2, 132, 199, 0.08);
+}
+
+.pos-card-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.75rem;
+}
+
+.pos-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.pos-head-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.pos-grid {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+}
+
+.pos-panel h3,
+.pos-card h3 {
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.pos-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+}
+
+.pos-table th,
+.pos-table td {
+    padding: 0.5rem;
+    border-bottom: 1px solid #e2e8f0;
+    text-align: left;
+}
+
+.pos-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.pos-tab {
+    border: 1px solid #93c5fd;
+    background: #eff6ff;
+    color: #1e3a8a;
+    border-radius: 0.75rem;
+    padding: 0.5rem 0.75rem;
+    font-weight: 600;
+}
+
+.pos-tab.active {
+    background: #0e9279;
+    color: #fff;
+    border-color: #0e9279;
+}
+
+.pos-form {
+    display: none;
+}
+
+.pos-form.active {
+    display: block;
+}
+
+.pos-form-grid {
+    display: grid;
+    gap: 0.75rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.pos-col-2 {
+    grid-column: span 2;
+}
+
+.pos-input {
+    width: 100%;
+    border: 1px solid #cbd5e1;
+    border-radius: 0.625rem;
+    padding: 0.55rem 0.7rem;
+    background: #fff;
+}
+
+.pos-items {
+    display: grid;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.pos-item-row {
+    display: grid;
+    grid-template-columns: 2.2fr 1fr 1fr auto;
+    gap: 0.5rem;
+}
+
+.pos-btn,
+.pos-btn-light {
+    border: 0;
+    border-radius: 0.625rem;
+    padding: 0.55rem 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.pos-btn {
+    background: #0e9279;
+    color: #fff;
+}
+
+.pos-btn-light {
+    background: #f1f5f9;
+    color: #334155;
+}
+
+@media (max-width: 768px) {
+    .pos-form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .pos-col-2 {
+        grid-column: span 1;
+    }
+
+    .pos-item-row {
+        grid-template-columns: 1fr;
+    }
+}
+

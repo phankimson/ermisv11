@@ -8,6 +8,7 @@ use Illuminate\Support\ServiceProvider;
 use \Maatwebsite\Excel\Writer;
 use \Maatwebsite\Excel\Sheet;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Livewire\Livewire;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -43,5 +44,7 @@ class AppServiceProvider extends ServiceProvider
       Relation::enforceMorphMap([
         'AccSettingAccountGroup' => 'App\Http\Model\AccSettingAccountGroup'
      ]);
+
+      Livewire::component('pos-dashboard', \App\Http\Livewire\PosDashboard::class);
     }
 }
