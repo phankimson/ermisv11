@@ -23,15 +23,16 @@ use Illuminate\Support\Facades\DB;
 class UserController extends Controller
 {
   protected $url;
+  protected $menu = null;
   public function __construct(Request $request)
  {
      $this->url = $request->segment(3);
  }
 
-  // Action Ajax User
+  // Xu ly Ajax cho nguoi dung
  public function doLogout(Request $request){
      $user = Auth::user();
-      // Lá»‹ch sá»­ hoáº¡t Ä‘á»™ng
+      // Luu lich su hoat dong
      $hs = HistoryAction::create(['type' =>  0 , 'url' => $request->segment(2) ,'user' =>$user->id , 'menu' => 0 , 'dataz' => '']);
      $request->session()->forget('status');
      Auth::logout();
@@ -56,21 +57,22 @@ class UserController extends Controller
    }
 
  public function doLogin(Request $request){
+     $type = 1;
      try{
       DB::beginTransaction();
        //validate the fields....
       $data = json_decode($request->data);
       $credentials = [ 'username' => $data->username , 'password' => $data->password , 'active' => 1];
-      // KhÃ³a táº¡m test
+      // Captcha bat buoc, khong bypass
       $capcha = data_get($data, 'g-recaptcha-response');
       if(!$this->verifyRecaptcha($capcha, $request)){
          return response()->json(['status'=>false,'message'=> trans('messages.login_fail')]);
       }
       if(Auth::attempt($credentials)){ // login attempt
         $user = Auth::user();
-        // Kiá»ƒm tra role = admin khÃ´ng
+        // Kiem tra role admin
         if($user->role == 0){
-          // Lá»‹ch sá»­ hoáº¡t Ä‘á»™ng
+          // Luu lich su hoat dong
            $hs = HistoryAction::create(['type' =>  1 ,'url'=> $this->url , 'user' =>$user->id , 'menu' => 0 , 'dataz' => '']);
 
           return response()->json(['status'=>true, 'message'=> trans('messages.login_success')]);
@@ -81,11 +83,11 @@ class UserController extends Controller
             $date = date('Y-m-d');
             $date_end = date('Y-m-d',strtotime($cs->created_at->addDay($cs->free)));
             $lic = License::get_license($cs->license_id,$date,1);
-            // Kiá»ƒm tra license cá»§a cÃ´ng ty
+            // Kiem tra license cua cong ty
             if($lic || $date <= $date_end){
               // Authentication passed...
 
-              // Lá»‹ch sá»­ hoáº¡t Ä‘á»™ng
+              // Luu lich su hoat dong
                $hs = HistoryAction::create(['type' =>  1 ,'url'=> $this->url, 'user' =>$user->id , 'menu' => 0 , 'dataz' => '']);
                DB::commit(); 
                return response()->json(['status'=>true, 'message'=> trans('messages.login_success')]);
@@ -138,6 +140,7 @@ class UserController extends Controller
    }
 
  public function doRegister(Request $request){
+    $type = 2;
     try{
       DB::beginTransaction();
       //validate the fields...
@@ -145,7 +148,7 @@ class UserController extends Controller
 
       $password = Hash::make($data->password);
 
-      // Táº¡o cÃ´ng ty
+      // Tao cong ty
       $company = new Company;
       $company->code = $data->company_taxcode;
       $company->name = $data->company_name;
@@ -157,7 +160,7 @@ class UserController extends Controller
       $company->fax = $data->company_fax;
       $company->save();
 
-      // Láº¥y dá»¯ liá»‡u pháº§n má»m
+      // Lay du lieu phan mem
       $software = Software::where('active',1)->get();
       $sys = Systems::get_systems('DATE_USE_FREE');
       $d = json_decode($request->data,true);
@@ -172,12 +175,12 @@ class UserController extends Controller
           $company_software->active = 1;
           $company_software->save();
 
-          // Tao database cho tá»«ng cÃ´ng ty
+          // Tao database cho tung cong ty
           //SchemaDB::createDB($company_software->database);
         }
       }
 
-      // Táº¡o user khÃ¡ch hÃ ng
+      // Tao user khach hang
       $user = new User;
       $user->username = $data->username;
       $user->password = $password; //hashed password.
@@ -212,6 +215,7 @@ class UserController extends Controller
   }
 
  public function checkRegister(Request $request){
+      $type = 2;
       try{
         //validate the fields...
         $data = json_decode($request->data);
@@ -243,6 +247,7 @@ class UserController extends Controller
     }
 
  public function updateProfile(Request $request) {
+      $type = 3;
       try{
         DB::beginTransaction();
         $data = json_decode($request->data);
@@ -272,6 +277,7 @@ class UserController extends Controller
     }
 
  public function changePassword(Request $request) {
+   $type = 4;
    try{
     DB::beginTransaction();
     $data = json_decode($request->data);
@@ -297,6 +303,7 @@ class UserController extends Controller
   }
 
  public function updateAvatar (Request $request) {
+      $type = 5;
       try{
         DB::beginTransaction();
         $request->validate([
@@ -345,6 +352,7 @@ class UserController extends Controller
  }
 
  public function loadHistoryAction(Request $request) {
+   $type = 10;
    try{
      $arr = json_decode($request->data);
      $user = Auth::user();

@@ -12,6 +12,7 @@ use OpenAI\Laravel\Facades\OpenAI;
 class ChatBotAiController extends Controller
 {
   protected $url;
+  protected $menu = null;
   public function __construct(Request $request)
  {
      $this->url = $request->segment(3);

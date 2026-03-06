@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\DB;
 class ChatTimelineController extends Controller
 {
   protected $url;
+  protected $menu = null;
   public function __construct(Request $request)
  {
      $this->url = $request->segment(3);

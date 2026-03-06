@@ -11,15 +11,17 @@
 |
 */
 
-//Test -  Thử nghiệm
+// Test - Thu nghiem
 
+if (app()->environment(['local', 'testing'])) {
 Route::controller(TestController::class)->group(function () {
 Route::get('/test1', 'test1');
-Route::get('/test1', 'test2');
+Route::get('/test2', 'test2');
 Route::get('/test', 'test');
 //Route::get('/tet', 'tet');
 Route::post('/test-get','get');
 });
+}
 
 Route::controller(HomeController::class)->group(function () {
 Route::get('/','index')->name('index');
@@ -42,8 +44,7 @@ Route::middleware('auth')->controller(DatabaseController::class)->group(function
 Route::post('create_database', 'create_database');
 });
 
-
 $files = glob(__DIR__ .'/web/*.php', GLOB_BRACE);
 foreach ($files as $filename) {
-  require_once $filename; // Nạp file manage.php
+  require_once $filename; // Nap file manage.php
 }

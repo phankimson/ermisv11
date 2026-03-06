@@ -11,12 +11,14 @@ use Exception;
 class AccUserController extends Controller
 {
   protected $url;
+  protected $menu = null;
   public function __construct(Request $request)
  {
      $this->url =  $request->segment(3);
  }
 
  public function loadHistoryAction(Request $request) {
+   $type = 10;
    try{
      $arr = json_decode($request->data);
      $user = Auth::user();
