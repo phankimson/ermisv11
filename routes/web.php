@@ -34,8 +34,8 @@ Route::post('register', 'doRegister');
 Route::post('check-register', 'checkRegister');
 });
 
-Route::controller(DatabaseController::class)->group(function () {
-Route::get('create_database', 'create_database');
+Route::middleware('auth')->controller(DatabaseController::class)->group(function () {
+Route::post('create_database', 'create_database');
 });
 
 
