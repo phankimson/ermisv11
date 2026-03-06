@@ -32,6 +32,14 @@
              'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
          }
      });
+     var api_token = '';
+     window.api_token = api_token;
+     $.get("{{ route('auth.api-token') }}").done(function(response){
+         if(response && response.status && response.api_token){
+             api_token = response.api_token;
+             window.api_token = response.api_token;
+         }
+     });
      Chat.com = "{{Auth::user()->company_default}}";
      Chat.u = "{{Auth::id()}}";
      Lang.current = "{{$lang}}";

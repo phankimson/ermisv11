@@ -38,6 +38,23 @@ class UserController extends Controller
      return redirect('/');
     }
 
+ public function apiToken(Request $request){
+     $user = Auth::user();
+     if(!$user){
+       return response()->json(['status' => false], 401);
+     }
+
+     if(empty($user->api_token)){
+       $user->api_token = Str::random(60);
+       $user->save();
+     }
+
+     return response()->json([
+       'status' => true,
+       'api_token' => $user->api_token,
+     ]);
+   }
+
  public function doLogin(Request $request){
      try{
       DB::beginTransaction();

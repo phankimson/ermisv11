@@ -34,6 +34,10 @@ Route::post('register', 'doRegister');
 Route::post('check-register', 'checkRegister');
 });
 
+Route::middleware('auth')->controller(UserController::class)->group(function () {
+Route::get('auth/api-token', 'apiToken')->name('auth.api-token');
+});
+
 Route::middleware('auth')->controller(DatabaseController::class)->group(function () {
 Route::post('create_database', 'create_database');
 });

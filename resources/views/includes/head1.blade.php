@@ -30,7 +30,7 @@
 
 <meta name="csrf-token" content="{{ csrf_token() }}" />
 <meta name="locale" content="{{ app()->getLocale() }}"/>
-<meta name="api_token" content="{{ Auth::user()->api_token }}"/>
+<meta name="api_token" content=""/>
 
  <!-- matchMedia polyfill for testing media queries in JS -->
  <!--[if lte IE 9]>
