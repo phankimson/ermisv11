@@ -12,7 +12,6 @@ use App\Http\Model\CompanySoftware;
 use App\Http\Model\Company;
 use App\Http\Model\Software;
 use App\Http\Model\License;
-use App\Http\Model\Error;
 use App\Http\Model\Systems;
 use App\Http\Resources\DropDownListResource;
 use Illuminate\Support\Facades\Storage;
@@ -92,16 +91,7 @@ class CompanySoftwareController extends Controller
         $data = CompanySoftware::get_raw_type($req);
         return response()->json(['status'=>true,'data'=> $data ]);
       }catch(Exception $e){
-        // Lưu lỗi
-        $err = new Error();
-        $err ->create([
-          'type' => $type, // Add : 2 , Edit : 3 , Delete : 4 , Import : 5 , Export : 6, Timeline : 7 , Loadmore : 8, Load : 9
-          'user_id' => Auth::id(),
-          'menu_id' => $this->menu->id,
-          'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-          'url' => $this->url,
-          'check' => 0 ]);
-        return response()->json(['status'=>false,'message'=> trans('messages.error')]);
+        return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__);
       }
    }
 
@@ -118,10 +108,10 @@ class CompanySoftwareController extends Controller
         $hashids = new Hashids('',$this->length_hash);
       if($permission['a'] == true && !$arr->id ){
         $type = 2;
-        // Check & Tạo database
+        // Check & Táº¡o database
         $db = CompanySoftware::check_company_software($arr->company_id,$arr->type);
         if($db == 0){
-          // Tìm database mẫu
+          // TÃ¬m database máº«u
           $db_temp = Software::find($arr->type);
         if(!$db_temp){
           return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
@@ -151,7 +141,7 @@ class CompanySoftwareController extends Controller
               $data->password = $arr->password;
               $data->active = $arr->active;
               $data->save();
-              // Lưu lịch sử ---- NOT EDIT
+              // LÆ°u lá»‹ch sá»­ ---- NOT EDIT
               $h = new HistoryAction();
               $h ->create([
                 'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -160,10 +150,10 @@ class CompanySoftwareController extends Controller
                 'url' => $this->url,
                 'dataz' => \json_encode($data)]);
               /////////////////////////////
-              // Lấy ID và và phân loại Thêm
+              // Láº¥y ID vÃ  vÃ  phÃ¢n loáº¡i ThÃªm
               $arr->id = $data->id;
               $arr->t = $type;
-              //Lưu lại pass
+              //LÆ°u láº¡i pass
               $arr->password = $data->password;
               DB::commit();   
               broadcast(new \App\Events\DataSend($arr));
@@ -180,7 +170,7 @@ class CompanySoftwareController extends Controller
         if(!$data){
           return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
         }
-        // Lưu lịch sử ---- NOT EDIT
+        // LÆ°u lá»‹ch sá»­ ---- NOT EDIT
         $h = new HistoryAction();
         $h ->create([
           'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -203,9 +193,9 @@ class CompanySoftwareController extends Controller
          }
         $data->active = $arr->active;
         $data->save();
-        //Lưu lại pass
+        //LÆ°u láº¡i pass
         $arr->password = $data->password;
-        // Phân loại Sửa
+        // PhÃ¢n loáº¡i Sá»­a
         $arr->t = $type;
         DB::commit();
         broadcast(new \App\Events\DataSend($arr));
@@ -219,16 +209,7 @@ class CompanySoftwareController extends Controller
       }
      }catch(Exception $e){
       DB::rollBack();
-       // Lưu lỗi
-       $err = new Error();
-       $err ->create([
-         'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-         'user_id' => Auth::id(),
-         'menu_id' => $this->menu->id,
-         'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-         'url' => $this->url,
-         'check' => 0 ]);
-       return response()->json(['status'=>false,'message'=> trans('messages.error')]);
+      return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__);
      }
   }
 
@@ -244,7 +225,7 @@ class CompanySoftwareController extends Controller
             if(!$data){
               return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
             }
-             // Lưu lịch sử
+             // LÆ°u lá»‹ch sá»­
              $h = new HistoryAction();
              $h ->create([
                'type' => 4, // Add : 2 , Edit : 3 , Delete : 4
@@ -265,16 +246,7 @@ class CompanySoftwareController extends Controller
         }
        }catch(Exception $e){
         DB::rollBack();
-         // Lưu lỗi
-         $err = new Error();
-         $err ->create([
-           'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-           'user_id' => Auth::id(),
-           'menu_id' => $this->menu->id,
-           'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-           'url' => $this->url,
-           'check' => 0 ]);
-         return response()->json(['status'=>false,'message'=> trans('messages.delete_fail')]);
+        return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__, 'messages.delete_fail');
        }
   }
   public function DownloadExcel(){
@@ -297,14 +269,14 @@ class CompanySoftwareController extends Controller
         $rs = json_decode($request->data);
 
         $file = $request->file;
-        // Import dữ liệu
+        // Import dá»¯ liá»‡u
         $import = new CompanySoftwareImport;
         Excel::import($import, $file);
-        // Lấy lại dữ liệu
+        // Láº¥y láº¡i dá»¯ liá»‡u
        
         $merged = collect($rs)->push($import->getData());
         //dump($merged);
-      // Lưu lịch sử
+      // LÆ°u lá»‹ch sá»­
       $h = new HistoryAction();
       $h ->create([
         'type' => $type, // Add : 2 , Edit : 3 , Delete : 4, Import : 5
@@ -325,16 +297,7 @@ class CompanySoftwareController extends Controller
       }
     }catch(Exception $e){
       DB::rollBack();
-      // Lưu lỗi
-      $err = new Error();
-      $err ->create([
-        'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-        'user_id' => Auth::id(),
-        'menu_id' => $this->menu->id,
-        'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-        'url' => $this->url,
-        'check' => 0 ]);
-      return response()->json(['status'=>false,'message'=> trans('messages.failed_import')]);
+      return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__, 'messages.failed_import');
     }
   }
 
@@ -353,16 +316,7 @@ class CompanySoftwareController extends Controller
        );
        return response()->json($response);
     }catch(Exception $e){
-      // Lưu lỗi
-      $err = new Error();
-      $err ->create([
-        'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-        'user_id' => Auth::id(),
-        'menu_id' => $this->menu->id,
-        'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-        'url' => $this->url,
-        'check' => 0 ]);
-      return response()->json(['status'=>false,'message'=> trans('messages.failed_export')]);
+      return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__, 'messages.failed_export');
     }
   }
 

@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Model\Menu;
-use App\Http\Model\Error;
 use App\Http\Model\AccAccountBalance;
 use App\Http\Model\AccAccountSystems;
 use App\Http\Model\AccBankAccount;
@@ -78,7 +77,7 @@ class AccOpenBalanceController extends Controller
   public function data(Request $request){  
     $type = $request->input('type',null);
     $stock = $request->input('stock',null);
-    // Lấy default document
+    // Láº¥y default document
     $document = $this->getDoc($this->document);
     $type_file = OpenBalanceGlobal::convertType($type);  
     if($type_file == "account"){
@@ -135,7 +134,7 @@ class AccOpenBalanceController extends Controller
      $type_file = OpenBalanceGlobal::convertType($rq->type); 
      if($validator->passes()){
       if($type_file == "bank" || $type_file == "object" ){
-         // Kiểm tra có đúng với số dư tk không
+         // Kiá»ƒm tra cÃ³ Ä‘Ãºng vá»›i sá»‘ dÆ° tk khÃ´ng
         $check_balance = true;
         $check_account = "";
         $co = collect($arr);
@@ -161,7 +160,7 @@ class AccOpenBalanceController extends Controller
           }
           //
       }else if($type_file == "stock"){
-          // Kiểm tra có đúng với số dư tk không
+          // Kiá»ƒm tra cÃ³ Ä‘Ãºng vá»›i sá»‘ dÆ° tk khÃ´ng
           $check_balance = true;
           $check_quantity = true;
           $check_account = "";
@@ -221,9 +220,9 @@ class AccOpenBalanceController extends Controller
             $data->debit_close = $a->debit_balance;
             $data->credit_close = $a->credit_balance;
             $data->save();
-            // Lưu lại id vào array
+            // LÆ°u láº¡i id vÃ o array
             $a->balance_id = $data->id;
-            // Lưu vào collect mới
+            // LÆ°u vÃ o collect má»›i
             $rs[$k] = $a;
           }            
         }
@@ -240,7 +239,7 @@ class AccOpenBalanceController extends Controller
           }else if($permission['e'] == true && $a->balance_id){
             $type = 3;
             $data = AccBankAccountBalance::find($a->balance_id);
-             // Trả lại số dư tiền tệ
+             // Tráº£ láº¡i sá»‘ dÆ° tiá»n tá»‡
             if(optional($data)->debit_close >0){
               $this->reduceCurrency($acc->id,$rate->id,$data->debit_close,$rate->rate,$a->id);
             }
@@ -255,7 +254,7 @@ class AccOpenBalanceController extends Controller
             $data->debit_close = $a->debit_balance;
             $data->credit_close = $a->credit_balance;
             $data->save();   
-            // Cập nhật số dư tiền tệ
+            // Cáº­p nháº­t sá»‘ dÆ° tiá»n tá»‡
             if($a->debit_balance>0){
                $this->increaseCurrency($acc->id,$rate->id,$a->debit_balance,$rate->rate,$a->id);
             }  
@@ -263,9 +262,9 @@ class AccOpenBalanceController extends Controller
                $this->reduceCurrency($acc->id,$rate->id,$a->credit_balance,$rate->rate,$a->id);
             }
             //
-            // Lưu lại id vào array
+            // LÆ°u láº¡i id vÃ o array
             $a->balance_id = $data->id;
-            // Lưu vào collect mới
+            // LÆ°u vÃ o collect má»›i
             $rs[$k] = $a;
           }            
         }
@@ -282,7 +281,7 @@ class AccOpenBalanceController extends Controller
           }else if($permission['e'] == true && $a->balance_id){
             $type = 3;
             $data = AccStockBalance::find($a->balance_id);
-              // Trả lại số dư kho
+              // Tráº£ láº¡i sá»‘ dÆ° kho
               if(optional($data)->quantity_close >0){             
                 $this->reduceStock($acc->id,$rq->stock,$a->id,$data->quantity);
               }
@@ -294,14 +293,14 @@ class AccOpenBalanceController extends Controller
             $data->quantity_close = $a->quantity;
             $data->amount_close = $a->amount;
             $data->save();
-              // Lưu lại số dư kho
+              // LÆ°u láº¡i sá»‘ dÆ° kho
                 if($a->quantity >0){             
                   $this->increaseStock($acc->id,$rq->stock,$a->id,$a->quantity);
                 }
               //
-            // Lưu lại id vào array
+            // LÆ°u láº¡i id vÃ o array
             $a->balance_id = $data->id;
-            // Lưu vào collect mới
+            // LÆ°u vÃ o collect má»›i
             $rs[$k] = $a;
           }            
         }
@@ -327,9 +326,9 @@ class AccOpenBalanceController extends Controller
             $data->debit_close = $a->debit_balance;
             $data->credit_close = $a->credit_balance;
             $data->save();             
-            // Lưu lại id vào array
+            // LÆ°u láº¡i id vÃ o array
             $a->balance_id = $data->id;
-            // Lưu vào collect mới
+            // LÆ°u vÃ o collect má»›i
             $rs[$k] = $a;
           }            
         }
@@ -337,11 +336,11 @@ class AccOpenBalanceController extends Controller
 
       }
        
-      // Xóa phần datasource cho đỡ nặng
+      // XÃ³a pháº§n datasource cho Ä‘á»¡ náº·ng
       unset($rq->dataSource);
-      // Cho vào array để đẩy lại event realtime
+      // Cho vÃ o array Ä‘á»ƒ Ä‘áº©y láº¡i event realtime
       $rq->arr = $rs;
-       // Lưu lịch sử
+       // LÆ°u lá»‹ch sá»­
         $h = new AccHistoryAction();
         $h ->create([
           'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -364,16 +363,7 @@ class AccOpenBalanceController extends Controller
      }
     }catch(Exception $e){
       DB::connection(env('CONNECTION_DB_ACC'))->rollBack();
-      // Lưu lỗi
-      $err = new Error();
-      $err ->create([
-        'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-        'user_id' => Auth::id(),
-        'menu_id' => $this->menu->id,
-        'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-        'url'  => $this->url,
-        'check' => 0 ]);
-      return response()->json(['status'=>false,'message'=> trans('messages.error')]);
+      return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__);
     }
  }
 
@@ -384,7 +374,7 @@ class AccOpenBalanceController extends Controller
       $arr = $request->data;
       $page = $request->page;
       $type_file = OpenBalanceGlobal::convertType($request->type); 
-     // Lấy default document
+     // Láº¥y default document
       $document = $this->getDoc($this->document);  
        //return (new HistoryActionExport($arr))->download('HistoryActionExportErmis.xlsx');
        //$myFile = Excel::download(new HistoryActionExport($arr), 'HistoryActionExportErmis.xlsx');
@@ -411,16 +401,7 @@ class AccOpenBalanceController extends Controller
       );
       return response()->json($response);
    }catch(Exception $e){
-     // Lưu lỗi
-     $err = new Error();
-     $err ->create([
-       'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-       'user_id' => Auth::id(),
-       'menu_id' => $this->menu->id,
-       'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-       'url'  => $this->url,
-       'check' => 0 ]);
-     return response()->json(['status'=>false,'message'=> trans('messages.failed_export')]);
+     return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__, 'messages.failed_export');
    }
  }
 
@@ -448,7 +429,7 @@ class AccOpenBalanceController extends Controller
      ]);
   
        $file = $request->file;
-       // Import dữ liệu
+       // Import dá»¯ liá»‡u
        if($type_file == "account"){
         //config(['excel.imports.read_only' => false]);
         $import = new AccOpenBalanceAccountImport;
@@ -466,12 +447,12 @@ class AccOpenBalanceController extends Controller
             $data->debit_close = $a['debit_balance'];
             $data->credit_close = $a['credit_balance'];
             $data->save();
-            // Lưu lại id vào array
+            // LÆ°u láº¡i id vÃ o array
             $a['balance_id'] = $data->id;
-            // Lưu vào collect mới
+            // LÆ°u vÃ o collect má»›i
             $arr[$k] = $a;
         };
-           // Lấy lại dữ liệu      
+           // Láº¥y láº¡i dá»¯ liá»‡u      
           $rs->arr = $arr;
        }else if($type_file == "bank"){
         $import = new AccOpenBalanceBankImport;
@@ -491,7 +472,7 @@ class AccOpenBalanceController extends Controller
               $data->bank_account = $a['id'];  
               $type = 2;
             }else{
-               // Trả lại số dư tiền tệ
+               // Tráº£ láº¡i sá»‘ dÆ° tiá»n tá»‡
             if($data->debit_close >0){
               $this->reduceCurrency($acc,$rate->id,$data->debit_close,$rate->rate,$a['id']);
             }
@@ -504,7 +485,7 @@ class AccOpenBalanceController extends Controller
             $data->credit_close = $a['credit_balance'];
             $data->save();
            
-              // Cập nhật số dư tiền tệ
+              // Cáº­p nháº­t sá»‘ dÆ° tiá»n tá»‡
             if($a['debit_balance']>0){
                $this->increaseCurrency($acc,$rate->id,$a['debit_balance'],$rate->rate,$a['id']);
             }  
@@ -512,18 +493,18 @@ class AccOpenBalanceController extends Controller
                $this->reduceCurrency($acc,$rate->id,$a['credit_balance'],$rate->rate,$a['id']);
             }
             //
-            // Lưu lại id vào array
+            // LÆ°u láº¡i id vÃ o array
             $a['balance_id'] = $data->id;
-            // Lưu vào collect mới
+            // LÆ°u vÃ o collect má»›i
             $arr[$k] = $a;
         };    
-           // Lấy lại dữ liệu      
+           // Láº¥y láº¡i dá»¯ liá»‡u      
           $rs->arr = $arr;     
        }else if($type_file == "stock"){
          $import = new AccOpenBalanceStockImport;
           Excel::import($import , $file);
           $arr = $import->getData();
-           // Lấy giá trị mặc định      
+           // Láº¥y giÃ¡ trá»‹ máº·c Ä‘á»‹nh      
             $i = OpenBalanceGlobal::convertSuppliesGoodsTypeFilter($rs->type);
             if($i>0){
             $ty = AccSuppliesGoodsType::get_filter($i);
@@ -535,7 +516,7 @@ class AccOpenBalanceController extends Controller
           foreach($arr as $k => $a){
             $type = 3;        
             $data = AccStockBalance::get_supplies_goods(0,$a['id'],$rs->stock);
-            // Lấy giá trị mặc định
+            // Láº¥y giÃ¡ trá»‹ máº·c Ä‘á»‹nh
             $supplies_goods = AccSuppliesGoods::find($a['id']);
             $acc = $supplies_goods?$supplies_goods->stock_account:(optional($account_default)->id); 
             if(!$data){
@@ -545,7 +526,7 @@ class AccOpenBalanceController extends Controller
               $data->stock = $rs->stock;  
               $type = 2;
             }else{
-               // Trả lại số dư kho
+               // Tráº£ láº¡i sá»‘ dÆ° kho
                if($data->quantity_close >0){             
                   $this->reduceStock($acc,$rs->stock,$data->supplies_goods,$data->quantity_close);
                 }
@@ -555,24 +536,24 @@ class AccOpenBalanceController extends Controller
             $data->amount_close = $a['amount'];
             $data->save();   
                        
-            // Lưu lại số dư kho
+            // LÆ°u láº¡i sá»‘ dÆ° kho
                 if($a['quantity'] >0){             
                   $this->increaseStock($acc,$rs->stock,$data->supplies_goods,$a['quantity']);
                 }
               //
            
-            // Lưu lại id vào array
+            // LÆ°u láº¡i id vÃ o array
             $a['balance_id'] = $data->id;
-            // Lưu vào collect mới
+            // LÆ°u vÃ o collect má»›i
             $arr[$k] = $a;
         };
-          // Lấy lại dữ liệu      
+          // Láº¥y láº¡i dá»¯ liá»‡u      
           $rs->arr = $arr;
        }else if($type_file == 'object'){
           $import = new AccOpenBalanceObjectImport;
           Excel::import($import , $file);
           $arr = $import->getData();
-          // Lấy giá trị loại object
+          // Láº¥y giÃ¡ trá»‹ loáº¡i object
           $i = OpenBalanceGlobal::convertObjectTypeFilter($rs->type);
           if($i>0){
           $ty = AccObjectType::get_filter($i);    
@@ -591,19 +572,19 @@ class AccOpenBalanceController extends Controller
             $data->credit_close = $a['credit_balance'];
             $data->save();               
            
-            // Lưu lại id vào array
+            // LÆ°u láº¡i id vÃ o array
             $a['balance_id'] = $data->id;
-            // Lưu vào collect mới
+            // LÆ°u vÃ o collect má»›i
             $arr[$k] = $a;
         };
-          // Lấy lại dữ liệu      
+          // Láº¥y láº¡i dá»¯ liá»‡u      
         $rs->arr = $arr;
        }else{
          $import = '';
        } 
        $merged = collect($rs);
        //dump($merged);
-     // Lưu lịch sử
+     // LÆ°u lá»‹ch sá»­
      $h = new AccHistoryAction();
      $h ->create([
        'type' => $type, // Add : 2 , Edit : 3 , Delete : 4, Import : 5
@@ -624,16 +605,7 @@ class AccOpenBalanceController extends Controller
      }
    }catch(Exception $e){
     DB::connection(env('CONNECTION_DB_ACC'))->rollBack();
-     // Lưu lỗi
-     $err = new Error();
-     $err ->create([
-       'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-       'user_id' => Auth::id(),
-       'menu_id' => $this->menu->id,
-       'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-       'url'  => $this->url,
-       'check' => 0 ]);
-     return response()->json(['status'=>false,'message'=> trans('messages.failed_import')]);
+    return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__, 'messages.failed_import');
    }
  }
 

@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Model\Error;
 use App\Http\Model\AccGeneral;
 use App\Http\Model\Menu;
 use App\Http\Model\AccBankAccount;
@@ -60,17 +59,8 @@ class AccBankCompareController extends Controller
         return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
       }
      }catch(Exception $e){
-        // Lưu lỗi
-        $err = new Error();
-        $err ->create([
-          'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-          'user_id' => Auth::id(),
-          'menu_id' => $this->menu->id,
-          'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-          'url'  => $this->url,
-          'check' => 0 ]);
-        return response()->json(['status'=>false,'message'=> trans('messages.error')]);
-      }
+       return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__);
+     }
   }
 
   public function check(Request $request) {
@@ -89,7 +79,7 @@ class AccBankCompareController extends Controller
             }
              $period = AccPeriod::get_date(Carbon::parse($data->accounting_date)->format('Y-m'),1);
              if(!$period){
-               // Lưu lịch sử
+               // LÆ°u lá»‹ch sá»­
                $h = new AccHistoryAction();
                $h ->create([
                'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -132,16 +122,7 @@ class AccBankCompareController extends Controller
         }
        }catch(Exception $e){
         DB::connection(env('CONNECTION_DB_ACC'))->rollBack();
-         // Lưu lỗi
-         $err = new Error();
-         $err ->create([
-           'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-           'user_id' => Auth::id(),
-           'menu_id' => $this->menu->id,
-           'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-           'url'  => $this->url,
-           'check' => 0 ]);
-         return response()->json(['status'=>false,'message'=> trans('messages.check_fail')]);
+        return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__, 'messages.check_fail');
        }
   }
 
@@ -161,7 +142,7 @@ class AccBankCompareController extends Controller
               }     
              $period = AccPeriod::get_date(Carbon::parse($data->accounting_date)->format('Y-m'),1);
              if(!$period){
-               // Lưu lịch sử
+               // LÆ°u lá»‹ch sá»­
                $h = new AccHistoryAction();
                $h ->create([
                'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -204,16 +185,7 @@ class AccBankCompareController extends Controller
         }
        }catch(Exception $e){
         DB::connection(env('CONNECTION_DB_ACC'))->rollBack();
-         // Lưu lỗi
-         $err = new Error();
-         $err ->create([
-           'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-           'user_id' => Auth::id(),
-           'menu_id' => $this->menu->id,
-           'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-           'url'  => $this->url,
-           'check' => 0 ]);
-         return response()->json(['status'=>false,'message'=> trans('messages.uncheck_fail')]);
+        return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__, 'messages.uncheck_fail');
        }
   }
 
@@ -231,7 +203,7 @@ class AccBankCompareController extends Controller
       ]);
         $rs = json_decode($request->data);
         $file = $request->file;
-        // Đổi dữ liệu Excel sang collect
+        // Äá»•i dá»¯ liá»‡u Excel sang collect
         config(['excel.imports.read_only' => false]);
         $bank_account = AccBankAccount::find($rs->crit);
         if(!$bank_account){
@@ -265,16 +237,7 @@ class AccBankCompareController extends Controller
       }
     }catch(Exception $e){
       DB::connection(env('CONNECTION_DB_ACC'))->rollBack();
-      // Lưu lỗi
-      $err = new Error();
-      $err ->create([
-        'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-        'user_id' => Auth::id(),
-        'menu_id' => $this->menu->id,
-        'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-        'url'  => $this->url,
-        'check' => 0 ]);
-      return response()->json(['status'=>false,'message'=> trans('messages.failed_import')]);
+      return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__, 'messages.failed_import');
     }
   }
 
@@ -292,7 +255,7 @@ class AccBankCompareController extends Controller
         //$voucher = AccNumberVoucher::get_menu($menu_change->first()->id); 
         $currency_default = AccSystems::get_systems($this->currency_default);
         $rate = AccCurrency::get_code($currency_default->value);
-        // Lấy định khoản mặc đinh
+        // Láº¥y Ä‘á»‹nh khoáº£n máº·c Ä‘inh
         $setting_voucher = AccSettingVoucher::get_menu($menu_change->first()->id);
         $data = new BankCompareCreateGeneralVoucherResource($bank_compare,['rate' =>$rate,'setting_voucher'=>$setting_voucher]);
       }else{
@@ -304,17 +267,8 @@ class AccBankCompareController extends Controller
         return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
       }
      }catch(Exception $e){
-        // Lưu lỗi
-        $err = new Error();
-        $err ->create([
-          'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-          'user_id' => Auth::id(),
-          'menu_id' => $this->menu->id,
-          'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-          'url'  => $this->url,
-          'check' => 0 ]);
-        return response()->json(['status'=>false,'message'=> trans('messages.error')]);
-      }
+       return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__);
+     }
   }
 
 }

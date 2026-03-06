@@ -11,7 +11,6 @@ use App\Http\Model\AccUser;
 use App\Http\Model\Menu;
 use App\Http\Model\AccGroupUsers;
 use App\Http\Model\Systems;
-use App\Http\Model\Error;
 use App\Http\Model\AccSystems;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Model\Imports\AccUserImport;
@@ -126,7 +125,7 @@ class AccUserManagerController extends Controller
        $data->active = $arr->active;
        $data->save();
 
-       // Lưu lịch sử
+       // LÆ°u lá»‹ch sá»­
        $h = new AccHistoryAction();
        $h ->create([
          'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -135,12 +134,12 @@ class AccUserManagerController extends Controller
          'url'  => $this->url,
          'dataz' => \json_encode($data)]);
 
-       // Lấy ID và và phân loại Thêm. Cập nhật lại username
+       // Láº¥y ID vÃ  vÃ  phÃ¢n loáº¡i ThÃªm. Cáº­p nháº­t láº¡i username
        $arr->id = $data->id;
        $arr->username = $prefix_username.'_'.$arr->username;
        $arr->t = $type;
 
-       // Lưu ảnh thêm
+       // LÆ°u áº£nh thÃªm
        if($request->hasFile('files')) {
          $files = $request->file('files');
          $filename = $files->getClientOriginalName();
@@ -151,13 +150,13 @@ class AccUserManagerController extends Controller
          File::makeDirectory($path, 0777, true, true);
          }
          $upload_success = $files->move($path, $filename);
-         // Lưu lại hình ảnh
+         // LÆ°u láº¡i hÃ¬nh áº£nh
          $data = AccUser::find($arr->id);
          if($data){
           $data->avatar = $pathname;
           $data->save();
          }        
-         //Lưu ảnh lại array
+         //LÆ°u áº£nh láº¡i array
          $arr->avatar = $pathname;
        }
        //
@@ -175,7 +174,7 @@ class AccUserManagerController extends Controller
         if(!$data){
           return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
         }
-       // Lưu lịch sử
+       // LÆ°u lá»‹ch sá»­
        $h = new AccHistoryAction();
        $h ->create([
          'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -208,12 +207,12 @@ class AccUserManagerController extends Controller
         $data->about = $arr->about;
         $data->active = $arr->active;
         $data->save();
-         // Phân loại Sửa
+         // PhÃ¢n loáº¡i Sá»­a
          $arr->t = $type;
          $arr->username = $data->username;
-       // Lưu ảnh sửa
+       // LÆ°u áº£nh sá»­a
        if($request->hasFile('files')) {
-         //Xóa ảnh cũ
+         //XÃ³a áº£nh cÅ©
          if(File::exists(public_path($data->avatar)) && $data->avatar != 'addon/img/avatar.png'){
             File::delete(public_path($data->avatar));
          };
@@ -227,13 +226,13 @@ class AccUserManagerController extends Controller
          File::makeDirectory($path, 0777, true, true);
          }
          $upload_success = $files->move($path, $filename);
-         // Lưu lại hình ảnh
+         // LÆ°u láº¡i hÃ¬nh áº£nh
          $data = AccUser::find($arr->id);
          if($data){
           $data->avatar = $pathname;
           $data->save();
          }         
-         //Lưu ảnh lại array
+         //LÆ°u áº£nh láº¡i array
          $arr->avatar = $pathname;
        }
        //
@@ -256,16 +255,7 @@ class AccUserManagerController extends Controller
      }
     }catch(Exception $e){
       DB::rollBack();
-      // Lưu lỗi
-      $err = new Error();
-      $err ->create([
-        'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-        'user_id' => Auth::id(),
-        'menu_id' => $this->menu->id,
-        'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-        'url'  => $this->url,
-        'check' => 0 ]);
-      return response()->json(['status'=>false,'message'=> trans('messages.error')]);
+      return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__);
     }
  }
 
@@ -281,7 +271,7 @@ class AccUserManagerController extends Controller
           if(!$data){
             return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
           }
-            // Lưu lịch sử
+            // LÆ°u lá»‹ch sá»­
             $h = new AccHistoryAction();
             $h ->create([
             'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -290,7 +280,7 @@ class AccUserManagerController extends Controller
             'url'  => $this->url,
             'dataz' => \json_encode($data)]);
             //
-            //Xóa ảnh cũ
+            //XÃ³a áº£nh cÅ©
             if(File::exists(public_path($data->avatar)) && $data->avatar != 'addon/img/avatar.png'){
                File::delete(public_path($data->avatar));
             };
@@ -307,16 +297,7 @@ class AccUserManagerController extends Controller
        }
       }catch(Exception $e){
         DB::rollBack();
-        // Lưu lỗi
-        $err = new Error();
-        $err ->create([
-          'type' => $type, // Add : 2 , Edit : 3 , Delete : 4 , Import : 5 , Export : 6, Timeline : 7 , Loadmore : 8, Load : 9
-          'user_id' => Auth::id(),
-          'menu_id' => $this->menu->id,
-          'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-          'url'  => $this->url,
-          'check' => 0 ]);
-        return response()->json(['status'=>false,'message'=> trans('messages.delete_fail')]);
+        return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__, 'messages.delete_fail');
       }
  }
 
@@ -340,14 +321,14 @@ class AccUserManagerController extends Controller
        $rs = json_decode($request->data);
 
        $file = $request->file;
-       // Import dữ liệu
+       // Import dá»¯ liá»‡u
        $import = new AccUserImport;
        Excel::import($import, $file);
-       // Lấy lại dữ liệu
+       // Láº¥y láº¡i dá»¯ liá»‡u
       
        $merged = collect($rs)->push($import->getData());
        //dump($merged);
-     // Lưu lịch sử
+     // LÆ°u lá»‹ch sá»­
      $h = new AccHistoryAction();
      $h ->create([
        'type' => $type, // Add : 2 , Edit : 3 , Delete : 4, Import : 5
@@ -368,16 +349,7 @@ class AccUserManagerController extends Controller
      }
    }catch(Exception $e){
     DB::rollBack();
-     // Lưu lỗi
-     $err = new Error();
-     $err ->create([
-       'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-       'user_id' => Auth::id(),
-       'menu_id' => $this->menu->id,
-       'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-       'url'  => $this->url,
-       'check' => 0 ]);
-     return response()->json(['status'=>false,'message'=> trans('messages.failed_import')]);
+    return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__, 'messages.failed_import');
    }
  }
 
@@ -397,16 +369,7 @@ class AccUserManagerController extends Controller
       );
       return response()->json($response);
    }catch(Exception $e){
-     // Lưu lỗi
-     $err = new Error();
-     $err ->create([
-       'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-       'user_id' => Auth::id(),
-       'menu_id' => $this->menu->id,
-       'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-       'url'  => $this->url,
-       'check' => 0 ]);
-     return response()->json(['status'=>false,'message'=> trans('messages.failed_export')]);
+     return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__, 'messages.failed_export');
    }
  }
 

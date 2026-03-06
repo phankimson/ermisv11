@@ -14,7 +14,6 @@ use App\Http\Model\AccObject;
 use App\Http\Model\AccPeriod;
 use App\Http\Model\AccNumberVoucher;
 use App\Http\Model\AccPrintTemplate;
-use App\Http\Model\Error;
 use App\Http\Resources\BankTransferGeneralReadResource;
 use App\Http\Model\Imports\AccEntryGeneralImport;
 use App\Http\Model\Imports\AccEntryGeneralVoucherImport;
@@ -41,7 +40,7 @@ class AccEntryGeneralVoucherController extends Controller
   public function __construct(Request $request)
  {
      $this->url =  $request->segment(3);
-     $this->group = 5; // Nhóm bút toán tổng hợp
+     $this->group = 5; // NhÃ³m bÃºt toÃ¡n tá»•ng há»£p
      $this->key = "entry-general-voucher";
      $this->menu = Menu::where('code', '=', $this->key)->first();
      $this->print = 'TH%';
@@ -110,7 +109,7 @@ class AccEntryGeneralVoucherController extends Controller
             $action = 'add';
             $general = new AccGeneral();
             $general->user = $user->id;
-            // Lưu số nhảy
+            // LÆ°u sá»‘ nháº£y
               $v = $this->saveNumberVoucher($this->menu,$arr);
           }else{
             $check_permission = false;
@@ -130,7 +129,7 @@ class AccEntryGeneralVoucherController extends Controller
           $general->group = $this->group;
           $general->save();
           
-          // Tham chiếu / Reference
+          // Tham chiáº¿u / Reference
            $this->saveReference($arr->reference_by,$general->id);
 
 
@@ -149,16 +148,16 @@ class AccEntryGeneralVoucherController extends Controller
              $detail->general_id = $general->id;
              $detail->description = $d->description;
              $detail->currency = $arr->currency;
-             $detail->debit = $d->debit->value;  // Đổi từ id value dạng read
-             $detail->credit = $d->credit->value;  // Đổi từ id value dạng read
+             $detail->debit = $d->debit->value;  // Äá»•i tá»« id value dáº¡ng read
+             $detail->credit = $d->credit->value;  // Äá»•i tá»« id value dáº¡ng read
              $detail->amount = $d->amount;
              $detail->rate = $d->rate;
              $detail->amount_rate = $d->amount * $d->rate;
-             $detail->accounted_fast = $d->accounted_fast->value;  // Đổi từ id value dạng read
-             $detail->subject_id_debit = $d->subject_debit->value;  // Đổi từ id value dạng read   
-             $detail->subject_name_debit = $d->subject_debit->text;  // Đổi từ id value dạng read   
-             $detail->subject_id_credit = $d->subject_credit->value;  // Đổi từ id value dạng read
-             $detail->subject_name_credit = $d->subject_credit->text;  // Đổi từ id value dạng read                  
+             $detail->accounted_fast = $d->accounted_fast->value;  // Äá»•i tá»« id value dáº¡ng read
+             $detail->subject_id_debit = $d->subject_debit->value;  // Äá»•i tá»« id value dáº¡ng read   
+             $detail->subject_name_debit = $d->subject_debit->text;  // Äá»•i tá»« id value dáº¡ng read   
+             $detail->subject_id_credit = $d->subject_credit->value;  // Äá»•i tá»« id value dáº¡ng read
+             $detail->subject_name_credit = $d->subject_credit->text;  // Äá»•i tá»« id value dáº¡ng read                  
              $detail->active = 1;
              $detail->status = 1;
              $detail->save();
@@ -168,15 +167,15 @@ class AccEntryGeneralVoucherController extends Controller
             
            }
 
-           // Xóa dòng chi tiết
+           // XÃ³a dÃ²ng chi tiáº¿t
            AccDetail::get_detail_whereNotIn_delete($general->id,$removeId);
 
            $check_invoice = false;
            $invoice = '';
-           // Lưu VAT
+           // LÆ°u VAT
            foreach($arr->tax as $l => $x){
              $tax = collect([]);
-                // Kiểm tra có trùng MST, số hóa đơn 
+                // Kiá»ƒm tra cÃ³ trÃ¹ng MST, sá»‘ hÃ³a Ä‘Æ¡n 
                 $arr_check = array(
                   ['invoice', '=',$x->invoice],
                   ['invoice_symbol', '=',$x->invoice_symbol],
@@ -191,7 +190,7 @@ class AccEntryGeneralVoucherController extends Controller
                     break;
                 }
                 // End
-                // Update mẫu, ký tự hóa đơn
+                // Update máº«u, kÃ½ tá»± hÃ³a Ä‘Æ¡n
                 $obj = AccObject::find($x->subject_id);
                 if($obj){
                   $obj->invoice_form = $x->invoice_form;
@@ -221,8 +220,8 @@ class AccEntryGeneralVoucherController extends Controller
              $tax->tax_code = $x->tax_code;
              $tax->address = $x->address;
              $tax->description = $x->description;
-             $tax->vat_account = $x->vat_account->value;// Đổi từ id value dạng read
-             $tax->vat_type = $x->vat_type->value;// Đổi từ id value dạng read
+             $tax->vat_account = $x->vat_account->value;// Äá»•i tá»« id value dáº¡ng read
+             $tax->vat_type = $x->vat_type->value;// Äá»•i tá»« id value dáº¡ng read
              $tax->amount = $x->amount;
              $tax->tax = $x->tax;
              $tax->total_amount = $total_amount;
@@ -234,13 +233,13 @@ class AccEntryGeneralVoucherController extends Controller
              array_push($removeId_v,$tax->id);
              $arr->tax[$l]->id = $tax->id;
            }
-           // Xóa dòng chi tiết Vat
+           // XÃ³a dÃ²ng chi tiáº¿t Vat
            AccVatDetail::get_detail_whereNotIn_delete($general->id,$removeId_v);
            
-           // Lưu file
+           // LÆ°u file
             $this->saveFile($request,$general->id,$this->path);  
 
-           // Lưu lịch sử
+           // LÆ°u lá»‹ch sá»­
            $h = new AccHistoryAction();
            $h ->create([
            'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -267,17 +266,8 @@ class AccEntryGeneralVoucherController extends Controller
       }
     }catch(Exception $e){
       DB::connection(env('CONNECTION_DB_ACC'))->rollBack();
-       // Lưu lỗi
-       $err = new Error();
-       $err ->create([
-         'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-         'user_id' => Auth::id(),
-         'menu_id' => $this->menu->id,
-         'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-         'url'  => $this->url,
-         'check' => 0 ]);
-       return response()->json(['status'=>false,'message'=> trans('messages.error')]);
-     }
+      return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__);
+    }
   }
 
 
@@ -293,17 +283,8 @@ class AccEntryGeneralVoucherController extends Controller
         return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
       }
      }catch(Exception $e){
-        // Lưu lỗi
-        $err = new Error();
-        $err ->create([
-          'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-          'user_id' => Auth::id(),
-          'menu_id' => $this->menu->id,
-          'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-          'url'  => $this->url,
-          'check' => 0 ]);
-        return response()->json(['status'=>false,'message'=> trans('messages.error')]);
-      }
+       return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__);
+     }
   }
 
   public function DownloadExcel(){
@@ -326,7 +307,7 @@ class AccEntryGeneralVoucherController extends Controller
         //$rs = json_decode($request->data);
   
         $file = $request->file;
-        // Đổi dữ liệu Excel sang collect
+        // Äá»•i dá»¯ liá»‡u Excel sang collect
         config(['excel.imports.read_only' => false]);
         $data = new AccEntryGeneralImport($this->menu);
         Excel::import($data , $file);
@@ -342,16 +323,7 @@ class AccEntryGeneralVoucherController extends Controller
       }
     }catch(Exception $e){
       DB::connection(env('CONNECTION_DB_ACC'))->rollBack();
-      // Lưu lỗi
-      $err = new Error();
-      $err ->create([
-        'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-        'user_id' => Auth::id(),
-        'menu_id' => $this->menu->id,
-        'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-        'url'  => $this->url,
-        'check' => 0 ]);
-      return response()->json(['status'=>false,'message'=> trans('messages.failed_import')]);
+      return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__, 'messages.failed_import');
     }
   }
 

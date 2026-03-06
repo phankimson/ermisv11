@@ -15,7 +15,6 @@ use App\Http\Model\AccPeriod;
 use App\Http\Model\AccNumberVoucher;
 use App\Http\Model\AccCountVoucher;
 use App\Http\Model\AccPrintTemplate;
-use App\Http\Model\Error;
 use App\Http\Resources\BankGeneralResource;
 use App\Http\Resources\TypeGeneralResource;
 use App\Http\Resources\TypeListGeneralResource;
@@ -43,7 +42,7 @@ class AccEntryGeneralController extends Controller
   public function __construct(Request $request)
  {
      $this->url =  $request->segment(3);
-     $this->group = 5; // Nhóm bút toán tổng hợp
+     $this->group = 5; // NhÃ³m bÃºt toÃ¡n tá»•ng há»£p
      $this->key = "entry-general";
      $this->key_voucher = "entry-general-voucher";
      $this->menu = Menu::where('code', '=', $this->key)->first();
@@ -81,7 +80,7 @@ class AccEntryGeneralController extends Controller
              if(!$period){
                $detail = AccDetail::get_detail_active($data->id,1);
 
-               // Lưu lịch sử
+               // LÆ°u lá»‹ch sá»­
                $h = new AccHistoryAction();
                $h ->create([
                'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -110,16 +109,7 @@ class AccEntryGeneralController extends Controller
         }
        }catch(Exception $e){
         DB::connection(env('CONNECTION_DB_ACC'))->rollBack();
-         // Lưu lỗi
-         $err = new Error();
-         $err ->create([
-           'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-           'user_id' => Auth::id(),
-           'menu_id' => $this->menu->id,
-           'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-           'url'  => $this->url,
-           'check' => 0 ]);
-         return response()->json(['status'=>false,'message'=> trans('messages.unrecored_fail')]);
+        return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__, 'messages.unrecored_fail');
        }
   }
 
@@ -138,7 +128,7 @@ class AccEntryGeneralController extends Controller
              $period = AccPeriod::get_date(Carbon::parse($data->accounting_date)->format('Y-m'),1);
              if(!$period){
                $detail = AccDetail::get_detail_active($data->id,0);
-               // Lưu lịch sử
+               // LÆ°u lá»‹ch sá»­
                $h = new AccHistoryAction();
                $h ->create([
                'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -167,16 +157,7 @@ class AccEntryGeneralController extends Controller
         }
        }catch(Exception $e){
         DB::connection(env('CONNECTION_DB_ACC'))->rollBack();
-         // Lưu lỗi
-         $err = new Error();
-         $err ->create([
-           'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-           'user_id' => Auth::id(),
-           'menu_id' => $this->menu->id,
-           'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-           'url'  => $this->url,
-           'check' => 0 ]);
-         return response()->json(['status'=>false,'message'=> trans('messages.recored_fail')]);
+        return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__, 'messages.recored_fail');
        }
   }
 
@@ -194,24 +175,15 @@ class AccEntryGeneralController extends Controller
         return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
       }
      }catch(Exception $e){
-        // Lưu lỗi
-        $err = new Error();
-        $err ->create([
-          'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-          'user_id' => Auth::id(),
-          'menu_id' => $this->menu->id,
-          'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-          'url'  => $this->url,
-          'check' => 0 ]);
-        return response()->json(['status'=>false,'message'=> trans('messages.error')]);
-      }
+       return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__);
+     }
   }
 
   public function revoucher(Request $request){
     $type = 10;
     try{
       $req = json_decode($request->data);
-      // Tìm voucher
+      // TÃ¬m voucher
       $v = AccNumberVoucher::get_menu($this->menu->id); 
       $date_obj = Convert::dateformatRange($v->format,$req);
       $data = collect(BankGeneralResource::collection(AccGeneral::get_data_load_between($req->type,$date_obj['start_date'],$date_obj['end_date'])));
@@ -221,24 +193,15 @@ class AccEntryGeneralController extends Controller
         return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
       }
      }catch(Exception $e){
-        // Lưu lỗi
-        $err = new Error();
-        $err ->create([
-          'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-          'user_id' => Auth::id(),
-          'menu_id' => $this->menu->id,
-          'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-          'url'  => $this->url,
-          'check' => 0 ]);
-        return response()->json(['status'=>false,'message'=> trans('messages.error')]);
-      }
+       return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__);
+     }
   }
 
   public function start_voucher(Request $request){
     $type = 10;
     try{
       $req = json_decode($request->data);
-      // Tìm voucher
+      // TÃ¬m voucher
       $v = AccNumberVoucher::get_menu($req->type); 
       $val = Convert::dateformatArr($v->format,$req->year.'-'.$req->month.'-'.$req->day);
       $voucher = AccCountVoucher::get_count_voucher($v->id,$v->format,$val['day_format'],$val['month_format'],$val['year_format']);  
@@ -251,17 +214,8 @@ class AccEntryGeneralController extends Controller
         return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
       }
      }catch(Exception $e){
-        // Lưu lỗi
-        $err = new Error();
-        $err ->create([
-          'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-          'user_id' => Auth::id(),
-          'menu_id' => $this->menu->id,
-          'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-          'url'  => $this->url,
-          'check' => 0 ]);
-        return response()->json(['status'=>false,'message'=> trans('messages.error')]);
-      }
+       return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__);
+     }
   }
 
   public function change_voucher(Request $request){
@@ -269,7 +223,7 @@ class AccEntryGeneralController extends Controller
     try{
       DB::connection(env('CONNECTION_DB_ACC'))->beginTransaction();
       $req = json_decode($request->data);
-      // Tìm voucher & lưu voucher
+      // TÃ¬m voucher & lÆ°u voucher
       $voucher = AccCountVoucher::find($req->voucherId);  
       if($voucher){ 
       $voucher->number = $req->number;
@@ -286,17 +240,8 @@ class AccEntryGeneralController extends Controller
      return response()->json(['status'=>true , 'message'=> trans('messages.update_success')]);
      }catch(Exception $e){
       DB::connection(env('CONNECTION_DB_ACC'))->rollBack();
-        // Lưu lỗi
-        $err = new Error();
-        $err ->create([
-          'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-          'user_id' => Auth::id(),
-          'menu_id' => $this->menu->id,
-          'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-          'url'  => $this->url,
-          'check' => 0 ]);
-        return response()->json(['status'=>false,'message'=> trans('messages.error')]);
-      }
+      return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__);
+     }
   }
 
   
@@ -313,7 +258,7 @@ class AccEntryGeneralController extends Controller
            if(!$period){
              if($permission['d'] == true){             
 
-               // Lưu lịch sử
+               // LÆ°u lá»‹ch sá»­
                $h = new AccHistoryAction();
                $h ->create([
                'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -323,13 +268,13 @@ class AccEntryGeneralController extends Controller
                'dataz' => \json_encode($data)]);
                //           
                                          
-               // Xóa các dòng chi tiết
+               // XÃ³a cÃ¡c dÃ²ng chi tiáº¿t
                $data->detail()->delete();             
               
-                // Xóa các dòng thuế
+                // XÃ³a cÃ¡c dÃ²ng thuáº¿
                $data->tax()->delete();                        
 
-               //Xóa đính kèm
+               //XÃ³a Ä‘Ã­nh kÃ¨m
                 $attach = $data->attach;
                  if($attach->count()>0){
                   $this->deleteFile($attach);  
@@ -349,16 +294,7 @@ class AccEntryGeneralController extends Controller
         }
        }catch(Exception $e){
         DB::connection(env('CONNECTION_DB_ACC'))->rollBack();
-         // Lưu lỗi
-         $err = new Error();
-         $err ->create([
-           'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-           'user_id' => Auth::id(),
-           'menu_id' => $this->menu->id,
-           'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-           'url'  => $this->url,
-           'check' => 0 ]);
-         return response()->json(['status'=>false,'message'=> trans('messages.delete_fail')]);
+        return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__, 'messages.delete_fail');
        }
   }
 
@@ -383,13 +319,13 @@ class AccEntryGeneralController extends Controller
       $rs = json_decode($request->data);
       $menu = Menu::where('code', '=', $this->key_voucher)->first();
       $file = $request->file;
-      // Import dữ liệu
+      // Import dá»¯ liá»‡u
       $import = new AccEntryImport($menu->id,$this->group);
       Excel::import($import, $file);
-      // Lấy lại dữ liệu
+      // Láº¥y láº¡i dá»¯ liá»‡u
       //$array = AccGeneral::with('detail','tax')->get();
 
-      // Import dữ liệu bằng collection
+      // Import dá»¯ liá»‡u báº±ng collection
       //$results = Excel::toCollection(new HistoryActionImport, $file);
       //dump($results);
       //foreach($results[0] as $item){
@@ -405,7 +341,7 @@ class AccEntryGeneralController extends Controller
       
       $merged = collect($rs)->push($data);
       //dump($merged);
-    // Lưu lịch sử
+    // LÆ°u lá»‹ch sá»­
     $h = new AccHistoryAction();
     $h ->create([
       'type' => $type, // Add : 2 , Edit : 3 , Delete : 4, Import : 5
@@ -426,16 +362,7 @@ class AccEntryGeneralController extends Controller
     }
   }catch(Exception $e){
     DB::connection(env('CONNECTION_DB_ACC'))->rollBack();
-    // Lưu lỗi
-    $err = new Error();
-    $err ->create([
-      'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-      'user_id' => Auth::id(),
-      'menu_id' => $this->menu->id,
-      'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-      'url'  => $this->url,
-      'check' => 0 ]);
-    return response()->json(['status'=>false,'message'=> trans('messages.failed_import')]);
+    return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__, 'messages.failed_import');
   }
 }
 

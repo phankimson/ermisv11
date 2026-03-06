@@ -16,7 +16,6 @@ use App\Http\Model\AccPeriod;
 use App\Http\Model\AccNumberVoucher;
 use App\Http\Model\AccCountVoucher;
 use App\Http\Model\AccPrintTemplate;
-use App\Http\Model\Error;
 use App\Http\Resources\BankGeneralResource;
 use App\Http\Resources\TypeGeneralResource;
 use App\Http\Resources\TypeListGeneralResource;
@@ -46,7 +45,7 @@ class AccPurchaseGeneralController extends Controller
   public function __construct(Request $request)
  {
      $this->url =  $request->segment(3);
-     $this->group = 9; // 9 Nhóm mua hàng
+     $this->group = 9; // 9 NhÃ³m mua hÃ ng
      $this->key = "purchase-general";
      $this->key_voucher = "purchase-voucher";
      $this->menu = Menu::where('code', '=', $this->key)->first();
@@ -84,7 +83,7 @@ class AccPurchaseGeneralController extends Controller
              if(!$period){
                $detail = AccDetail::get_detail_active($data->id,1);
 
-               // Lưu lịch sử
+               // LÆ°u lá»‹ch sá»­
                $h = new AccHistoryAction();
                $h ->create([
                'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -104,7 +103,7 @@ class AccPurchaseGeneralController extends Controller
                //DETAIL
                $detail->each(function ($d){
                     $d->update(['active'=>0]);                    
-                    // Lưu số lại số tồn bên có
+                    // LÆ°u sá»‘ láº¡i sá»‘ tá»“n bÃªn cÃ³
                     if(substr($d->credit()->first()->code,0,3) == "112"){
                       $this->increaseCurrencyEdit($d->credit,$d->currency,$d->amount,$d->bank_account_credit);
                     }else if(substr($d->credit()->first()->code,0,3) == ("111" || "113")){
@@ -113,7 +112,7 @@ class AccPurchaseGeneralController extends Controller
                    // inventory
                   $inventory = AccInventory::get_detail_first($d->id);
                   if($inventory){                  
-                      // Trừ số tồn kho
+                      // Trá»« sá»‘ tá»“n kho
                     $this->reduceStock($d->debit,$inventory->stock_receipt,$inventory->item_id,$inventory->quantity);                       
                     $inventory->delete();
                   }                    
@@ -132,16 +131,7 @@ class AccPurchaseGeneralController extends Controller
         }
        }catch(Exception $e){
         DB::connection(env('CONNECTION_DB_ACC'))->rollBack();
-         // Lưu lỗi
-         $err = new Error();
-         $err ->create([
-           'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-           'user_id' => Auth::id(),
-           'menu_id' => $this->menu->id,
-           'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-           'url'  => $this->url,
-           'check' => 0 ]);
-         return response()->json(['status'=>false,'message'=> trans('messages.unrecored_fail')]);
+        return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__, 'messages.unrecored_fail');
        }
   }
 
@@ -160,7 +150,7 @@ class AccPurchaseGeneralController extends Controller
              $period = AccPeriod::get_date(Carbon::parse($data->accounting_date)->format('Y-m'),1);
              if(!$period){
                $detail = AccDetail::get_detail_active($data->id,0);
-               // Lưu lịch sử
+               // LÆ°u lá»‹ch sá»­
                $h = new AccHistoryAction();
                $h ->create([
                'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -180,7 +170,7 @@ class AccPurchaseGeneralController extends Controller
                //DETAIL
                $detail->each(function ($d){
                     $d->update(['active'=>1]);
-                    // Lưu số lại số tồn bên có
+                    // LÆ°u sá»‘ láº¡i sá»‘ tá»“n bÃªn cÃ³
                     if(substr($d->credit()->first()->code,0,3) == "112"){
                       $this->reduceCurrencyEdit($d->credit,$d->currency,$d->amount,$d->bank_account_credit);
                     }else if(substr($d->credit()->first()->code,0,3) == ("111" || "113")){
@@ -190,7 +180,7 @@ class AccPurchaseGeneralController extends Controller
                      // inventory
                     $inventory = AccInventory::get_detail_first($d->id);
                     if($inventory){
-                     // Trả lại số tồn kho
+                     // Tráº£ láº¡i sá»‘ tá»“n kho
                       $this->increaseStock($d->debit,$inventory->stock_receipt,$inventory->item_id,$inventory->quantity); 
                       $inventory->update(['active'=>1]);
                     }   
@@ -209,16 +199,7 @@ class AccPurchaseGeneralController extends Controller
         }
        }catch(Exception $e){
         DB::connection(env('CONNECTION_DB_ACC'))->rollBack();
-         // Lưu lỗi
-         $err = new Error();
-         $err ->create([
-           'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-           'user_id' => Auth::id(),
-           'menu_id' => $this->menu->id,
-           'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-           'url'  => $this->url,
-           'check' => 0 ]);
-         return response()->json(['status'=>false,'message'=> trans('messages.recored_fail')]);
+        return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__, 'messages.recored_fail');
        }
   }
 
@@ -236,24 +217,15 @@ class AccPurchaseGeneralController extends Controller
         return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
       }
      }catch(Exception $e){
-        // Lưu lỗi
-        $err = new Error();
-        $err ->create([
-          'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-          'user_id' => Auth::id(),
-          'menu_id' => $this->menu->id,
-          'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-          'url'  => $this->url,
-          'check' => 0 ]);
-        return response()->json(['status'=>false,'message'=> trans('messages.error')]);
-      }
+       return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__);
+     }
   }
 
   public function revoucher(Request $request){
     $type = 10;
     try{
       $req = json_decode($request->data);
-      // Tìm voucher
+      // TÃ¬m voucher
       $v = AccNumberVoucher::get_menu($this->menu->id); 
       $date_obj = Convert::dateformatRange($v->format,$req);
       $data = collect(BankGeneralResource::collection(AccGeneral::get_data_load_between($req->type,$date_obj['start_date'],$date_obj['end_date'])));
@@ -263,24 +235,15 @@ class AccPurchaseGeneralController extends Controller
         return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
       }
      }catch(Exception $e){
-        // Lưu lỗi
-        $err = new Error();
-        $err ->create([
-          'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-          'user_id' => Auth::id(),
-          'menu_id' => $this->menu->id,
-          'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-          'url'  => $this->url,
-          'check' => 0 ]);
-        return response()->json(['status'=>false,'message'=> trans('messages.error')]);
-      }
+       return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__);
+     }
   }
 
   public function start_voucher(Request $request){
     $type = 10;
     try{
       $req = json_decode($request->data);
-      // Tìm voucher
+      // TÃ¬m voucher
       $v = AccNumberVoucher::get_menu($req->type); 
       $val = Convert::dateformatArr($v->format,$req->year.'-'.$req->month.'-'.$req->day);
       $voucher = AccCountVoucher::get_count_voucher($v->id,$v->format,$val['day_format'],$val['month_format'],$val['year_format']);  
@@ -293,17 +256,8 @@ class AccPurchaseGeneralController extends Controller
         return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
       }
      }catch(Exception $e){
-        // Lưu lỗi
-        $err = new Error();
-        $err ->create([
-          'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-          'user_id' => Auth::id(),
-          'menu_id' => $this->menu->id,
-          'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-          'url'  => $this->url,
-          'check' => 0 ]);
-        return response()->json(['status'=>false,'message'=> trans('messages.error')]);
-      }
+       return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__);
+     }
   }
 
   public function change_voucher(Request $request){
@@ -311,7 +265,7 @@ class AccPurchaseGeneralController extends Controller
     try{
       DB::connection(env('CONNECTION_DB_ACC'))->beginTransaction();
       $req = json_decode($request->data);
-      // Tìm voucher & lưu voucher
+      // TÃ¬m voucher & lÆ°u voucher
       $voucher = AccCountVoucher::find($req->voucherId);
       if($voucher){
           $voucher->number = $req->number;
@@ -330,17 +284,8 @@ class AccPurchaseGeneralController extends Controller
      return response()->json(['status'=>true , 'message'=> trans('messages.update_success')]);
      }catch(Exception $e){
       DB::connection(env('CONNECTION_DB_ACC'))->rollBack();
-        // Lưu lỗi
-        $err = new Error();
-        $err ->create([
-          'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-          'user_id' => Auth::id(),
-          'menu_id' => $this->menu->id,
-          'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-          'url'  => $this->url,
-          'check' => 0 ]);
-        return response()->json(['status'=>false,'message'=> trans('messages.error')]);
-      }
+      return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__);
+     }
   }
 
   
@@ -356,7 +301,7 @@ class AccPurchaseGeneralController extends Controller
            $period = AccPeriod::get_date(Carbon::parse($data->accounting_date)->format('Y-m'),1);
            if(!$period){
              if($permission['d'] == true){            
-               // Lưu lịch sử
+               // LÆ°u lá»‹ch sá»­
                $h = new AccHistoryAction();
                $h ->create([
                'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -370,7 +315,7 @@ class AccPurchaseGeneralController extends Controller
                
                foreach($detail as $d){
 
-                 // Lưu số lại số tồn bên có
+                 // LÆ°u sá»‘ láº¡i sá»‘ tá»“n bÃªn cÃ³
                     if(substr($d->credit()->first()->code,0,3) == "112"){
                       $this->reduceCurrencyEdit($d->credit,$d->currency,$d->amount,$d->bank_account_credit);
                     }else if(substr($d->credit()->first()->code,0,3) == ("111" || "113")){
@@ -380,24 +325,24 @@ class AccPurchaseGeneralController extends Controller
                  // inventory
                  $inventory = AccInventory::get_detail_first($d->id);
                  if($inventory){                  
-                    // Trừ số tồn kho
+                    // Trá»« sá»‘ tá»“n kho
                    $this->reduceStock($d->debit,$inventory->stock_receipt,$inventory->item_id,$inventory->quantity);                       
                    $inventory->delete();
                  }          
                }            
-               // Xóa detail reference thanh toán
+               // XÃ³a detail reference thanh toÃ¡n
               $data_reference = AccGeneral::find_reference_by($data->id);
               if($data_reference){
                 $data_reference->delete();  
               }
 
-               // Xóa tax info
+               // XÃ³a tax info
                $data->tax_info()->delete();
 
-               // Xóa các dòng chi tiết
+               // XÃ³a cÃ¡c dÃ²ng chi tiáº¿t
                $data->detail()->delete();    
                
-               // Xóa các dòng thuế
+               // XÃ³a cÃ¡c dÃ²ng thuáº¿
                $data->tax()->delete();
 
                $attach = $data->attach;
@@ -419,16 +364,7 @@ class AccPurchaseGeneralController extends Controller
         }
        }catch(Exception $e){
         DB::connection(env('CONNECTION_DB_ACC'))->rollBack();
-         // Lưu lỗi
-         $err = new Error();
-         $err ->create([
-           'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-           'user_id' => Auth::id(),
-           'menu_id' => $this->menu->id,
-           'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-           'url'  => $this->url,
-           'check' => 0 ]);
-         return response()->json(['status'=>false,'message'=> trans('messages.delete_fail')]);
+        return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__, 'messages.delete_fail');
        }
   }
 
@@ -453,13 +389,13 @@ class AccPurchaseGeneralController extends Controller
       $rs = json_decode($request->data);
       $menu = Menu::where('code', '=', $this->key_voucher)->first();
       $file = $request->file;
-      // Import dữ liệu
+      // Import dá»¯ liá»‡u
       $import = new AccBankPaymentImport($menu->id,$this->group);
       Excel::import($import, $file);
-      // Lấy lại dữ liệu
+      // Láº¥y láº¡i dá»¯ liá»‡u
       //$array = AccGeneral::with('detail','tax')->get();
 
-      // Import dữ liệu bằng collection
+      // Import dá»¯ liá»‡u báº±ng collection
       //$results = Excel::toCollection(new HistoryActionImport, $file);
       //dump($results);
       //foreach($results[0] as $item){
@@ -473,7 +409,7 @@ class AccPurchaseGeneralController extends Controller
       //}
        $data = $import->getData();
       foreach($data['crit'] as $item){
-        // Lưu số tồn bên nợ
+        // LÆ°u sá»‘ tá»“n bÃªn ná»£
       if(substr($item['debit'],0,3)  === ('111' ||  '113')){ 
          $this->increaseCurrency($item['debit_id'],$item['currency'],$item['amount'],$item['rate']);      
         //$balance = AccCurrencyCheck::get_type_first($item['debit_id'],$item['currency'],null);
@@ -489,7 +425,7 @@ class AccPurchaseGeneralController extends Controller
         //      $balance->save();
         //    }
       }
-      // Lưu số tồn bên có
+      // LÆ°u sá»‘ tá»“n bÃªn cÃ³
       if(substr($item['credit'],0,3) === '112'){              
               $this->reduceCurrency($item['credit_id'],$item['currency'],$item['amount'],$item['rate'],$item['bank_account']);   
               //$balance = AccCurrencyCheck::get_type_first($item['credit_id'],$item['currency'],$item['bank_account']);
@@ -508,7 +444,7 @@ class AccPurchaseGeneralController extends Controller
       }
       $merged = collect($rs)->push($data);
       //dump($merged);
-    // Lưu lịch sử
+    // LÆ°u lá»‹ch sá»­
     $h = new AccHistoryAction();
     $h ->create([
       'type' => $type, // Add : 2 , Edit : 3 , Delete : 4, Import : 5
@@ -529,16 +465,7 @@ class AccPurchaseGeneralController extends Controller
     }
   }catch(Exception $e){
     DB::connection(env('CONNECTION_DB_ACC'))->rollBack();
-    // Lưu lỗi
-    $err = new Error();
-    $err ->create([
-      'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-      'user_id' => Auth::id(),
-      'menu_id' => $this->menu->id,
-      'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-      'url'  => $this->url,
-      'check' => 0 ]);
-    return response()->json(['status'=>false,'message'=> trans('messages.failed_import')]);
+    return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__, 'messages.failed_import');
   }
 }
 

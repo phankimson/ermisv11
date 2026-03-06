@@ -14,7 +14,6 @@ use App\Http\Model\License;
 use App\Http\Model\User;
 use App\Http\Model\Systems;
 use App\Http\Model\HistoryAction;
-use App\Http\Model\Error;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Exception;
@@ -31,7 +30,7 @@ class UserController extends Controller
   // Action Ajax User
  public function doLogout(Request $request){
      $user = Auth::user();
-      // Lịch sử hoạt động
+      // Lá»‹ch sá»­ hoáº¡t Ä‘á»™ng
      $hs = HistoryAction::create(['type' =>  0 , 'url' => $request->segment(2) ,'user' =>$user->id , 'menu' => 0 , 'dataz' => '']);
      $request->session()->forget('status');
      Auth::logout();
@@ -44,14 +43,14 @@ class UserController extends Controller
        //validate the fields....
       $data = json_decode($request->data);
       $credentials = [ 'username' => $data->username , 'password' => $data->password , 'active' => 1];
-      // Khóa tạm test
+      // KhÃ³a táº¡m test
       $capcha = data_get($data, 'g-recaptcha-response');
       $capcha = "1";
       if(Auth::attempt($credentials) && $capcha != ""){ // login attempt
         $user = Auth::user();
-        // Kiểm tra role = admin không
+        // Kiá»ƒm tra role = admin khÃ´ng
         if($user->role == 0){
-          // Lịch sử hoạt động
+          // Lá»‹ch sá»­ hoáº¡t Ä‘á»™ng
            $hs = HistoryAction::create(['type' =>  1 ,'url'=> $this->url , 'user' =>$user->id , 'menu' => 0 , 'dataz' => '']);
 
           return response()->json(['status'=>true, 'message'=> trans('messages.login_success')]);
@@ -62,11 +61,11 @@ class UserController extends Controller
             $date = date('Y-m-d');
             $date_end = date('Y-m-d',strtotime($cs->created_at->addDay($cs->free)));
             $lic = License::get_license($cs->license_id,$date,1);
-            // Kiểm tra license của công ty
+            // Kiá»ƒm tra license cá»§a cÃ´ng ty
             if($lic || $date <= $date_end){
               // Authentication passed...
 
-              // Lịch sử hoạt động
+              // Lá»‹ch sá»­ hoáº¡t Ä‘á»™ng
                $hs = HistoryAction::create(['type' =>  1 ,'url'=> $this->url, 'user' =>$user->id , 'menu' => 0 , 'dataz' => '']);
                DB::commit(); 
                return response()->json(['status'=>true, 'message'=> trans('messages.login_success')]);
@@ -84,15 +83,7 @@ class UserController extends Controller
       }
      }catch(Exception $e){
       DB::rollBack();
-       // Lưu lỗi
-       $err = new Error();
-       $err ->create([
-         'type' => 9, // Add : 2 , Edit : 3 , Delete : 4
-         'user_id' => Auth::id(),
-         'menu_id' => 0,
-         'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-         'check' => 0 ]);
-       return response()->json(['status'=>false,'message'=> trans('messages.error')]);
+      return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__);
      }
    }
 
@@ -104,7 +95,7 @@ class UserController extends Controller
 
       $password = Hash::make($data->password);
 
-      // Tạo công ty
+      // Táº¡o cÃ´ng ty
       $company = new Company;
       $company->code = $data->company_taxcode;
       $company->name = $data->company_name;
@@ -116,7 +107,7 @@ class UserController extends Controller
       $company->fax = $data->company_fax;
       $company->save();
 
-      // Lấy dữ liệu phần mềm
+      // Láº¥y dá»¯ liá»‡u pháº§n má»m
       $software = Software::where('active',1)->get();
       $sys = Systems::get_systems('DATE_USE_FREE');
       $d = json_decode($request->data,true);
@@ -131,12 +122,12 @@ class UserController extends Controller
           $company_software->active = 1;
           $company_software->save();
 
-          // Tao database cho từng công ty
+          // Tao database cho tá»«ng cÃ´ng ty
           //SchemaDB::createDB($company_software->database);
         }
       }
 
-      // Tạo user khách hàng
+      // Táº¡o user khÃ¡ch hÃ ng
       $user = new User;
       $user->username = $data->username;
       $user->password = $password; //hashed password.
@@ -166,15 +157,7 @@ class UserController extends Controller
       //redirect to your preferred url/route....
     }catch(Exception $e){
       DB::rollBack();
-      // Lưu lỗi
-      $err = new Error();
-      $err ->create([
-        'type' => 2, // Add : 2 , Edit : 3 , Delete : 4
-        'user_id' => Auth::id(),
-        'menu_id' => 0,
-        'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-        'check' => 0 ]);
-      return response()->json(['status'=>false,'message'=> trans('messages.register_fail')]);
+      return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__, 'messages.register_fail');
     }
   }
 
@@ -205,15 +188,7 @@ class UserController extends Controller
           }
         }
         }catch(Exception $e){
-          // Lưu lỗi
-          $err = new Error();
-          $err ->create([
-            'type' => 9, // Add : 2 , Edit : 3 , Delete : 4
-            'user_id' => Auth::id(),
-            'menu_id' => 0,
-            'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-            'check' => 0 ]);
-          return response()->json(['status'=>false,'message'=> trans('messages.error')]);
+          return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__);
         }
     }
 
@@ -242,15 +217,7 @@ class UserController extends Controller
         return response()->json(['status'=>true,'message'=> trans('messages.update_success')]);
       }catch(Exception $e){
         DB::rollBack();
-        // Lưu lỗi
-        $err = new Error();
-        $err ->create([
-          'type' => 3, // Add : 2 , Edit : 3 , Delete : 4
-          'user_id' => Auth::id(),
-          'menu_id' => 0,
-          'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-          'check' => 0 ]);
-        return response()->json(['status'=>false,'message'=> trans('messages.error')]);
+        return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__);
       }
     }
 
@@ -275,15 +242,7 @@ class UserController extends Controller
      }
    }catch(Exception $e){
     DB::rollBack();
-     // Lưu lỗi
-     $err = new Error();
-     $err ->create([
-       'type' => 3, // Add : 2 , Edit : 3 , Delete : 4
-       'user_id' => Auth::id(),
-       'menu_id' => 0,
-       'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-       'check' => 0 ]);
-     return response()->json(['status'=>false,'message'=> trans('messages.error')]);
+    return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__);
    }
   }
 
@@ -331,15 +290,7 @@ class UserController extends Controller
         }
       }catch(Exception $e){
         DB::rollBack();
-        // Lưu lỗi
-        $err = new Error();
-        $err ->create([
-          'type' => 3, // Add : 2 , Edit : 3 , Delete : 4
-          'user_id' => Auth::id(),
-          'menu_id' => 0,
-          'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-          'check' => 0 ]);
-        return response()->json(['status'=>false,'message'=> trans('messages.error')]);
+        return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__);
       }
  }
 
@@ -354,15 +305,7 @@ class UserController extends Controller
        return response()->json(['status'=>false, 'message'=> trans('messages.no_data_found')]);
      }
    }catch(Exception $e){
-     // Lưu lỗi
-     $err = new Error();
-     $err ->create([
-       'type' => 9, // Add : 2 , Edit : 3 , Delete : 4
-       'user_id' => Auth::id(),
-       'menu_id' => 0,
-       'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-       'check' => 0 ]);
-     return response()->json(['status'=>false,'message'=> trans('messages.error') ]);
+     return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__);
    }
  }
 

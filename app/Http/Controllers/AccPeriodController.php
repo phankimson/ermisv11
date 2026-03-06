@@ -15,7 +15,6 @@ use App\Http\Model\AccObjectBalance;
 use App\Http\Model\AccStockBalance;
 use App\Http\Model\CompanySoftware;
 use App\Http\Model\Company;
-use App\Http\Model\Error;
 use App\Http\Model\AccSystems;
 use App\Classes\Convert;
 use App\Http\Model\AccBankAccountBalance;
@@ -105,16 +104,7 @@ class AccPeriodController extends Controller
       $data = AccPeriod::get_raw();
       return response()->json(['status'=>true,'data'=> $data,'com_name'=> $com->name ]);
     }catch(Exception $e){
-      // Lưu lỗi
-      $err = new Error();
-      $err ->create([
-        'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-        'user_id' => Auth::id(),
-        'menu_id' => $this->menu->id,
-        'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-        'url'  => $this->url,
-        'check' => 0 ]);
-      return response()->json(['status'=>false,'message'=> trans('messages.error')]);
+      return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__);
     }
  }
 
@@ -138,10 +128,10 @@ class AccPeriodController extends Controller
      $startDate = $formatDate->startOfMonth()->format('Y-m-d');
      $endDate = $formatDate->endOfMonth()->format('Y-m-d');
      $general = AccGeneral::get_range_date($startDate,$endDate);
-       // Lấy kỳ tháng trước
+       // Láº¥y ká»³ thÃ¡ng trÆ°á»›c
        $period_last = AccPeriod::latest('created_at')->first();
        //$period_last = AccPeriod::get_date($formatLastMonth,1);
-       // Lấy tổng số kỳ
+       // Láº¥y tá»•ng sá»‘ ká»³
        $period_count = AccPeriod::count();
      if($check && $check->id != $arr->id){
        return response()->json(['status'=>false,'message'=> trans('messages.duplicate_date')]);
@@ -162,14 +152,14 @@ class AccPeriodController extends Controller
        }else{
          $type = 2;
          $data = new AccPeriod();
-         $data->name = "Khóa kỳ ".$arr->date;
+         $data->name = "KhÃ³a ká»³ ".$arr->date;
          $data->name_en = "Lock period ".$arr->date;
          $data->date = $formatMonth;
          $data->active = 1;
          $data->save();
        };               
        $save_detail = true;
-       // Lưu lịch sử
+       // LÆ°u lá»‹ch sá»­
        $h = new AccHistoryAction();
        $h ->create([
          'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -178,7 +168,7 @@ class AccPeriodController extends Controller
          'url'  => $this->url,
          'dataz' => \json_encode($data)]);
 
-       // Lấy ID và và phân loại Thêm
+       // Láº¥y ID vÃ  vÃ  phÃ¢n loáº¡i ThÃªm
        $merge = collect((array)$arr);
        $merge = json_decode($merge->merge($data->toArray())->toJson());
        $merge->t = $type;
@@ -196,16 +186,7 @@ class AccPeriodController extends Controller
    }
   }catch(Exception $e){
     DB::connection(env('CONNECTION_DB_ACC'))->rollBack();
-    // Lưu lỗi
-    $err = new Error();
-    $err ->create([
-      'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-      'user_id' => Auth::id(),
-      'menu_id' => $this->menu->id,
-      'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-      'url'  => $this->url,
-      'check' => 0 ]);
-    return response()->json(['status'=>false,'message'=> trans('messages.error')]);
+    return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__);
   }
 }
 
@@ -219,37 +200,37 @@ public function saveDetail(Request $request){
   $dataId = $data['dataId'];
   $general = AccGeneral::get_whereIn($general_id);
   if($general->count()>0){       
-    // Lưu bảng chi tiết stk chốt kỳ theo tháng
-      // Lấy giá trị phát sinh trong kỳ
+    // LÆ°u báº£ng chi tiáº¿t stk chá»‘t ká»³ theo thÃ¡ng
+      // Láº¥y giÃ¡ trá»‹ phÃ¡t sinh trong ká»³
    $detail = $general->load('detail')->pluck('detail')->collapse()->values(); 
-   // Tổng phát sinh Nợ  theo tk
+   // Tá»•ng phÃ¡t sinh Ná»£  theo tk
    $debit_sum = $detail->groupBy('debit')->map(function ($row) {
               return $row->sum('amount_rate');
    });
-    // Tổng phát sinh Có theo tk
+    // Tá»•ng phÃ¡t sinh CÃ³ theo tk
    $credit_sum = $detail->groupBy('credit')->map(function ($row) {
      return $row->sum('amount_rate');
      });
    $merged_account = $debit_sum->merge($credit_sum);    
    foreach ($merged_account as $key=>$item ){
-    $do = 0; // Nợ đầu kỳ  
-    $co = 0; // Có đầu kỳ    
-    $de = 0; // Nợ cuối kỳ
-    $ce = 0; // Có cuối kỳ
-    $debit_sum_fi = $debit_sum[$key] ?? 0;// Tìm số tiền tài khoản nợ
-    $credit_sum_fi = $credit_sum[$key] ?? 0;// Tìm số tiền tài khoản có
+    $do = 0; // Ná»£ Ä‘áº§u ká»³  
+    $co = 0; // CÃ³ Ä‘áº§u ká»³    
+    $de = 0; // Ná»£ cuá»‘i ká»³
+    $ce = 0; // CÃ³ cuá»‘i ká»³
+    $debit_sum_fi = $debit_sum[$key] ?? 0;// TÃ¬m sá»‘ tiá»n tÃ i khoáº£n ná»£
+    $credit_sum_fi = $credit_sum[$key] ?? 0;// TÃ¬m sá»‘ tiá»n tÃ i khoáº£n cÃ³
     if($period_last){    
-      // Lấy bảng chi tiết đã lưu của kỳ trước (số đầu kỳ)      
+      // Láº¥y báº£ng chi tiáº¿t Ä‘Ã£ lÆ°u cá»§a ká»³ trÆ°á»›c (sá»‘ Ä‘áº§u ká»³)      
       $account_systems_balance = AccAccountBalance::get_account($period_last,$key);        
     }else{
-      // Lấy số dư đầu kỳ
+      // Láº¥y sá»‘ dÆ° Ä‘áº§u ká»³
       $account_systems_balance = AccAccountBalance::get_account(0,$key);         
     };
-    if($account_systems_balance){ // Nếu có phát sinh lấy nợ có
+    if($account_systems_balance){ // Náº¿u cÃ³ phÃ¡t sinh láº¥y ná»£ cÃ³
      $do = $account_systems_balance->debit_close;
      $co = $account_systems_balance->credit_close;
     }; 
-   // Tính số nợ có cuối kỳ      
+   // TÃ­nh sá»‘ ná»£ cÃ³ cuá»‘i ká»³      
     $de = max($do - $co + $debit_sum_fi - $credit_sum_fi,0) ;
     $ce = max($co - $do - $debit_sum_fi + $credit_sum_fi,0 );
           $arr = [
@@ -265,35 +246,35 @@ public function saveDetail(Request $request){
        AccAccountBalance::create($arr);
    };
 
-    // Lưu chi tiết NCC,KH chốt kỳ theo tháng
-   // Tổng phát sinh nợ
+    // LÆ°u chi tiáº¿t NCC,KH chá»‘t ká»³ theo thÃ¡ng
+   // Tá»•ng phÃ¡t sinh ná»£
     $subject_debit_sum =  $detail->whereNotIn('subject_id_debit', ['',0])->groupBy('subject_id_debit')->map(function ($row) {
                return $row->sum('amount_rate');
       });
-     // Tổng phát sinh có
+     // Tá»•ng phÃ¡t sinh cÃ³
     $subject_credit_sum = $detail->whereNotIn('subject_id_credit', ['',0])->groupBy('subject_id_credit')->map(function ($row) {
                return $row->sum('amount_rate');
       }); 
     $subject_merged_account = $subject_debit_sum->merge($subject_credit_sum);
     foreach ($subject_merged_account as $key=>$item ){
-     $do = 0; // Nợ đầu kỳ  
-     $co = 0; // Có đầu kỳ    
-     $de = 0; // Nợ cuối kỳ
-     $ce = 0; // Có cuối kỳ
-     $debit_sum_fi = $subject_debit_sum[$key]?? 0;// Tìm số tiền tài khoản nợ
-     $credit_sum_fi = $subject_credit_sum[$key]?? 0;// Tìm số tiền tài khoản có
+     $do = 0; // Ná»£ Ä‘áº§u ká»³  
+     $co = 0; // CÃ³ Ä‘áº§u ká»³    
+     $de = 0; // Ná»£ cuá»‘i ká»³
+     $ce = 0; // CÃ³ cuá»‘i ká»³
+     $debit_sum_fi = $subject_debit_sum[$key]?? 0;// TÃ¬m sá»‘ tiá»n tÃ i khoáº£n ná»£
+     $credit_sum_fi = $subject_credit_sum[$key]?? 0;// TÃ¬m sá»‘ tiá»n tÃ i khoáº£n cÃ³
      if($period_last){
-       // Lấy bảng chi tiết đã lưu của kỳ trước (số đầu kỳ)
+       // Láº¥y báº£ng chi tiáº¿t Ä‘Ã£ lÆ°u cá»§a ká»³ trÆ°á»›c (sá»‘ Ä‘áº§u ká»³)
        $object_balance = AccObjectBalance::get_object($period_last,$key);        
      }else{
-       // Lấy số dư đầu kỳ
+       // Láº¥y sá»‘ dÆ° Ä‘áº§u ká»³
        $object_balance = AccObjectBalance::get_object(0,$key);         
      };
-     if($object_balance){ // Nếu có phát sinh lấy nợ có
+     if($object_balance){ // Náº¿u cÃ³ phÃ¡t sinh láº¥y ná»£ cÃ³
        $do = $object_balance->debit_close;
        $co = $object_balance->credit_close;
        }
-     // Tính số nợ có cuối kỳ
+     // TÃ­nh sá»‘ ná»£ cÃ³ cuá»‘i ká»³
      $de = max($do - $co + $debit_sum_fi - $credit_sum_fi,0) ;
      $ce = max($co - $do - $debit_sum_fi + $credit_sum_fi,0 );
            $arr = [
@@ -310,35 +291,35 @@ public function saveDetail(Request $request){
     }; 
 
 
-    // Lưu chi tiết Ngân hàng chốt kỳ theo tháng
-   // Tổng phát sinh nợ
+    // LÆ°u chi tiáº¿t NgÃ¢n hÃ ng chá»‘t ká»³ theo thÃ¡ng
+   // Tá»•ng phÃ¡t sinh ná»£
     $bank_account_debit_sum =  $detail->whereNotIn('bank_account_debit', ['',0])->groupBy('bank_account_debit')->map(function ($row) {
                return $row->sum('amount_rate');
     });
-     // Tổng phát sinh có
+     // Tá»•ng phÃ¡t sinh cÃ³
     $bank_account_credit_sum = $detail->whereNotIn('bank_account_credit', ['',0])->groupBy('bank_account_credit')->map(function ($row) {
                return $row->sum('amount_rate');
       }); 
     $bank_account_merged_account = $bank_account_debit_sum->merge($bank_account_credit_sum);
     foreach ($bank_account_merged_account as $key=>$item ){
-     $do = 0; // Nợ đầu kỳ  
-     $co = 0; // Có đầu kỳ    
-     $de = 0; // Nợ cuối kỳ
-     $ce = 0; // Có cuối kỳ
-     $debit_sum_fi = $bank_account_debit_sum[$key]?? 0;// Tìm số tiền tài khoản nợ
-     $credit_sum_fi = $bank_account_credit_sum[$key]?? 0;// Tìm số tiền tài khoản có
+     $do = 0; // Ná»£ Ä‘áº§u ká»³  
+     $co = 0; // CÃ³ Ä‘áº§u ká»³    
+     $de = 0; // Ná»£ cuá»‘i ká»³
+     $ce = 0; // CÃ³ cuá»‘i ká»³
+     $debit_sum_fi = $bank_account_debit_sum[$key]?? 0;// TÃ¬m sá»‘ tiá»n tÃ i khoáº£n ná»£
+     $credit_sum_fi = $bank_account_credit_sum[$key]?? 0;// TÃ¬m sá»‘ tiá»n tÃ i khoáº£n cÃ³
      if($period_last){
-       // Lấy bảng chi tiết đã lưu của kỳ trước (số đầu kỳ)
+       // Láº¥y báº£ng chi tiáº¿t Ä‘Ã£ lÆ°u cá»§a ká»³ trÆ°á»›c (sá»‘ Ä‘áº§u ká»³)
        $bank_account_balance = AccBankAccountBalance::get_bank_account($period_last,$key);        
      }else{
-       // Lấy số dư đầu kỳ
+       // Láº¥y sá»‘ dÆ° Ä‘áº§u ká»³
        $bank_account_balance = AccBankAccountBalance::get_bank_account(0,$key);         
      };
-     if($bank_account_balance){ // Nếu có phát sinh lấy nợ có
+     if($bank_account_balance){ // Náº¿u cÃ³ phÃ¡t sinh láº¥y ná»£ cÃ³
        $do = $bank_account_balance->debit_close;
        $co = $bank_account_balance->credit_close;
        }
-     // Tính số nợ có cuối kỳ
+     // TÃ­nh sá»‘ ná»£ cÃ³ cuá»‘i ká»³
      $de = max($do - $co + $debit_sum_fi - $credit_sum_fi,0) ;
      $ce = max($co - $do - $debit_sum_fi + $credit_sum_fi,0 );
            $arr = [
@@ -355,48 +336,48 @@ public function saveDetail(Request $request){
     }; 
 
    
-   // Lưu tồn kho chốt kỳ theo tháng
+   // LÆ°u tá»“n kho chá»‘t ká»³ theo thÃ¡ng
    $stock = AccStock::all();
    foreach($stock as $s){     
     $inventory_re = $general->where('stock_receipt',$s)->load('inventory')->pluck('inventory')->collapse()->values();  
-     // Tổng tiền phát sinh nhập
+     // Tá»•ng tiá»n phÃ¡t sinh nháº­p
     $amount_sum_receipt = $inventory_re->groupBy('item_id')->map(function ($row) {
                      return $row->sum('amount');
              }); 
-      // Tổng số lượng phát sinh nhập
+      // Tá»•ng sá»‘ lÆ°á»£ng phÃ¡t sinh nháº­p
     $quantity_sum_receipt =  $inventory_re->groupBy('item_id')->map(function ($row) {
                      return $row->sum('quantity');
              }); 
              
     $inventory_is = $general->where('stock_issue',$s)->load('inventory')->pluck('inventory')->collapse()->values();    
-     // Tổng tiền phát sinh xuất      
+     // Tá»•ng tiá»n phÃ¡t sinh xuáº¥t      
     $amount_sum_issue = $inventory_is->groupBy('item_id')->map(function ($row) {
                  return $row->sum('amount');
          }); 
-     // Tổng số lượng phát sinh xuất    
+     // Tá»•ng sá»‘ lÆ°á»£ng phÃ¡t sinh xuáº¥t    
     $quantity_sum_issue = $inventory_is->groupBy('item_id')->map(function ($row) {
                  return $row->sum('quantity');
        });  
     $inventory_merged = $amount_sum_receipt->merge($amount_sum_issue);
     foreach ($inventory_merged as $key=>$item ){
-       $ao = 0; // Số tiền đầu kỳ  
-       $qo = 0; // Số lượng đầu kỳ  
-       $ae = 0; // Số tiền cuối kỳ  
-       $qe = 0; // Số lượng cuối kỳ 
-       $amount_sum_re = $amount_sum_receipt[$key]?? 0;// Tìm số tiền nhập
-       $quantity_sum_re = $quantity_sum_receipt[$key]?? 0;// Tìm số lượng nhập
-       $amount_sum_is = $amount_sum_issue[$key]?? 0;// Tìm số tiền xuất
-       $quantity_sum_is = $quantity_sum_issue[$key]?? 0;// Tìm số lượng xuất
+       $ao = 0; // Sá»‘ tiá»n Ä‘áº§u ká»³  
+       $qo = 0; // Sá»‘ lÆ°á»£ng Ä‘áº§u ká»³  
+       $ae = 0; // Sá»‘ tiá»n cuá»‘i ká»³  
+       $qe = 0; // Sá»‘ lÆ°á»£ng cuá»‘i ká»³ 
+       $amount_sum_re = $amount_sum_receipt[$key]?? 0;// TÃ¬m sá»‘ tiá»n nháº­p
+       $quantity_sum_re = $quantity_sum_receipt[$key]?? 0;// TÃ¬m sá»‘ lÆ°á»£ng nháº­p
+       $amount_sum_is = $amount_sum_issue[$key]?? 0;// TÃ¬m sá»‘ tiá»n xuáº¥t
+       $quantity_sum_is = $quantity_sum_issue[$key]?? 0;// TÃ¬m sá»‘ lÆ°á»£ng xuáº¥t
      if($period_last){          
        $stock_item_balance = AccStockBalance::get_item($period_last,$s,$key);         
      }else{
        $stock_item_balance = AccStockBalance::get_item(0,$s,$key);
      };
-     if($stock_item_balance){ // Nếu có phát sinh lấy số lượng, giá trị
+     if($stock_item_balance){ // Náº¿u cÃ³ phÃ¡t sinh láº¥y sá»‘ lÆ°á»£ng, giÃ¡ trá»‹
        $ao = $stock_item_balance->amount_close;
        $qo = $stock_item_balance->quantity_close;
      }      
-     // Tính số tồn cuối kỳ
+     // TÃ­nh sá»‘ tá»“n cuá»‘i ká»³
      $ae =  $ao + $amount_sum_re -$amount_sum_is ;
      $qe = $qo + $quantity_sum_re - $quantity_sum_is;
            $arr = [
@@ -422,17 +403,8 @@ public function saveDetail(Request $request){
   }
 }catch(Exception $e){
   DB::connection(env('CONNECTION_DB_ACC'))->rollBack();
-  // Lưu lỗi
-  $err = new Error();
-  $err ->create([
-    'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-    'user_id' => Auth::id(),
-    'menu_id' => $this->menu->id,
-    'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-    'url'  => $this->url,
-    'check' => 0 ]);
-  return response()->json(['status'=>false,'message'=> trans('messages.error')]);
-}    
+  return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__);
+}
 }
 
  
@@ -448,7 +420,7 @@ public function saveDetail(Request $request){
            if(!$data){
             return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
           }
-           // Lưu lịch sử
+           // LÆ°u lá»‹ch sá»­
            $h = new AccHistoryAction();
            $h ->create([
            'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -456,13 +428,13 @@ public function saveDetail(Request $request){
            'menu' => $this->menu->id,
            'url'  => $this->url,
            'dataz' => \json_encode($data)]);                       
-           // Xóa chi tiết stk
+           // XÃ³a chi tiáº¿t stk
            $data->account_balance()->delete();
-           // Xóa chi tiết NCC,KH
+           // XÃ³a chi tiáº¿t NCC,KH
            $data->object_balance()->delete();  
-           // Xóa chi tiết tồn kho
+           // XÃ³a chi tiáº¿t tá»“n kho
            $data->stock_balance()->delete(); 
-           // Xóa kỳ
+           // XÃ³a ká»³
            $data->delete();
            DB::connection(env('CONNECTION_DB_ACC'))->commit();
            broadcast(new \App\Events\DataSend($arr));
@@ -475,16 +447,7 @@ public function saveDetail(Request $request){
       }
      }catch(Exception $e){
        DB::connection(env('CONNECTION_DB_ACC'))->rollBack();
-       // Lưu lỗi
-       $err = new Error();
-       $err ->create([
-         'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-         'user_id' => Auth::id(),
-         'menu_id' => $this->menu->id,
-         'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-         'url'  => $this->url,
-         'check' => 0 ]);
-       return response()->json(['status'=>false,'message'=> trans('messages.delete_fail')]);
+       return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__, 'messages.delete_fail');
      }
 }
 

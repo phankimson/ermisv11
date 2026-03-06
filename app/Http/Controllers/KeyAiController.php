@@ -10,7 +10,6 @@ use App\Http\Model\HistoryAction;
 use App\Http\Model\Systems;
 use App\Http\Model\Menu;
 use App\Http\Model\KeyAi;
-use App\Http\Model\Error;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Model\Imports\KeyAiImport;
 use App\Http\Model\Exports\KeyAiExport;
@@ -101,7 +100,7 @@ class KeyAiController extends Controller
        $data->active = $arr->active;
        $data->save();
 
-       // Lưu lịch sử
+       // LÆ°u lá»‹ch sá»­
        $h = new HistoryAction();
        $h ->create([
          'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -110,7 +109,7 @@ class KeyAiController extends Controller
          'url' => $this->url,
          'dataz' => \json_encode($data)]);
 
-       // Lấy ID và và phân loại Thêm
+       // Láº¥y ID vÃ  vÃ  phÃ¢n loáº¡i ThÃªm
        $arr->id = $data->id;
        $arr->t = $type;
        DB::commit();  
@@ -122,7 +121,7 @@ class KeyAiController extends Controller
        if(!$data){
           return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
         }
-       // Lưu lịch sử
+       // LÆ°u lá»‹ch sá»­
        $h = new HistoryAction();
        $h ->create([
          'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -141,7 +140,7 @@ class KeyAiController extends Controller
       $data->crit_en = $arr->crit_en;
       $data->active = $arr->active;
       $data->save();
-       // Phân loại Sửa
+       // PhÃ¢n loáº¡i Sá»­a
        $arr->t = $type;
        DB::commit();  
        broadcast(new \App\Events\DataSend($arr));
@@ -157,16 +156,7 @@ class KeyAiController extends Controller
      }
     }catch(Exception $e){
       DB::rollBack();
-      // Lưu lỗi
-      $err = new Error();
-      $err ->create([
-        'type' => $type, //  Add : 2 , Edit : 3 , Delete : 4 , Import : 5 , Export : 6, Timeline : 7 , Loadmore : 8, Load : 9
-        'user_id' => Auth::id(),
-        'menu_id' => $this->menu->id,
-        'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-        'url' => $this->url,
-        'check' => 0 ]);
-      return response()->json(['status'=>false,'message'=> trans('messages.error')]);
+      return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__);
     }
  }
 
@@ -182,7 +172,7 @@ class KeyAiController extends Controller
             if(!$data){
               return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
             }
-            // Lưu lịch sử
+            // LÆ°u lá»‹ch sá»­
             $h = new HistoryAction();
             $h ->create([
             'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -203,16 +193,7 @@ class KeyAiController extends Controller
        }
       }catch(Exception $e){
         DB::rollBack();
-        // Lưu lỗi
-        $err = new Error();
-        $err ->create([
-          'type' => $type, //  Add : 2 , Edit : 3 , Delete : 4 , Import : 5 , Export : 6, Timeline : 7 , Loadmore : 8, Load : 9
-          'user_id' => Auth::id(),
-          'menu_id' => $this->menu->id,
-          'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-          'url' => $this->url,
-          'check' => 0 ]);
-        return response()->json(['status'=>false,'message'=> trans('messages.delete_fail')]);
+        return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__, 'messages.delete_fail');
       }
  }
 
@@ -236,14 +217,14 @@ class KeyAiController extends Controller
        $rs = json_decode($request->data);
 
        $file = $request->file;
-       // Import dữ liệu
+       // Import dá»¯ liá»‡u
        $import = new KeyAiImport;
        Excel::import($import, $file);
-       // Lấy lại dữ liệu
+       // Láº¥y láº¡i dá»¯ liá»‡u
       
        $merged = collect($rs)->push($import->getData());
        //dump($merged);
-     // Lưu lịch sử
+     // LÆ°u lá»‹ch sá»­
      $h = new HistoryAction();
      $h ->create([
        'type' => $type, // Add : 2 , Edit : 3 , Delete : 4, Import : 5
@@ -264,16 +245,7 @@ class KeyAiController extends Controller
      }
    }catch(Exception $e){
     DB::rollBack();
-     // Lưu lỗi
-     $err = new Error();
-     $err ->create([
-       'type' => $type, //  Add : 2 , Edit : 3 , Delete : 4 , Import : 5 , Export : 6, Timeline : 7 , Loadmore : 8, Load : 9
-       'user_id' => Auth::id(),
-       'menu_id' => $this->menu->id,
-       'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-       'url' => $this->url,
-       'check' => 0 ]);
-     return response()->json(['status'=>false,'message'=> trans('messages.failed_import')]);
+    return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__, 'messages.failed_import');
    }
  }
 
@@ -292,16 +264,7 @@ class KeyAiController extends Controller
       );
       return response()->json($response);
    }catch(Exception $e){
-     // Lưu lỗi
-     $err = new Error();
-     $err ->create([
-       'type' => $type, // Add : 2 , Edit : 3 , Delete : 4 , Import : 5 , Export : 6, Timeline : 7 , Loadmore : 8, Load : 9
-       'user_id' => Auth::id(),
-       'menu_id' => $this->menu->id,
-       'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-       'url' => $this->url,
-       'check' => 0 ]);
-     return response()->json(['status'=>false,'message'=> trans('messages.failed_export')]);
+     return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__, 'messages.failed_export');
    }
  }
 

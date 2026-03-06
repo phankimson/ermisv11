@@ -16,7 +16,6 @@ use App\Http\Model\AccPeriod;
 use App\Http\Model\AccSystems;
 use App\Http\Model\AccNumberVoucher;
 use App\Http\Model\AccPrintTemplate;
-use App\Http\Model\Error;
 use App\Http\Model\AccBankCompare;
 use App\Http\Model\AccObject;
 use App\Http\Model\AccObjectType;
@@ -53,9 +52,9 @@ class AccPurchaseVoucherController extends Controller
   public function __construct(Request $request)
  {
      $this->url =  $request->segment(3);
-     $this->invoice_type = 1; // 1 Hóa đơn đầu vào , // 2 Hóa đơn đầu ra
-     $this->group = 9; // 9 Nhóm mua hàng
-     $this->type_object = 1; // 1 Nhà cung cấp (VD : 2,3 nếu nhiều đối tượng)
+     $this->invoice_type = 1; // 1 HÃ³a Ä‘Æ¡n Ä‘áº§u vÃ o , // 2 HÃ³a Ä‘Æ¡n Ä‘áº§u ra
+     $this->group = 9; // 9 NhÃ³m mua hÃ ng
+     $this->type_object = 1; // 1 NhÃ  cung cáº¥p (VD : 2,3 náº¿u nhiá»u Ä‘á»‘i tÆ°á»£ng)
      $this->key = "purchase-voucher";
      $this->key_cash = "cash-payment-voucher";
      $this->key_bank = "bank-payment-voucher";
@@ -110,13 +109,13 @@ class AccPurchaseVoucherController extends Controller
             $action = 'add';
             $general = new AccGeneral();
             $general->user = $user->id;
-            // Lưu số nhảy
+            // LÆ°u sá»‘ nháº£y
             $v = $this->saveNumberVoucher($this->menu,$arr);                   
           }else{
                 $check_permission = false;
           }
 
-          // Lấy menu id Phiếu thu & Báo nợ
+          // Láº¥y menu id Phiáº¿u thu & BÃ¡o ná»£
             if($arr->crit_type->obj->payment_method == "1" && $arr->crit_type->obj->payment == "1"){
               $menu_payment = Menu::where('code', '=', $this->key_cash)->first();  
               $arr_payment = (object) ['accounting_date' => $arr->accounting_date_TM,
@@ -154,10 +153,10 @@ class AccPurchaseVoucherController extends Controller
           $general->group = $this->group;
           $general->save();     
 
-          // Tham chiếu / Reference
+          // Tham chiáº¿u / Reference
          $this->saveReference($arr->reference_by,$general->id);
 
-           // Tạo phiếu chi giấy báo nợ nếu có
+           // Táº¡o phiáº¿u chi giáº¥y bÃ¡o ná»£ náº¿u cÃ³
            $v_payment = "";
             if($arr->crit_type->obj->payment == "1"){
               $general_payment = AccGeneral::find_reference_by($general->id);
@@ -185,7 +184,7 @@ class AccPurchaseVoucherController extends Controller
               $general_payment->user = $user->id;
               $general_payment->save();
 
-              // Cập nhật phiếu chi vào phiếu mua hàng
+              // Cáº­p nháº­t phiáº¿u chi vÃ o phiáº¿u mua hÃ ng
               $general->reference = $general_payment->voucher;
               $general->save();
               if(!str_contains($arr->reference, $general_payment->voucher) && $arr->reference != ''){
@@ -195,12 +194,12 @@ class AccPurchaseVoucherController extends Controller
               }
               $v_payment = $general_payment->voucher;
             }else if($arr->crit_type->obj->payment == "0"){
-              // Xoá phiếu chi giấy báo nợ nếu hủy
+              // XoÃ¡ phiáº¿u chi giáº¥y bÃ¡o ná»£ náº¿u há»§y
               $general_payment = AccGeneral::find_reference_by($general->id);
               if($general_payment){
                 AccDetail::get_detail($general_payment->id)->update(['reference_general_id'=> null]);
                 $general_payment->delete();
-                 // Cập nhật phiếu chi vào phiếu mua hàng
+                 // Cáº­p nháº­t phiáº¿u chi vÃ o phiáº¿u mua hÃ ng
                 $search = [",".$general_payment->voucher, $general_payment->voucher."," , $general_payment->voucher];
                 $new_reference = str_replace($search, "", $general->reference);
               }else{
@@ -211,7 +210,7 @@ class AccPurchaseVoucherController extends Controller
                 $arr->reference = $new_reference;
             }     
           
-          // Lưu thông tin không có hóa đơn
+          // LÆ°u thÃ´ng tin khÃ´ng cÃ³ hÃ³a Ä‘Æ¡n
         if($arr->crit_type->obj->invoice_status == "2"){
           $vat_info = AccVatInfo::find_info($general->id);
           if(!$vat_info){
@@ -223,11 +222,11 @@ class AccPurchaseVoucherController extends Controller
           $vat_info->identity_card = $arr->identity_card;
           $vat_info->save();
         }else{
-          // Xóa thông tin không có hóa đơn nếu có
+          // XÃ³a thÃ´ng tin khÃ´ng cÃ³ hÃ³a Ä‘Æ¡n náº¿u cÃ³
           AccVatInfo::where('general_id',$general->id)->delete();
         }  
 
-             // Lấy giá trị kiểm tra tiền mặt có âm không
+             // Láº¥y giÃ¡ trá»‹ kiá»ƒm tra tiá»n máº·t cÃ³ Ã¢m khÃ´ng
           $ca = AccSystems::get_systems($this->check_cash);
           $acc = "";
           // CHI TIET / Detail
@@ -252,24 +251,24 @@ class AccPurchaseVoucherController extends Controller
              $detail->reference_general_id = optional($general_payment)->id?optional($general_payment)->id: 0;
              $detail->description = $d->item_code->text;
              $detail->currency = $arr->currency;
-             $detail->debit = $d->debit->value;  // Đổi từ id value dạng read
-             $detail->credit = $d->credit->value;  // Đổi từ id value dạng read
+             $detail->debit = $d->debit->value;  // Äá»•i tá»« id value dáº¡ng read
+             $detail->credit = $d->credit->value;  // Äá»•i tá»« id value dáº¡ng read
              $detail->amount = $d->amount;
              $detail->rate = $d->rate;
              $detail->amount_rate = $d->amount * $d->rate;
-             $detail->department = $d->department->value; // Đổi từ id value dạng read
+             $detail->department = $d->department->value; // Äá»•i tá»« id value dáº¡ng read
              if(isset($arr_payment->bank_account)){
                 $detail->bank_account_credit = $arr_payment->bank_account; 
              }
-             $detail->case_code = $d->case_code->value;  // Đổi từ id value dạng read
-             $detail->cost_code = $d->cost_code->value;  // Đổi từ id value dạng read
-             $detail->statistical_code = $d->statistical_code->value;  // Đổi từ id value dạng read
-             $detail->work_code = $d->work_code->value;  // Đổi từ id value dạng read
+             $detail->case_code = $d->case_code->value;  // Äá»•i tá»« id value dáº¡ng read
+             $detail->cost_code = $d->cost_code->value;  // Äá»•i tá»« id value dáº¡ng read
+             $detail->statistical_code = $d->statistical_code->value;  // Äá»•i tá»« id value dáº¡ng read
+             $detail->work_code = $d->work_code->value;  // Äá»•i tá»« id value dáº¡ng read
              $detail->lot_number = $d->lot_number;
              $detail->contract = $d->contract;
              $detail->order = $d->order;
-             $detail->subject_id_debit = $d->subject_code->value;// Đổi từ id value dạng read
-             $detail->subject_name_debit = $d->subject_code->text;// Đổi từ name text dạng read
+             $detail->subject_id_debit = $d->subject_code->value;// Äá»•i tá»« id value dáº¡ng read
+             $detail->subject_name_debit = $d->subject_code->text;// Äá»•i tá»« name text dáº¡ng read
              $detail->active = 1;
              $detail->status = 1;
              $detail->save();     
@@ -294,18 +293,18 @@ class AccPurchaseVoucherController extends Controller
                 $inventory->status = 1;
                 $inventory->save();      
 
-                // Lưu số tồn kho bên Nợ
+                // LÆ°u sá»‘ tá»“n kho bÃªn Ná»£
                $this->increaseStock($d->debit->value,$d->stock->value,$d->item_code->value,$d->quantity);   
             }else{
-                // Xóa số tồn kho bên Nợ
+                // XÃ³a sá»‘ tá»“n kho bÃªn Ná»£
                 $this->reduceStock($d->debit->value,$d->stock->value,$d->item_code->value,$d->quantity);
                 // Xoa ton kho
                 AccInventory::where('detail_id',$detail->id)->delete();
             }
              
-              // Lưu phiếu chi giấy báo nợ nếu có
+              // LÆ°u phiáº¿u chi giáº¥y bÃ¡o ná»£ náº¿u cÃ³
             if($arr->crit_type->obj->payment == "1"){
-              // Kiểm tra và lưu trang thái và id detail
+              // Kiá»ƒm tra vÃ  lÆ°u trang thÃ¡i vÃ  id detail
                 if($arr->compare != "" && $arr->crit_type->obj->payment_method =="2" ){
                   $compare = AccBankCompare::find($arr->compare);
                   if($compare){
@@ -314,7 +313,7 @@ class AccPurchaseVoucherController extends Controller
                   }
               }              
 
-              // Lưu số tồn tiền bên Có
+              // LÆ°u sá»‘ tá»“n tiá»n bÃªn CÃ³
               if(substr($d->credit->text,0,3) === '112'){    
               $balance = $this->reduceCurrency($d->credit->value,$arr_payment->currency,$d->amount,$d->rate,$arr_payment->bank_account);
               
@@ -333,15 +332,15 @@ class AccPurchaseVoucherController extends Controller
             }                    
            }          
 
-           // Xóa dòng chi tiết
+           // XÃ³a dÃ²ng chi tiáº¿t
            AccDetail::get_detail_whereNotIn_delete($general->id,$removeId);
            $check_invoice = false;
            $invoice = '';
           if($arr->crit_type->obj->invoice_status == "1"){
-           // Lưu VAT
+           // LÆ°u VAT
            foreach($arr->tax as $l => $x){
              $tax = collect([]);
-                // Kiểm tra có trùng MST, số hóa đơn 
+                // Kiá»ƒm tra cÃ³ trÃ¹ng MST, sá»‘ hÃ³a Ä‘Æ¡n 
                 $arr_check = array(
                   ['invoice', '=',$x->invoice],
                   ['invoice_symbol', '=',$x->invoice_symbol],
@@ -356,7 +355,7 @@ class AccPurchaseVoucherController extends Controller
                     break;
                 }
                 // End
-                // Update mẫu, ký tự hóa đơn
+                // Update máº«u, kÃ½ tá»± hÃ³a Ä‘Æ¡n
                 $obj = AccObject::find($x->subject_id);
                 if($obj){
                   $obj->invoice_form = $x->invoice_form;
@@ -386,7 +385,7 @@ class AccPurchaseVoucherController extends Controller
              $tax->tax_code = $x->tax_code;
              $tax->address = $x->address;
              $tax->description = $x->description;
-             $tax->vat_type = $x->vat_type->value;// Đổi từ id value dạng read
+             $tax->vat_type = $x->vat_type->value;// Äá»•i tá»« id value dáº¡ng read
              $tax->amount = $x->amount;
              $tax->tax = $x->tax;
              $tax->total_amount = $total_amount;
@@ -398,17 +397,17 @@ class AccPurchaseVoucherController extends Controller
              array_push($removeId_v,$tax->id);
              $arr->tax[$l]->id = $tax->id;
            }
-           // Xóa dòng chi tiết Vat
+           // XÃ³a dÃ²ng chi tiáº¿t Vat
             AccVatDetail::get_detail_whereNotIn_delete($general->id,$removeId_v);
           }else{
-            // Xóa tất cả dòng chi tiết Vat
+            // XÃ³a táº¥t cáº£ dÃ²ng chi tiáº¿t Vat
             AccVatDetail::get_detail_whereNotIn_delete($general->id,[]);
           }
 
-           // Lưu file           
+           // LÆ°u file           
            $this->saveFile($request,$general->id,$this->path);   
 
-           // Lưu lịch sử
+           // LÆ°u lá»‹ch sá»­
            $h = new AccHistoryAction();
            $h ->create([
            'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -438,17 +437,8 @@ class AccPurchaseVoucherController extends Controller
       }
     }catch(Exception $e){
       DB::connection(env('CONNECTION_DB_ACC'))->rollBack();
-       // Lưu lỗi
-       $err = new Error();
-       $err ->create([
-         'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-         'user_id' => Auth::id(),
-         'menu_id' => $this->menu->id,
-         'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-         'url'  => $this->url,
-         'check' => 0 ]);
-       return response()->json(['status'=>false,'message'=> trans('messages.error')]);
-     }
+      return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__);
+    }
   }
 
 
@@ -465,17 +455,8 @@ class AccPurchaseVoucherController extends Controller
         return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
       }
      }catch(Exception $e){
-        // Lưu lỗi
-        $err = new Error();
-        $err ->create([
-          'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-          'user_id' => Auth::id(),
-          'menu_id' => $this->menu->id,
-          'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-          'url'  => $this->url,
-          'check' => 0 ]);
-        return response()->json(['status'=>false,'message'=> trans('messages.error')]);
-      }
+       return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__);
+     }
   }
 
   public function DownloadExcel(){
@@ -498,7 +479,7 @@ class AccPurchaseVoucherController extends Controller
         //$rs = json_decode($request->data);
   
         $file = $request->file;
-        // Đổi dữ liệu Excel sang collect
+        // Äá»•i dá»¯ liá»‡u Excel sang collect
         config(['excel.imports.read_only' => false]);
         $data = new AccBankPaymentGeneralImport($this->menu);   
         Excel::import($data , $file);
@@ -514,16 +495,7 @@ class AccPurchaseVoucherController extends Controller
       }
     }catch(Exception $e){
       DB::connection(env('CONNECTION_DB_ACC'))->rollBack();
-      // Lưu lỗi
-      $err = new Error();
-      $err ->create([
-        'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-        'user_id' => Auth::id(),
-        'menu_id' => $this->menu->id,
-        'error' => $e->getMessage().' - Line '.$e->getLine().' - Line '.$e->getLine(),
-        'url'  => $this->url,
-        'check' => 0 ]);
-      return response()->json(['status'=>false,'message'=> trans('messages.failed_import')]);
+      return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__, 'messages.failed_import');
     }
   }
 

@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Validator;
 use App\Http\Model\HistoryAction;
 use App\Http\Model\User;
 use App\Http\Model\Menu;
-use App\Http\Model\Error;
 use App\Http\Model\Systems;
 use App\Http\Resources\DropDownListResource;
 use App\Http\Resources\UserDropDownListResource;
@@ -85,16 +84,7 @@ class HistoryActionController extends Controller
         $data = HistoryAction::get_raw_type($req);
         return response()->json(['status'=>true,'data'=> $data ]);
       }catch(Exception $e){
-        // Lưu lỗi
-        $err = new Error();
-        $err ->create([
-          'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-          'user_id' => Auth::id(),
-          'menu_id' => $this->menu->id,
-          'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-          'url' => $this->url,
-          'check' => 0 ]);
-        return response()->json(['status'=>false,'message'=> trans('messages.error')]);
+        return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__);
       }
    }
 
@@ -120,7 +110,7 @@ class HistoryActionController extends Controller
         $data->created_at = $arr->created_at;
         $data->save();
 
-        // Lưu lịch sử
+        // LÆ°u lá»‹ch sá»­
         //$h = new HistoryAction();
         //$h ->create([
         //  'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -128,7 +118,7 @@ class HistoryActionController extends Controller
         //  'menu' => $this->menu->id,
         //  'dataz' => \json_encode($data)]);
         //
-        // Lấy ID và và phân loại Thêm
+        // Láº¥y ID vÃ  vÃ  phÃ¢n loáº¡i ThÃªm
         $arr->id = $data->id;
         $arr->t = $type;
         DB::commit();  
@@ -140,7 +130,7 @@ class HistoryActionController extends Controller
         if(!$data){
           return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
         }
-        // Lưu lịch sử
+        // LÆ°u lá»‹ch sá»­
         //$h = new HistoryAction();
         //$h ->create([
         //  'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -155,7 +145,7 @@ class HistoryActionController extends Controller
         $data->dataz = $arr->dataz;
         $data->created_at = $arr->created_at;
         $data->save();
-        // Phân loại Sửa
+        // PhÃ¢n loáº¡i Sá»­a
         $arr->t = $type;
         DB::commit();  
         broadcast(new \App\Events\DataSend($arr));
@@ -169,16 +159,7 @@ class HistoryActionController extends Controller
       }
      }catch(Exception $e){
       DB::rollBack();
-       // Lưu lỗi
-       $err = new Error();
-       $err ->create([
-         'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-         'user_id' => Auth::id(),
-         'menu_id' => $this->menu->id,
-         'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-         'url' => $this->url,
-         'check' => 0 ]);
-       return response()->json(['status'=>false,'message'=> trans('messages.error')]);
+      return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__);
      }
   }
 
@@ -194,7 +175,7 @@ class HistoryActionController extends Controller
              if(!$data){
                 return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
               }
-             // Lưu lịch sử
+             // LÆ°u lá»‹ch sá»­
              //$h = new HistoryAction();
              //$h ->create([
                //'type' => 4, // Add : 2 , Edit : 3 , Delete : 4
@@ -214,16 +195,7 @@ class HistoryActionController extends Controller
         }
        }catch(Exception $e){
         DB::rollBack();
-         // Lưu lỗi
-         $err = new Error();
-         $err ->create([
-           'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-           'user_id' => Auth::id(),
-           'menu_id' => $this->menu->id,
-           'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-           'url' => $this->url,
-           'check' => 0 ]);
-         return response()->json(['status'=>false,'message'=> trans('messages.delete_fail')]);
+        return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__, 'messages.delete_fail');
        }
   }
   public function DownloadExcel(){
@@ -246,14 +218,14 @@ class HistoryActionController extends Controller
         $rs = json_decode($request->data);
 
         $file = $request->file;
-        // Import dữ liệu
+        // Import dá»¯ liá»‡u
         $import = new HistoryActionImport;
         Excel::import($import, $file);
-        // Lấy lại dữ liệu
+        // Láº¥y láº¡i dá»¯ liá»‡u
         
         $merged = collect($rs)->push($import->getData());
         //dump($merged);
-      // Lưu lịch sử
+      // LÆ°u lá»‹ch sá»­
       //  $type = 5;
       //$h = new HistoryAction();
       //$h ->create([
@@ -274,16 +246,7 @@ class HistoryActionController extends Controller
       }
     }catch(Exception $e){
       DB::rollBack();
-      // Lưu lỗi
-      $err = new Error();
-      $err ->create([
-        'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-        'user_id' => Auth::id(),
-        'menu_id' => $this->menu->id,
-        'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-        'url' => $this->url,
-        'check' => 0 ]);
-      return response()->json(['status'=>false,'message'=> trans('messages.failed_import')]);
+      return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__, 'messages.failed_import');
     }
   }
 
@@ -302,16 +265,7 @@ class HistoryActionController extends Controller
        );
        return response()->json($response);
     }catch(Exception $e){
-      // Lưu lỗi
-      $err = new Error();
-      $err ->create([
-        'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-        'user_id' => Auth::id(),
-        'menu_id' => $this->menu->id,
-        'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-        'url' => $this->url,
-        'check' => 0 ]);
-      return response()->json(['status'=>false,'message'=> trans('messages.failed_export')]);
+      return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__, 'messages.failed_export');
     }
   }
 }

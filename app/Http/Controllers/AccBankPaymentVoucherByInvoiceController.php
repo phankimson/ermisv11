@@ -19,7 +19,6 @@ use App\Http\Model\AccSystems;
 use App\Http\Model\AccHistoryAction;
 use App\Http\Resources\BankVoucherInvoiceResource;
 use App\Http\Resources\BankGeneralReadResource;
-use App\Http\Model\Error;
 use Illuminate\Support\Facades\Auth;
 use Exception;
 use Carbon\Carbon;
@@ -45,9 +44,9 @@ class AccBankPaymentVoucherByInvoiceController extends Controller
   public function __construct(Request $request)
  {
      $this->url =  $request->segment(3);
-     $this->group = 4; // 4 Nhóm chi ngân hàng
-     $this->type_object = 1; // 2 Nhà cung cấp (VD : 2,3 nếu nhiều đối tượng)
-     $this->invoice_type = 1; // 1 Hóa đơn đầu vào , // 2 Hóa đơn đầu ra
+     $this->group = 4; // 4 NhÃ³m chi ngÃ¢n hÃ ng
+     $this->type_object = 1; // 2 NhÃ  cung cáº¥p (VD : 2,3 náº¿u nhiá»u Ä‘á»‘i tÆ°á»£ng)
+     $this->invoice_type = 1; // 1 HÃ³a Ä‘Æ¡n Ä‘áº§u vÃ o , // 2 HÃ³a Ä‘Æ¡n Ä‘áº§u ra
      $this->key = "bank-payment-voucher";
      $this->key_invoice = "bank-payment-voucher-by-invoice";     
      $this->menu = Menu::where('code', '=', $this->key_invoice)->first();
@@ -89,17 +88,8 @@ class AccBankPaymentVoucherByInvoiceController extends Controller
         return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
       }    
      }catch(Exception $e){
-        // Lưu lỗi
-        $err = new Error();
-        $err ->create([
-          'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-          'user_id' => Auth::id(),
-          'menu_id' => $this->menu->id,
-          'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-          'url'  => $this->url,
-          'check' => 0 ]);
-        return response()->json(['status'=>false,'message'=> trans('messages.error')]);
-      }
+       return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__);
+     }
   }
 
 
@@ -131,7 +121,7 @@ class AccBankPaymentVoucherByInvoiceController extends Controller
             $action = "add";
             $general = new AccGeneral();
             $general->user = $user->id;
-            // Lưu số nhảy
+            // LÆ°u sá»‘ nháº£y
              $v = $this->saveNumberVoucher($this->menu,$arr);
           }else{
                 $check_permission = false;
@@ -153,7 +143,7 @@ class AccBankPaymentVoucherByInvoiceController extends Controller
           $general->active = 1;
           $general->save();          
 
-           // Lấy giá trị kiểm tra tiền mặt có âm không
+           // Láº¥y giÃ¡ trá»‹ kiá»ƒm tra tiá»n máº·t cÃ³ Ã¢m khÃ´ng
           $ca = AccSystems::get_systems($this->check_cash);
           $acc = "";
           $setting_voucher = AccSettingVoucher::get_menu($this->menu->id);
@@ -172,8 +162,8 @@ class AccBankPaymentVoucherByInvoiceController extends Controller
              $detail->general_id = $general->id;
              $detail->description = $general->description;
              $detail->currency = $arr->currency;
-             $detail->debit = $setting_voucher->debit;  // Lấy từ seting default
-             $detail->credit = $setting_voucher->credit; // Lấy từ seting default
+             $detail->debit = $setting_voucher->debit;  // Láº¥y tá»« seting default
+             $detail->credit = $setting_voucher->credit; // Láº¥y tá»« seting default
              $detail->amount = $d->payment;
              $detail->rate = $arr->rate;
              $detail->amount_rate = $d->payment_rate;
@@ -184,9 +174,9 @@ class AccBankPaymentVoucherByInvoiceController extends Controller
              $detail->status = 1;
              $detail->save();
 
-             // Tìm VAT để cập nhật trạng thái đã thanh toán (cột payment)
+             // TÃ¬m VAT Ä‘á»ƒ cáº­p nháº­t tráº¡ng thÃ¡i Ä‘Ã£ thanh toÃ¡n (cá»™t payment)
               $vat = AccVatDetail::find($d->vat_detail_id);
-             // Ktra xem payment = 1 không. Nếu = 1 (đã thanh toán) thì rollback. 
+             // Ktra xem payment = 1 khÃ´ng. Náº¿u = 1 (Ä‘Ã£ thanh toÃ¡n) thÃ¬ rollback. 
              
              if(($vat->payment == 1 && !$d->id)){              
                $check_payment = true;    
@@ -199,20 +189,20 @@ class AccBankPaymentVoucherByInvoiceController extends Controller
                 $vat->save();
               }
 
-              // Lưu VAT payment
+              // LÆ°u VAT payment
                $pm = collect([]);
               if($d->id){
                 $pm = AccVatDetailPayment::find($d->id);
-                // Ktra xem chỉnh sửa tt đủ chưa             
+                // Ktra xem chá»‰nh sá»­a tt Ä‘á»§ chÆ°a             
                 $vat_payment_id = AccVatDetailPayment::sum_vat_detail_not_id($vat->id,'payment',$pm->id);
                if($vat_payment_id+(float)$d->payment <= (float)$vat->total_amount){
-                  // Update lại trạng thái thanh toán
+                  // Update láº¡i tráº¡ng thÃ¡i thanh toÃ¡n
                   $tax_payment = AccVatDetail::find($pm->vat_detail_id);   
                   if($tax_payment){
                       $tax_payment->payment = 0;
                       $tax_payment->save(); 
                   }                       
-                   // Update lại số tiền đã thanh toán của từng phiếu
+                   // Update láº¡i sá»‘ tiá»n Ä‘Ã£ thanh toÃ¡n cá»§a tá»«ng phiáº¿u
                   $tax_payment_update = AccVatDetailPayment::vat_detail_payment_created_at_not_id($pm->vat_detail_id,$pm->created_at,$pm->id);
                   foreach($tax_payment_update as $t){
                     if($t->paid > $pm->paid){
@@ -239,10 +229,10 @@ class AccBankPaymentVoucherByInvoiceController extends Controller
               $pm->rate = $d->rate;  
               $pm->payment_rate = $d->payment_rate;  
               $pm->save();
-              // Lưu id
+              // LÆ°u id
               $arr->detail[$k]->id = $pm->id; 
 
-             // Lưu số tồn tiền bên Có
+             // LÆ°u sá»‘ tá»“n tiá»n bÃªn CÃ³
              if($setting_voucher->credit){
               $balance = $this->reduceCurrency($setting_voucher->credit,$arr->currency,$d->payment,$d->rate,$arr->bank_account);
                //$balance = AccCurrencyCheck::get_type_first($setting_voucher->credit,$arr->currency,null);
@@ -266,10 +256,10 @@ class AccBankPaymentVoucherByInvoiceController extends Controller
                // End
                
            }          
-           // Lưu file
+           // LÆ°u file
            $this->saveFile($request,$general->id,$this->path);   
 
-           // Lưu lịch sử
+           // LÆ°u lá»‹ch sá»­
            $h = new AccHistoryAction();
            $h ->create([
            'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -300,17 +290,8 @@ class AccBankPaymentVoucherByInvoiceController extends Controller
       }
     }catch(Exception $e){
       DB::connection(env('CONNECTION_DB_ACC'))->rollBack();
-       // Lưu lỗi
-       $err = new Error();
-       $err ->create([
-         'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-         'user_id' => Auth::id(),
-         'menu_id' => $this->menu->id,
-         'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-         'url'  => $this->url,
-         'check' => 0 ]);
-       return response()->json(['status'=>false,'message'=> trans('messages.error')]);
-     }
+      return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__);
+    }
   }
 
   
@@ -325,17 +306,8 @@ class AccBankPaymentVoucherByInvoiceController extends Controller
         return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
       }
      }catch(Exception $e){
-        // Lưu lỗi
-        $err = new Error();
-        $err ->create([
-          'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-          'user_id' => Auth::id(),
-          'menu_id' => $this->menu->id,
-          'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-          'url'  => $this->url,
-          'check' => 0 ]);
-        return response()->json(['status'=>false,'message'=> trans('messages.error')]);
-      }
+       return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__);
+     }
   }
 
 

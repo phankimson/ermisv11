@@ -13,7 +13,6 @@ use App\Http\Model\AccInventory;
 use App\Http\Model\AccPeriod;
 use App\Http\Model\AccNumberVoucher;
 use App\Http\Model\AccPrintTemplate;
-use App\Http\Model\Error;
 use App\Http\Model\AccObjectType;
 use App\Http\Resources\InventoryGeneralReadResource;
 use App\Http\Model\Imports\AccInventoryReceiptGeneralImport;
@@ -44,8 +43,8 @@ class AccInventoryReceiptVoucherController extends Controller
   public function __construct(Request $request)
  {
      $this->url =  $request->segment(3);
-     $this->group = 7; // 7 Nhóm nhập kho
-     $this->type_object = 1; // 1 Nhà cung cấp (VD : 2,3 nếu nhiều đối tượng)
+     $this->group = 7; // 7 NhÃ³m nháº­p kho
+     $this->type_object = 1; // 1 NhÃ  cung cáº¥p (VD : 2,3 náº¿u nhiá»u Ä‘á»‘i tÆ°á»£ng)
      $this->key = "inventory-receipt-voucher";
      $this->menu = Menu::where('code', '=', $this->key)->first();
      $this->print = 'NK%';
@@ -138,10 +137,10 @@ class AccInventoryReceiptVoucherController extends Controller
           $general->group = $this->group;
           $general->save();
                   
-          // Tham chiếu / Reference
+          // Tham chiáº¿u / Reference
           $this->saveReference($arr->reference_by,$general->id);
           
-             // Lấy giá trị kiểm tra kho có âm không
+             // Láº¥y giÃ¡ trá»‹ kiá»ƒm tra kho cÃ³ Ã¢m khÃ´ng
           //$ca = AccSystems::get_systems($this->check_stock);
           $acc = "";
           // CHI TIET / Detail
@@ -162,28 +161,28 @@ class AccInventoryReceiptVoucherController extends Controller
              $detail->general_id = $general->id;
              $detail->description = $d->item_code->text;
              $detail->currency = $arr->currency;
-             $detail->debit = $d->debit->value;  // Đổi từ id value dạng read
-             $detail->credit = $d->credit->value;  // Đổi từ id value dạng read
+             $detail->debit = $d->debit->value;  // Äá»•i tá»« id value dáº¡ng read
+             $detail->credit = $d->credit->value;  // Äá»•i tá»« id value dáº¡ng read
              $detail->amount = $d->amount;
              $detail->rate = $d->rate;
              $detail->amount_rate = $d->amount * $d->rate;                
-             $detail->department = $d->department->value; // Đổi từ id value dạng read
-             $detail->case_code = $d->case_code->value;  // Đổi từ id value dạng read
-             $detail->cost_code = $d->cost_code->value;  // Đổi từ id value dạng read
-             $detail->statistical_code = $d->statistical_code->value;  // Đổi từ id value dạng read
-             $detail->work_code = $d->work_code->value;  // Đổi từ id value dạng read
+             $detail->department = $d->department->value; // Äá»•i tá»« id value dáº¡ng read
+             $detail->case_code = $d->case_code->value;  // Äá»•i tá»« id value dáº¡ng read
+             $detail->cost_code = $d->cost_code->value;  // Äá»•i tá»« id value dáº¡ng read
+             $detail->statistical_code = $d->statistical_code->value;  // Äá»•i tá»« id value dáº¡ng read
+             $detail->work_code = $d->work_code->value;  // Äá»•i tá»« id value dáº¡ng read
              $detail->lot_number = $d->lot_number;
              $detail->contract = $d->contract;
              $detail->order = $d->order;
-             $detail->subject_id_debit = $d->subject_code->value;// Đổi từ id value dạng read
-             $detail->subject_name_debit = $d->subject_code->text;// Đổi từ name text dạng read
+             $detail->subject_id_debit = $d->subject_code->value;// Äá»•i tá»« id value dáº¡ng read
+             $detail->subject_name_debit = $d->subject_code->text;// Äá»•i tá»« name text dáº¡ng read
              $detail->active = 1;
              $detail->status = 1;
              $detail->save();     
        
              array_push($removeId,$detail->id);
              $arr->detail[$k]->id = $detail->id;                
-             // Lưu kho
+             // LÆ°u kho
              $item = explode("-", $d->item_code->text);
              $inventory->general_id = $general->id;
              $inventory->detail_id = $detail->id;
@@ -199,20 +198,20 @@ class AccInventoryReceiptVoucherController extends Controller
              $inventory->status = 1;
              $inventory->save();      
 
-               // Lưu số tồn kho bên Nợ
+               // LÆ°u sá»‘ tá»“n kho bÃªn Ná»£
                $this->increaseStock($d->debit->value,$d->stock->value,$d->item_code->value,$d->quantity);   
            }      
            
           
 
-           // Xóa dòng chi tiết
+           // XÃ³a dÃ²ng chi tiáº¿t
            AccDetail::get_detail_whereNotIn_delete($general->id,$removeId);
            AccInventory::get_detail_id_whereNotIn_delete($general->id,$removeId);
           
-           // Lưu file
+           // LÆ°u file
            $this->saveFile($request,$general->id,$this->path);           
 
-           // Lưu lịch sử
+           // LÆ°u lá»‹ch sá»­
            $h = new AccHistoryAction();
            $h ->create([
            'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -239,17 +238,8 @@ class AccInventoryReceiptVoucherController extends Controller
       }
     }catch(Exception $e){
       DB::connection(env('CONNECTION_DB_ACC'))->rollBack();
-       // Lưu lỗi
-       $err = new Error();
-       $err ->create([
-         'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-         'user_id' => Auth::id(),
-         'menu_id' => $this->menu->id,
-         'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-         'url'  => $this->url,
-         'check' => 0 ]);
-       return response()->json(['status'=>false,'message'=> trans('messages.error')]);
-     }
+      return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__);
+    }
   }
 
 
@@ -265,17 +255,8 @@ class AccInventoryReceiptVoucherController extends Controller
         return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
       }
      }catch(Exception $e){
-        // Lưu lỗi
-        $err = new Error();
-        $err ->create([
-          'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-          'user_id' => Auth::id(),
-          'menu_id' => $this->menu->id,
-          'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-          'url'  => $this->url,
-          'check' => 0 ]);
-        return response()->json(['status'=>false,'message'=> trans('messages.error')]);
-      }
+       return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__);
+     }
   }
 
   public function DownloadExcel(){
@@ -298,7 +279,7 @@ class AccInventoryReceiptVoucherController extends Controller
         //$rs = json_decode($request->data);
   
         $file = $request->file;
-        // Đổi dữ liệu Excel sang collect
+        // Äá»•i dá»¯ liá»‡u Excel sang collect
         config(['excel.imports.read_only' => false]);
         $data = new AccInventoryReceiptGeneralImport($this->menu);   
         Excel::import($data , $file);
@@ -314,16 +295,7 @@ class AccInventoryReceiptVoucherController extends Controller
       }
     }catch(Exception $e){
       DB::connection(env('CONNECTION_DB_ACC'))->rollBack();
-      // Lưu lỗi
-      $err = new Error();
-      $err ->create([
-        'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-        'user_id' => Auth::id(),
-        'menu_id' => $this->menu->id,
-        'error' => $e->getMessage().' - Line '.$e->getLine().' - Line '.$e->getLine(),
-        'url'  => $this->url,
-        'check' => 0 ]);
-      return response()->json(['status'=>false,'message'=> trans('messages.failed_import')]);
+      return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__, 'messages.failed_import');
     }
   }
 

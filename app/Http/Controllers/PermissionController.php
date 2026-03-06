@@ -10,7 +10,6 @@ use App\Classes\bitmask;
 use App\Http\Model\Menu;
 use App\Http\Model\GroupUsers;
 use App\Http\Model\GroupUsersPermission;
-use App\Http\Model\Error;
 use App\Http\Model\HistoryAction;
 use Exception;
 use Illuminate\Support\Facades\DB;
@@ -52,16 +51,7 @@ class PermissionController extends Controller
             return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
           }
         }catch(Exception $e){
-          // Lưu lỗi
-          $err = new Error();
-          $err ->create([
-            'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-            'user_id' => Auth::id(),
-            'menu_id' => $this->menu->id,
-            'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-            'url' => $this->url,
-            'check' => 0 ]);
-          return response()->json(['status'=>false,'message'=> trans('messages.error')]);
+          return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__);
         }
       }
 
@@ -84,16 +74,7 @@ class PermissionController extends Controller
                return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
              }
            }catch(Exception $e){
-             // Lưu lỗi
-             $err = new Error();
-             $err ->create([
-               'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-               'user_id' => Auth::id(),
-               'menu_id' => $this->menu->id,
-               'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-               'url' => $this->url,
-               'check' => 0 ]);
-             return response()->json(['status'=>false,'message'=> trans('messages.error')]);
+             return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__);
            }
          }
 
@@ -139,7 +120,7 @@ class PermissionController extends Controller
                     $result->menu_id = $d->menu;
                     $result->permission = $d->permission;
                     $result->save();
-                    // Lưu lịch sử
+                    // LÆ°u lá»‹ch sá»­
                     $h = new HistoryAction();
                     $h ->create([
                       'type' => $type, // Add : 1 , Edit : 2 , Delete : 3
@@ -159,16 +140,7 @@ class PermissionController extends Controller
               }
            }catch(Exception $e){
             DB::rollBack();
-             // Lưu lỗi
-             $err = new Error();
-             $err ->create([
-               'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-               'user_id' => Auth::id(),
-               'menu_id' => $this->menu->id,
-               'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-               'url' => $this->url,
-               'check' => 0 ]);
-             return response()->json(['status'=>false,'message'=> trans('messages.update_fail')]);
+            return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__, 'messages.update_fail');
            }
       }
 }

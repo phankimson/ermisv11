@@ -10,7 +10,6 @@ use App\Http\Model\HistoryAction;
 use App\Http\Model\Menu;
 use App\Http\Model\Software;
 use App\Http\Model\Systems;
-use App\Http\Model\Error;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Model\Imports\SoftwareImport;
 use App\Http\Model\Exports\SoftwareExport;
@@ -105,7 +104,7 @@ class SoftwareController extends Controller
        $data->active = $arr->active;
        $data->save();
 
-       // Lưu lịch sử
+       // LÆ°u lá»‹ch sá»­
        $h = new HistoryAction();
        $h ->create([
          'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -114,13 +113,13 @@ class SoftwareController extends Controller
          'url' => $this->url,
          'dataz' => \json_encode($data)]);
 
-       // Lấy ID và và phân loại Thêm
+       // Láº¥y ID vÃ  vÃ  phÃ¢n loáº¡i ThÃªm
        $arr->id = $data->id;
        $arr->t = $type;
-       //Lưu lại pass
+       //LÆ°u láº¡i pass
        $arr->password = $data->password;
 
-       // Lưu ảnh thêm
+       // LÆ°u áº£nh thÃªm
        if($request->hasFile('files')) {
          $files = $request->file('files');
          $filename = $files->getClientOriginalName();
@@ -131,13 +130,13 @@ class SoftwareController extends Controller
          File::makeDirectory($path, 0777, true, true);
          }
          $upload_success = $files->move($path, $filename);
-         // Lưu lại hình ảnh
+         // LÆ°u láº¡i hÃ¬nh áº£nh
          $data = Software::find($arr->id);
          if($data){
           $data->image = $pathname;
           $data->save();
          }
-         //Lưu ảnh lại array
+         //LÆ°u áº£nh láº¡i array
          $arr->image = $pathname;
        }
        //
@@ -150,7 +149,7 @@ class SoftwareController extends Controller
        if(!$data){
         return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
       }
-       // Lưu lịch sử
+       // LÆ°u lá»‹ch sá»­
        $h = new HistoryAction();
        $h ->create([
          'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -172,14 +171,14 @@ class SoftwareController extends Controller
        $data->note = $arr->note;
        $data->active = $arr->active;
        $data->save();
-       //Lưu lại pass
+       //LÆ°u láº¡i pass
        $arr->password_temp = $data->password_temp;
-       // Phân loại Sửa
+       // PhÃ¢n loáº¡i Sá»­a
        $arr->t = $type;
 
-       // Lưu ảnh sửa
+       // LÆ°u áº£nh sá»­a
        if($request->hasFile('files')) {
-         //Xóa ảnh cũ
+         //XÃ³a áº£nh cÅ©
          if($data->image && File::exists(public_path($data->image))){
             File::delete(public_path($data->image));
          };
@@ -193,13 +192,13 @@ class SoftwareController extends Controller
          File::makeDirectory($path, 0777, true, true);
          }
          $upload_success = $files->move($path, $filename);
-         // Lưu lại hình ảnh
+         // LÆ°u láº¡i hÃ¬nh áº£nh
          $data = Software::find($arr->id);
          if($data){
           $data->image = $pathname;
           $data->save();
          }         
-         //Lưu ảnh lại array
+         //LÆ°u áº£nh láº¡i array
          $arr->image = $pathname;
        }
        DB::commit(); 
@@ -217,16 +216,7 @@ class SoftwareController extends Controller
      }
     }catch(Exception $e){
       DB::rollBack();
-      // Lưu lỗi
-      $err = new Error();
-      $err ->create([
-        'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-        'user_id' => Auth::id(),
-        'menu_id' => $this->menu->id,
-        'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-        'url' => $this->url,
-        'check' => 0 ]);
-      return response()->json(['status'=>false,'message'=> trans('messages.error')]);
+      return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__);
     }
  }
 
@@ -242,7 +232,7 @@ class SoftwareController extends Controller
             if(!$data){
               return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
             }
-            // Lưu lịch sử
+            // LÆ°u lá»‹ch sá»­
             $h = new HistoryAction();
             $h ->create([
             'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -252,7 +242,7 @@ class SoftwareController extends Controller
             'dataz' => \json_encode($data)]);
             //
 
-            //Xóa ảnh cũ
+            //XÃ³a áº£nh cÅ©
             if($data->image && File::exists(public_path($data->image))){
                File::delete(public_path($data->image));
             };
@@ -269,16 +259,7 @@ class SoftwareController extends Controller
        }
       }catch(Exception $e){
         DB::rollBack();
-        // Lưu lỗi
-        $err = new Error();
-        $err ->create([
-          'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-          'user_id' => Auth::id(),
-          'menu_id' => $this->menu->id,
-          'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-          'url' => $this->url,
-          'check' => 0 ]);
-        return response()->json(['status'=>false,'message'=> trans('messages.delete_fail')]);
+        return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__, 'messages.delete_fail');
       }
  }
 
@@ -302,14 +283,14 @@ class SoftwareController extends Controller
        $rs = json_decode($request->data);
 
        $file = $request->file;
-       // Import dữ liệu
+       // Import dá»¯ liá»‡u
        $import = new SoftwareImport;
        Excel::import($import, $file);
-       // Lấy lại dữ liệu
+       // Láº¥y láº¡i dá»¯ liá»‡u
 
        $merged = collect($rs)->push($import->getData());
        //dump($merged);
-     // Lưu lịch sử
+     // LÆ°u lá»‹ch sá»­
      $h = new HistoryAction();
      $h ->create([
        'type' => $type, // Add : 2 , Edit : 3 , Delete : 4, Import : 5
@@ -330,16 +311,7 @@ class SoftwareController extends Controller
      }
    }catch(Exception $e){
     DB::rollBack();
-     // Lưu lỗi
-     $err = new Error();
-     $err ->create([
-       'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-       'user_id' => Auth::id(),
-       'menu_id' => $this->menu->id,
-       'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-       'url' => $this->url,
-       'check' => 0 ]);
-     return response()->json(['status'=>false,'message'=> trans('messages.failed_import')]);
+    return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__, 'messages.failed_import');
    }
  }
 
@@ -358,16 +330,7 @@ class SoftwareController extends Controller
       );
       return response()->json($response);
    }catch(Exception $e){
-     // Lưu lỗi
-     $err = new Error();
-     $err ->create([
-       'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-       'user_id' => Auth::id(),
-       'menu_id' => $this->menu->id,
-       'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-       'url' => $this->url,
-       'check' => 0 ]);
-     return response()->json(['status'=>false,'message'=> trans('messages.failed_export')]);
+     return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__, 'messages.failed_export');
    }
  }
 

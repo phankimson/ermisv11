@@ -12,7 +12,6 @@ use App\Http\Model\AccDetail;
 use App\Http\Model\AccSystems;
 use App\Http\Model\AccPrintTemplate;
 use App\Http\Model\AccObject;
-use App\Http\Model\Error;
 use App\Http\Resources\GeneralDetailResource;
 use App\Classes\NumberConvert;
 use App\Classes\Replace;
@@ -42,16 +41,7 @@ class AccGeneralController extends Controller
       return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
     }
     }catch(Exception $e){
-      // Lưu lỗi
-      $err = new Error();
-      $err ->create([
-        'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-        'user_id' => Auth::id(),
-        'menu_id' => $this->menu->id,
-        'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-        'url'  => $this->url,
-        'check' => 0 ]);
-      return response()->json(['status'=>false,'message'=> trans('messages.error')]);
+      return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__);
     }
   }
 
@@ -71,7 +61,7 @@ class AccGeneralController extends Controller
       $user = User::find($general->user);
       //$locale = $this->app->getLocale();
       $locale = app()->getLocale();
-      $letter = NumberConvert::ReadDecimal($general->total_amount,$locale,"đồng","đôla","xu","cent");
+      $letter = NumberConvert::ReadDecimal($general->total_amount,$locale,"Ä‘á»“ng","Ä‘Ã´la","xu","cent");
       $voucher_date =  strtotime($general->voucher_date);
       $voucher_day = date('d', $voucher_date);     
       $voucher_month = date('m', $voucher_date);
@@ -104,16 +94,7 @@ class AccGeneralController extends Controller
             $template = Replace::ArrayKey($print->content,$values);
             return response()->json(['status'=>true,'print_content'=> $template]);
     }catch(Exception $e){
-      // Lưu lỗi
-      $err = new Error();
-      $err ->create([
-        'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-        'user_id' => Auth::id(),
-        'menu_id' => $this->menu->id,
-        'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-        'url'  => $this->url,
-        'check' => 0 ]);
-      return response()->json(['status'=>false,'message'=> trans('messages.print_fail')]);
+      return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__, 'messages.print_fail');
     }
 
     }

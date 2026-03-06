@@ -9,7 +9,6 @@ use App\Http\Model\Notes;
 use App\Http\Model\Systems;
 use App\Http\Model\HistoryAction;
 use App\Http\Model\Menu;
-use App\Http\Model\Error;
 use Exception;
 use Illuminate\Support\Facades\DB;
 
@@ -41,16 +40,7 @@ class NotesController extends Controller
         }
           return response()->json(['status'=>true,'data'=> $data ]);
         }catch(Exception $e){
-          // Lưu lỗi
-          $err = new Error();
-          $err ->create([
-            'type' => $type, // Add : 2 , Edit : 3 , Delete : 4 , Loadmore : 8, Load : 9
-            'user_id' => Auth::id(),
-            'menu_id' => $this->menu->id,
-            'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-            'url' => $this->url,
-            'check' => 0 ]);
-          return response()->json(['status'=>false,'message'=> trans('messages.error')]);
+          return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__);
         }
       }
 
@@ -62,16 +52,7 @@ class NotesController extends Controller
              $data = Notes::get_notes(($arr-1)*$sys->value,$arr*$sys->value);
              return response()->json(['status'=>true,'data'=> $data ]);
            }catch(Exception $e){
-             // Lưu lỗi
-             $err = new Error();
-             $err ->create([
-               'type' => $type, // Add : 2 , Edit : 3 , Delete : 4 , Loadmore : 8, Load : 9
-               'user_id' => Auth::id(),
-               'menu_id' => $this->menu->id,
-               'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-               'url' => $this->url,
-               'check' => 0 ]);
-             return response()->json(['status'=>false,'message'=> trans('messages.error')]);
+             return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__);
            }
       }
       public function save(Request $request) {
@@ -89,7 +70,7 @@ class NotesController extends Controller
                   $data->active = $arr->active=='on'? 1 : 0;
                   $data->user_id = Auth::id();
                   $data->save();
-                  // Lưu lịch sử
+                  // LÆ°u lá»‹ch sá»­
                   $h = new HistoryAction();
                   $h ->create([
                     'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -98,7 +79,7 @@ class NotesController extends Controller
                     'url' => $this->url,
                     'dataz' => \json_encode($data)]);
                   //
-                  // Lấy ID và và phân loại Thêm
+                  // Láº¥y ID vÃ  vÃ  phÃ¢n loáº¡i ThÃªm
                   $arr->id = $data->id;
                   $arr->type = $type;
                   DB::commit();  
@@ -110,7 +91,7 @@ class NotesController extends Controller
                   if(!$data){
                     return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
                   }
-                  // Lưu lịch sử
+                  // LÆ°u lá»‹ch sá»­
                   $h = new HistoryAction();
                   $h ->create([
                     'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -123,7 +104,7 @@ class NotesController extends Controller
                   $data->message = $arr->message;
                   $data->active =  $arr->active=='on'? 1 : 0;
                   $data->save();
-                  // Phân loại Sửa
+                  // PhÃ¢n loáº¡i Sá»­a
                   $arr->type = $type;
                   DB::commit();  
                   broadcast(new \App\Events\DataSend($arr));
@@ -136,16 +117,7 @@ class NotesController extends Controller
               }
            }catch(Exception $e){
             DB::rollBack();
-             // Lưu lỗi
-             $err = new Error();
-             $err ->create([
-               'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-               'user_id' => Auth::id(),
-               'menu_id' => $this->menu->id,
-               'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-               'url' => $this->url,
-               'check' => 0 ]);
-             return response()->json(['status'=>false,'message'=> trans('messages.update_fail')]);
+            return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__, 'messages.update_fail');
            }
       }
 
@@ -161,7 +133,7 @@ class NotesController extends Controller
                  if(!$data){
                     return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
                   }
-                 // Lưu lịch sử
+                 // LÆ°u lá»‹ch sá»­
                  $h = new HistoryAction();
                  $h ->create([
                    'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -182,16 +154,7 @@ class NotesController extends Controller
             }
            }catch(Exception $e){
             DB::rollBack();
-             // Lưu lỗi
-             $err = new Error();
-             $err ->create([
-               'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-               'user_id' => Auth::id(),
-               'menu_id' => $this->menu->id,
-               'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-               'url' => $this->url,
-               'check' => 0 ]);
-             return response()->json(['status'=>false,'message'=> trans('messages.delete_fail')]);
+            return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__, 'messages.delete_fail');
            }
       }
 }

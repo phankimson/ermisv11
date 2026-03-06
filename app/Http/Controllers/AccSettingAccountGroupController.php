@@ -11,7 +11,6 @@ use App\Http\Model\Menu;
 use App\Http\Model\AccSettingAccountGroup;
 use App\Http\Model\CompanySoftware;
 use App\Http\Model\Company;
-use App\Http\Model\Error;
 use App\Http\Model\AccSystems;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Model\Imports\AccSettingAccountGroupImport;
@@ -108,16 +107,7 @@ class AccSettingAccountGroupController extends Controller
       $data = AccSettingAccountGroup::get_raw();
       return response()->json(['status'=>true,'data'=> $data,'com_name'=> $com->name ]);
     }catch(Exception $e){
-      // Lưu lỗi
-      $err = new Error();
-      $err ->create([
-        'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-        'user_id' => Auth::id(),
-        'menu_id' => $this->menu->id,
-        'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-        'url'  => $this->url,
-        'check' => 0 ]);
-      return response()->json(['status'=>false,'message'=> trans('messages.error')]);
+      return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__);
     }
  }
 
@@ -144,7 +134,7 @@ class AccSettingAccountGroupController extends Controller
        $data->active = $arr->active;
        $data->save();
 
-      // Lưu Setting Account System Filter
+      // LÆ°u Setting Account System Filter
       foreach($arr->account_filter as $t){
         $ot = new AccAccountSystemsFilter();
         $ot->account_systems_filter()->associate($data);
@@ -152,7 +142,7 @@ class AccSettingAccountGroupController extends Controller
         $ot->save();
         }
 
-       // Lưu lịch sử
+       // LÆ°u lá»‹ch sá»­
        $h = new AccHistoryAction();
        $h ->create([
          'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -161,7 +151,7 @@ class AccSettingAccountGroupController extends Controller
          'url'  => $this->url,
          'dataz' => \json_encode($data)]);
 
-       // Lấy ID và và phân loại Thêm
+       // Láº¥y ID vÃ  vÃ  phÃ¢n loáº¡i ThÃªm
        $arr->id = $data->id;
        $arr->t = $type;
        DB::connection(env('CONNECTION_DB_ACC'))->commit();
@@ -173,7 +163,7 @@ class AccSettingAccountGroupController extends Controller
        if(!$data){
           return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
         }
-       // Lưu lịch sử
+       // LÆ°u lá»‹ch sá»­
        $h = new AccHistoryAction();
        $h ->create([
          'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -192,7 +182,7 @@ class AccSettingAccountGroupController extends Controller
 
 
 
-       // Lưu Setting Account Group Filter 
+       // LÆ°u Setting Account Group Filter 
       $ob_all = AccSettingAccountGroup::find($data->id)->account_filter;
       foreach($arr->account_filter as $t){
           $obc = $ob_all->first(function ($value) use ($t) {
@@ -216,7 +206,7 @@ class AccSettingAccountGroupController extends Controller
      }
 
 
-       // Phân loại Sửa
+       // PhÃ¢n loáº¡i Sá»­a
        $arr->t = $type;
        DB::connection(env('CONNECTION_DB_ACC'))->commit();
        broadcast(new \App\Events\DataSend($arr));
@@ -233,16 +223,7 @@ class AccSettingAccountGroupController extends Controller
      }
     }catch(Exception $e){
       DB::connection(env('CONNECTION_DB_ACC'))->rollBack();
-      // Lưu lỗi
-      $err = new Error();
-      $err ->create([
-        'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-        'user_id' => Auth::id(),
-        'menu_id' => $this->menu->id,
-        'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-        'url'  => $this->url,
-        'check' => 0 ]);
-      return response()->json(['status'=>false,'message'=> trans('messages.error')]);
+      return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__);
     }
  }
 
@@ -258,7 +239,7 @@ class AccSettingAccountGroupController extends Controller
             if(!$data){
               return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
             }
-            // Lưu lịch sử
+            // LÆ°u lá»‹ch sá»­
             $h = new AccHistoryAction();
             $h ->create([
             'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -286,16 +267,7 @@ class AccSettingAccountGroupController extends Controller
        }
       }catch(Exception $e){
         DB::connection(env('CONNECTION_DB_ACC'))->rollBack();
-        // Lưu lỗi
-        $err = new Error();
-        $err ->create([
-          'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-          'user_id' => Auth::id(),
-          'menu_id' => $this->menu->id,
-          'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-          'url'  => $this->url,
-          'check' => 0 ]);
-        return response()->json(['status'=>false,'message'=> trans('messages.delete_fail')]);
+        return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__, 'messages.delete_fail');
       }
  }
 
@@ -319,13 +291,13 @@ class AccSettingAccountGroupController extends Controller
        $rs = json_decode($request->data);
 
        $file = $request->file;
-       // Import dữ liệu
+       // Import dá»¯ liá»‡u
        $import = new AccSettingAccountGroupImport;
        Excel::import($import, $file);
-       // Lấy lại dữ liệu
+       // Láº¥y láº¡i dá»¯ liá»‡u
        $merged = collect($rs)->push($import->getData());
        //dump($merged);
-     // Lưu lịch sử
+     // LÆ°u lá»‹ch sá»­
      $h = new AccHistoryAction();
      $h ->create([
        'type' => $type, // Add : 2 , Edit : 3 , Delete : 4, Import : 5
@@ -346,16 +318,7 @@ class AccSettingAccountGroupController extends Controller
      }
    }catch(Exception $e){
     DB::connection(env('CONNECTION_DB_ACC'))->rollBack();
-     // Lưu lỗi
-     $err = new Error();
-     $err ->create([
-       'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-       'user_id' => Auth::id(),
-       'menu_id' => $this->menu->id,
-       'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-       'url'  => $this->url,
-       'check' => 0 ]);
-     return response()->json(['status'=>false,'message'=> trans('messages.failed_import')]);
+    return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__, 'messages.failed_import');
    }
  }
 
@@ -374,16 +337,7 @@ class AccSettingAccountGroupController extends Controller
       );
       return response()->json($response);
    }catch(Exception $e){
-     // Lưu lỗi
-     $err = new Error();
-     $err ->create([
-       'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-       'user_id' => Auth::id(),
-       'menu_id' => $this->menu->id,
-       'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-       'url'  => $this->url,
-       'check' => 0 ]);
-     return response()->json(['status'=>false,'message'=> trans('messages.failed_export')]);
+     return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__, 'messages.failed_export');
    }
  }
 

@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Model\Timeline;
 use App\Http\Model\Chat;
 use App\Http\Model\Systems;
-use App\Http\Model\Error;
 use Exception;
 use Illuminate\Support\Facades\DB;
 
@@ -38,16 +37,7 @@ public function timeline(Request $request){
        return ['status' => true];
     }catch(Exception $e){
       DB::rollBack();
-      // Lưu lỗi
-      $err = new Error();
-      $err ->create([
-        'type' => $type, // Add : 2 , Edit : 3 , Delete : 4 , Import : 5 , Export : 6, Timeline : 7 , Loadmore : 8, Load : 9
-        'user_id' => Auth::id(),
-        'menu_id' => 0,
-        'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-        'url'  => $this->url,
-        'check' => 0 ]);
-      return response()->json(['status'=>false,'message'=> trans('messages.error') ]);
+      return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__);
     }
   }
 
@@ -63,16 +53,7 @@ public function viewMore(Request $request){
         return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
       }
      }catch(Exception $e){
-       // Lưu lỗi
-       $err = new Error();
-       $err ->create([
-         'type' => $type, // Add : 2 , Edit : 3 , Delete : 4 , Import : 5 , Export : 6, Timeline : 7 , Loadmore : 8, Load : 9
-         'user_id' => Auth::id(),
-         'menu_id' => 0,
-         'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-         'url'  => $this->url,
-         'check' => 0 ]);
-       return response()->json(['status'=>false,'message'=> trans('messages.error')]);
+       return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__);
      }
  }
 
@@ -93,16 +74,7 @@ public function doChat(Request $request){
      return ['status' => true];
   }catch(Exception $e){
     DB::rollBack();
-    // Lưu lỗi
-    $err = new Error();
-    $err ->create([
-      'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-      'user_id' => Auth::id(),
-      'menu_id' => 0,
-      'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-      'url'  => $this->url,
-      'check' => 0 ]);
-    return response()->json(['status'=>false,'message'=> trans('messages.error')  ]);
+    return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__);
   }
 }
 
@@ -119,16 +91,7 @@ public function loadChatUser(Request $request) {
       return response()->json(['status'=>false, 'message'=> trans('messages.no_data_found')]);
     }
   }catch(Exception $e){
-    // Lưu lỗi
-    $err = new Error();
-    $err ->create([
-      'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-      'user_id' => Auth::id(),
-      'menu_id' => 0,
-      'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-      'url'  => $this->url,
-      'check' => 0 ]);
-    return response()->json(['status'=>false,'message'=> trans('messages.error') ]);
+    return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__);
   }
 }
 

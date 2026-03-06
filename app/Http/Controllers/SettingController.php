@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Model\Systems;
-use App\Http\Model\Error;
 use App\Http\Model\Menu;
 use Exception;
 use Illuminate\Support\Facades\DB;
@@ -69,16 +68,7 @@ class SettingController extends Controller
         return response()->json(['status'=>true,'message'=> trans('messages.update_success') ]);
       }catch(Exception $e){
         DB::rollBack();
-        // Lưu lỗi
-        $err = new Error();
-        $err ->create([
-          'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-          'user_id' => Auth::id(),
-          'menu_id' => $this->menu->id,
-          'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-          'url' => $this->url,
-          'check' => 0 ]);
-        return response()->json(['status'=>false,'message'=> trans('messages.error') ]);
+        return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__);
       }
     }
 

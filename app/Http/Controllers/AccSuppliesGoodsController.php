@@ -16,7 +16,6 @@ use App\Http\Model\AccSystems;
 use App\Http\Model\AccNumberCode;
 use App\Http\Model\CompanySoftware;
 use App\Http\Model\Company;
-use App\Http\Model\Error;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Model\Imports\AccSuppliesGoodsImport;
 use App\Http\Model\Exports\AccSuppliesGoodsExport;
@@ -129,16 +128,7 @@ class AccSuppliesGoodsController extends Controller
       return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
     }
     }catch(Exception $e){
-      // Lưu lỗi
-      $err = new Error();
-      $err ->create([
-        'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-        'user_id' => Auth::id(),
-        'menu_id' => $this->menu->id,
-        'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-        'url'  => $this->url,
-        'check' => 0 ]);
-      return response()->json(['status'=>false,'message'=> trans('messages.error')]);
+      return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__);
     }
   }
 
@@ -153,16 +143,7 @@ class AccSuppliesGoodsController extends Controller
      return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
     }    
     }catch(Exception $e){
-      // Lưu lỗi
-      $err = new Error();
-      $err ->create([
-        'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-        'user_id' => Auth::id(),
-        'menu_id' => $this->menu->id,
-        'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-        'url'  => $this->url,
-        'check' => 0 ]);
-      return response()->json(['status'=>false,'message'=> trans('messages.error')]);
+      return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__);
     }
   }
 
@@ -196,16 +177,7 @@ class AccSuppliesGoodsController extends Controller
       $data = AccSuppliesGoods::with('discount')->get();
       return response()->json(['status'=>true,'data'=> $data,'com_name'=> $com->name ]);
     }catch(Exception $e){
-      // Lưu lỗi
-      $err = new Error();
-      $err ->create([
-        'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-        'user_id' => Auth::id(),
-        'menu_id' => $this->menu->id,
-        'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-        'url'  => $this->url,
-        'check' => 0 ]);
-      return response()->json(['status'=>false,'message'=> trans('messages.error')]);
+      return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__);
     }
  }
 
@@ -255,9 +227,9 @@ class AccSuppliesGoodsController extends Controller
        $data->active = $arr->active;
        $data->save();
 
-       // Kiếm loại supplies goods để lưu mã code
+       // Kiáº¿m loáº¡i supplies goods Ä‘á»ƒ lÆ°u mÃ£ code
         $type_sg = AccSuppliesGoodsType::find($arr->type);
-       // Lưu mã code tự tăng
+       // LÆ°u mÃ£ code tá»± tÄƒng
        $ir = AccNumberCode::get_code($this->key.'_'.$type_sg->filter);
        $ir->number = $ir->number + 1;
        $ir->save();
@@ -279,7 +251,7 @@ class AccSuppliesGoodsController extends Controller
        ///////////////////
 
 
-       // Lưu ảnh thêm
+       // LÆ°u áº£nh thÃªm
        if($request->hasFile('files')) {
          $files = $request->file('files');
          $filename = $files->getClientOriginalName();
@@ -290,18 +262,18 @@ class AccSuppliesGoodsController extends Controller
          File::makeDirectory($path, 0777, true, true);
          }
          $upload_success = $files->move($path, $filename);
-         // Lưu lại hình ảnh
+         // LÆ°u láº¡i hÃ¬nh áº£nh
          $data = AccSuppliesGoods::find($arr->id);
          if($data){
          $data->image = $pathname;
          $data->save();
          }        
-         //Lưu ảnh lại array
+         //LÆ°u áº£nh láº¡i array
          $arr->image = $pathname;
        }
        //
 
-       // Lưu lịch sử
+       // LÆ°u lá»‹ch sá»­
        $h = new AccHistoryAction();
        $h ->create([
          'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -310,21 +282,21 @@ class AccSuppliesGoodsController extends Controller
          'url'  => $this->url,
          'dataz' => \json_encode($data)]);
 
-       // Lưu lịch sử giá mua
+       // LÆ°u lá»‹ch sá»­ giÃ¡ mua
        $p = new AccHistoryPrice();
        $p ->create([
-         'price_type' => 1, // Mua : 1 , Bán : 2
+         'price_type' => 1, // Mua : 1 , BÃ¡n : 2
          'supplies_goods_id' => $data->id,
          'value' => $data->price_purchase]);
 
-       // Lưu lịch sử giá bán
+       // LÆ°u lá»‹ch sá»­ giÃ¡ bÃ¡n
        $p = new AccHistoryPrice();
        $p ->create([
-         'price_type' => 2, // Mua : 1 , Bán : 2
+         'price_type' => 2, // Mua : 1 , BÃ¡n : 2
          'supplies_goods_id' => $data->id,
          'value' => $data->price]);
 
-       // Lấy ID và và phân loại Thêm
+       // Láº¥y ID vÃ  vÃ  phÃ¢n loáº¡i ThÃªm
        $arr->id = $data->id;
        $arr->t = $type;
        DB::connection(env('CONNECTION_DB_ACC'))->commit();
@@ -336,7 +308,7 @@ class AccSuppliesGoodsController extends Controller
        if(!$data){
           return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
         }
-       // Lưu lịch sử
+       // LÆ°u lá»‹ch sá»­
        $h = new AccHistoryAction();
        $h ->create([
          'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -346,25 +318,25 @@ class AccSuppliesGoodsController extends Controller
          'dataz' => \json_encode($data)]);
       //
 
-      //Check lịch sử giá mua
+      //Check lá»‹ch sá»­ giÃ¡ mua
       $check_price_purchase = AccHistoryPrice::get_product_last($data->id,1);
       if($check_price_purchase == null || $check_price_purchase->value != $arr->price_purchase){
-        // Lưu lịch sử giá mua
+        // LÆ°u lá»‹ch sá»­ giÃ¡ mua
         $p = new AccHistoryPrice();
         $p ->create([
-          'price_type' => 1, // Mua : 1 , Bán : 2
+          'price_type' => 1, // Mua : 1 , BÃ¡n : 2
           'supplies_goods_id' => $data->id,
           'value' => $arr->price_purchase]);
       }
 
 
-      //Check lịch sử giá bán
+      //Check lá»‹ch sá»­ giÃ¡ bÃ¡n
       $check_price= AccHistoryPrice::get_product_last($data->id,2);
       if($check_price == null || $check_price->value != $arr->price){
-        // Lưu lịch sử giá bán
+        // LÆ°u lá»‹ch sá»­ giÃ¡ bÃ¡n
         $p = new AccHistoryPrice();
         $p ->create([
-          'price_type' => 2, // Mua : 1 , Bán : 2
+          'price_type' => 2, // Mua : 1 , BÃ¡n : 2
           'supplies_goods_id' => $data->id,
           'value' => $arr->price]);
       }
@@ -426,21 +398,21 @@ class AccSuppliesGoodsController extends Controller
            $dom->save();
         }
       }
-      // Xóa các dòng
+      // XÃ³a cÃ¡c dÃ²ng
       if($dom_all->count()>0){
         $id_destroy = $dom_all->pluck('id');
         AccSuppliesGoodsDiscount::destroy($id_destroy);
       }
       ///////////////////
 
-       // Lấy lại giá trị hot
+       // Láº¥y láº¡i giÃ¡ trá»‹ hot
        $hot_add = AccSuppliesGoodsDiscount::get_discount($data->id);
        $arr->discount = $hot_add;
 
 
-      // Lưu ảnh sửa
+      // LÆ°u áº£nh sá»­a
       if($request->hasFile('files')) {
-        //Xóa ảnh cũ
+        //XÃ³a áº£nh cÅ©
         if(File::exists(public_path($data->image)) && $data->image != 'addon/img/placehold/100.png'){
            File::delete(public_path($data->image));
         };
@@ -454,18 +426,18 @@ class AccSuppliesGoodsController extends Controller
         File::makeDirectory($path, 0777, true, true);
         }
         $upload_success = $files->move($path, $filename);
-        // Lưu lại hình ảnh
+        // LÆ°u láº¡i hÃ¬nh áº£nh
         $data = AccSuppliesGoods::find($arr->id);
         if($data){
         $data->image = $pathname;
         $data->save();
         }       
-        //Lưu ảnh lại array
+        //LÆ°u áº£nh láº¡i array
         $arr->image = $pathname;
       }
       //
 
-       // Phân loại Sửa
+       // PhÃ¢n loáº¡i Sá»­a
        $arr->t = $type;
        DB::connection(env('CONNECTION_DB_ACC'))->commit();
        broadcast(new \App\Events\DataSend($arr));
@@ -482,16 +454,7 @@ class AccSuppliesGoodsController extends Controller
      }
     }catch(Exception $e){
       DB::connection(env('CONNECTION_DB_ACC'))->rollBack();
-      // Lưu lỗi
-      $err = new Error();
-      $err ->create([
-        'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-        'user_id' => Auth::id(),
-        'menu_id' => $this->menu->id,
-        'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-        'url'  => $this->url,
-        'check' => 0 ]);
-      return response()->json(['status'=>false,'message'=> trans('messages.error')]);
+      return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__);
     }
  }
 
@@ -504,12 +467,12 @@ class AccSuppliesGoodsController extends Controller
         if($arr){
           if($permission['d'] == true){
             $data = AccSuppliesGoods::get_id_with_discount($arr->id);
-            // Xóa lịch sử giá
+            // XÃ³a lá»‹ch sá»­ giÃ¡
             AccHistoryPrice::where('supplies_goods_id',$arr->id)->delete();
-            // Xóa discount
+            // XÃ³a discount
             AccSuppliesGoodsDiscount::where('supplies_goods_id',$arr->id)->delete();
-            // Lưu lịch sử
-            //Xóa ảnh cũ
+            // LÆ°u lá»‹ch sá»­
+            //XÃ³a áº£nh cÅ©
             if(File::exists(public_path($data->image)) && $data->image != 'addon/img/placehold/100.png'){
                File::delete(public_path($data->image));
             };
@@ -533,16 +496,7 @@ class AccSuppliesGoodsController extends Controller
        }
       }catch(Exception $e){
         DB::connection(env('CONNECTION_DB_ACC'))->rollBack();
-        // Lưu lỗi
-        $err = new Error();
-        $err ->create([
-          'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-          'user_id' => Auth::id(),
-          'menu_id' => $this->menu->id,
-          'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-          'url'  => $this->url,
-          'check' => 0 ]);
-        return response()->json(['status'=>false,'message'=> trans('messages.delete_fail')]);
+        return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__, 'messages.delete_fail');
       }
  }
 
@@ -566,14 +520,14 @@ class AccSuppliesGoodsController extends Controller
        $rs = json_decode($request->data);
 
        $file = $request->file;
-       // Import dữ liệu
+       // Import dá»¯ liá»‡u
        $import = new AccSuppliesGoodsImport;
        Excel::import($import, $file);
-       // Lấy lại dữ liệu
+       // Láº¥y láº¡i dá»¯ liá»‡u
     
        $merged = collect($rs)->push($import->getData());
        //dump($merged);
-     // Lưu lịch sử
+     // LÆ°u lá»‹ch sá»­
      $h = new AccHistoryAction();
      $h ->create([
        'type' => $type, // Add : 2 , Edit : 3 , Delete : 4, Import : 5
@@ -594,16 +548,7 @@ class AccSuppliesGoodsController extends Controller
      }
    }catch(Exception $e){
     DB::connection(env('CONNECTION_DB_ACC'))->rollBack();
-     // Lưu lỗi
-     $err = new Error();
-     $err ->create([
-       'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-       'user_id' => Auth::id(),
-       'menu_id' => $this->menu->id,
-       'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-       'url'  => $this->url,
-       'check' => 0 ]);
-     return response()->json(['status'=>false,'message'=> trans('messages.failed_import')]);
+    return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__, 'messages.failed_import');
    }
  }
 
@@ -622,16 +567,7 @@ class AccSuppliesGoodsController extends Controller
       );
       return response()->json($response);
    }catch(Exception $e){
-     // Lưu lỗi
-     $err = new Error();
-     $err ->create([
-       'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-       'user_id' => Auth::id(),
-       'menu_id' => $this->menu->id,
-       'error' => __FUNCTION__ . ': ' . $e->getMessage().' - Line '.$e->getLine(),
-       'url'  => $this->url,
-       'check' => 0 ]);
-     return response()->json(['status'=>false,'message'=> trans('messages.failed_export')]);
+     return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__, 'messages.failed_export');
    }
  }
 
