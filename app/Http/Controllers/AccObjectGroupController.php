@@ -124,6 +124,8 @@ class AccObjectGroupController extends Controller
         );
       $request->session()->put(env('CONNECTION_DB_ACC'), $params);
       config(['database.connections.mysql2' => $params]);
+      DB::purge('mysql2');
+      DB::reconnect('mysql2');
       $data = AccObjectGroup::get_raw();
       return response()->json(['status'=>true,'data'=> $data,'com_name'=> $com->name ]);
     }catch(Exception $e){

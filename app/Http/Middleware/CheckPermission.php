@@ -13,7 +13,7 @@ use App\Http\Model\CompanySoftware;
 use App\Http\Model\Company;
 use App\Classes\bitmask;
 use Illuminate\Support\Facades\Auth;
-use Artisan;
+use Illuminate\Support\Facades\DB;
 
 class CheckPermission
 {
@@ -140,8 +140,15 @@ class CheckPermission
             return redirect($locale.'/'.$manage.'/'.$skip_load[0]);
           }
       }
-      config(['database.connections.mysql2' => $request->session()->get('mysql2')]);   
-      Artisan::call('config:clear');
+      $mysql2 = $request->session()->get('mysql2');
+      if (is_array($mysql2)) {
+        $current = config('database.connections.mysql2');
+        if ($current !== $mysql2) {
+          config(['database.connections.mysql2' => $mysql2]);
+          DB::purge('mysql2');
+          DB::reconnect('mysql2');
+        }
+      }
       return $next($request);
     }
 }

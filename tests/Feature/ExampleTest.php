@@ -8,12 +8,13 @@ use Tests\TestCase;
 class ExampleTest extends TestCase
 {
     /**
-     * A basic test example.
+     * Guest access to home should be redirected to login flow.
      */
-    public function test_the_application_returns_a_successful_response(): void
+    public function test_guest_is_redirected_from_root(): void
     {
         $response = $this->get('/');
 
-        $response->assertStatus(200);
+        $response->assertStatus(302);
+        $response->assertHeader('Location');
     }
 }
