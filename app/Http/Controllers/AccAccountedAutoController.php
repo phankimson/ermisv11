@@ -96,7 +96,7 @@ class AccAccountedAutoController extends Controller
       return response()->json(['status'=>false,'message'=> trans('messages.no_data_found')]);
     }
     }catch(Exception $e){
-      // LÆ°u lá»—i
+      // Lưu lỗi
       return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__);
     }
   }
@@ -132,7 +132,7 @@ class AccAccountedAutoController extends Controller
       $data = AccAccountedAuto::with('accounted_auto_detail')->get();
       return response()->json(['status'=>true,'data'=> $data,'com_name'=> $com->name ]);
     }catch(Exception $e){
-      // LÆ°u lá»—i
+      // Lưu lỗi
       return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__);
     }
  }
@@ -298,7 +298,7 @@ class AccAccountedAutoController extends Controller
      }
     }catch(Exception $e){
       DB::connection(env('CONNECTION_DB_ACC'))->rollBack();
-      // LÆ°u lá»—i
+      // Lưu lỗi
       return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__);
     }
  }
@@ -341,7 +341,7 @@ class AccAccountedAutoController extends Controller
        }
       }catch(Exception $e){
         DB::connection(env('CONNECTION_DB_ACC'))->rollBack();
-        // LÆ°u lá»—i
+        // Lưu lỗi
         return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__, 'messages.delete_fail');
       }
  }
@@ -394,7 +394,7 @@ class AccAccountedAutoController extends Controller
      }
    }catch(Exception $e){
     DB::connection(env('CONNECTION_DB_ACC'))->rollBack();
-     // LÆ°u lá»—i
+     // Lưu lỗi
     return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__, 'messages.failed_import');
    }
  }
@@ -414,7 +414,7 @@ class AccAccountedAutoController extends Controller
       );
       return response()->json($response);
    }catch(Exception $e){
-     // LÆ°u lá»—i
+     // Lưu lỗi
      return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__, 'messages.failed_export');
    }
  }

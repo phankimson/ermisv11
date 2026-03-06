@@ -55,7 +55,7 @@ Route::group([
   Route::post('/systems-get','get')->name('-get');
   Route::post('/systems-save', 'save' )->name('-save');
   Route::post('/systems-delete', 'delete' )->name('-delete');
-  Route::any('/systems-import', 'import')->name('-import');
+  Route::post('/systems-import', 'import')->name('-import');
   Route::get('/systems-export', 'export')->name('-export');
   Route::get('/systems-DownloadExcel', 'DownloadExcel' )->name('-DownloadExcel');
   Route::post('/systems-change-database', 'ChangeDatabase' )->name('-change-database');
@@ -71,7 +71,7 @@ Route::group([
   Route::post('/number-voucher-get', 'get')->name('-get');
   Route::post('/number-voucher-save', 'save')->name('-save');
   Route::post('/number-voucher-delete', 'delete')->name('-delete');
-  Route::any('/number-voucher-import', 'import')->name('-import');
+  Route::post('/number-voucher-import', 'import')->name('-import');
   Route::get('/number-voucher-export', 'export')->name('-export');
   Route::get('/number-voucher-DownloadExcel', 'DownloadExcel')->name('-DownloadExcel');
   Route::post('/number-voucher-change-database', 'ChangeDatabase')->name('-change-database');
@@ -87,7 +87,7 @@ Route::group([
     Route::post('/count-voucher-get', 'get')->name('-get');
     Route::post('/count-voucher-save', 'save')->name('-save');
     Route::post('/count-voucher-delete', 'delete')->name('-delete');
-    Route::any('/count-voucher-import', 'import')->name('-import');
+    Route::post('/count-voucher-import', 'import')->name('-import');
     Route::get('/count-voucher-export', 'export')->name('-export');
     Route::get('/count-voucher-DownloadExcel', 'DownloadExcel')->name('-DownloadExcel');
     Route::post('/count-voucher-change-database', 'ChangeDatabase')->name('-change-database');
@@ -103,7 +103,7 @@ Route::group([
   Route::post('/number-code-get', 'get' )->name('-get');
   Route::post('/number-code-save', 'save' )->name('-save');
   Route::post('/number-code-delete',  'delete' )->name('-delete');
-  Route::any('/number-code-import',  'import' )->name('-import');
+  Route::post('/number-code-import',  'import' )->name('-import');
   Route::get('/number-code-export',  'export' )->name('-export');
   Route::get('/number-code-DownloadExcel', 'DownloadExcel'  )->name('-DownloadExcel');
   Route::post('/number-code-change-database',  'ChangeDatabase' )->name('-change-database');
@@ -119,7 +119,7 @@ Route::group([
   Route::post('/setting-voucher-get', 'get' )->name('-get');
   Route::post('/setting-voucher-save', 'save' )->name('-save');
   Route::post('/setting-voucher-delete', 'delete' )->name('-delete');
-  Route::any('/setting-voucher-import', 'import' )->name('-import');
+  Route::post('/setting-voucher-import', 'import' )->name('-import');
   Route::get('/setting-voucher-export', 'export' )->name('-export');
   Route::get('/setting-voucher-DownloadExcel','DownloadExcel' )->name('-DownloadExcel');
   Route::post('/setting-voucher-change-database',  'ChangeDatabase' )->name('-change-database');
@@ -136,7 +136,7 @@ Route::group([
   Route::post('/excise-get', 'get' )->name('-get');
   Route::post('/excise-save', 'save' )->name('-save');
   Route::post('/excise-delete', 'delete' )->name('-delete');
-  Route::any('/excise-import', 'import' )->name('-import');
+  Route::post('/excise-import', 'import' )->name('-import');
   Route::get('/excise-export', 'export' )->name('-export');
   Route::get('/excise-DownloadExcel', 'DownloadExcel' )->name('-DownloadExcel');
   Route::post('/excise-change-database', 'ChangeDatabase' )->name('-change-database');
@@ -153,7 +153,7 @@ Route::group([
   Route::post('/natural-resources-get', 'get' )->name('-get');
   Route::post('/natural-resources-save', 'save' )->name('-save');
   Route::post('/natural-resources-delete', 'delete' )->name('-delete');
-  Route::any('/natural-resources-import', 'import' )->name('-import');
+  Route::post('/natural-resources-import', 'import' )->name('-import');
   Route::get('/natural-resources-export', 'export' )->name('-export');
   Route::get('/natural-resources-DownloadExcel', 'DownloadExcel' )->name('-DownloadExcel');
   Route::post('/natural-resources-change-database', 'ChangeDatabase' )->name('-change-database');
@@ -170,7 +170,7 @@ Route::group([
   Route::post('/vat-get', 'get')->name('-get');
   Route::post('/vat-save', 'save')->name('-save');
   Route::post('/vat-delete', 'delete')->name('-delete');
-  Route::any('/vat-import', 'import')->name('-import');
+  Route::post('/vat-import', 'import')->name('-import');
   Route::get('/vat-export', 'export')->name('-export');
   Route::get('/vat-DownloadExcel', 'DownloadExcel')->name('-DownloadExcel');
   Route::post('/vat-change-database', 'ChangeDatabase')->name('-change-database');
@@ -187,7 +187,7 @@ Route::group([
   Route::post('/bank-get', 'get')->name('-get');
   Route::post('/bank-save', 'save')->name('-save');
   Route::post('/bank-delete', 'delete')->name('-delete');
-  Route::any('/bank-import', 'import')->name('-import');
+  Route::post('/bank-import', 'import')->name('-import');
   Route::get('/bank-export', 'export')->name('-export');
   Route::get('/bank-DownloadExcel', 'DownloadExcel')->name('-DownloadExcel');
   Route::post('/bank-change-database', 'ChangeDatabase')->name('-change-database');
@@ -203,7 +203,7 @@ Route::group([
   Route::post('/bank-account-get', 'get')->name('-get');
   Route::post('/bank-account-save','save')->name('-save');
   Route::post('/bank-account-delete','delete' )->name('-delete');
-  Route::any('/bank-account-import', 'import' )->name('-import');
+  Route::post('/bank-account-import', 'import' )->name('-import');
   Route::get('/bank-account-export', 'export')->name('-export');
   Route::get('/bank-account-DownloadExcel', 'DownloadExcel')->name('-DownloadExcel');
   Route::post('/bank-account-change-database','ChangeDatabase')->name('-change-database');
@@ -220,7 +220,7 @@ Route::group([
   Route::post('/case-code-get', 'get')->name('-get');
   Route::post('/case-code-save', 'save')->name('-save');
   Route::post('/case-code-delete','delete')->name('-delete');
-  Route::any('/case-code-import', 'import')->name('-import');
+  Route::post('/case-code-import', 'import')->name('-import');
   Route::get('/case-code-export', 'export')->name('-export');
   Route::get('/case-code-DownloadExcel', 'DownloadExcel')->name('-DownloadExcel');
   Route::post('/case-code-change-database', 'ChangeDatabase')->name('-change-database');
@@ -237,7 +237,7 @@ Route::group([
   Route::post('/cost-code-get','get' )->name('-get');
   Route::post('/cost-code-save', 'save')->name('-save');
   Route::post('/cost-code-delete', 'delete')->name('-delete');
-  Route::any('/cost-code-import', 'import')->name('-import');
+  Route::post('/cost-code-import', 'import')->name('-import');
   Route::get('/cost-code-export', 'export')->name('-export');
   Route::get('/cost-code-DownloadExcel', 'DownloadExcel')->name('-DownloadExcel');
   Route::post('/cost-code-change-database', 'ChangeDatabase')->name('-change-database');
@@ -254,7 +254,7 @@ Route::group([
   Route::post('/statistical-code-get',  'get')->name('-get');
   Route::post('/statistical-code-save',  'save')->name('-save');
   Route::post('/statistical-code-delete', 'delete')->name('-delete');
-  Route::any('/statistical-code-import',  'import')->name('-import');
+  Route::post('/statistical-code-import',  'import')->name('-import');
   Route::get('/statistical-code-export', 'export')->name('-export');
   Route::get('/statistical-code-DownloadExcel', 'DownloadExcel' )->name('-DownloadExcel');
   Route::post('/statistical-code-change-database',  'ChangeDatabase')->name('-change-database');
@@ -271,7 +271,7 @@ Route::group([
   Route::post('/work-code-get', 'get' )->name('-get');
   Route::post('/work-code-save', 'save' )->name('-save');
   Route::post('/work-code-delete', 'delete')->name('-delete');
-  Route::any('/work-code-import', 'import' )->name('-import');
+  Route::post('/work-code-import', 'import' )->name('-import');
   Route::get('/work-code-export', 'export' )->name('-export');
   Route::get('/work-code-DownloadExcel', 'DownloadExcel' )->name('-DownloadExcel');
   Route::post('/work-code-change-database', 'ChangeDatabase' )->name('-change-database');
@@ -288,7 +288,7 @@ Route::group([
   Route::post('/revenue-expenditure-type-get','get' )->name('-get');
   Route::post('/revenue-expenditure-type-save', 'save')->name('-save');
   Route::post('/revenue-expenditure-type-delete', 'delete')->name('-delete');
-  Route::any('/revenue-expenditure-type-import', 'import')->name('-import');
+  Route::post('/revenue-expenditure-type-import', 'import')->name('-import');
   Route::get('/revenue-expenditure-type-export', 'export')->name('-export');
   Route::get('/revenue-expenditure-type-DownloadExcel', 'DownloadExcel')->name('-DownloadExcel');
   Route::post('/revenue-expenditure-type-change-database', 'ChangeDatabase')->name('-change-database');
@@ -305,7 +305,7 @@ Route::group([
   Route::post('/revenue-expenditure-get', 'get')->name('-get');
   Route::post('/revenue-expenditure-save', 'save')->name('-save');
   Route::post('/revenue-expenditure-delete', 'delete')->name('-delete');
-  Route::any('/revenue-expenditure-import', 'import')->name('-import');
+  Route::post('/revenue-expenditure-import', 'import')->name('-import');
   Route::get('/revenue-expenditure-export', 'export')->name('-export');
   Route::get('/revenue-expenditure-DownloadExcel', 'DownloadExcel')->name('-DownloadExcel');
   Route::post('/revenue-expenditure-change-database', 'ChangeDatabase')->name('-change-database');
@@ -322,7 +322,7 @@ Route::group([
   Route::post('/unit-get', 'get')->name('-get');
   Route::post('/unit-save', 'save')->name('-save');
   Route::post('/unit-delete', 'delete')->name('-delete');
-  Route::any('/unit-import', 'import')->name('-import');
+  Route::post('/unit-import', 'import')->name('-import');
   Route::get('/unit-export', 'export')->name('-export');
   Route::get('/unit-DownloadExcel', 'DownloadExcel')->name('-DownloadExcel');
   Route::post('/unit-change-database', 'ChangeDatabase')->name('-change-database');
@@ -339,7 +339,7 @@ Route::group([
   Route::post('/warranty-period-get', 'get')->name('-get');
   Route::post('/warranty-period-save', 'save')->name('-save');
   Route::post('/warranty-period-delete', 'delete')->name('-delete');
-  Route::any('/warranty-period-import', 'import')->name('-import');
+  Route::post('/warranty-period-import', 'import')->name('-import');
   Route::get('/warranty-period-export', 'export')->name('-export');
   Route::get('/warranty-period-DownloadExcel', 'DownloadExcel')->name('-DownloadExcel');
   Route::post('/warranty-period-change-database', 'ChangeDatabase')->name('-change-database');
@@ -356,7 +356,7 @@ Route::group([
   Route::post('/stock-get','get')->name('-get');
   Route::post('/stock-save', 'save')->name('-save');
   Route::post('/stock-delete','delete')->name('-delete');
-  Route::any('/stock-import','import')->name('-import');
+  Route::post('/stock-import','import')->name('-import');
   Route::get('/stock-export','export')->name('-export');
   Route::get('/stock-DownloadExcel','DownloadExcel')->name('-DownloadExcel');
   Route::post('/stock-change-database','ChangeDatabase')->name('-change-database');
@@ -373,7 +373,7 @@ Route::group([
   Route::post('/supplies-goods-type-get', 'get')->name('-get');
   Route::post('/supplies-goods-type-save', 'save')->name('-save');
   Route::post('/supplies-goods-type-delete', 'delete')->name('-delete');
-  Route::any('/supplies-goods-type-import', 'import')->name('-import');
+  Route::post('/supplies-goods-type-import', 'import')->name('-import');
   Route::get('/supplies-goods-type-export', 'export')->name('-export');
   Route::get('/supplies-goods-type-DownloadExcel', 'DownloadExcel')->name('-DownloadExcel');
   Route::post('/supplies-goods-type-change-database', 'ChangeDatabase')->name('-change-database');
@@ -391,7 +391,7 @@ Route::group([
   Route::post('/supplies-goods-get', 'get')->name('-get');
   Route::post('/supplies-goods-save', 'save')->name('-save');
   Route::post('/supplies-goods-delete','delete')->name('-delete');
-  Route::any('/supplies-goods-import', 'import')->name('-import');
+  Route::post('/supplies-goods-import', 'import')->name('-import');
   Route::get('/supplies-goods-export', 'export')->name('-export');
   Route::get('/supplies-goods-DownloadExcel', 'DownloadExcel')->name('-DownloadExcel');
   Route::post('/supplies-goods-change-database','ChangeDatabase')->name('-change-database');
@@ -408,7 +408,7 @@ Route::group([
   Route::post('/supplies-goods-group-get', 'get' )->name('-get');
   Route::post('/supplies-goods-group-save', 'save')->name('-save');
   Route::post('/supplies-goods-group-delete', 'delete')->name('-delete');
-  Route::any('/supplies-goods-group-import', 'import')->name('-import');
+  Route::post('/supplies-goods-group-import', 'import')->name('-import');
   Route::get('/supplies-goods-group-export', 'export')->name('-export');
   Route::get('/supplies-goods-group-DownloadExcel','DownloadExcel')->name('-DownloadExcel');
   Route::post('/supplies-goods-group-change-database', 'ChangeDatabase')->name('-change-database');
@@ -425,7 +425,7 @@ Route::group([
   Route::post('/object-type-get',  'get' )->name('-get');
   Route::post('/object-type-save',  'save' )->name('-save');
   Route::post('/object-type-delete',  'delete')->name('-delete');
-  Route::any('/object-type-import',  'import' )->name('-import');
+  Route::post('/object-type-import',  'import' )->name('-import');
   Route::get('/object-type-export', 'export' )->name('-export');
   Route::get('/object-type-DownloadExcel','DownloadExcel' )->name('-DownloadExcel');
   Route::post('/object-type-change-database', 'ChangeDatabase')->name('-change-database');
@@ -442,7 +442,7 @@ Route::group([
   Route::post('/object-group-get', 'get')->name('-get');
   Route::post('/object-group-save', 'save')->name('-save');
   Route::post('/object-group-delete', 'delete')->name('-delete');
-  Route::any('/object-group-import', 'import')->name('-import');
+  Route::post('/object-group-import', 'import')->name('-import');
   Route::get('/object-group-export', 'export')->name('-export');
   Route::get('/object-group-DownloadExcel', 'DownloadExcel')->name('-DownloadExcel');
   Route::post('/object-group-change-database', 'ChangeDatabase')->name('-change-database');
@@ -459,7 +459,7 @@ Route::group([
   Route::post('/department-get', 'get')->name('-get');
   Route::post('/department-save', 'save')->name('-save');
   Route::post('/department-delete', 'delete')->name('-delete');
-  Route::any('/department-import', 'import')->name('-import');
+  Route::post('/department-import', 'import')->name('-import');
   Route::get('/department-export', 'export')->name('-export');
   Route::get('/department-DownloadExcel', 'DownloadExcel')->name('-DownloadExcel');
   Route::post('/department-change-database', 'ChangeDatabase')->name('-change-database');
@@ -477,7 +477,7 @@ Route::group([
   Route::post('/object-get', 'get')->name('-get');
   Route::post('/object-save', 'save')->name('-save');
   Route::post('/object-delete', 'delete')->name('-delete');
-  Route::any('/object-import', 'import')->name('-import');
+  Route::post('/object-import', 'import')->name('-import');
   Route::get('/object-export', 'export')->name('-export');
   Route::get('/object-DownloadExcel', 'DownloadExcel')->name('-DownloadExcel');
   Route::post('/object-change-database', 'ChangeDatabase')->name('-change-database');
@@ -494,7 +494,7 @@ Route::group([
   Route::post('/currency-get', 'get' )->name('-get');
   Route::post('/currency-save', 'save' )->name('-save');
   Route::post('/currency-delete', 'delete' )->name('-delete');
-  Route::any('/currency-import', 'import' )->name('-import');
+  Route::post('/currency-import', 'import' )->name('-import');
   Route::get('/currency-export', 'export' )->name('-export');
   Route::get('/currency-DownloadExcel', 'DownloadExcel' )->name('-DownloadExcel');
   Route::post('/currency-change-database', 'ChangeDatabase')->name('-change-database');
@@ -509,7 +509,7 @@ Route::group([
   Route::get('/group-users-data', 'data' )->name('-data');
   Route::post('/group-users-save', 'save')->name('-save');
   Route::post('/group-users-delete', 'delete')->name('-delete');
-  Route::any('/group-users-import', 'import')->name('-import');
+  Route::post('/group-users-import', 'import')->name('-import');
   Route::get('/group-users-export', 'export')->name('-export');
   Route::get('/group-users-DownloadExcel', 'DownloadExcel')->name('-DownloadExcel');
   });
@@ -523,7 +523,7 @@ Route::group([
   Route::get('/users-data', 'data')->name('-data');
   Route::post('/users-save', 'save')->name('-save');
   Route::post('/users-delete', 'delete')->name('-delete');
-  Route::any('/users-import', 'import')->name('-import');
+  Route::post('/users-import', 'import')->name('-import');
   Route::get('/users-export', 'export')->name('-export');
   Route::get('/users-DownloadExcel', 'DownloadExcel')->name('-DownloadExcel');
   });
@@ -538,7 +538,7 @@ Route::group([
   Route::post('/account-systems-get', 'get' )->name('-get');
   Route::post('/account-systems-save', 'save' )->name('-save');
   Route::post('/account-systems-delete', 'delete' )->name('-delete');
-  Route::any('/account-systems-import','import' )->name('-import');
+  Route::post('/account-systems-import','import' )->name('-import');
   Route::get('/account-systems-export', 'export')->name('-export');
   Route::get('/account-systems-DownloadExcel', 'DownloadExcel' )->name('-DownloadExcel');
   Route::post('/account-systems-change-database', 'ChangeDatabase')->name('-change-database');
@@ -555,7 +555,7 @@ Route::group([
   Route::post('/account-transfer-get', 'get')->name('-get');
   Route::post('/account-transfer-save', 'save' )->name('-save');
   Route::post('/account-transfer-delete','delete')->name('-delete');
-  Route::any('/account-transfer-import', 'import')->name('-import');
+  Route::post('/account-transfer-import', 'import')->name('-import');
   Route::get('/account-transfer-export', 'export' )->name('-export');
   Route::get('/account-transfer-DownloadExcel','DownloadExcel' )->name('-DownloadExcel');
   Route::post('/account-transfer-change-database','ChangeDatabase' )->name('-change-database');
@@ -572,7 +572,7 @@ Route::group([
   Route::post('/accounted-fast-get', 'get')->name('-get');
   Route::post('/accounted-fast-save', 'save' )->name('-save');
   Route::post('/accounted-fast-delete','delete')->name('-delete');
-  Route::any('/accounted-fast-import', 'import')->name('-import');
+  Route::post('/accounted-fast-import', 'import')->name('-import');
   Route::get('/accounted-fast-export', 'export' )->name('-export');
   Route::get('/accounted-fast-DownloadExcel','DownloadExcel' )->name('-DownloadExcel');
   Route::post('/accounted-fast-change-database','ChangeDatabase' )->name('-change-database');
@@ -589,7 +589,7 @@ Route::group([
   Route::post('/accounted-auto-get', 'get')->name('-get');
   Route::post('/accounted-auto-save','save' )->name('-save');
   Route::post('/accounted-auto-delete','delete')->name('-delete');
-  Route::any('/accounted-auto-import', 'import')->name('-import');
+  Route::post('/accounted-auto-import', 'import')->name('-import');
   Route::get('/accounted-auto-export','export' )->name('-export');
   Route::get('/accounted-auto-DownloadExcel','DownloadExcel' )->name('-DownloadExcel');
   Route::post('/accounted-auto-change-database','ChangeDatabase' )->name('-change-database');
@@ -606,7 +606,7 @@ Route::group([
   Route::post('/print-template-get', 'get')->name('-get');
   Route::post('/print-template-save','save' )->name('-save');
   Route::post('/print-template-delete','delete')->name('-delete');
-  Route::any('/print-template-import', 'import')->name('-import');
+  Route::post('/print-template-import', 'import')->name('-import');
   Route::get('/print-template-export','export' )->name('-export');
   Route::get('/print-template-DownloadExcel','DownloadExcel' )->name('-DownloadExcel');
   Route::post('/print-template-change-database','ChangeDatabase' )->name('-change-database');
@@ -622,7 +622,7 @@ Route::group([
   Route::post('/setting-account-group-get','get' )->name('-get');
   Route::post('/setting-account-group-save','save' )->name('-save');
   Route::post('/setting-account-group-delete','delete' )->name('-delete');
-  Route::any('/setting-account-group-import','import' )->name('-import');
+  Route::post('/setting-account-group-import','import' )->name('-import');
   Route::get('/setting-account-group-export','export' )->name('-export');
   Route::get('/setting-account-group-DownloadExcel','DownloadExcel' )->name('-DownloadExcel');
   Route::post('/setting-account-group-change-database','ChangeDatabase' )->name('-change-database');
@@ -639,7 +639,7 @@ Route::group([
   Route::post('/account-type-get', 'get')->name('-get');
   Route::post('/account-type-save','save' )->name('-save');
   Route::post('/account-type-delete','delete')->name('-delete');
-  Route::any('/account-type-import', 'import')->name('-import');
+  Route::post('/account-type-import', 'import')->name('-import');
   Route::get('/account-type-export','export' )->name('-export');
   Route::get('/account-type-DownloadExcel','DownloadExcel' )->name('-DownloadExcel');
   Route::post('/account-type-change-database','ChangeDatabase' )->name('-change-database');
@@ -656,7 +656,7 @@ Route::group([
     Route::post('/account-nature-get', 'get')->name('-get');
     Route::post('/account-nature-save','save' )->name('-save');
     Route::post('/account-nature-delete','delete')->name('-delete');
-    Route::any('/account-nature-import', 'import')->name('-import');
+    Route::post('/account-nature-import', 'import')->name('-import');
     Route::get('/account-nature-export','export' )->name('-export');
     Route::get('/account-nature-DownloadExcel','DownloadExcel' )->name('-DownloadExcel');
     Route::post('/account-nature-change-database','ChangeDatabase' )->name('-change-database');
@@ -707,8 +707,8 @@ Route::group([
     Route::post('/cash-receipts-general-start-voucher', 'start_voucher' )->name('-start-voucher');
     Route::post('/cash-receipts-general-change-voucher', 'change_voucher' )->name('-change-voucher');
     Route::get('/cash-receipts-general-DownloadExcel', 'DownloadExcel' )->name('-DownloadExcel');
-    Route::any('/cash-receipts-general-import', 'import')->name('-import');
-    Route::any('/cash-receipts-general-delete', 'delete')->name('-delete');
+    Route::post('/cash-receipts-general-import', 'import')->name('-import');
+    Route::post('/cash-receipts-general-delete', 'delete')->name('-delete');
     });  
 
     Route::controller(AccGeneralController::class)->group(function () { 
@@ -728,7 +728,7 @@ Route::group([
     Route::post('/cash-receipts-voucher-save', 'save' )->name('-save');
     Route::post('/cash-receipts-voucher-bind', 'bind' )->name('-bind');
     Route::get('/cash-receipts-voucher-DownloadExcel', 'DownloadExcel' )->name('-DownloadExcel');
-    Route::any('/cash-receipts-voucher-import', 'import')->name('-import');
+    Route::post('/cash-receipts-voucher-import', 'import')->name('-import');
     });
 
     Route::controller(AccCashReceiptsGeneralController::class)->group(function () {  
@@ -806,8 +806,8 @@ Route::group([
     Route::post('/cash-payment-general-start-voucher', 'start_voucher' )->name('-start-voucher');
     Route::post('/cash-payment-general-change-voucher', 'change_voucher' )->name('-change-voucher');
     Route::get('/cash-payment-general-DownloadExcel', 'DownloadExcel' )->name('-DownloadExcel');
-    Route::any('/cash-payment-general-import', 'import')->name('-import');
-    Route::any('/cash-payment-general-delete', 'delete')->name('-delete');
+    Route::post('/cash-payment-general-import', 'import')->name('-import');
+    Route::post('/cash-payment-general-delete', 'delete')->name('-delete');
     }); 
     Route::controller(AccGeneralController::class)->group(function () {
         Route::post('/cash-payment-general-detail','detail');  
@@ -824,7 +824,7 @@ Route::group([
       Route::post('/cash-payment-voucher-save', 'save' )->name('-save');
       Route::post('/cash-payment-voucher-bind', 'bind' )->name('-bind');
       Route::get('/cash-payment-voucher-DownloadExcel', 'DownloadExcel' )->name('-DownloadExcel');
-      Route::any('/cash-payment-voucher-import', 'import')->name('-import');
+      Route::post('/cash-payment-voucher-import', 'import')->name('-import');
     });  
     
     Route::controller(AccCashPaymentGeneralController::class)->group(function () {
@@ -901,8 +901,8 @@ Route::group([
     Route::post('/bank-receipts-general-start-voucher', 'start_voucher' )->name('-start-voucher');
     Route::post('/bank-receipts-general-change-voucher', 'change_voucher' )->name('-change-voucher');
     Route::get('/bank-receipts-general-DownloadExcel', 'DownloadExcel' )->name('-DownloadExcel');
-    Route::any('/bank-receipts-general-import', 'import')->name('-import');
-    Route::any('/bank-receipts-general-delete', 'delete')->name('-delete');
+    Route::post('/bank-receipts-general-import', 'import')->name('-import');
+    Route::post('/bank-receipts-general-delete', 'delete')->name('-delete');
      }); 
 
     Route::controller(AccGeneralController::class)->group(function () {
@@ -922,7 +922,7 @@ Route::group([
     Route::post('/bank-receipts-voucher-save', 'save' )->name('-save');
     Route::post('/bank-receipts-voucher-bind', 'bind' )->name('-bind');
     Route::get('/bank-receipts-voucher-DownloadExcel', 'DownloadExcel' )->name('-DownloadExcel');
-    Route::any('/bank-receipts-voucher-import', 'import')->name('-import');  
+    Route::post('/bank-receipts-voucher-import', 'import')->name('-import');  
     });  
 
     Route::controller(AccBankReceiptsGeneralController::class)->group(function () {
@@ -1005,8 +1005,8 @@ Route::group([
     Route::post('/bank-payment-general-start-voucher', 'start_voucher' )->name('-start-voucher');
     Route::post('/bank-payment-general-change-voucher', 'change_voucher' )->name('-change-voucher');
     Route::get('/bank-payment-general-DownloadExcel', 'DownloadExcel' )->name('-DownloadExcel');
-    Route::any('/bank-payment-general-import', 'import')->name('-import');
-    Route::any('/bank-payment-general-delete', 'delete')->name('-delete');
+    Route::post('/bank-payment-general-import', 'import')->name('-import');
+    Route::post('/bank-payment-general-delete', 'delete')->name('-delete');
 
     Route::controller(AccGeneralController::class)->group(function () {
       Route::post('/bank-payment-general-detail','detail');    
@@ -1026,7 +1026,7 @@ Route::group([
     Route::post('/bank-payment-voucher-save', 'save' )->name('-save');
     Route::post('/bank-payment-voucher-bind', 'bind' )->name('-bind');
     Route::get('/bank-payment-voucher-DownloadExcel', 'DownloadExcel' )->name('-DownloadExcel');
-    Route::any('/bank-payment-voucher-import', 'import')->name('-import');
+    Route::post('/bank-payment-voucher-import', 'import')->name('-import');
     });
 
     Route::controller(AccBankPaymentGeneralController::class)->group(function () {  
@@ -1108,8 +1108,8 @@ Route::group([
   Route::post('/bank-transfer-general-start-voucher', 'start_voucher' )->name('-start-voucher');
   Route::post('/bank-transfer-general-change-voucher', 'change_voucher' )->name('-change-voucher');
   Route::get('/bank-transfer-general-DownloadExcel', 'DownloadExcel' )->name('-DownloadExcel');
-  Route::any('/bank-transfer-general-import', 'import')->name('-import');
-  Route::any('/bank-transfer-general-delete', 'delete')->name('-delete');
+  Route::post('/bank-transfer-general-import', 'import')->name('-import');
+  Route::post('/bank-transfer-general-delete', 'delete')->name('-delete');
   });
 
    Route::controller(AccGeneralController::class)->group(function () {   
@@ -1128,7 +1128,7 @@ Route::group([
     Route::post('/bank-transfer-voucher-save', 'save' )->name('-save');
     Route::post('/bank-transfer-voucher-bind', 'bind' )->name('-bind');
     Route::get('/bank-transfer-voucher-DownloadExcel', 'DownloadExcel' )->name('-DownloadExcel');
-    Route::any('/bank-transfer-voucher-import', 'import')->name('-import');  
+    Route::post('/bank-transfer-voucher-import', 'import')->name('-import');  
     });
 
     Route::controller(AccBankTransferGeneralController::class)->group(function () {    
@@ -1173,8 +1173,8 @@ Route::group([
     Route::post('/entry-general-start-voucher', 'start_voucher' )->name('-start-voucher');
     Route::post('/entry-general-change-voucher', 'change_voucher' )->name('-change-voucher');
     Route::get('/entry-general-DownloadExcel', 'DownloadExcel' )->name('-DownloadExcel');
-    Route::any('/entry-general-import', 'import')->name('-import');
-    Route::any('/entry-general-delete', 'delete')->name('-delete');
+    Route::post('/entry-general-import', 'import')->name('-import');
+    Route::post('/entry-general-delete', 'delete')->name('-delete');
   });
     Route::controller(AccGeneralController::class)->group(function () {    
     Route::post('/entry-general-detail','detail');  
@@ -1194,7 +1194,7 @@ Route::group([
    Route::post('/entry-general-voucher-save', 'save' )->name('-save');
    Route::post('/entry-general-voucher-bind', 'bind' )->name('-bind');
    Route::get('/entry-general-voucher-DownloadExcel', 'DownloadExcel' )->name('-DownloadExcel');
-   Route::any('/entry-general-voucher-import', 'import')->name('-import');
+   Route::post('/entry-general-voucher-import', 'import')->name('-import');
    });
 
     Route::controller(AccEntryGeneralController::class)->group(function () {    
@@ -1239,8 +1239,8 @@ Route::group([
   Route::post('/inventory-issue-general-start-voucher', 'start_voucher' )->name('-start-voucher');
   Route::post('/inventory-issue-general-change-voucher', 'change_voucher' )->name('-change-voucher');
   Route::get('/inventory-issue-general-DownloadExcel', 'DownloadExcel' )->name('-DownloadExcel');
-  Route::any('/inventory-issue-general-import', 'import')->name('-import');
-  Route::any('/inventory-issue-general-delete', 'delete')->name('-delete');
+  Route::post('/inventory-issue-general-import', 'import')->name('-import');
+  Route::post('/inventory-issue-general-delete', 'delete')->name('-delete');
   });
 
   Route::controller(AccGeneralController::class)->group(function () {    
@@ -1260,7 +1260,7 @@ Route::group([
     Route::post('/inventory-issue-voucher-save', 'save' )->name('-save');
     Route::post('/inventory-issue-voucher-bind', 'bind' )->name('-bind');
     Route::get('/inventory-issue-voucher-DownloadExcel', 'DownloadExcel' )->name('-DownloadExcel');
-    Route::any('/inventory-issue-voucher-import', 'import')->name('-import');
+    Route::post('/inventory-issue-voucher-import', 'import')->name('-import');
     });
 
     Route::controller(AccInventoryIssueGeneralController::class)->group(function () {   
@@ -1309,8 +1309,8 @@ Route::group([
       Route::post('/inventory-receipt-general-start-voucher', 'start_voucher' )->name('-start-voucher');
       Route::post('/inventory-receipt-general-change-voucher', 'change_voucher' )->name('-change-voucher');
       Route::get('/inventory-receipt-general-DownloadExcel', 'DownloadExcel' )->name('-DownloadExcel');
-      Route::any('/inventory-receipt-general-import', 'import')->name('-import');
-      Route::any('/inventory-receipt-general-delete', 'delete')->name('-delete');
+      Route::post('/inventory-receipt-general-import', 'import')->name('-import');
+      Route::post('/inventory-receipt-general-delete', 'delete')->name('-delete');
       });
 
       Route::controller(AccGeneralController::class)->group(function () {    
@@ -1330,7 +1330,7 @@ Route::group([
     Route::post('/inventory-receipt-voucher-save', 'save' )->name('-save');
     Route::post('/inventory-receipt-voucher-bind', 'bind' )->name('-bind');
     Route::get('/inventory-receipt-voucher-DownloadExcel', 'DownloadExcel' )->name('-DownloadExcel');
-    Route::any('/inventory-receipt-voucher-import', 'import')->name('-import');
+    Route::post('/inventory-receipt-voucher-import', 'import')->name('-import');
     });   
 
     Route::controller(AccInventoryReceiptGeneralController::class)->group(function () {   
@@ -1378,8 +1378,8 @@ Route::group([
       Route::post('/inventory-transfer-general-start-voucher', 'start_voucher' )->name('-start-voucher');
       Route::post('/inventory-transfer-general-change-voucher', 'change_voucher' )->name('-change-voucher');
       Route::get('/inventory-transfer-general-DownloadExcel', 'DownloadExcel' )->name('-DownloadExcel');
-      Route::any('/inventory-transfer-general-import', 'import')->name('-import');
-      Route::any('/inventory-transfer-general-delete', 'delete')->name('-delete');
+      Route::post('/inventory-transfer-general-import', 'import')->name('-import');
+      Route::post('/inventory-transfer-general-delete', 'delete')->name('-delete');
       });
 
       Route::controller(AccGeneralController::class)->group(function () {    
@@ -1399,7 +1399,7 @@ Route::group([
     Route::post('/inventory-transfer-voucher-save', 'save' )->name('-save');
     Route::post('/inventory-transfer-voucher-bind', 'bind' )->name('-bind');
     Route::get('/inventory-transfer-voucher-DownloadExcel', 'DownloadExcel' )->name('-DownloadExcel');
-    Route::any('/inventory-transfer-voucher-import', 'import')->name('-import');
+    Route::post('/inventory-transfer-voucher-import', 'import')->name('-import');
     });   
 
     Route::controller(AccInventoryTransferGeneralController::class)->group(function () {   
@@ -1447,8 +1447,8 @@ Route::group([
       Route::post('/purchase-general-start-voucher', 'start_voucher' )->name('-start-voucher');
       Route::post('/purchase-general-change-voucher', 'change_voucher' )->name('-change-voucher');
       Route::get('/purchase-general-DownloadExcel', 'DownloadExcel' )->name('-DownloadExcel');
-      Route::any('/purchase-general-import', 'import')->name('-import');
-      Route::any('/purchase-general-delete', 'delete')->name('-delete');
+      Route::post('/purchase-general-import', 'import')->name('-import');
+      Route::post('/purchase-general-delete', 'delete')->name('-delete');
       });
 
       Route::controller(AccGeneralController::class)->group(function () {    
@@ -1468,7 +1468,7 @@ Route::group([
     Route::post('/purchase-voucher-save', 'save' )->name('-save');
     Route::post('/purchase-voucher-bind', 'bind' )->name('-bind');
     Route::get('/purchase-voucher-DownloadExcel', 'DownloadExcel' )->name('-DownloadExcel');
-    Route::any('/purchase-voucher-import', 'import')->name('-import');
+    Route::post('/purchase-voucher-import', 'import')->name('-import');
     });   
 
     Route::controller(AccPurchaseGeneralController::class)->group(function () {   
@@ -1519,8 +1519,8 @@ Route::group([
       Route::post('/sales-general-start-voucher', 'start_voucher' )->name('-start-voucher');
       Route::post('/sales-general-change-voucher', 'change_voucher' )->name('-change-voucher');
       Route::get('/sales-general-DownloadExcel', 'DownloadExcel' )->name('-DownloadExcel');
-      Route::any('/sales-general-import', 'import')->name('-import');
-      Route::any('/sales-general-delete', 'delete')->name('-delete');
+      Route::post('/sales-general-import', 'import')->name('-import');
+      Route::post('/sales-general-delete', 'delete')->name('-delete');
       });
 
       Route::controller(AccGeneralController::class)->group(function () {    
@@ -1540,7 +1540,7 @@ Route::group([
     Route::post('/sales-voucher-save', 'save' )->name('-save');
     Route::post('/sales-voucher-bind', 'bind' )->name('-bind');
     Route::get('/sales-voucher-DownloadExcel', 'DownloadExcel' )->name('-DownloadExcel');
-    Route::any('/sales-voucher-import', 'import')->name('-import');
+    Route::post('/sales-voucher-import', 'import')->name('-import');
     });   
 
     Route::controller(AccSalesGeneralController::class)->group(function () {   
@@ -1598,7 +1598,7 @@ Route::group([
 Route::get('/open-balance', 'show' )->name('');
 Route::get('/open-balance-data', 'data' )->name('-data');
 Route::post('/open-balance-save', 'save' )->name('-save');
-Route::any('/open-balance-import', 'import')->name('-import');
+Route::post('/open-balance-import', 'import')->name('-import');
 Route::get('/open-balance-export', 'export')->name('-export');
 Route::get('/open-balance-DownloadExcel', 'DownloadExcel')->name('-DownloadExcel');
 });

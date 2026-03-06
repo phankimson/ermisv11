@@ -43,10 +43,13 @@ class AccVoucherController extends Controller
   protected $menu;
   public function __construct(Request $request)
  {
-   $key = explode("/",$request->headers->get('referer'));
    $this->url =  $request->segment(3);
-   $this->key = $key[5];
-   $this->menu = Menu::where('code', '=', $this->key)->first();
+   $referer = (string) $request->headers->get('referer', '');
+   $path = parse_url($referer, PHP_URL_PATH);
+   $segments = array_values(array_filter(explode('/', trim((string) $path, '/'))));
+   $lastSegment = !empty($segments) ? end($segments) : null;
+   $this->key = $lastSegment ?: ($request->segment(2) ?? '');
+   $this->menu = $this->key ? Menu::where('code', '=', $this->key)->first() : null;
  }
 
   public function get(Request $request){

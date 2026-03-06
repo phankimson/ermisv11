@@ -94,7 +94,7 @@ Route::group([
   Route::post('/history-action-get', 'get')->name('-get');
   Route::post('/history-action-save','save')->name('-save');
   Route::post('/history-action-delete','delete')->name('-delete');
-  Route::any('/history-action-import', 'import')->name('-import');
+  Route::post('/history-action-import', 'import')->name('-import');
   Route::get('/history-action-export', 'export' )->name('-export');
   Route::get('/history-action-DownloadExcel','DownloadExcel')->name('-DownloadExcel');
   });
@@ -109,7 +109,7 @@ Route::group([
   Route::post('/error-get', 'get')->name('-get');
   Route::post('/error-save', 'save')->name('-save');
   Route::post('/error-delete', 'delete' )->name('-delete');
-  Route::any('/error-import', 'import' )->name('-import');
+  Route::post('/error-import', 'import' )->name('-import');
   Route::get('/error-export', 'export' )->name('-export');
   Route::get('/error-DownloadExcel', 'DownloadExcel' )->name('-DownloadExcel');
   });
@@ -123,7 +123,7 @@ Route::group([
   Route::get('/jobs-data', 'data')->name('-data');
   Route::post('/jobs-save', 'save')->name('-save');
   Route::post('/jobs-delete', 'delete' )->name('-delete');
-  Route::any('/jobs-import', 'import' )->name('-import');
+  Route::post('/jobs-import', 'import' )->name('-import');
   Route::get('/jobs-export', 'export' )->name('-export');
   Route::get('/jobs-DownloadExcel', 'DownloadExcel' )->name('-DownloadExcel');
   });
@@ -138,7 +138,7 @@ Route::group([
   Route::post('/menu-get', 'get')->name('-get');
   Route::post('/menu-save', 'save' )->name('-save');
   Route::post('/menu-delete', 'delete' )->name('-delete');
-  Route::any('/menu-import','import')->name('-import');
+  Route::post('/menu-import','import')->name('-import');
   Route::get('/menu-export', 'export' )->name('-export');
   Route::get('/menu-DownloadExcel','DownloadExcel' )->name('-DownloadExcel');
   });
@@ -153,7 +153,7 @@ Route::group([
   Route::get('/software-data', 'data')->name('-data');
   Route::post('/software-save', 'save')->name('-save');
   Route::post('/software-delete','delete')->name('-delete');
-  Route::any('/software-import', 'import' )->name('-import');
+  Route::post('/software-import', 'import' )->name('-import');
   Route::get('/software-export','export' )->name('-export');
   Route::get('/software-DownloadExcel', 'DownloadExcel')->name('-DownloadExcel');
   });
@@ -168,7 +168,7 @@ Route::group([
   Route::get('/license-data', 'data' )->name('-data');
   Route::post('/license-save', 'save' )->name('-save');
   Route::post('/license-delete',  'delete' )->name('-delete');
-  Route::any('/license-import', 'import' )->name('-import');
+  Route::post('/license-import', 'import' )->name('-import');
   Route::get('/license-export','export' )->name('-export');
   Route::get('/license-DownloadExcel','DownloadExcel' )->name('-DownloadExcel');
   Route::post('/license-load',  'load' )->name('-load');
@@ -184,7 +184,7 @@ Route::group([
   Route::post('/systems-get', 'get')->name('-get');
   Route::post('/systems-save', 'save' )->name('-save');
   Route::post('/systems-delete', 'delete')->name('-delete');
-  Route::any('/systems-import', 'import')->name('-import');
+  Route::post('/systems-import', 'import')->name('-import');
   Route::get('/systems-export', 'export' )->name('-export');
   Route::get('/systems-DownloadExcel', 'DownloadExcel')->name('-DownloadExcel');
   });
@@ -199,7 +199,7 @@ Route::group([
   Route::get('/group-users-data', 'data')->name('-data');
   Route::post('/group-users-save', 'save')->name('-save');
   Route::post('/group-users-delete', 'delete' )->name('-delete');
-  Route::any('/group-users-import', 'import' )->name('-import');
+  Route::post('/group-users-import', 'import' )->name('-import');
   Route::get('/group-users-export', 'export' )->name('-export');
   Route::get('/group-users-DownloadExcel', 'DownloadExcel' )->name('-DownloadExcel');
   });
@@ -214,7 +214,7 @@ Route::group([
   Route::get('/country-data','data' )->name('-data');
   Route::post('/country-save','save' )->name('-save');
   Route::post('/country-delete', 'delete')->name('-delete');
-  Route::any('/country-import', 'import')->name('-import');
+  Route::post('/country-import', 'import')->name('-import');
   Route::get('/country-export', 'export')->name('-export');
   Route::get('/country-DownloadExcel','DownloadExcel')->name('-DownloadExcel');
   });
@@ -229,7 +229,7 @@ Route::group([
   Route::get('/regions-data', 'data')->name('-data');
   Route::post('/regions-save', 'save')->name('-save');
   Route::post('/regions-delete', 'delete')->name('-delete');
-  Route::any('/regions-import', 'import' )->name('-import');
+  Route::post('/regions-import', 'import' )->name('-import');
   Route::get('/regions-export', 'export' )->name('-export');
   Route::get('/regions-DownloadExcel', 'DownloadExcel' )->name('-DownloadExcel');
   });
@@ -244,7 +244,7 @@ Route::group([
   Route::get('/key-ai-data', 'data')->name('-data');
   Route::post('/key-ai-save', 'save')->name('-save');
   Route::post('/key-ai-delete', 'delete' )->name('-delete');
-  Route::any('/key-ai-import', 'import')->name('-import');
+  Route::post('/key-ai-import', 'import')->name('-import');
   Route::get('/key-ai-export','export' )->name('-export');
   Route::get('/key-ai-DownloadExcel', 'DownloadExcel' )->name('-DownloadExcel');
   });
@@ -259,7 +259,7 @@ Route::group([
   //Route::post('/area-get', 'AreaController@get');
   Route::post('/area-save', 'save')->name('-save');
   Route::post('/area-delete', 'delete')->name('-delete');
-  Route::any('/area-import','import')->name('-import');
+  Route::post('/area-import','import')->name('-import');
   Route::get('/area-export','export')->name('-export');
   Route::get('/area-DownloadExcel', 'DownloadExcel' )->name('-DownloadExcel');
   });
@@ -274,7 +274,7 @@ Route::group([
   Route::get('/distric-data', 'data')->name('-data');
   Route::post('/distric-save', 'save')->name('-save');
   Route::post('/distric-delete', 'delete')->name('-delete');
-  Route::any('/distric-import', 'import' )->name('-import');
+  Route::post('/distric-import', 'import' )->name('-import');
   Route::get('/distric-export',  'export')->name('-export');
   Route::get('/distric-DownloadExcel',  'DownloadExcel' )->name('-DownloadExcel');
   });
@@ -288,7 +288,7 @@ Route::group([
   Route::get('/document-type-data', 'data')->name('-data');
   Route::post('/document-type-save', 'save')->name('-save');
   Route::post('/document-type-delete','delete' )->name('-delete');
-  Route::any('/document-type-import', 'import' )->name('-import');
+  Route::post('/document-type-import', 'import' )->name('-import');
   Route::get('/document-type-export', 'export' )->name('-export');
   Route::get('/document-type-DownloadExcel', 'DownloadExcel' )->name('-DownloadExcel');
   });
@@ -302,7 +302,7 @@ Route::group([
   Route::get('/document-data', 'data')->name('-data');
   Route::post('/document-save', 'save')->name('-save');
   Route::post('/document-delete', 'delete' )->name('-delete');
-  Route::any('/document-import', 'import' )->name('-import');
+  Route::post('/document-import', 'import' )->name('-import');
   Route::get('/document-export',  'export' )->name('-export');
   Route::get('/document-DownloadExcel', 'DownloadExcel' )->name('-DownloadExcel');
   });
@@ -317,7 +317,7 @@ Route::group([
   Route::get('/company-data', 'data')->name('-data');
   Route::post('/company-save', 'save')->name('-save');
   Route::post('/company-delete','delete' )->name('-delete');
-  Route::any('/company-import', 'import' )->name('-import');
+  Route::post('/company-import', 'import' )->name('-import');
   Route::get('/company-export', 'export' )->name('-export');
   Route::get('/company-DownloadExcel', 'DownloadExcel' )->name('-DownloadExcel');
   });
@@ -332,7 +332,7 @@ Route::group([
   Route::post('/company-software-get', 'get')->name('-get');
   Route::post('/company-software-save', 'save' )->name('-save');
   Route::post('/company-software-delete', 'delete' )->name('-delete');
-  Route::any('/company-software-import', 'import' )->name('-import');
+  Route::post('/company-software-import', 'import' )->name('-import');
   Route::get('/company-software-export', 'export' )->name('-export');
   Route::get('/company-software-DownloadExcel', 'DownloadExcel' )->name('-DownloadExcel');
   });
@@ -346,7 +346,7 @@ Route::group([
   Route::get('/users-data', 'data' )->name('-data');
   Route::post('/users-save', 'save' )->name('-save');
   Route::post('/users-delete','delete')->name('-delete');
-  Route::any('/users-import', 'import' )->name('-import');
+  Route::post('/users-import', 'import' )->name('-import');
   Route::get('/users-export', 'export' )->name('-export');
   Route::get('/users-DownloadExcel', 'DownloadExcel' )->name('-DownloadExcel');
   });
