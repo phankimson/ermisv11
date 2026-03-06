@@ -16,6 +16,7 @@ use App\Http\Model\Systems;
 use App\Http\Model\HistoryAction;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
 use Exception;
 use Illuminate\Support\Facades\DB;
 
@@ -45,8 +46,10 @@ class UserController extends Controller
       $credentials = [ 'username' => $data->username , 'password' => $data->password , 'active' => 1];
       // KhÃ³a táº¡m test
       $capcha = data_get($data, 'g-recaptcha-response');
-      $capcha = "1";
-      if(Auth::attempt($credentials) && $capcha != ""){ // login attempt
+      if(!$this->verifyRecaptcha($capcha, $request)){
+         return response()->json(['status'=>false,'message'=> trans('messages.login_fail')]);
+      }
+      if(Auth::attempt($credentials)){ // login attempt
         $user = Auth::user();
         // Kiá»ƒm tra role = admin khÃ´ng
         if($user->role == 0){
@@ -85,6 +88,36 @@ class UserController extends Controller
       DB::rollBack();
       return $this->handleControllerException($e, $type, $this->menu->id ?? 0, $this->url, __FUNCTION__);
      }
+   }
+
+ private function verifyRecaptcha(?string $token, Request $request): bool
+   {
+      if(empty($token)){
+        return false;
+      }
+
+      $isLocalHost = app()->environment(['local', 'testing']) && in_array($request->getHost(), ['localhost', '127.0.0.1'], true);
+      $secret = $isLocalHost
+        ? (config('services.recaptcha.local_secret_key') ?: config('services.recaptcha.secret_key'))
+        : config('services.recaptcha.secret_key');
+
+      if(empty($secret)){
+        return false;
+      }
+
+      $response = Http::asForm()
+        ->timeout(10)
+        ->post('https://www.google.com/recaptcha/api/siteverify', [
+          'secret' => $secret,
+          'response' => $token,
+          'remoteip' => $request->ip(),
+        ]);
+
+      if(!$response->ok()){
+        return false;
+      }
+
+      return (bool) data_get($response->json(), 'success', false);
    }
 
  public function doRegister(Request $request){

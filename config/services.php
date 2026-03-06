@@ -31,4 +31,12 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'recaptcha' => [
+        'site_key' => env('GOOGLE_RECAPTCHA_KEY'),
+        'secret_key' => env('GOOGLE_RECAPTCHA_SECRET'),
+        // Google official test keys for local/testing.
+        'local_site_key' => env('GOOGLE_RECAPTCHA_LOCAL_KEY', '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI'),
+        'local_secret_key' => env('GOOGLE_RECAPTCHA_LOCAL_SECRET', '6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe'),
+    ],
+
 ];

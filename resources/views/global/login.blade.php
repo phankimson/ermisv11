@@ -54,7 +54,13 @@
                         <input tabindex="1" class="md-input" type="password" id="login_password" name="password" />
                     </div>
                     <div class="uk-form-row">
-                        <div tabindex="3" class="g-recaptcha" data-sitekey="6LeBW6YUAAAAADn_VTsleqz8WsfvoTFhgVRn4fSk" data-callback="YourOnSubmitFn"></div>
+                        @php
+                            $isLocalHost = app()->environment(['local', 'testing']) && in_array(request()->getHost(), ['localhost', '127.0.0.1'], true);
+                            $recaptchaSiteKey = $isLocalHost
+                                ? (config('services.recaptcha.local_site_key') ?: config('services.recaptcha.site_key'))
+                                : config('services.recaptcha.site_key');
+                        @endphp
+                        <div tabindex="3" class="g-recaptcha" data-sitekey="{{ $recaptchaSiteKey }}" data-callback="YourOnSubmitFn"></div>
                     </div>
                     <div class="uk-margin-medium-top">
                         <a href="javascript:;" id="button_login"  tabindex="4" class="md-btn md-btn-primary md-btn-block md-btn-large">@lang('login.sign_in')</a>
