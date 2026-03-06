@@ -18,7 +18,7 @@ class PosErmisSeeder extends Seeder
         $productB = (string) Str::uuid();
         $productC = (string) Str::uuid();
 
-        DB::connection($connection)->table('pos_ermis_warehouses')->insert([
+        DB::connection($connection)->table('warehouses')->insert([
             [
                 'id' => $warehouseA,
                 'code' => 'KHO-CHINH',
@@ -39,7 +39,7 @@ class PosErmisSeeder extends Seeder
             ],
         ]);
 
-        DB::connection($connection)->table('pos_ermis_products')->insert([
+        DB::connection($connection)->table('products')->insert([
             [
                 'id' => $productA,
                 'sku' => 'SP-0001',
@@ -78,7 +78,7 @@ class PosErmisSeeder extends Seeder
             ],
         ]);
 
-        DB::connection($connection)->table('pos_ermis_inventories')->insert([
+        DB::connection($connection)->table('inventories')->insert([
             [
                 'id' => (string) Str::uuid(),
                 'warehouse_id' => $warehouseA,

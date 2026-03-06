@@ -28,5 +28,13 @@ class PosTransactionItem extends Model
     {
         return $this->belongsTo(PosProduct::class, 'product_id');
     }
-}
 
+    public static function get_by_transaction(string $transactionId)
+    {
+        return self::query()
+            ->with('product:id,name,sku')
+            ->where('transaction_id', $transactionId)
+            ->orderBy('created_at')
+            ->get(['id', 'transaction_id', 'product_id', 'quantity', 'unit_price', 'line_total']);
+    }
+}

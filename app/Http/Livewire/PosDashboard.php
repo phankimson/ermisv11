@@ -6,7 +6,6 @@ use App\Http\Model\PosInventory;
 use App\Http\Model\PosProduct;
 use App\Http\Model\PosTransaction;
 use App\Http\Model\PosWarehouse;
-use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 
 class PosDashboard extends Component
@@ -21,8 +20,8 @@ class PosDashboard extends Component
     public function mount(): void
     {
         $this->reportDate = now()->toDateString();
-        $this->warehouses = PosWarehouse::query()->where('active', 1)->orderBy('name')->get(['id', 'name', 'code'])->toArray();
-        $this->products = PosProduct::query()->where('active', 1)->orderBy('name')->get(['id', 'name', 'sku', 'sale_price'])->toArray();
+        $this->warehouses = PosWarehouse::get_active_list()->toArray();
+        $this->products = PosProduct::get_active_list()->toArray();
         $this->reload();
     }
 
@@ -33,29 +32,9 @@ class PosDashboard extends Component
 
     public function reload(): void
     {
-        $this->summary = PosTransaction::query()
-            ->select('type', DB::raw('COUNT(*) as total_docs'), DB::raw('SUM(total_amount) as total_amount'))
-            ->whereDate('transaction_date', $this->reportDate)
-            ->groupBy('type')
-            ->orderBy('type')
-            ->get()
-            ->toArray();
-
-        $this->recent = PosTransaction::query()
-            ->with(['warehouse:id,name', 'warehouseTo:id,name'])
-            ->whereDate('transaction_date', $this->reportDate)
-            ->latest('created_at')
-            ->limit(12)
-            ->get(['id', 'code', 'type', 'transaction_date', 'warehouse_id', 'warehouse_to_id', 'total_amount'])
-            ->toArray();
-
-        $this->inventories = PosInventory::query()
-            ->with(['warehouse:id,name', 'product:id,name'])
-            ->where('active', 1)
-            ->orderByDesc('updated_at')
-            ->limit(20)
-            ->get(['id', 'warehouse_id', 'product_id', 'quantity'])
-            ->toArray();
+        $this->summary = PosTransaction::get_daily_summary($this->reportDate)->toArray();
+        $this->recent = PosTransaction::get_recent_by_date($this->reportDate, 12)->toArray();
+        $this->inventories = PosInventory::get_recent_list(20)->toArray();
     }
 
     public function render()
@@ -63,4 +42,3 @@ class PosDashboard extends Component
         return view('livewire.pos.dashboard');
     }
 }
-

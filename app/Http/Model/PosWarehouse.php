@@ -18,5 +18,12 @@ class PosWarehouse extends Model
     {
         static::BootedBaseTrait();
     }
-}
 
+    public static function get_active_list()
+    {
+        return self::query()
+            ->where('active', 1)
+            ->orderBy('name')
+            ->get(['id', 'name', 'code']);
+    }
+}

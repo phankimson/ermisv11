@@ -18,5 +18,12 @@ class PosProduct extends Model
     {
         static::BootedBaseTrait();
     }
-}
 
+    public static function get_active_list()
+    {
+        return self::query()
+            ->where('active', 1)
+            ->orderBy('name')
+            ->get(['id', 'name', 'sku', 'sale_price']);
+    }
+}
