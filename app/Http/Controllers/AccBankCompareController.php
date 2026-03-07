@@ -15,7 +15,6 @@ use App\Http\Model\AccSystems;
 use App\Http\Model\AccCurrency;
 use App\Http\Model\AccSettingVoucher;
 use App\Http\Model\AccBankCompare;
-use App\Http\Model\AccHistoryAction;
 use Illuminate\Support\Facades\DB;
 use App\Http\Resources\BankLoadReadResource;
 use App\Http\Resources\BankCompareLoadReadResource;
@@ -25,9 +24,11 @@ use App\Http\Model\Imports\AccBankCompareGeneralImport;
 use Maatwebsite\Excel\Facades\Excel;
 use Carbon\Carbon;
 use Exception;
+use App\Http\Traits\AccHistoryTraits;
 
 class AccBankCompareController extends Controller
 {
+  use AccHistoryTraits;
   protected $url;
   protected $key;
   protected $menu;
@@ -80,13 +81,7 @@ class AccBankCompareController extends Controller
              $period = AccPeriod::get_date(Carbon::parse($data->accounting_date)->format('Y-m'),1);
              if(!$period){
                // Luu Lich su
-               $h = new AccHistoryAction();
-               $h ->create([
-               'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-               'user' => Auth::id(),
-               'menu' => $this->menu->id,
-               'url'  => $this->url,
-               'dataz' => \json_encode($arr)]);
+               $this->create_history($type,Auth::id(),$this->menu->id,$this->url,$arr);
 
                //DETAIL
                foreach($arr->tab1 as $k){
@@ -143,13 +138,7 @@ class AccBankCompareController extends Controller
              $period = AccPeriod::get_date(Carbon::parse($data->accounting_date)->format('Y-m'),1);
              if(!$period){
               // Luu Lich su
-               $h = new AccHistoryAction();
-               $h ->create([
-               'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-               'user' => Auth::id(),
-               'menu' => $this->menu->id,
-               'url'  => $this->url,
-               'dataz' => \json_encode($arr)]);
+               $this->create_history($type,Auth::id(),$this->menu->id,$this->url,$arr);
 
                //DETAIL
                foreach($arr->tab1 as $k){

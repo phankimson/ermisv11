@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
-use App\Http\Model\HistoryAction;
 use App\Http\Model\Systems;
 use App\Http\Model\Menu;
 use App\Http\Model\Jobs;
@@ -17,10 +16,11 @@ use App\Classes\Convert;
 use Maatwebsite\Excel\Facades\Excel;
 use Exception;
 use Illuminate\Support\Facades\DB;
-
+use App\Http\Traits\HistoryTraits;
 
 class JobsController extends Controller
 {
+  use HistoryTraits;
   protected $url;
   protected $key;
   protected $menu;
@@ -98,13 +98,7 @@ class JobsController extends Controller
          $data->save();
 
          // Luu lich su them moi
-         $h = new HistoryAction();
-         $h ->create([
-           'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-           'user' => Auth::id(),
-           'menu' => $this->menu->id,
-           'url' => $this->url,
-           'dataz' => \json_encode($data)]);
+         $this->create_history($type,Auth::id(),$this->menu->id,$this->url,$data);
 
          // Lay ID vừa luu de truyền lên socket
          $arr->id = $data->id;
@@ -119,13 +113,7 @@ class JobsController extends Controller
           return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
         }
          // Luu lich su sua doi
-         $h = new HistoryAction();
-         $h ->create([
-           'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-           'user' => Auth::id(),
-           'menu' => $this->menu->id,
-           'url' => $this->url,
-           'dataz' => \json_encode($data)]);
+       $this->create_history($type,Auth::id(),$this->menu->id,$this->url,$data);
         //
 
          $data->code = $arr->code;
@@ -163,13 +151,7 @@ class JobsController extends Controller
               return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
             }
             // Luu lich su xoa
-            $h = new HistoryAction();
-            $h ->create([
-            'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-            'user' => Auth::id(),
-            'menu' => $this->menu->id,
-            'url' => $this->url,
-            'dataz' => \json_encode($data)]);
+            $this->create_history($type,Auth::id(),$this->menu->id,$this->url,$data);
             //
             $data->delete();
             DB::commit();
@@ -215,13 +197,7 @@ class JobsController extends Controller
        $merged = collect($rs)->push($import->getData());
        //dump($merged);
      // Luu lich su import
-     $h = new HistoryAction();
-     $h ->create([
-       'type' => $type, // Add : 2 , Edit : 3 , Delete : 4, Import : 5
-       'user' => Auth::id(),
-       'menu' => $this->menu->id,
-       'url' => $this->url,
-       'dataz' => \json_encode($merged)]);
+     $this->create_history($type,Auth::id(),$this->menu->id,$this->url,$merged);
      //
      //Storage::delete($savePath.$filename);
      DB::commit();

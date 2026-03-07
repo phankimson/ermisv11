@@ -13,7 +13,6 @@ use App\Http\Model\AccBankAccount;
 use App\Http\Model\AccBankAccountBalance;
 use App\Http\Model\AccSettingAccountGroup;
 use App\Http\Model\AccSystems;
-use App\Http\Model\AccHistoryAction;
 use App\Http\Model\AccStockBalance;
 use App\Http\Model\AccSuppliesGoods;
 use App\Http\Model\AccSuppliesGoodsType;
@@ -41,12 +40,14 @@ use App\Http\Traits\LoadDocumentTraits;
 use App\Http\Traits\CurrencyCheckTraits;
 use App\Http\Traits\StockCheckTraits;
 use App\Classes\OpenBalanceGlobal;
+use App\Http\Traits\AccHistoryTraits;
 
 class AccOpenBalanceController extends Controller
 {
-  use LoadDocumentTraits;
-  use CurrencyCheckTraits;
-  use StockCheckTraits;
+  use AccHistoryTraits,
+     LoadDocumentTraits,
+     CurrencyCheckTraits,
+     StockCheckTraits;
   protected $url;
   protected $key;
   protected $menu;
@@ -341,13 +342,7 @@ class AccOpenBalanceController extends Controller
       // Cho vao array de day lai event realtime
       $rq->arr = $rs;
        // Luu lich su
-        $h = new AccHistoryAction();
-        $h ->create([
-          'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-          'user' => Auth::id(),
-          'menu' => $this->menu->id,
-          'url'  => $this->url,
-          'dataz' => \json_encode($arr)]);
+        $this->create_history($type,Auth::id(),$this->menu->id,$this->url,$rq);
         //
       if($check_perrmission == true){
         broadcast(new \App\Events\DataSendCollectionTabs($rq));
@@ -585,13 +580,7 @@ class AccOpenBalanceController extends Controller
        $merged = collect($rs);
        //dump($merged);
      // Luu lich su
-     $h = new AccHistoryAction();
-     $h ->create([
-       'type' => $type, // Add : 2 , Edit : 3 , Delete : 4, Import : 5
-       'user' => Auth::id(),
-       'menu' => $this->menu->id,
-       'url'  => $this->url,
-       'dataz' => \json_encode($merged)]);
+     $this->create_history($type,Auth::id(),$this->menu->id,$this->url,$merged);
      //
      //Storage::delete($savePath.$filename);
      DB::connection(env('CONNECTION_DB_ACC'))->commit();

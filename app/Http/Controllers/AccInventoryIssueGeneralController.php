@@ -6,7 +6,6 @@ use App\Classes\Convert;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Model\AccHistoryAction;
 use App\Http\Model\Menu;
 use App\Http\Model\AccGeneral;
 use App\Http\Model\AccDetail;
@@ -27,10 +26,11 @@ use Exception;
 use Illuminate\Support\Facades\DB;
 use App\Http\Traits\StockCheckTraits;
 use App\Http\Traits\FileAttachTraits;
+use App\Http\Traits\AccHistoryTraits;
 
 class AccInventoryIssueGeneralController extends Controller
 {
-  use StockCheckTraits,FileAttachTraits;
+  use AccHistoryTraits,StockCheckTraits,FileAttachTraits;
   protected $url;
   protected $key;
   protected $menu;
@@ -83,13 +83,7 @@ class AccInventoryIssueGeneralController extends Controller
              if(!$period){
                $detail = AccDetail::get_detail_active($data->id,1);               
                // Luu lich su
-               $h = new AccHistoryAction();
-               $h ->create([
-               'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-               'user' => Auth::id(),
-               'menu' => $this->menu->id,
-               'url'  => $this->url,
-               'dataz' => \json_encode($data)]);
+               $this->create_history($type,Auth::id(),$this->menu->id,$this->url,$data);
                $data->active = 0;
                $data->save();
 
@@ -139,13 +133,7 @@ class AccInventoryIssueGeneralController extends Controller
              if(!$period){
                $detail = AccDetail::get_detail_active($data->id,0);
                // Luu lich su
-               $h = new AccHistoryAction();
-               $h ->create([
-               'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-               'user' => Auth::id(),
-               'menu' => $this->menu->id,
-               'url'  => $this->url,
-               'dataz' => \json_encode($data)]);
+               $this->create_history($type,Auth::id(),$this->menu->id,$this->url,$data);
                $data->active = 1;
                $data->save();
 
@@ -278,13 +266,7 @@ class AccInventoryIssueGeneralController extends Controller
            if(!$period){
              if($permission['d'] == true){            
                // Luu lich su
-               $h = new AccHistoryAction();
-               $h ->create([
-               'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-               'user' => Auth::id(),
-               'menu' => $this->menu->id,
-               'url'  => $this->url,
-               'dataz' => \json_encode($data)]);
+               $this->create_history($type,Auth::id(),$this->menu->id,$this->url,$data);
                //           
                
                $detail = $data->detail;
@@ -395,13 +377,7 @@ class AccInventoryIssueGeneralController extends Controller
       $merged = collect($rs)->push($data);
       //dump($merged);
     // Luu lich su
-    $h = new AccHistoryAction();
-    $h ->create([
-      'type' => $type, // Add : 2 , Edit : 3 , Delete : 4, Import : 5
-      'user' => Auth::id(),
-      'menu' => $this->menu->id,
-      'url'  => $this->url,
-      'dataz' => \json_encode($merged)]);
+    $this->create_history($type,Auth::id(),$this->menu->id,$this->url,$merged);
     //
     //Storage::delete($savePath.$filename);
     //broadcast(new \App\Events\DataSendCollection($merged));

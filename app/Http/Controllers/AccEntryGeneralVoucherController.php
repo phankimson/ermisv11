@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Model\AccHistoryAction;
 use App\Http\Model\Menu;
 use App\Http\Model\AccGeneral;
 use App\Http\Model\AccDetail;
@@ -25,10 +24,11 @@ use Illuminate\Support\Facades\Storage;
 use App\Http\Traits\FileAttachTraits;
 use App\Http\Traits\NumberVoucherTraits;
 use App\Http\Traits\ReferenceTraits;
+use App\Http\Traits\AccHistoryTraits;
 
 class AccEntryGeneralVoucherController extends Controller
 {
-    use FileAttachTraits,NumberVoucherTraits,ReferenceTraits;
+  use AccHistoryTraits,FileAttachTraits,NumberVoucherTraits,ReferenceTraits;
   protected $url;
   protected $key;
   protected $menu;
@@ -240,13 +240,8 @@ class AccEntryGeneralVoucherController extends Controller
             $this->saveFile($request,$general->id,$this->path);  
 
            // Lưu lịch sử
-           $h = new AccHistoryAction();
-           $h ->create([
-           'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-           'user' => Auth::id(),
-           'menu' => $this->menu->id,
-           'url'  => $this->url,
-           'dataz' => \json_encode($arr)]);
+           $this->create_history($type,Auth::id(),$this->menu->id,$this->url,$arr);
+           
            if($check_invoice == true){
            DB::connection(env('CONNECTION_DB_ACC'))->rollBack();
            return response()->json(['status'=>false,'message'=> trans('messages.invoice_number_duplicate',['invoice'=>$invoice])]);

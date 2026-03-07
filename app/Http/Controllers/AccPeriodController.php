@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
-use App\Http\Model\AccHistoryAction;
 use App\Http\Model\Menu;
 use App\Http\Model\AccPeriod;
 use App\Http\Model\AccGeneral;
@@ -22,9 +21,11 @@ use App\Http\Model\AccStock;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\DB;
+use App\Http\Traits\AccHistoryTraits;
 
 class AccPeriodController extends Controller
 {
+  use AccHistoryTraits;
   protected $url;
   protected $key;
   protected $menu;
@@ -163,13 +164,7 @@ class AccPeriodController extends Controller
        };               
        $save_detail = true;
        // Luu lich su
-       $h = new AccHistoryAction();
-       $h ->create([
-         'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-         'user' => Auth::id(),
-         'menu' => $this->menu->id,
-         'url'  => $this->url,
-         'dataz' => \json_encode($data)]);
+       $this->create_history($type,Auth::id(),$this->menu->id,$this->url,$data);
 
        // Lay ID va phan loai Them
        $merge = collect((array)$arr);
@@ -424,13 +419,7 @@ public function saveDetail(Request $request){
             return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
           }
            // Luu lich su
-           $h = new AccHistoryAction();
-           $h ->create([
-           'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-           'user' => Auth::id(),
-           'menu' => $this->menu->id,
-           'url'  => $this->url,
-           'dataz' => \json_encode($data)]);                       
+             $this->create_history($type,Auth::id(),$this->menu->id,$this->url,$data); 
            // Xoa chi tiet stk
            $data->account_balance()->delete();
            // Xoa chi tiet NCC,KH

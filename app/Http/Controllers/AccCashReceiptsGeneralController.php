@@ -7,7 +7,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Model\AccAccountSystems;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Model\AccHistoryAction;
 use App\Http\Model\Menu;
 use App\Http\Model\AccGeneral;
 use App\Http\Model\AccDetail;
@@ -28,10 +27,11 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Traits\CurrencyCheckTraits;
 use App\Http\Traits\FileAttachTraits;
 use App\Http\Traits\VatDetailPaymentTraits;
+use App\Http\Traits\AccHistoryTraits;
 
 class AccCashReceiptsGeneralController extends Controller
 {
-   use CurrencyCheckTraits,VatDetailPaymentTraits,FileAttachTraits;
+   use AccHistoryTraits,CurrencyCheckTraits,VatDetailPaymentTraits,FileAttachTraits;
   protected $url;
   protected $key;
   protected $key_voucher;
@@ -83,13 +83,8 @@ class AccCashReceiptsGeneralController extends Controller
                $detail = AccDetail::get_detail_active($data->id,1);
 
                // Luu lich su
-               $h = new AccHistoryAction();
-               $h ->create([
-               'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-               'user' => Auth::id(),
-               'menu' => $this->menu->id,
-               'url'  => $this->url,
-               'dataz' => \json_encode($data)]);
+               $this->create_history($type,Auth::id(),$this->menu->id,$this->url,$data);
+
                $data->active = 0;
                $data->save();
                //DETAIL
@@ -158,13 +153,8 @@ class AccCashReceiptsGeneralController extends Controller
              if(!$period){
                $detail = AccDetail::get_detail_active($data->id,0);
                // Luu lich su
-               $h = new AccHistoryAction();
-               $h ->create([
-               'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-               'user' => Auth::id(),
-               'menu' => $this->menu->id,
-               'url'  => $this->url,
-               'dataz' => \json_encode($data)]);
+               $this->create_history($type,Auth::id(),$this->menu->id,$this->url,$data);
+
                $data->active = 1;
                $data->save();
 
@@ -316,13 +306,7 @@ class AccCashReceiptsGeneralController extends Controller
              if($permission['d'] == true){             
 
                // Luu lich su
-               $h = new AccHistoryAction();
-               $h ->create([
-               'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-               'user' => Auth::id(),
-               'menu' => $this->menu->id,
-               'url'  => $this->url,
-               'dataz' => \json_encode($data)]);
+               $this->create_history($type,Auth::id(),$this->menu->id,$this->url,$data);
                //           
                
                $detail = $data->detail;
@@ -477,15 +461,9 @@ class AccCashReceiptsGeneralController extends Controller
           }
       $merged = collect($rs)->push($data);
       //dump($merged);
-    // Luu lich su
-    $h = new AccHistoryAction();
-    $h ->create([
-      'type' => $type, // Add : 2 , Edit : 3 , Delete : 4, Import : 5
-      'user' => Auth::id(),
-      'menu' => $this->menu->id,
-      'url'  => $this->url,
-      'dataz' => \json_encode($merged)]);
-    //
+      // Luu lich su
+      $this->create_history($type,Auth::id(),$this->menu->id,$this->url,$merged);
+      //
     //Storage::delete($savePath.$filename);
     //broadcast(new \App\Events\DataSendCollection($merged));
     DB::connection(env('CONNECTION_DB_ACC'))->commit();

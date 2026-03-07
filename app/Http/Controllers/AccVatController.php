@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
-use App\Http\Model\AccHistoryAction;
 use App\Http\Model\Menu;
 use App\Http\Model\AccVat;
 use App\Http\Model\CompanySoftware;
@@ -20,9 +19,11 @@ use App\Classes\Convert;
 use Maatwebsite\Excel\Facades\Excel;
 use Exception;
 use Illuminate\Support\Facades\DB;
+use App\Http\Traits\AccHistoryTraits;
 
 class AccVatController extends Controller
 {
+  use AccHistoryTraits;
   protected $url;
   protected $key;
   protected $menu;
@@ -156,12 +157,7 @@ class AccVatController extends Controller
 
 
        // Lưu lịch sử
-       $h = new AccHistoryAction();
-       $h ->create([
-         'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-         'user' => Auth::id(),
-         'menu' => $this->menu->id,
-         'dataz' => \json_encode($data)]);
+      $this->create_history($type,Auth::id(),$this->menu->id,$this->url,$data);
 
        // Lấy ID vừa lưu để truyền lên socket
        $arr->id = $data->id;
@@ -176,13 +172,7 @@ class AccVatController extends Controller
           return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
         }
        // Lưu lịch sử sửa đổi
-       $h = new AccHistoryAction();
-       $h ->create([
-         'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-         'user' => Auth::id(),
-         'menu' => $this->menu->id,
-         'url'  => $this->url,
-         'dataz' => \json_encode($data)]);
+      $this->create_history($type,Auth::id(),$this->menu->id,$this->url,$data);
       //
 
       $data->code = $arr->code;
@@ -225,13 +215,7 @@ class AccVatController extends Controller
               return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
             }
             // Lưu lịch sử xóa
-            $h = new AccHistoryAction();
-            $h ->create([
-            'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-            'user' => Auth::id(),
-            'menu' => $this->menu->id,
-            'url'  => $this->url,
-            'dataz' => \json_encode($data)]);
+          $this->create_history($type,Auth::id(),$this->menu->id,$this->url,$data);
             //
             $data->delete();
             DB::connection(env('CONNECTION_DB_ACC'))->commit();
@@ -277,13 +261,7 @@ class AccVatController extends Controller
        $merged = collect($rs)->push($import->getData());
        //dump($merged);
      // Lưu lịch sử
-     $h = new AccHistoryAction();
-     $h ->create([
-       'type' => $type, // Add : 2 , Edit : 3 , Delete : 4, Import : 5
-       'user' => Auth::id(),
-       'menu' => $this->menu->id,
-       'url'  => $this->url,
-       'dataz' => \json_encode($merged)]);
+    $this->create_history($type,Auth::id(),$this->menu->id,$this->url,$merged);
      //
      //Storage::delete($savePath.$filename);
      DB::connection(env('CONNECTION_DB_ACC'))->commit();

@@ -7,11 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Model\HistoryAction;
-use App\Http\Model\User;
 use App\Http\Model\Menu;
 use App\Http\Model\Systems;
-use App\Http\Resources\DropDownListResource;
-use App\Http\Resources\UserDropDownListResource;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Model\Imports\HistoryActionImport;
 use App\Http\Model\Exports\HistoryActionExport;
@@ -114,12 +111,7 @@ class HistoryActionController extends Controller
         $data->save();
 
         // Lay data vừa lưu để lưu lịch sử thêm mới
-        //$h = new HistoryAction();
-        //$h ->create([
-        //  'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-        //  'user' => Auth::id(),
-        //  'menu' => $this->menu->id,
-        //  'dataz' => \json_encode($data)]);
+       //$this->create_history($type,Auth::id(),$this->menu->id,$this->url,$data);
         //
         // lay ID vua luu để truyền lên socket
         $arr->id = $data->id;
@@ -134,12 +126,7 @@ class HistoryActionController extends Controller
           return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
         }
         // Luu lich su sua doi
-        //$h = new HistoryAction();
-        //$h ->create([
-        //  'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-        //  'user' => Auth::id(),
-        //  'menu' => $this->menu->id,
-        //  'dataz' => \json_encode($data)]);
+       //$this->create_history($type,Auth::id(),$this->menu->id,$this->url,$data);
         //
         $data->url = $arr->url;
         $data->type = $arr->type;
@@ -179,13 +166,7 @@ class HistoryActionController extends Controller
                 return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
               }
              // Luu lich su xoa
-             //$h = new HistoryAction();
-             //$h ->create([
-               //'type' => 4, // Add : 2 , Edit : 3 , Delete : 4
-               //'user' => Auth::id(),
-               //'menu' => $this->menu->id,
-               //'dataz' => \json_encode($data)]);
-             //
+             //$this->create_history($type,Auth::id(),$this->menu->id,$this->url,$data);
              $data->delete();
              DB::commit();
              broadcast(new \App\Events\DataSend($arr));
@@ -229,13 +210,7 @@ class HistoryActionController extends Controller
         $merged = collect($rs)->push($import->getData());
         //dump($merged);
       // Luu lich su import
-      //  $type = 5;
-      //$h = new HistoryAction();
-      //$h ->create([
-      //  'type' => $type, // Add : 2 , Edit : 3 , Delete : 4, Import : 5
-      //  'user' => Auth::id(),
-      //  'menu' => $this->menu->id,
-      //  'dataz' => \json_encode($merged)]);
+      //$this->create_history($type,Auth::id(),$this->menu->id,$this->url,$data);
       //
       //Storage::delete($savePath.$filename);
       DB::commit();

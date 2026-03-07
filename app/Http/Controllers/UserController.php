@@ -10,18 +10,20 @@ use App\Classes\Convert;
 use App\Http\Model\Company;
 use App\Http\Model\Software;
 use App\Http\Model\CompanySoftware;
+use App\Http\Model\HistoryAction;
 use App\Http\Model\License;
 use App\Http\Model\User;
 use App\Http\Model\Systems;
-use App\Http\Model\HistoryAction;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
 use Exception;
 use Illuminate\Support\Facades\DB;
+use App\Http\Traits\HistoryTraits;
 
 class UserController extends Controller
 {
+  use HistoryTraits;
   protected $url;
   protected $menu = null;
   public function __construct(Request $request)
@@ -33,7 +35,7 @@ class UserController extends Controller
  public function doLogout(Request $request){
      $user = Auth::user();
       // Luu lich su hoat dong
-     $hs = HistoryAction::create(['type' =>  0 , 'url' => $request->segment(2) ,'user' =>$user->id , 'menu' => 0 , 'dataz' => '']);
+     $this->create_history(0, $user->id, 0, $request->segment(2), '');
      $request->session()->forget('status');
      Auth::logout();
      return redirect('/');
@@ -73,7 +75,7 @@ class UserController extends Controller
         // Kiem tra role admin
         if($user->role == 0){
           // Luu lich su hoat dong
-           $hs = HistoryAction::create(['type' =>  1 ,'url'=> $this->url , 'user' =>$user->id , 'menu' => 0 , 'dataz' => '']);
+           $this->create_history(1, $user->id, 0, $this->url, '');
 
           return response()->json(['status'=>true, 'message'=> trans('messages.login_success')]);
         }else{
@@ -88,7 +90,7 @@ class UserController extends Controller
               // Authentication passed...
 
               // Luu lich su hoat dong
-               $hs = HistoryAction::create(['type' =>  1 ,'url'=> $this->url, 'user' =>$user->id , 'menu' => 0 , 'dataz' => '']);
+               $this->create_history(1, $user->id, 0, $this->url, '');
                DB::commit(); 
                return response()->json(['status'=>true, 'message'=> trans('messages.login_success')]);
             }else{

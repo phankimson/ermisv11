@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
-use App\Http\Model\AccHistoryAction;
 use App\Http\Model\AccUser;
 use App\Http\Model\Menu;
 use App\Http\Model\AccGroupUsers;
@@ -23,9 +22,11 @@ use Maatwebsite\Excel\Facades\Excel;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use App\Http\Traits\AccHistoryTraits;
 
 class AccUserManagerController extends Controller
 {
+  use AccHistoryTraits;
   protected $url;
   protected $key;
   protected $menu;
@@ -129,13 +130,7 @@ class AccUserManagerController extends Controller
        $data->save();
 
        // Luu lich su them moi
-       $h = new AccHistoryAction();
-       $h ->create([
-         'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-         'user' => Auth::id(),
-         'menu' => $this->menu->id,
-         'url'  => $this->url,
-         'dataz' => \json_encode($data)]);
+        $this->create_history($type,Auth::id(),$this->menu->id,$this->url,$data);
 
        // Lay ID vừa lưu để truyền lên socket
        $arr->id = $data->id;
@@ -178,13 +173,7 @@ class AccUserManagerController extends Controller
           return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
         }
        // Lưu lịch sử sửa đổi
-       $h = new AccHistoryAction();
-       $h ->create([
-         'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-         'user' => Auth::id(),
-         'menu' => $this->menu->id,
-         'url'  => $this->url,
-         'dataz' => \json_encode($data)]);
+         $this->create_history($type,Auth::id(),$this->menu->id,$this->url,$data);
       //
         $old_password = $data->password;
         if ($arr->password != $old_password ) {
@@ -275,13 +264,7 @@ class AccUserManagerController extends Controller
             return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
           }
             // Luu lich su xoa
-            $h = new AccHistoryAction();
-            $h ->create([
-            'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-            'user' => Auth::id(),
-            'menu' => $this->menu->id,
-            'url'  => $this->url,
-            'dataz' => \json_encode($data)]);
+              $this->create_history($type,Auth::id(),$this->menu->id,$this->url,$data);
             //
             //Xóa ảnh cũ
             if(File::exists(public_path($data->avatar)) && $data->avatar != 'addon/img/avatar.png'){
@@ -332,13 +315,7 @@ class AccUserManagerController extends Controller
        $merged = collect($rs)->push($import->getData());
        //dump($merged);
      // Lưu lịch sử
-     $h = new AccHistoryAction();
-     $h ->create([
-       'type' => $type, // Add : 2 , Edit : 3 , Delete : 4, Import : 5
-       'user' => Auth::id(),
-       'menu' => $this->menu->id,
-       'url'  => $this->url,
-       'dataz' => \json_encode($merged)]);
+     $this->create_history($type,Auth::id(),$this->menu->id,$this->url,$merged);
      //
      //Storage::delete($savePath.$filename);
      DB::commit();

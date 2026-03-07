@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
-use App\Http\Model\AccHistoryAction;
 use App\Http\Model\Menu;
 use App\Http\Model\AccSettingVoucher;
 use App\Http\Model\CompanySoftware;
@@ -20,9 +19,11 @@ use App\Http\Model\AccAccountSystemsFilter;
 use Maatwebsite\Excel\Facades\Excel;
 use Exception;
 use Illuminate\Support\Facades\DB;
+use App\Http\Traits\AccHistoryTraits;
 
 class AccSettingVoucherController extends Controller
 {
+  use AccHistoryTraits;
   protected $url;
   protected $key;
   protected $menu;
@@ -170,13 +171,7 @@ class AccSettingVoucherController extends Controller
 
 
        // Luu lich su
-       $h = new AccHistoryAction();
-       $h ->create([
-         'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-         'user' => Auth::id(),
-         'menu' => $this->menu->id,
-         'url'  => $this->url,
-         'dataz' => \json_encode($data)]);
+       $this->create_history($type,Auth::id(),$this->menu->id,$this->url,$data);
 
        // Luu ID va phan loai Them
        $arr->id = $data->id;
@@ -191,13 +186,7 @@ class AccSettingVoucherController extends Controller
           return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
         }
        // Luu lich su
-       $h = new AccHistoryAction();
-       $h ->create([
-         'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-         'user' => Auth::id(),
-         'menu' => $this->menu->id,
-         'url'  => $this->url,
-         'dataz' => \json_encode($data)]);
+      $this->create_history($type,Auth::id(),$this->menu->id,$this->url,$data);
       //
 
       $data->menu_id = $arr->menu_id;
@@ -292,13 +281,7 @@ class AccSettingVoucherController extends Controller
               return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
             }
             // Luu lich su
-            $h = new AccHistoryAction();
-            $h ->create([
-            'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-            'user' => Auth::id(),
-            'menu' => $this->menu->id,
-            'url'  => $this->url,
-            'dataz' => \json_encode($data)]);
+          $this->create_history($type,Auth::id(),$this->menu->id,$this->url,$data);
             //
 
             $df_all = AccAccountSystemsFilter::get_account_systems_filter($arr->id,$this->df_text);
@@ -358,13 +341,7 @@ class AccSettingVoucherController extends Controller
        $merged = collect($rs)->push($import->getData());
        //dump($merged);
      // Lưu lịch sử
-     $h = new AccHistoryAction();
-     $h ->create([
-       'type' => $type, // Add : 2 , Edit : 3 , Delete : 4, Import : 5
-       'user' => Auth::id(),
-       'menu' => $this->menu->id,
-       'url'  => $this->url,
-       'dataz' => \json_encode($merged)]);
+    $this->create_history($type,Auth::id(),$this->menu->id,$this->url,$merged);
      //
      //Storage::delete($savePath.$filename);
      DB::connection(env('CONNECTION_DB_ACC'))->commit();

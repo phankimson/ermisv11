@@ -2,11 +2,15 @@
 
 namespace App\Services;
 
+use App\Http\Model\HistoryAction;
+use App\Http\Model\Menu;
 use App\Http\Model\PosInventory;
 use App\Http\Model\PosTransaction;
 use App\Http\Model\PosTransactionItem;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use InvalidArgumentException;
+use Throwable;
 
 class PosTransactionService
 {
@@ -73,8 +77,62 @@ class PosTransactionService
                 self::applyStock($type, $warehouseId, $warehouseToId, $productId, $quantity);
             }
 
+            DB::afterCommit(function () use ($transaction, $type, $cashierId, $warehouseId, $warehouseToId, $transactionDate, $items) {
+                self::recordHistoryAction($transaction, $type, $cashierId, [
+                    'transaction_id' => (string) $transaction->id,
+                    'code' => (string) $transaction->code,
+                    'type' => $type,
+                    'transaction_date' => (string) $transactionDate,
+                    'warehouse_id' => $warehouseId,
+                    'warehouse_to_id' => $warehouseToId,
+                    'total_amount' => (float) $transaction->total_amount,
+                    'items_count' => (int) $items->count(),
+                ]);
+            });
+
             return $transaction->load('items');
         });
+    }
+
+    private static function recordHistoryAction(PosTransaction $transaction, string $type, ?string $userId, array $data): void
+    {
+        if (empty($userId)) {
+            return;
+        }
+
+        try {
+            HistoryAction::create([
+                'type' => 2, // Add
+                'user' => $userId,
+                'menu' => self::resolveMenuId($type),
+                'url' => 'pos/'.str_replace('_', '-', $type),
+                'dataz' => json_encode($data, JSON_UNESCAPED_UNICODE),
+            ]);
+        } catch (Throwable $e) {
+            Log::warning('pos.history_action.failed', [
+                'transaction_id' => $transaction->id,
+                'type' => $type,
+                'error' => $e->getMessage(),
+            ]);
+        }
+    }
+
+    private static function resolveMenuId(string $type): string
+    {
+        $codes = match ($type) {
+            'sale' => ['sale', 'pos-sale', 'pos'],
+            'return' => ['return', 'pos-return', 'pos'],
+            'stock_in' => ['stock-in', 'pos-stock-in', 'pos'],
+            'stock_out' => ['stock-out', 'pos-stock-out', 'pos'],
+            'stock_transfer' => ['stock-transfer', 'pos-stock-transfer', 'pos'],
+            'cash_receipt' => ['cash-receipt', 'pos-cash-receipt', 'pos'],
+            'cash_payment' => ['cash-payment', 'pos-cash-payment', 'pos'],
+            default => ['pos'],
+        };
+
+        $menu = Menu::query()->whereIn('code', $codes)->where('active', 1)->orderBy('created_at')->first();
+
+        return $menu ? (string) $menu->id : '0';
     }
 
     private static function applyStock(string $type, ?string $warehouseId, ?string $warehouseToId, string $productId, float $quantity): void

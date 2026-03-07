@@ -110,12 +110,7 @@ class AccHistoryActionController extends Controller
         $data->save();
 
         // Lay lich su
-        //$h = new HistoryAction();
-        //$h ->create([
-        //  'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-        //  'user' => Auth::id(),
-        //  'menu' => $this->menu->id,
-        //  'dataz' => \json_encode($data)]);
+        //$this->create_history($type,Auth::id(),$this->menu->id,$this->url,$data);
         //
         // Lay id de truyen len client
         $arr->id = $data->id;
@@ -130,12 +125,7 @@ class AccHistoryActionController extends Controller
           return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
         }
         // Lay lich su
-        //$h = new HistoryAction();
-        //$h ->create([
-        //  'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-        //  'user' => Auth::id(),
-        //  'menu' => $this->menu->id,
-        //  'dataz' => \json_encode($data)]);
+       //$this->create_history($type,Auth::id(),$this->menu->id,$this->url,$data);
         //
         $data->url = $arr->url;
         $data->type = $arr->type;
@@ -175,12 +165,7 @@ class AccHistoryActionController extends Controller
                 return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
               }
              // Luu lich su
-             //$h = new HistoryAction();
-             //$h ->create([
-               //'type' => 4, // Add : 2 , Edit : 3 , Delete : 4
-               //'user' => Auth::id(),
-               //'menu' => $this->menu->id,
-               //'dataz' => \json_encode($data)]);
+             //$this->create_history($type,Auth::id(),$this->menu->id,$this->url,$data);
              //
              $data->delete();
              DB::connection(env('CONNECTION_DB_ACC'))->commit();
@@ -226,12 +211,7 @@ class AccHistoryActionController extends Controller
         //dump($merged);
       // Luu lich su
       //  $type = 5;
-      //$h = new HistoryAction();
-      //$h ->create([
-      //  'type' => $type, // Add : 2 , Edit : 3 , Delete : 4, Import : 5
-      //  'user' => Auth::id(),
-      //  'menu' => $this->menu->id,
-      //  'dataz' => \json_encode($merged)]);
+       //$this->create_history($type,Auth::id(),$this->menu->id,$this->url,$merged);
       //
       //Storage::delete($savePath.$filename);
       DB::connection(env('CONNECTION_DB_ACC'))->commit();

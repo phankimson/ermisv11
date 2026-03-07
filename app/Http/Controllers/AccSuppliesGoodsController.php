@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
-use App\Http\Model\AccHistoryAction;
 use App\Http\Model\Menu;
 use App\Http\Model\AccSuppliesGoods;
 use App\Http\Model\AccSuppliesGoodsType;
@@ -20,14 +19,15 @@ use Illuminate\Support\Facades\Storage;
 use App\Http\Model\Imports\AccSuppliesGoodsImport;
 use App\Http\Model\Exports\AccSuppliesGoodsExport;
 use App\Classes\Convert;
-use App\Http\Model\AccAccountSystems;
 use Illuminate\Support\Facades\File;
 use Maatwebsite\Excel\Facades\Excel;
 use Exception;
 use Illuminate\Support\Facades\DB;
+use App\Http\Traits\AccHistoryTraits;
 
 class AccSuppliesGoodsController extends Controller
 {
+  use AccHistoryTraits;
   protected $url;
   protected $key;
   protected $menu;
@@ -277,13 +277,7 @@ class AccSuppliesGoodsController extends Controller
        //
 
        // Lưu lịch sử
-       $h = new AccHistoryAction();
-       $h ->create([
-         'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-         'user' => Auth::id(),
-         'menu' => $this->menu->id,
-         'url'  => $this->url,
-         'dataz' => \json_encode($data)]);
+       $this->create_history($type,Auth::id(),$this->menu->id,$this->url,$data);
 
        // Lưu lịch sử giá mua
        $p = new AccHistoryPrice();
@@ -312,13 +306,7 @@ class AccSuppliesGoodsController extends Controller
           return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
         }
        // Lưu lịch sử
-       $h = new AccHistoryAction();
-       $h ->create([
-         'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-         'user' => Auth::id(),
-         'menu' => $this->menu->id,
-         'url'  => $this->url,
-         'dataz' => \json_encode($data)]);
+       $this->create_history($type,Auth::id(),$this->menu->id,$this->url,$data);
       //
 
       //Check lịch sử giá mua
@@ -479,13 +467,8 @@ class AccSuppliesGoodsController extends Controller
             if(File::exists(public_path($data->image)) && $data->image != 'addon/img/placehold/100.png'){
                File::delete(public_path($data->image));
             };
-            $h = new AccHistoryAction();
-            $h ->create([
-            'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-            'user' => Auth::id(),
-            'menu' => $this->menu->id,
-            'url'  => $this->url,
-            'dataz' => \json_encode($data)]);
+
+            $this->create_history($type,Auth::id(),$this->menu->id,$this->url,$data);
             //
             $data->delete();
             DB::connection(env('CONNECTION_DB_ACC'))->commit();
@@ -531,13 +514,7 @@ class AccSuppliesGoodsController extends Controller
        $merged = collect($rs)->push($import->getData());
        //dump($merged);
      // Lưu lịch sử
-     $h = new AccHistoryAction();
-     $h ->create([
-       'type' => $type, // Add : 2 , Edit : 3 , Delete : 4, Import : 5
-       'user' => Auth::id(),
-       'menu' => $this->menu->id,
-       'url'  => $this->url,
-       'dataz' => \json_encode($merged)]);
+     $this->create_history($type,Auth::id(),$this->menu->id,$this->url,$merged);
      //
      //Storage::delete($savePath.$filename);
      DB::connection(env('CONNECTION_DB_ACC'))->commit();

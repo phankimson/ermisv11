@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
-use App\Http\Model\HistoryAction;
 use App\Http\Model\User;
 use App\Http\Model\Menu;
 use App\Http\Model\Systems;
@@ -19,9 +18,11 @@ use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\File;
 use Exception;
 use Illuminate\Support\Facades\DB;
+use App\Http\Traits\HistoryTraits;
 
 class UserManagerController extends Controller
 {
+  use HistoryTraits;
   protected $url;
   protected $key;
   protected $menu;
@@ -119,14 +120,7 @@ class UserManagerController extends Controller
        $data->save();
 
        // Luu lich su them
-       $h = new HistoryAction();
-       $h ->create([
-         'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-         'user' => Auth::id(),
-         'menu' => $this->menu->id,
-         'url'  => $this->url,
-         'dataz' => \json_encode($data)]);
-
+       $this->create_history($type,Auth::id(),$this->menu->id,$this->url,$data);
        // Lay ID vua luu de truyen len socket
        $arr->id = $data->id;
        $arr->t = $type;
@@ -163,13 +157,7 @@ class UserManagerController extends Controller
           return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
         }
        // Luu lich su sua
-       $h = new HistoryAction();
-       $h ->create([
-         'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-         'user' => Auth::id(),
-         'menu' => $this->menu->id,
-         'url'  => $this->url,
-         'dataz' => \json_encode($data)]);
+     $this->create_history($type,Auth::id(),$this->menu->id,$this->url,$data);
       //
         $old_password = $data->password;
         if ($arr->password != $old_password ) {
@@ -257,13 +245,7 @@ class UserManagerController extends Controller
             return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
           }
             // Luu lich su xoa
-            $h = new HistoryAction();
-            $h ->create([
-            'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-            'user' => Auth::id(),
-            'menu' => $this->menu->id,
-            'url'  => $this->url,
-            'dataz' => \json_encode($data)]);
+           $this->create_history($type,Auth::id(),$this->menu->id,$this->url,$data);
             //
 
             //Xoa anh cu
@@ -315,13 +297,7 @@ class UserManagerController extends Controller
        $merged = collect($rs)->push($import->getData());
        //dump($merged);
      // Luu lich su import
-     $h = new HistoryAction();
-     $h ->create([
-       'type' => $type, // Add : 2 , Edit : 3 , Delete : 4, Import : 5
-       'user' => Auth::id(),
-       'menu' => $this->menu->id,
-       'url'  => $this->url,
-       'dataz' => \json_encode($merged)]);
+    $this->create_history($type,Auth::id(),$this->menu->id,$this->url,$merged);
      //
      //Storage::delete($savePath.$filename);
      DB::commit();

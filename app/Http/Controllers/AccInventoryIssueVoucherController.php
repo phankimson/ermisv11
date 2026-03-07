@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Model\AccHistoryAction;
 use App\Http\Model\Menu;
 use App\Http\Model\AccGeneral;
 use App\Http\Model\AccDetail;
@@ -27,10 +26,11 @@ use App\Http\Traits\NumberVoucherTraits;
 use App\Http\Traits\StockCheckTraits;
 use App\Http\Traits\FileAttachTraits;
 use App\Http\Traits\ReferenceTraits;
+use App\Http\Traits\AccHistoryTraits;
 
 class AccInventoryIssueVoucherController extends Controller
 {
-  use StockCheckTraits,NumberVoucherTraits,FileAttachTraits,ReferenceTraits;
+  use AccHistoryTraits,StockCheckTraits,NumberVoucherTraits,FileAttachTraits,ReferenceTraits;
   protected $url;
   protected $key;
   protected $menu;
@@ -217,13 +217,8 @@ class AccInventoryIssueVoucherController extends Controller
            $this->saveFile($request,$general->id,$this->path);    
 
            // Lưu lịch sử
-           $h = new AccHistoryAction();
-           $h ->create([
-           'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-           'user' => Auth::id(),
-           'menu' => $this->menu->id,
-           'url'  => $this->url,
-           'dataz' => \json_encode($arr)]);
+            $this->create_history($type,Auth::id(),$this->menu->id,$this->url,$arr);
+            
           if($acc != ""){
             DB::connection(env('CONNECTION_DB_ACC'))->rollBack();
             return response()->json(['status'=>false,'message'=> trans('messages.code_negative',['code'=>$acc])]);

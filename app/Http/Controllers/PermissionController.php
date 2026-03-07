@@ -10,12 +10,13 @@ use App\Classes\bitmask;
 use App\Http\Model\Menu;
 use App\Http\Model\GroupUsers;
 use App\Http\Model\GroupUsersPermission;
-use App\Http\Model\HistoryAction;
 use Exception;
 use Illuminate\Support\Facades\DB;
+use App\Http\Traits\HistoryTraits;
 
 class PermissionController extends Controller
 {
+  use HistoryTraits;
     protected $url;
     protected $key;
     protected $menu;
@@ -121,13 +122,7 @@ class PermissionController extends Controller
                     $result->permission = $d->permission;
                     $result->save();
                     // Luu lich su them moi va sua doi
-                    $h = new HistoryAction();
-                    $h ->create([
-                      'type' => $type, // Add : 1 , Edit : 2 , Delete : 3
-                      'user' => Auth::id(),
-                      'menu' => $this->menu->id,
-                      'url' => $this->url,
-                      'dataz' => \json_encode($result)]);
+                     $this->create_history($type,Auth::id(),$this->menu->id,$this->url,$result);
                     //
                   }
                   DB::commit();  

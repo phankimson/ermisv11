@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
-use App\Http\Model\AccHistoryAction;
 use App\Http\Model\Menu;
 use App\Http\Model\AccAccountSystems;
 use App\Http\Model\CompanySoftware;
@@ -18,9 +17,11 @@ use App\Classes\Convert;
 use Maatwebsite\Excel\Facades\Excel;
 use Exception;
 use Illuminate\Support\Facades\DB;
+use App\Http\Traits\AccHistoryTraits;
 
 class AccAccountSystemsController extends Controller
 {
+  use AccHistoryTraits;
   protected $url;
   protected $key;
   protected $menu;
@@ -129,13 +130,7 @@ class AccAccountSystemsController extends Controller
          $data->save();
 
          // Luu lich su
-         $h = new AccHistoryAction();
-         $h ->create([
-           'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-           'user' => Auth::id(),
-           'menu' => $this->menu->id,
-           'url'  => $this->url,
-           'dataz' => \json_encode($data)]);
+        $this->create_history($type,Auth::id(),$this->menu->id,$this->url,$data);
 
          // Lay ID de phan loai sua
          $arr->id = $data->id;
@@ -156,14 +151,7 @@ class AccAccountSystemsController extends Controller
         return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
         }
          // Luu lich su
-         $h = new AccHistoryAction();
-         $h ->create([
-           'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-           'user' => Auth::id(),
-           'menu' => $this->menu->id,
-           'url'  => $this->url,
-           'dataz' => \json_encode($data)]);
-        //
+        $this->create_history($type,Auth::id(),$this->menu->id,$this->url,$data);
 
         $data->type = $arr->type;
         $data->code = $arr->code;
@@ -228,14 +216,8 @@ class AccAccountSystemsController extends Controller
               $item->save();
             });
             // Luu lich su
-            $h = new AccHistoryAction();
-            $h ->create([
-            'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-            'user' => Auth::id(),
-            'menu' => $this->menu->id,
-            'url'  => $this->url,
-            'dataz' => \json_encode($data)]);
-            //
+            $this->create_history($type,Auth::id(),$this->menu->id,$this->url,$data);
+
             $data->delete();
             DB::connection(env('CONNECTION_DB_ACC'))->commit();
             broadcast(new \App\Events\DataSend($arr));
@@ -279,15 +261,9 @@ class AccAccountSystemsController extends Controller
        
        $merged = collect($rs)->push($import->getData());
        //dump($merged);
-     // Luu lich su
-     $h = new AccHistoryAction();
-     $h ->create([
-       'type' => $type, // Add : 2 , Edit : 3 , Delete : 4, Import : 5
-       'user' => Auth::id(),
-       'menu' => $this->menu->id,
-       'url'  => $this->url,
-       'dataz' => \json_encode($merged)]);
-     //
+      // Luu lich su
+      $this->create_history($type,Auth::id(),$this->menu->id,$this->url,$merged);
+
      //Storage::delete($savePath.$filename);
      DB::connection(env('CONNECTION_DB_ACC'))->commit();
      broadcast(new \App\Events\DataSendCollection($merged));

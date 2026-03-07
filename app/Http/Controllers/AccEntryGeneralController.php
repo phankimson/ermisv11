@@ -6,7 +6,6 @@ use App\Classes\Convert;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Model\AccHistoryAction;
 use App\Http\Model\Menu;
 use App\Http\Model\AccGeneral;
 use App\Http\Model\AccDetail;
@@ -24,12 +23,12 @@ use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
 use Exception;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\File;
 use App\Http\Traits\FileAttachTraits;
+use App\Http\Traits\AccHistoryTraits;
 
 class AccEntryGeneralController extends Controller
 {
-  use FileAttachTraits;
+  use AccHistoryTraits,FileAttachTraits;
   protected $url;
   protected $key;
   protected $key_voucher;
@@ -81,13 +80,8 @@ class AccEntryGeneralController extends Controller
                $detail = AccDetail::get_detail_active($data->id,1);
 
                // Luu lich su
-               $h = new AccHistoryAction();
-               $h ->create([
-               'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-               'user' => Auth::id(),
-               'menu' => $this->menu->id,
-               'url'  => $this->url,
-               'dataz' => \json_encode($data)]);
+               $this->create_history($type,Auth::id(),$this->menu->id,$this->url,$data);
+
                $data->active = 0;
                $data->save();
 
@@ -129,13 +123,7 @@ class AccEntryGeneralController extends Controller
              if(!$period){
                $detail = AccDetail::get_detail_active($data->id,0);
                // Luu lich su
-               $h = new AccHistoryAction();
-               $h ->create([
-               'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-               'user' => Auth::id(),
-               'menu' => $this->menu->id,
-               'url'  => $this->url,
-               'dataz' => \json_encode($data)]);
+               $this->create_history($type,Auth::id(),$this->menu->id,$this->url,$data);
                $data->active = 1;
                $data->save();
 
@@ -259,13 +247,7 @@ class AccEntryGeneralController extends Controller
              if($permission['d'] == true){             
 
                // Luu lich su
-               $h = new AccHistoryAction();
-               $h ->create([
-               'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-               'user' => Auth::id(),
-               'menu' => $this->menu->id,
-               'url'  => $this->url,
-               'dataz' => \json_encode($data)]);
+               $this->create_history($type,Auth::id(),$this->menu->id,$this->url,$data);          
                //           
                                          
                // Xoa cac dong chi tiet
@@ -342,13 +324,7 @@ class AccEntryGeneralController extends Controller
       $merged = collect($rs)->push($data);
       //dump($merged);
     // Luu lich su
-    $h = new AccHistoryAction();
-    $h ->create([
-      'type' => $type, // Add : 2 , Edit : 3 , Delete : 4, Import : 5
-      'user' => Auth::id(),
-      'menu' => $this->menu->id,
-      'url'  => $this->url,
-      'dataz' => \json_encode($merged)]);
+    $this->create_history($type,Auth::id(),$this->menu->id,$this->url,$merged);
     //
     //Storage::delete($savePath.$filename);
     //broadcast(new \App\Events\DataSendCollection($merged));
