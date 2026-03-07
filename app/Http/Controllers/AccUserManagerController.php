@@ -128,7 +128,7 @@ class AccUserManagerController extends Controller
        $data->active = $arr->active;
        $data->save();
 
-       // LÃƒâ€ Ã‚Â°u lÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ch sÃƒÂ¡Ã‚Â»Ã‚Â­
+       // Luu lich su them moi
        $h = new AccHistoryAction();
        $h ->create([
          'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -137,12 +137,12 @@ class AccUserManagerController extends Controller
          'url'  => $this->url,
          'dataz' => \json_encode($data)]);
 
-       // LÃƒÂ¡Ã‚ÂºÃ‚Â¥y ID vÃƒÆ’Ã‚Â  vÃƒÆ’Ã‚Â  phÃƒÆ’Ã‚Â¢n loÃƒÂ¡Ã‚ÂºÃ‚Â¡i ThÃƒÆ’Ã‚Âªm. CÃƒÂ¡Ã‚ÂºÃ‚Â­p nhÃƒÂ¡Ã‚ÂºÃ‚Â­t lÃƒÂ¡Ã‚ÂºÃ‚Â¡i username
+       // Lay ID vừa lưu để truyền lên socket
        $arr->id = $data->id;
        $arr->username = $prefix_username.'_'.$arr->username;
        $arr->t = $type;
 
-       // LÃƒâ€ Ã‚Â°u ÃƒÂ¡Ã‚ÂºÃ‚Â£nh thÃƒÆ’Ã‚Âªm
+       // Lưu ảnh thêm
        if($request->hasFile('files')) {
          $files = $request->file('files');
          $filename = $files->getClientOriginalName();
@@ -153,13 +153,13 @@ class AccUserManagerController extends Controller
          File::makeDirectory($path, 0777, true, true);
          }
          $upload_success = $files->move($path, $filename);
-         // LÃƒâ€ Ã‚Â°u lÃƒÂ¡Ã‚ÂºÃ‚Â¡i hÃƒÆ’Ã‚Â¬nh ÃƒÂ¡Ã‚ÂºÃ‚Â£nh
+         // Lưu lại hình ảnh
          $data = AccUser::find($arr->id);
          if($data){
           $data->avatar = $pathname;
           $data->save();
          }        
-         //LÃƒâ€ Ã‚Â°u ÃƒÂ¡Ã‚ÂºÃ‚Â£nh lÃƒÂ¡Ã‚ÂºÃ‚Â¡i array
+         //Lưu ảnh lại array
          $arr->avatar = $pathname;
        }
        //
@@ -177,7 +177,7 @@ class AccUserManagerController extends Controller
         if(!$data){
           return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
         }
-       // LÃƒâ€ Ã‚Â°u lÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ch sÃƒÂ¡Ã‚Â»Ã‚Â­
+       // Lưu lịch sử sửa đổi
        $h = new AccHistoryAction();
        $h ->create([
          'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -210,12 +210,12 @@ class AccUserManagerController extends Controller
         $data->about = $arr->about;
         $data->active = $arr->active;
         $data->save();
-         // PhÃƒÆ’Ã‚Â¢n loÃƒÂ¡Ã‚ÂºÃ‚Â¡i SÃƒÂ¡Ã‚Â»Ã‚Â­a
+         // Phân loại Sửa
          $arr->t = $type;
          $arr->username = $data->username;
-       // LÃƒâ€ Ã‚Â°u ÃƒÂ¡Ã‚ÂºÃ‚Â£nh sÃƒÂ¡Ã‚Â»Ã‚Â­a
+       // Lưu ảnh sửa
        if($request->hasFile('files')) {
-         //XÃƒÆ’Ã‚Â³a ÃƒÂ¡Ã‚ÂºÃ‚Â£nh cÃƒâ€¦Ã‚Â©
+         //Xóa ảnh cũ
          if(File::exists(public_path($data->avatar)) && $data->avatar != 'addon/img/avatar.png'){
             File::delete(public_path($data->avatar));
          };
@@ -229,13 +229,13 @@ class AccUserManagerController extends Controller
          File::makeDirectory($path, 0777, true, true);
          }
          $upload_success = $files->move($path, $filename);
-         // LÃƒâ€ Ã‚Â°u lÃƒÂ¡Ã‚ÂºÃ‚Â¡i hÃƒÆ’Ã‚Â¬nh ÃƒÂ¡Ã‚ÂºÃ‚Â£nh
+         // Lưu lại hình ảnh
          $data = AccUser::find($arr->id);
          if($data){
           $data->avatar = $pathname;
           $data->save();
          }         
-         //LÃƒâ€ Ã‚Â°u ÃƒÂ¡Ã‚ÂºÃ‚Â£nh lÃƒÂ¡Ã‚ÂºÃ‚Â¡i array
+         //Lưu ảnh lại array
          $arr->avatar = $pathname;
        }
        //
@@ -274,7 +274,7 @@ class AccUserManagerController extends Controller
           if(!$data){
             return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
           }
-            // LÃƒâ€ Ã‚Â°u lÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ch sÃƒÂ¡Ã‚Â»Ã‚Â­
+            // Luu lich su xoa
             $h = new AccHistoryAction();
             $h ->create([
             'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -283,7 +283,7 @@ class AccUserManagerController extends Controller
             'url'  => $this->url,
             'dataz' => \json_encode($data)]);
             //
-            //XÃƒÆ’Ã‚Â³a ÃƒÂ¡Ã‚ÂºÃ‚Â£nh cÃƒâ€¦Ã‚Â©
+            //Xóa ảnh cũ
             if(File::exists(public_path($data->avatar)) && $data->avatar != 'addon/img/avatar.png'){
                File::delete(public_path($data->avatar));
             };
@@ -324,14 +324,14 @@ class AccUserManagerController extends Controller
        $rs = json_decode($request->data);
 
        $file = $request->file;
-       // Import dÃƒÂ¡Ã‚Â»Ã‚Â¯ liÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¡u
+       // Import dữ liệu
        $import = new AccUserImport;
        Excel::import($import, $file);
-       // LÃƒÂ¡Ã‚ÂºÃ‚Â¥y lÃƒÂ¡Ã‚ÂºÃ‚Â¡i dÃƒÂ¡Ã‚Â»Ã‚Â¯ liÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¡u
+       // Lấy lại dữ liệu
       
        $merged = collect($rs)->push($import->getData());
        //dump($merged);
-     // LÃƒâ€ Ã‚Â°u lÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ch sÃƒÂ¡Ã‚Â»Ã‚Â­
+     // Lưu lịch sử
      $h = new AccHistoryAction();
      $h ->create([
        'type' => $type, // Add : 2 , Edit : 3 , Delete : 4, Import : 5

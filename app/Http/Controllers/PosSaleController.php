@@ -22,11 +22,13 @@ class PosSaleController extends Controller
     public function store(Request $request): JsonResponse
     {
         try {
+            // Kiem tra quyen tao/sua chung tu POS.
             $permission = $request->session()->get('per');
             if (!$permission || (!($permission['a'] ?? false) && !($permission['e'] ?? false))) {
                 return response()->json(['status' => false, 'message' => trans('messages.you_are_not_permission')], 403);
             }
 
+            // Kiem tra du lieu dau vao.
             $request->validate([
                 'warehouse_id' => 'required|string',
                 'items' => 'required',
@@ -34,11 +36,13 @@ class PosSaleController extends Controller
                 'note' => 'nullable|string',
             ]);
 
+            // Parse danh sach hang hoa tu request.
             $items = json_decode((string) $request->input('items'), true);
             if (!is_array($items) || count($items) === 0) {
                 throw ValidationException::withMessages(['items' => trans('pos.messages.invalid_items')]);
             }
 
+            // Tao giao dich ban hang va cap nhat ton kho.
             $transaction = PosTransactionService::create('sale', [
                 'warehouse_id' => $request->input('warehouse_id'),
                 'transaction_date' => $request->input('transaction_date'),
@@ -46,6 +50,7 @@ class PosSaleController extends Controller
                 'note' => $request->input('note'),
             ], (string) Auth::id());
 
+            // Day hoa don dien tu len Viettel neu cau hinh duoc bat.
             $einvoice = $this->publishSaleInvoice($transaction, $items);
 
             return response()->json([
@@ -61,6 +66,7 @@ class PosSaleController extends Controller
 
     private function publishSaleInvoice($transaction, array $items): array
     {
+        // Bo qua neu tinh nang Viettel eInvoice chua bat.
         if (
             !$this->viettelEinvoiceService->isEnabled() ||
             !$this->viettelEinvoiceService->shouldPublishOnSale()
@@ -72,11 +78,13 @@ class PosSaleController extends Controller
         }
 
         try {
+            // Lay ten san pham theo product_id de map len hoa don.
             $products = PosProduct::query()
                 ->whereIn('id', collect($items)->pluck('product_id')->filter()->all())
                 ->get(['id', 'name'])
                 ->keyBy('id');
 
+            // Chuan hoa item theo cau truc API Viettel.
             $invoiceItems = collect($items)->map(function ($item) use ($products) {
                 $productId = (string) ($item['product_id'] ?? '');
                 $quantity = (float) ($item['quantity'] ?? 0);
@@ -91,6 +99,7 @@ class PosSaleController extends Controller
                 ];
             })->values()->all();
 
+            // Goi service publish hoa don.
             $result = $this->viettelEinvoiceService->publishSaleInvoice([
                 'transaction_code' => (string) $transaction->code,
                 'transaction_date' => (string) $transaction->transaction_date,
@@ -104,12 +113,14 @@ class PosSaleController extends Controller
                 ],
             ]);
 
+            // Ghi log thanh cong de theo doi.
             Log::info('pos.viettel_einvoice.publish_sale.success', [
                 'transaction_id' => $transaction->id,
                 'transaction_code' => $transaction->code,
                 'response' => $result['raw'] ?? [],
             ]);
 
+            // Luu tom tat trang thai hoa don vao ghi chu chung tu.
             $this->appendEinvoiceSummaryToTransaction(
                 $transaction,
                 'success',
@@ -125,6 +136,7 @@ class PosSaleController extends Controller
                 'lookup_code' => $result['lookup_code'] ?? null,
             ];
         } catch (Throwable $e) {
+            // Ghi log loi va danh dau trang thai failed.
             Log::error('pos.viettel_einvoice.publish_sale.failed', [
                 'transaction_id' => $transaction->id,
                 'transaction_code' => $transaction->code,
@@ -142,6 +154,7 @@ class PosSaleController extends Controller
 
     private function appendEinvoiceSummaryToTransaction($transaction, string $status, string $invoiceNo, string $lookupCode): void
     {
+        // Tao chuoi tom tat trang thai eInvoice de luu vao note.
         $summary = '[EINV:'.strtoupper($status);
         if ($invoiceNo !== '') {
             $summary .= '|NO:'.$invoiceNo;
@@ -151,6 +164,7 @@ class PosSaleController extends Controller
         }
         $summary .= ']';
 
+        // Noi vao note cu va gioi han do dai 500 ky tu.
         $note = trim(((string) $transaction->note).' '.$summary);
         $transaction->note = mb_substr($note, 0, 500);
         $transaction->save();

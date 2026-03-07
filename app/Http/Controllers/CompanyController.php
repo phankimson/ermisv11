@@ -120,7 +120,7 @@ class CompanyController extends Controller
        $data->active = $arr->active;
        $data->save();
 
-       // LÃƒâ€ Ã‚Â°u lÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ch sÃƒÂ¡Ã‚Â»Ã‚Â­
+       // Luu lich su sua doi
        $h = new HistoryAction();
        $h ->create([
          'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -129,7 +129,7 @@ class CompanyController extends Controller
           'url' => $this->url,
          'dataz' => \json_encode($data)]);
 
-       // LÃƒÂ¡Ã‚ÂºÃ‚Â¥y ID vÃƒÆ’Ã‚Â  vÃƒÆ’Ã‚Â  phÃƒÆ’Ã‚Â¢n loÃƒÂ¡Ã‚ÂºÃ‚Â¡i ThÃƒÆ’Ã‚Âªm
+       // Lấy ID vừa lưu để truyền lên socket
        $arr->id = $data->id;
        $arr->t = $type;
        DB::commit();
@@ -141,7 +141,7 @@ class CompanyController extends Controller
        if(!$data){
           return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
         }
-       // LÃƒâ€ Ã‚Â°u lÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ch sÃƒÂ¡Ã‚Â»Ã‚Â­
+       // Luu lich su sua doi
        $h = new HistoryAction();
        $h ->create([
          'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -174,7 +174,7 @@ class CompanyController extends Controller
       $data->level = Convert::intDefaultformat($arr->level);
       $data->active = $arr->active;
       $data->save();
-       // PhÃƒÆ’Ã‚Â¢n loÃƒÂ¡Ã‚ÂºÃ‚Â¡i SÃƒÂ¡Ã‚Â»Ã‚Â­a
+       // Phân loại Sửa
        $arr->t = $type;
        DB::commit();
        broadcast(new \App\Events\DataSend($arr));
@@ -210,7 +210,7 @@ class CompanyController extends Controller
             if(!$data){
               return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
             }
-            // LÃƒâ€ Ã‚Â°u lÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ch sÃƒÂ¡Ã‚Â»Ã‚Â­
+            // Lưu lịch sử xóa
             $h = new HistoryAction();
             $h ->create([
             'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -255,14 +255,14 @@ class CompanyController extends Controller
        $rs = json_decode($request->data);
 
        $file = $request->file;
-       // Import dÃƒÂ¡Ã‚Â»Ã‚Â¯ liÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¡u
+       // Import dữ liệu
        $import = new CompanyImport;
        Excel::import($import, $file);
-       // LÃƒÂ¡Ã‚ÂºÃ‚Â¥y lÃƒÂ¡Ã‚ÂºÃ‚Â¡i dÃƒÂ¡Ã‚Â»Ã‚Â¯ liÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¡u      
+       // Lấy lại dữ liệu      
      
        $merged = collect($rs)->push($import->getData());
        //dump($merged);
-     // LÃƒâ€ Ã‚Â°u lÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ch sÃƒÂ¡Ã‚Â»Ã‚Â­
+     // Lưu lịch sử
      $h = new HistoryAction();
      $h ->create([
        'type' => $type, // Add : 2 , Edit : 3 , Delete : 4, Import : 5

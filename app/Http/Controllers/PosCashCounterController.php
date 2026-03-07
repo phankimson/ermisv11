@@ -13,11 +13,13 @@ class PosCashCounterController extends Controller
     public function store(Request $request): JsonResponse
     {
         try {
+            // Kiem tra quyen tao/sua chung tu POS.
             $permission = $request->session()->get('per');
             if (!$permission || (!($permission['a'] ?? false) && !($permission['e'] ?? false))) {
                 return response()->json(['status' => false, 'message' => trans('messages.you_are_not_permission')], 403);
             }
 
+            // Kiem tra du lieu dau vao cho chung tu thu/chi.
             $request->validate([
                 'cash_type' => 'required|in:cash_receipt,cash_payment',
                 'total_amount' => 'required|numeric|min:0.01',
@@ -25,6 +27,7 @@ class PosCashCounterController extends Controller
                 'note' => 'nullable|string',
             ]);
 
+            // Tao giao dich thu/chi tai quay.
             $transaction = PosTransactionService::create((string) $request->input('cash_type'), [
                 'transaction_date' => $request->input('transaction_date'),
                 'total_amount' => (float) $request->input('total_amount'),

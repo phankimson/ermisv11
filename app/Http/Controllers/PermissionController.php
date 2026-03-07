@@ -120,7 +120,7 @@ class PermissionController extends Controller
                     $result->menu_id = $d->menu;
                     $result->permission = $d->permission;
                     $result->save();
-                    // LÆ°u lá»‹ch sá»­
+                    // Luu lich su them moi va sua doi
                     $h = new HistoryAction();
                     $h ->create([
                       'type' => $type, // Add : 1 , Edit : 2 , Delete : 3

@@ -113,7 +113,7 @@ class HistoryActionController extends Controller
         $data->created_at = $arr->created_at;
         $data->save();
 
-        // LÃƒâ€ Ã‚Â°u lÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ch sÃƒÂ¡Ã‚Â»Ã‚Â­
+        // Lay data vừa lưu để lưu lịch sử thêm mới
         //$h = new HistoryAction();
         //$h ->create([
         //  'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -121,7 +121,7 @@ class HistoryActionController extends Controller
         //  'menu' => $this->menu->id,
         //  'dataz' => \json_encode($data)]);
         //
-        // LÃƒÂ¡Ã‚ÂºÃ‚Â¥y ID vÃƒÆ’Ã‚Â  vÃƒÆ’Ã‚Â  phÃƒÆ’Ã‚Â¢n loÃƒÂ¡Ã‚ÂºÃ‚Â¡i ThÃƒÆ’Ã‚Âªm
+        // lay ID vua luu để truyền lên socket
         $arr->id = $data->id;
         $arr->t = $type;
         DB::commit();  
@@ -133,7 +133,7 @@ class HistoryActionController extends Controller
         if(!$data){
           return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
         }
-        // LÃƒâ€ Ã‚Â°u lÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ch sÃƒÂ¡Ã‚Â»Ã‚Â­
+        // Luu lich su sua doi
         //$h = new HistoryAction();
         //$h ->create([
         //  'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -148,7 +148,7 @@ class HistoryActionController extends Controller
         $data->dataz = $arr->dataz;
         $data->created_at = $arr->created_at;
         $data->save();
-        // PhÃƒÆ’Ã‚Â¢n loÃƒÂ¡Ã‚ÂºÃ‚Â¡i SÃƒÂ¡Ã‚Â»Ã‚Â­a
+        // Phan loai sua doi de truyen len socket
         $arr->t = $type;
         DB::commit();  
         broadcast(new \App\Events\DataSend($arr));
@@ -178,7 +178,7 @@ class HistoryActionController extends Controller
              if(!$data){
                 return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
               }
-             // LÃƒâ€ Ã‚Â°u lÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ch sÃƒÂ¡Ã‚Â»Ã‚Â­
+             // Luu lich su xoa
              //$h = new HistoryAction();
              //$h ->create([
                //'type' => 4, // Add : 2 , Edit : 3 , Delete : 4
@@ -221,14 +221,14 @@ class HistoryActionController extends Controller
         $rs = json_decode($request->data);
 
         $file = $request->file;
-        // Import dÃƒÂ¡Ã‚Â»Ã‚Â¯ liÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¡u
+        // Import du lieu
         $import = new HistoryActionImport;
         Excel::import($import, $file);
-        // LÃƒÂ¡Ã‚ÂºÃ‚Â¥y lÃƒÂ¡Ã‚ÂºÃ‚Â¡i dÃƒÂ¡Ã‚Â»Ã‚Â¯ liÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¡u
+        // Lay lai du lieu
         
         $merged = collect($rs)->push($import->getData());
         //dump($merged);
-      // LÃƒâ€ Ã‚Â°u lÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ch sÃƒÂ¡Ã‚Â»Ã‚Â­
+      // Luu lich su import
       //  $type = 5;
       //$h = new HistoryAction();
       //$h ->create([

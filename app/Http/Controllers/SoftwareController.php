@@ -107,7 +107,7 @@ class SoftwareController extends Controller
        $data->active = $arr->active;
        $data->save();
 
-       // LÃƒâ€ Ã‚Â°u lÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ch sÃƒÂ¡Ã‚Â»Ã‚Â­
+       // Luu lich su them moi
        $h = new HistoryAction();
        $h ->create([
          'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -116,13 +116,13 @@ class SoftwareController extends Controller
          'url' => $this->url,
          'dataz' => \json_encode($data)]);
 
-       // LÃƒÂ¡Ã‚ÂºÃ‚Â¥y ID vÃƒÆ’Ã‚Â  vÃƒÆ’Ã‚Â  phÃƒÆ’Ã‚Â¢n loÃƒÂ¡Ã‚ÂºÃ‚Â¡i ThÃƒÆ’Ã‚Âªm
+       // Lay id vua luu de truyen len socket
        $arr->id = $data->id;
        $arr->t = $type;
-       //LÃƒâ€ Ã‚Â°u lÃƒÂ¡Ã‚ÂºÃ‚Â¡i pass
+       //Luu lai pass
        $arr->password = $data->password;
 
-       // LÃƒâ€ Ã‚Â°u ÃƒÂ¡Ã‚ÂºÃ‚Â£nh thÃƒÆ’Ã‚Âªm
+       // Luu anh them
        if($request->hasFile('files')) {
          $files = $request->file('files');
          $filename = $files->getClientOriginalName();
@@ -133,13 +133,13 @@ class SoftwareController extends Controller
          File::makeDirectory($path, 0777, true, true);
          }
          $upload_success = $files->move($path, $filename);
-         // LÃƒâ€ Ã‚Â°u lÃƒÂ¡Ã‚ÂºÃ‚Â¡i hÃƒÆ’Ã‚Â¬nh ÃƒÂ¡Ã‚ÂºÃ‚Â£nh
+         // Luu lai hinh anh
          $data = Software::find($arr->id);
          if($data){
           $data->image = $pathname;
           $data->save();
          }
-         //LÃƒâ€ Ã‚Â°u ÃƒÂ¡Ã‚ÂºÃ‚Â£nh lÃƒÂ¡Ã‚ÂºÃ‚Â¡i array
+         //Luu hinh anh lai array
          $arr->image = $pathname;
        }
        //
@@ -152,7 +152,7 @@ class SoftwareController extends Controller
        if(!$data){
         return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
       }
-       // LÃƒâ€ Ã‚Â°u lÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ch sÃƒÂ¡Ã‚Â»Ã‚Â­
+       // Luu lich su sua doi
        $h = new HistoryAction();
        $h ->create([
          'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -174,14 +174,14 @@ class SoftwareController extends Controller
        $data->note = $arr->note;
        $data->active = $arr->active;
        $data->save();
-       //LÃƒâ€ Ã‚Â°u lÃƒÂ¡Ã‚ÂºÃ‚Â¡i pass
+       //Luu lai pass
        $arr->password_temp = $data->password_temp;
-       // PhÃƒÆ’Ã‚Â¢n loÃƒÂ¡Ã‚ÂºÃ‚Â¡i SÃƒÂ¡Ã‚Â»Ã‚Â­a
+       // Phan loai sua doi gi de truyen len socket
        $arr->t = $type;
 
-       // LÃƒâ€ Ã‚Â°u ÃƒÂ¡Ã‚ÂºÃ‚Â£nh sÃƒÂ¡Ã‚Â»Ã‚Â­a
+       // Luu anh sua
        if($request->hasFile('files')) {
-         //XÃƒÆ’Ã‚Â³a ÃƒÂ¡Ã‚ÂºÃ‚Â£nh cÃƒâ€¦Ã‚Â©
+         //Xoa anh cu
          if($data->image && File::exists(public_path($data->image))){
             File::delete(public_path($data->image));
          };
@@ -195,13 +195,13 @@ class SoftwareController extends Controller
          File::makeDirectory($path, 0777, true, true);
          }
          $upload_success = $files->move($path, $filename);
-         // LÃƒâ€ Ã‚Â°u lÃƒÂ¡Ã‚ÂºÃ‚Â¡i hÃƒÆ’Ã‚Â¬nh ÃƒÂ¡Ã‚ÂºÃ‚Â£nh
+         // Luu lai hinh anh
          $data = Software::find($arr->id);
          if($data){
           $data->image = $pathname;
           $data->save();
          }         
-         //LÃƒâ€ Ã‚Â°u ÃƒÂ¡Ã‚ÂºÃ‚Â£nh lÃƒÂ¡Ã‚ÂºÃ‚Â¡i array
+         //Luu hinh anh lai array
          $arr->image = $pathname;
        }
        DB::commit(); 
@@ -235,7 +235,7 @@ class SoftwareController extends Controller
             if(!$data){
               return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
             }
-            // LÃƒâ€ Ã‚Â°u lÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ch sÃƒÂ¡Ã‚Â»Ã‚Â­
+            // Luu lich su xoa
             $h = new HistoryAction();
             $h ->create([
             'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -245,7 +245,7 @@ class SoftwareController extends Controller
             'dataz' => \json_encode($data)]);
             //
 
-            //XÃƒÆ’Ã‚Â³a ÃƒÂ¡Ã‚ÂºÃ‚Â£nh cÃƒâ€¦Ã‚Â©
+            //Xoa anh cu
             if($data->image && File::exists(public_path($data->image))){
                File::delete(public_path($data->image));
             };
@@ -286,14 +286,14 @@ class SoftwareController extends Controller
        $rs = json_decode($request->data);
 
        $file = $request->file;
-       // Import dÃƒÂ¡Ã‚Â»Ã‚Â¯ liÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¡u
+       // Import du lieu
        $import = new SoftwareImport;
        Excel::import($import, $file);
-       // LÃƒÂ¡Ã‚ÂºÃ‚Â¥y lÃƒÂ¡Ã‚ÂºÃ‚Â¡i dÃƒÂ¡Ã‚Â»Ã‚Â¯ liÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¡u
+       // Lay lai du lieu
 
        $merged = collect($rs)->push($import->getData());
        //dump($merged);
-     // LÃƒâ€ Ã‚Â°u lÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ch sÃƒÂ¡Ã‚Â»Ã‚Â­
+     // Luu lich su import
      $h = new HistoryAction();
      $h ->create([
        'type' => $type, // Add : 2 , Edit : 3 , Delete : 4, Import : 5

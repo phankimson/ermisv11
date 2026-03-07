@@ -117,7 +117,7 @@ class LicenseController extends Controller
        $data->active = $arr->active;
        $data->save();
 
-       // LÃƒâ€ Ã‚Â°u lÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ch sÃƒÂ¡Ã‚Â»Ã‚Â­
+       // Luu lich su them moi
        $h = new HistoryAction();
        $h ->create([
          'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -126,7 +126,7 @@ class LicenseController extends Controller
          'url' => $this->url,
          'dataz' => \json_encode($data)]);
 
-       // LÃƒÂ¡Ã‚ÂºÃ‚Â¥y ID vÃƒÆ’Ã‚Â  vÃƒÆ’Ã‚Â  phÃƒÆ’Ã‚Â¢n loÃƒÂ¡Ã‚ÂºÃ‚Â¡i ThÃƒÆ’Ã‚Âªm
+       // Lay ID vừa luu de truyền lên socket
        $arr->id = $data->id;
        $arr->t = $type;
        DB::commit();  
@@ -138,7 +138,7 @@ class LicenseController extends Controller
        if(!$data){
           return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
         }
-       // LÃƒâ€ Ã‚Â°u lÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ch sÃƒÂ¡Ã‚Â»Ã‚Â­
+       // Luu lich su sua doi
        $h = new HistoryAction();
        $h ->create([
          'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -154,7 +154,7 @@ class LicenseController extends Controller
         $data->software_use = $arr->software_use;
         $data->active = $arr->active;
         $data->save();
-       // PhÃƒÆ’Ã‚Â¢n loÃƒÂ¡Ã‚ÂºÃ‚Â¡i SÃƒÂ¡Ã‚Â»Ã‚Â­a
+       // Phan loai sua doi de truyen len socket
        $arr->t = $type;
        DB::commit();  
        broadcast(new \App\Events\DataSend($arr));
@@ -187,7 +187,7 @@ class LicenseController extends Controller
             if(!$data){
               return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
             }
-            // LÃƒâ€ Ã‚Â°u lÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ch sÃƒÂ¡Ã‚Â»Ã‚Â­
+            // Luu lich su xoa
             $h = new HistoryAction();
             $h ->create([
             'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -232,14 +232,14 @@ class LicenseController extends Controller
        $rs = json_decode($request->data);
 
        $file = $request->file;
-       // Import dÃƒÂ¡Ã‚Â»Ã‚Â¯ liÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¡u
+       // Import du lieu
        $import = new LicenseImport;
        Excel::import($import, $file);
-       // LÃƒÂ¡Ã‚ÂºÃ‚Â¥y lÃƒÂ¡Ã‚ÂºÃ‚Â¡i dÃƒÂ¡Ã‚Â»Ã‚Â¯ liÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¡u
+       // Lay lai du lieu
       
        $merged = collect($rs)->push($import->getData());
        //dump($merged);
-     // LÃƒâ€ Ã‚Â°u lÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ch sÃƒÂ¡Ã‚Â»Ã‚Â­
+     // Luu lich su import
      $h = new HistoryAction();
      $h ->create([
        'type' => $type, // Add : 2 , Edit : 3 , Delete : 4, Import : 5

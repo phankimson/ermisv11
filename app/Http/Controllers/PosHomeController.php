@@ -10,6 +10,7 @@ class PosHomeController extends Controller
 {
     public function show()
     {
+        // Lay danh sach san pham dang hoat dong de load len man hinh POS.
         $products = PosProduct::get_active_list()
             ->map(function ($product) {
                 return [
@@ -20,6 +21,7 @@ class PosHomeController extends Controller
             })
             ->values();
 
+        // Lay danh sach kho dang hoat dong de nguoi dung chon khi lap chung tu.
         $warehouses = PosWarehouse::get_active_list()
             ->map(function ($warehouse) {
                 return [
@@ -30,6 +32,7 @@ class PosHomeController extends Controller
             })
             ->values();
 
+        // Truyen du lieu boot cho giao dien POS.
         return view('pos.index', [
             'posBoot' => [
                 'products' => $products,

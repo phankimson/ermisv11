@@ -70,7 +70,7 @@ class NotesController extends Controller
                   $data->active = $arr->active=='on'? 1 : 0;
                   $data->user_id = Auth::id();
                   $data->save();
-                  // LÆ°u lá»‹ch sá»­
+                  // Luu lich su them moi
                   $h = new HistoryAction();
                   $h ->create([
                     'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -79,7 +79,7 @@ class NotesController extends Controller
                     'url' => $this->url,
                     'dataz' => \json_encode($data)]);
                   //
-                  // Láº¥y ID vÃ  vÃ  phÃ¢n loáº¡i ThÃªm
+                  // Lay ID vừa luu de truyền lên socket
                   $arr->id = $data->id;
                   $arr->type = $type;
                   DB::commit();  
@@ -91,7 +91,7 @@ class NotesController extends Controller
                   if(!$data){
                     return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
                   }
-                  // LÆ°u lá»‹ch sá»­
+                  // Luu lich su sua doi
                   $h = new HistoryAction();
                   $h ->create([
                     'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -104,7 +104,7 @@ class NotesController extends Controller
                   $data->message = $arr->message;
                   $data->active =  $arr->active=='on'? 1 : 0;
                   $data->save();
-                  // PhÃ¢n loáº¡i Sá»­a
+                  // Phan loai sua doi de truyen len socket
                   $arr->type = $type;
                   DB::commit();  
                   broadcast(new \App\Events\DataSend($arr));
@@ -133,7 +133,7 @@ class NotesController extends Controller
                  if(!$data){
                     return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
                   }
-                 // LÆ°u lá»‹ch sá»­
+                 // Luu lich su xoa
                  $h = new HistoryAction();
                  $h ->create([
                    'type' => $type, // Add : 2 , Edit : 3 , Delete : 4

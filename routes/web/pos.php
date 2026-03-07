@@ -1,5 +1,5 @@
 <?php
-// POS
+// Phan he POS
 Route::group([
   'prefix'=>'pos',
   'as' => 'pos.'
