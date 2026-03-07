@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
-use App\Http\Model\AccHistoryAction;
 use App\Http\Model\Menu;
 use App\Http\Model\AccAccountedAuto;
 use App\Http\Model\AccAccountedAutoDetail;
@@ -21,9 +20,11 @@ use App\Classes\Convert;
 use Maatwebsite\Excel\Facades\Excel;
 use Exception;
 use Illuminate\Support\Facades\DB;
+use App\Http\Traits\AccHistoryTraits;
 
 class AccAccountedAutoController extends Controller
 {
+  use AccHistoryTraits;
   protected $url;
   protected $key;
   protected $menu;
@@ -194,15 +195,7 @@ class AccAccountedAutoController extends Controller
        }
        ///////////////////
 
-       // Luu lich su thao tac
-       $h = new AccHistoryAction();
-       $h ->create([
-         'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-         'user' => Auth::id(),
-         'menu' => $this->menu->id,
-         'url'  => $this->url,
-         'dataz' => \json_encode($data)]);
-
+       $this->create_history($type, Auth::id(), $this->menu->id, $this->url, $data);
 
          // Lay lai gia tri hot
          $hot_add = AccAccountedAutoDetail::get_accounted_auto($data->id);
@@ -220,15 +213,9 @@ class AccAccountedAutoController extends Controller
        if(!$data){
          return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
        }
-       // Luu lich su thao tac
-       $h = new AccHistoryAction();
-       $h ->create([
-         'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-         'user' => Auth::id(),
-         'menu' => $this->menu->id,
-         'url'  => $this->url,
-         'dataz' => \json_encode($data)]);
-      //
+       
+       $this->create_history($type, Auth::id(), $this->menu->id, $this->url, $data);
+
       $data->profession = $arr->profession;
       $data->code = $arr->code;
       $data->name = $arr->name;
@@ -322,16 +309,9 @@ class AccAccountedAutoController extends Controller
               $id_destroy = $dom_all->pluck('id');
               AccAccountedAutoDetail::destroy($id_destroy);
             }
-            ///////////////////
+            
+            $this->create_history($type, Auth::id(), $this->menu->id, $this->url, $data);
 
-            $h = new AccHistoryAction();
-            $h ->create([
-            'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
-            'user' => Auth::id(),
-            'menu' => $this->menu->id,
-            'url'  => $this->url,
-            'dataz' => \json_encode($data)]);
-            //
             $data->delete();
             DB::connection(env('CONNECTION_DB_ACC'))->commit();
             broadcast(new \App\Events\DataSend($arr));
@@ -376,15 +356,10 @@ class AccAccountedAutoController extends Controller
      
        $merged = collect($rs)->push($import->getData());
        //dump($merged);
-     // Luu lich su thao tac
-     $h = new AccHistoryAction();
-     $h ->create([
-       'type' => $type, // Add : 2 , Edit : 3 , Delete : 4, Import : 5
-       'user' => Auth::id(),
-       'menu' => $this->menu->id,
-       'url'  => $this->url,
-       'dataz' => \json_encode($merged)]);
-     //
+
+      // Luu lich su thao tac
+      $this->create_history($type, Auth::id(), $this->menu->id, $this->url, $merged);
+
      //Storage::delete($savePath.$filename);
      DB::connection(env('CONNECTION_DB_ACC'))->commit();
      broadcast(new \App\Events\DataSendCollection($merged));

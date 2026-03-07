@@ -44,7 +44,7 @@ class AccBankPaymentGeneralController extends Controller
   public function __construct(Request $request)
  {
      $this->url =  $request->segment(3);
-     $this->group = 4; // 4 NhÃ³m chi ngÃ¢n hÃ ng
+     $this->group = 4; // 4 Nhom chi ngan hang
      $this->key = "bank-payment-general";
      $this->key_voucher = "bank-payment-voucher";
      $this->menu = Menu::where('code', '=', $this->key)->first();
@@ -235,7 +235,7 @@ class AccBankPaymentGeneralController extends Controller
     $type = 10;
     try{
       $req = json_decode($request->data);
-      // TÃ¬m voucher
+      // Tim voucher
       $v = AccNumberVoucher::get_menu($this->menu->id); 
       $date_obj = Convert::dateformatRange($v->format,$req);
       $data = collect(BankGeneralResource::collection(AccGeneral::get_data_load_between($req->type,$date_obj['start_date'],$date_obj['end_date'])));

@@ -40,7 +40,7 @@ class AccEntryGeneralVoucherController extends Controller
   public function __construct(Request $request)
  {
      $this->url =  $request->segment(3);
-     $this->group = 5; // NhÃ³m bÃºt toÃ¡n tá»•ng há»£p
+     $this->group = 5; // Nhom tong hop
      $this->key = "entry-general-voucher";
      $this->menu = Menu::where('code', '=', $this->key)->first();
      $this->print = 'TH%';
@@ -109,7 +109,7 @@ class AccEntryGeneralVoucherController extends Controller
             $action = 'add';
             $general = new AccGeneral();
             $general->user = $user->id;
-            // LÆ°u sá»‘ nháº£y
+            // Lưu số nhảy
               $v = $this->saveNumberVoucher($this->menu,$arr);
           }else{
             $check_permission = false;
@@ -129,7 +129,7 @@ class AccEntryGeneralVoucherController extends Controller
           $general->group = $this->group;
           $general->save();
           
-          // Tham chiáº¿u / Reference
+          // Tham chiếu / Reference
            $this->saveReference($arr->reference_by,$general->id);
 
 
@@ -148,16 +148,16 @@ class AccEntryGeneralVoucherController extends Controller
              $detail->general_id = $general->id;
              $detail->description = $d->description;
              $detail->currency = $arr->currency;
-             $detail->debit = $d->debit->value;  // Äá»•i tá»« id value dáº¡ng read
-             $detail->credit = $d->credit->value;  // Äá»•i tá»« id value dáº¡ng read
+             $detail->debit = $d->debit->value;  // Doi tu id value dang read
+             $detail->credit = $d->credit->value;  // Doi tu id value dang read
              $detail->amount = $d->amount;
              $detail->rate = $d->rate;
              $detail->amount_rate = $d->amount * $d->rate;
-             $detail->accounted_fast = $d->accounted_fast->value;  // Äá»•i tá»« id value dáº¡ng read
-             $detail->subject_id_debit = $d->subject_debit->value;  // Äá»•i tá»« id value dáº¡ng read   
-             $detail->subject_name_debit = $d->subject_debit->text;  // Äá»•i tá»« id value dáº¡ng read   
-             $detail->subject_id_credit = $d->subject_credit->value;  // Äá»•i tá»« id value dáº¡ng read
-             $detail->subject_name_credit = $d->subject_credit->text;  // Äá»•i tá»« id value dáº¡ng read                  
+             $detail->accounted_fast = $d->accounted_fast->value;  // Doi tu id value dang read
+             $detail->subject_id_debit = $d->subject_debit->value;  // Doi tu id value dang read   
+             $detail->subject_name_debit = $d->subject_debit->text;  // Doi tu id value dang read   
+             $detail->subject_id_credit = $d->subject_credit->value;  // Doi tu id value dang read
+             $detail->subject_name_credit = $d->subject_credit->text;  // Doi tu id value dang read                  
              $detail->active = 1;
              $detail->status = 1;
              $detail->save();
@@ -167,15 +167,15 @@ class AccEntryGeneralVoucherController extends Controller
             
            }
 
-           // XÃ³a dÃ²ng chi tiáº¿t
+           // Xoa dòng chi tiết
            AccDetail::get_detail_whereNotIn_delete($general->id,$removeId);
 
            $check_invoice = false;
            $invoice = '';
-           // LÆ°u VAT
+           // Lưu VAT
            foreach($arr->tax as $l => $x){
              $tax = collect([]);
-                // Kiá»ƒm tra cÃ³ trÃ¹ng MST, sá»‘ hÃ³a Ä‘Æ¡n 
+                // Kiểm tra có trùng MST, số hóa đơn 
                 $arr_check = array(
                   ['invoice', '=',$x->invoice],
                   ['invoice_symbol', '=',$x->invoice_symbol],
@@ -190,7 +190,7 @@ class AccEntryGeneralVoucherController extends Controller
                     break;
                 }
                 // End
-                // Update máº«u, kÃ½ tá»± hÃ³a Ä‘Æ¡n
+                // Update mẫu, ký tự hóa đơn
                 $obj = AccObject::find($x->subject_id);
                 if($obj){
                   $obj->invoice_form = $x->invoice_form;
@@ -220,8 +220,8 @@ class AccEntryGeneralVoucherController extends Controller
              $tax->tax_code = $x->tax_code;
              $tax->address = $x->address;
              $tax->description = $x->description;
-             $tax->vat_account = $x->vat_account->value;// Äá»•i tá»« id value dáº¡ng read
-             $tax->vat_type = $x->vat_type->value;// Äá»•i tá»« id value dáº¡ng read
+             $tax->vat_account = $x->vat_account->value;// Đổi từ id value dạng read
+             $tax->vat_type = $x->vat_type->value;// Đổi từ id value dạng read
              $tax->amount = $x->amount;
              $tax->tax = $x->tax;
              $tax->total_amount = $total_amount;
@@ -233,13 +233,13 @@ class AccEntryGeneralVoucherController extends Controller
              array_push($removeId_v,$tax->id);
              $arr->tax[$l]->id = $tax->id;
            }
-           // XÃ³a dÃ²ng chi tiáº¿t Vat
+           // Xóa dòng chi tiết Vat
            AccVatDetail::get_detail_whereNotIn_delete($general->id,$removeId_v);
            
-           // LÆ°u file
+           // Lưu file
             $this->saveFile($request,$general->id,$this->path);  
 
-           // LÆ°u lá»‹ch sá»­
+           // Lưu lịch sử
            $h = new AccHistoryAction();
            $h ->create([
            'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -307,7 +307,7 @@ class AccEntryGeneralVoucherController extends Controller
         //$rs = json_decode($request->data);
   
         $file = $request->file;
-        // Äá»•i dá»¯ liá»‡u Excel sang collect
+        // Đổi dữ liệu Excel sang collect
         config(['excel.imports.read_only' => false]);
         $data = new AccEntryGeneralImport($this->menu);
         Excel::import($data , $file);

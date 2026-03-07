@@ -174,23 +174,23 @@ class AccBankReceiptsVoucherController extends Controller
              $detail->general_id = $general->id;
              $detail->description = $d->description;
              $detail->currency = $arr->currency;
-             $detail->debit = $d->debit->value;  // Äá»•i tá»« id value dáº¡ng read
-             $detail->credit = $d->credit->value;  // Äá»•i tá»« id value dáº¡ng read
+             $detail->debit = $d->debit->value;  // Doi tu id value dang read
+             $detail->credit = $d->credit->value;  // Doi tu id value dang read
              $detail->amount = $d->amount;
              $detail->rate = $d->rate;
              $detail->amount_rate = $d->amount * $d->rate;
-             $detail->accounted_fast = $d->accounted_fast->value;  // Äá»•i tá»« id value dáº¡ng read
-             $detail->department = $d->department->value; // Äá»•i tá»« id value dáº¡ng read
+             $detail->accounted_fast = $d->accounted_fast->value;  // Doi tu id value dang read
+             $detail->department = $d->department->value; // Doi tu id value dang read
              $detail->bank_account_debit = $arr->bank_account; 
-             $detail->case_code = $d->case_code->value;  // Äá»•i tá»« id value dáº¡ng read
-             $detail->cost_code = $d->cost_code->value;  // Äá»•i tá»« id value dáº¡ng read
-             $detail->statistical_code = $d->statistical_code->value;  // Äá»•i tá»« id value dáº¡ng read
-             $detail->work_code = $d->work_code->value;  // Äá»•i tá»« id value dáº¡ng read
+             $detail->case_code = $d->case_code->value;  // Doi tu id value dang read
+             $detail->cost_code = $d->cost_code->value;  // Doi tu id value dang read
+             $detail->statistical_code = $d->statistical_code->value;  // Doi tu id value dang read
+             $detail->work_code = $d->work_code->value;  // Doi tu id value dang read
              $detail->lot_number = $d->lot_number;
              $detail->contract = $d->contract;
              $detail->order = $d->order;
-             $detail->subject_id_credit = $d->subject_code->value;// Äá»•i tá»« id value dáº¡ng read
-             $detail->subject_name_credit = $d->subject_code->text;// Äá»•i tá»« name text dáº¡ng read
+             $detail->subject_id_credit = $d->subject_code->value;// Doi tu id value dang read
+             $detail->subject_name_credit = $d->subject_code->text;// Doi tu name text dang read
              $detail->active = 1;
              $detail->status = 1;
              $detail->save();
@@ -216,7 +216,7 @@ class AccBankReceiptsVoucherController extends Controller
                // End
            
                // Luu so ton tien ben Co
-               if(substr($d->credit->text,0,3) === ('111' ||  '113')){  
+               if(substr($d->credit->text,0,3) === '111' || substr($d->credit->text,0,3) === '113'){  
                  $balance = $this->reduceCurrency($d->credit->value,$arr->currency,$d->amount,$d->rate);               
                 //  $balance = AccCurrencyCheck::get_type_first($d->credit->value,$arr->currency,null);
                 //  if($balance){

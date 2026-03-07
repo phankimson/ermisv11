@@ -45,7 +45,7 @@ class AccPurchaseGeneralController extends Controller
   public function __construct(Request $request)
  {
      $this->url =  $request->segment(3);
-     $this->group = 9; // 9 NhÃ³m mua hÃ ng
+     $this->group = 9; // 9 Nhom mua hang
      $this->key = "purchase-general";
      $this->key_voucher = "purchase-voucher";
      $this->menu = Menu::where('code', '=', $this->key)->first();

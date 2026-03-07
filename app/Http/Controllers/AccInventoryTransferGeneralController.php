@@ -44,7 +44,7 @@ class AccInventoryTransferGeneralController extends Controller
   public function __construct(Request $request)
  {
      $this->url =  $request->segment(3);
-     $this->group = 8; // 8 NhÃ³m chuyá»ƒn kho
+     $this->group = 8; // 8 Nhom chuyen kho
      $this->key = "inventory-transfer-general";
      $this->key_voucher = "inventory-transfer-voucher";
      $this->menu = Menu::where('code', '=', $this->key)->first();

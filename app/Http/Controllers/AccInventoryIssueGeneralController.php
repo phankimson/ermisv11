@@ -44,7 +44,7 @@ class AccInventoryIssueGeneralController extends Controller
   public function __construct(Request $request)
  {
      $this->url =  $request->segment(3);
-     $this->group = 6; // 6 NhÃ³m xuáº¥t kho
+     $this->group = 6; // 6 Nhom chung tu xuat kho
      $this->key = "inventory-issue-general";
      $this->key_voucher = "inventory-issue-voucher";
      $this->menu = Menu::where('code', '=', $this->key)->first();

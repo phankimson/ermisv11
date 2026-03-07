@@ -155,7 +155,7 @@ class AccPeriodController extends Controller
        }else{
          $type = 2;
          $data = new AccPeriod();
-         $data->name = "KhÃƒÆ’Ã‚Â³a kÃƒÂ¡Ã‚Â»Ã‚Â³ ".$arr->date;
+         $data->name = "Khóa kỳ ".$arr->date;
          $data->name_en = "Lock period ".$arr->date;
          $data->date = $formatMonth;
          $data->active = 1;
