@@ -161,8 +161,8 @@ class AccInventoryTransferVoucherController extends Controller
              $detail->general_id = $general->id;
              $detail->description = $d->item_code->text;
              $detail->currency = $arr->currency;
-             $detail->debit = $d->debit->value;  // Äá»•i tá»« id value dáº¡ng read
-             $detail->credit = $d->credit->value;  // Äá»•i tá»« id value dáº¡ng read
+             $detail->debit = $d->debit->value;  // Doi tu id value dang read
+             $detail->credit = $d->credit->value;  // Doi tu id value dang read
              $detail->amount = $d->amount;
              $detail->rate = $d->rate;
              $detail->amount_rate = $d->amount * $d->rate;
@@ -172,7 +172,7 @@ class AccInventoryTransferVoucherController extends Controller
        
              array_push($removeId,$detail->id);
              $arr->detail[$k]->id = $detail->id;   
-             // LÆ°u kho
+             // Luu kho
              $item = explode("-", $d->item_code->text);
              $inventory->general_id = $general->id;
              $inventory->detail_id = $detail->id;

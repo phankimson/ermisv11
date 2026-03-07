@@ -115,7 +115,7 @@ class AccPurchaseVoucherController extends Controller
                 $check_permission = false;
           }
 
-          // Láº¥y menu id Phiáº¿u thu & BÃ¡o ná»£
+          // Lay menu id phieu thu & Bao no
             if($arr->crit_type->obj->payment_method == "1" && $arr->crit_type->obj->payment == "1"){
               $menu_payment = Menu::where('code', '=', $this->key_cash)->first();  
               $arr_payment = (object) ['accounting_date' => $arr->accounting_date_TM,

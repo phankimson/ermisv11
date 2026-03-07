@@ -146,12 +146,12 @@ class AccAccountNatureController extends Controller
        $data->active = $arr->active;
        $data->save();
 
-       // Lưu mã code tự tăng
+       // Luu ma code tu dong tang
        $ir = AccNumberCode::get_code($this->key);
        $ir->number = $ir->number + 1;
        $ir->save();
 
-       // Lưu lịch sử
+       // Luu lich su them moi
        $h = new AccHistoryAction();
        $h ->create([
          'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -160,7 +160,7 @@ class AccAccountNatureController extends Controller
          'url'  => $this->url,
          'dataz' => \json_encode($data)]);
 
-       // Lấy ID và phân loại Thêm
+       // Lay ID va phan loai them moi de truyen len socket
        $arr->id = $data->id;
        $arr->t = $type;
        DB::connection(env('CONNECTION_DB_ACC'))->commit();
@@ -187,7 +187,7 @@ class AccAccountNatureController extends Controller
       $data->name_en = $arr->name_en;
       $data->active = $arr->active;
       $data->save();
-       // Phân loại Sửa
+       // Phan loai sua
        $arr->t = $type;
        DB::connection(env('CONNECTION_DB_ACC'))->commit();
        broadcast(new \App\Events\DataSend($arr));
@@ -220,7 +220,7 @@ class AccAccountNatureController extends Controller
             if(!$data){
             return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
           }
-            // Lưu lịch sử
+            // Luu lich su
             $h = new AccHistoryAction();
             $h ->create([
             'type' => $type, // Add : 2 , Edit : 3 , Delete : 4
@@ -265,14 +265,14 @@ class AccAccountNatureController extends Controller
        $rs = json_decode($request->data);
 
        $file = $request->file;
-       // Import dữ liệu
+       // Import du lieu
        $import = new AccAccountNatureImport;
        Excel::import($import, $file);
-       // Lấy lại dữ liệu
+       // Lay lai du lieu
       
        $merged = collect($rs)->push($import->getData());
        //dump($merged);
-     // Lưu lịch sử
+     // Luu lich su
      $h = new AccHistoryAction();
      $h ->create([
        'type' => $type, // Add : 2 , Edit : 3 , Delete : 4, Import : 5

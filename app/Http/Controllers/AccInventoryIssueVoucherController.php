@@ -183,7 +183,7 @@ class AccInventoryIssueVoucherController extends Controller
        
              array_push($removeId,$detail->id);
              $arr->detail[$k]->id = $detail->id;   
-             // LÆ°u kho
+             // Luu chi tiet xuat kho
              $item = explode("-", $d->item_code->text);
              $inventory->general_id = $general->id;
              $inventory->detail_id = $detail->id;

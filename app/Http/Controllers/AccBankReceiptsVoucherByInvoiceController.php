@@ -117,7 +117,7 @@ class AccBankReceiptsVoucherByInvoiceController extends Controller
             $action = 'add';
             $general = new AccGeneral();
             $general->user = $user->id;
-            // LÆ°u sá»‘ nháº£y
+            // Luu so nhay
              $v = $this->saveNumberVoucher($this->menu,$arr);
           }else{
               $check_permission = false;

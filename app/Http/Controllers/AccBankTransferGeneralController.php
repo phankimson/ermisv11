@@ -364,7 +364,7 @@ class AccBankTransferGeneralController extends Controller
       $rs = json_decode($request->data);
       $menu = Menu::where('code', '=', $this->key_voucher)->first();
       $file = $request->file;
-      // Import dá»¯ liá»‡u
+      // Import du lieu
       $import = new AccBankTransferImport($menu->id,$this->group);
       Excel::import($import, $file);
       // Lay lai du lieu

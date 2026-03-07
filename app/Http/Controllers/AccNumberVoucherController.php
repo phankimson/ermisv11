@@ -188,7 +188,7 @@ class AccNumberVoucherController extends Controller
       $data->change_voucher = $arr->change_voucher;
       $data->active = $arr->active;
       $data->save();
-       // PhÃƒÆ’Ã‚Â¢n loÃƒÂ¡Ã‚ÂºÃ‚Â¡i SÃƒÂ¡Ã‚Â»Ã‚Â­a
+       // Phan loai Sua
        $arr->t = $type;
        DB::connection(env('CONNECTION_DB_ACC'))->commit();
        broadcast(new \App\Events\DataSend($arr));

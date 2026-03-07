@@ -77,7 +77,7 @@ class AccOpenBalanceController extends Controller
   public function data(Request $request){  
     $type = $request->input('type',null);
     $stock = $request->input('stock',null);
-    // Láº¥y default document
+    // Lay default document
     $document = $this->getDoc($this->document);
     $type_file = OpenBalanceGlobal::convertType($type);  
     if($type_file == "account"){

@@ -144,7 +144,7 @@ class AccHistoryActionController extends Controller
         $data->dataz = $arr->dataz;
         $data->created_at = $arr->created_at;
         $data->save();
-        // PhÃƒÆ’Ã‚Â¢n loÃƒÂ¡Ã‚ÂºÃ‚Â¡i SÃƒÂ¡Ã‚Â»Ã‚Â­a
+        // Phan loai sua doi de truyen len client
         $arr->t = $type;
         DB::connection(env('CONNECTION_DB_ACC'))->commit();
         broadcast(new \App\Events\DataSend($arr));
@@ -174,7 +174,7 @@ class AccHistoryActionController extends Controller
              if(!$data){
                 return response()->json(['status'=>false,'message'=>trans('messages.no_data_found')]);
               }
-             // LÃƒâ€ Ã‚Â°u lÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ch sÃƒÂ¡Ã‚Â»Ã‚Â­
+             // Luu lich su
              //$h = new HistoryAction();
              //$h ->create([
                //'type' => 4, // Add : 2 , Edit : 3 , Delete : 4
@@ -217,14 +217,14 @@ class AccHistoryActionController extends Controller
         $rs = json_decode($request->data);
 
         $file = $request->file;
-        // Import dÃƒÂ¡Ã‚Â»Ã‚Â¯ liÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¡u
+        // Import du lieu
         Excel::import(new HistoryActionImport, $file);
-        // LÃƒÂ¡Ã‚ÂºÃ‚Â¥y lÃƒÂ¡Ã‚ÂºÃ‚Â¡i dÃƒÂ¡Ã‚Â»Ã‚Â¯ liÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¡u
+        // Lay lai du lieu
         $array = AccHistoryAction::get_raw_type($rs->ts);
 
         $merged = collect($rs)->push($array);
         //dump($merged);
-      // LÃƒâ€ Ã‚Â°u lÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ch sÃƒÂ¡Ã‚Â»Ã‚Â­
+      // Luu lich su
       //  $type = 5;
       //$h = new HistoryAction();
       //$h ->create([
