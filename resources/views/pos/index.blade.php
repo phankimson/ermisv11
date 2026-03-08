@@ -8,14 +8,14 @@
   <meta name="csrf-token" content="{{ csrf_token() }}">
   <title>Tailwind POS</title>
   <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="addon/css/pos/style.css">
   <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
   <script src="https://unpkg.com/idb/build/iife/index-min.js"></script>
   <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.8.2/dist/alpine.min.js"></script>
   <script>
     window.posBoot = @json($posBoot ?? []);
   </script>
-  <script src="js/script.js"></script>
+  <script src="addon/scripts/pos/script.js"></script>
 </head>
 <body class="bg-blue-gray-50" x-data="initApp()" x-init="initDatabase()">
   <div id="sale" class="hide-print flex flex-row h-screen antialiased text-blue-gray-800">
